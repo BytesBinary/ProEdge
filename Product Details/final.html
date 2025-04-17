@@ -11,20 +11,21 @@
 
 <body class="container flex flex-col items-start max-w-full w-full mx-auto">
     <!-- first section  -->
-    <div class="flex justify-between w-full h-auto items-start">
+    <div class="flex flex-col md:flex-row justify-between w-full h-auto items-start gap-6">
         <!-- product image  -->
-        <div class="h-[398px] flex justify-between">
-            <div>
+        <div class="w-full md:w-1/3 flex flex-col md:flex-row justify-around md:h-[398px]">
+            <!-- Thumbnails -->
+            <div class="flex md:flex-col items-center md:items-start justify-center gap-3 md:gap-0">
                 <div
-                    class="w-[78px] cursor-pointer hover:border-2 hover:border-[#3F66BC] h-[91px] mb-3 rounded-[6px] bg-[#F8F9FB] flex items-center justify-center">
+                    class="w-[78px] cursor-pointer hover:border-2 hover:border-[#3F66BC] h-[91px] md:mb-3 rounded-[6px] bg-[#F8F9FB] flex items-center justify-center">
                     <img src="./src/motor/m1.png" alt="">
                 </div>
                 <div
-                    class="w-[78px] cursor-pointer hover:border-2 hover:border-[#3F66BC] h-[90px] mb-3  rounded-[6px] bg-[#F8F9FB] flex items-center justify-center">
+                    class="w-[78px] cursor-pointer hover:border-2 hover:border-[#3F66BC] h-[90px] md:mb-3 rounded-[6px] bg-[#F8F9FB] flex items-center justify-center">
                     <img src="./src/motor/m1.png" alt="">
                 </div>
                 <div
-                    class="w-[78px] cursor-pointer hover:border-2 hover:border-[#3F66BC] h-[91px] mb-3 rounded-[6px] bg-[#F8F9FB] flex items-center justify-center">
+                    class="w-[78px] cursor-pointer hover:border-2 hover:border-[#3F66BC] h-[91px] md:mb-3 rounded-[6px] bg-[#F8F9FB] flex items-center justify-center">
                     <img src="./src/motor/m1.png" alt="">
                 </div>
                 <div
@@ -32,89 +33,93 @@
                     <img src="./src/motor/m1.png" alt="">
                 </div>
             </div>
-
-            <div class="w-[294px] h-[398px] rounded-xl bg-[#F8F9FB] flex items-center justify-center">
-                <img src="./src/motor/m2.png" alt="">
+        
+            <!-- Main Image -->
+            <div class="w-full md:w-[294px] h-[200px] md:h-[398px] mt-4 md:mt-0 rounded-xl bg-[#F8F9FB] flex items-center justify-center">
+                <img src="./src/motor/m2.png" alt="" class="max-w-full max-h-full">
             </div>
-        </div>
+        </div>        
         <!-- product image end -->
 
         <!-- Product details  -->
-        <div class="h-[554px]  flex flex-col justify-between items-start">
-            <div class="text-lg leading-7 text-[#3F66BC] font-medium h-[232px] flex flex-col justify-between">
-                <h1 class="text-2xl leading-9 text-[#182B55]">EMZ 3.7 HP Electric Motor, 56 Frame, 3450 RPM, 1-Phase,
-                    230VAC
-                </h1>
-                <h3>SKU: EM4</h3>
-                <h3>Visit the controls pro Store</h3>
-                <div class="text-[16px] leading-6 flex w-1/2 justify-between items-center">
+        <div class="w-full lg:w-1/3 h-auto lg:h-[554px] flex flex-col justify-between items-start gap-6 lg:gap-0 p-1 lg:p-0">
+
+            <div class="text-lg leading-7 text-[#3F66BC] font-medium h-auto lg:h-[232px] flex flex-col justify-between gap-4 lg:gap-0">
+                <h1 class="text-xl lg:text-2xl leading-7 lg:leading-9 text-[#182B55]">EMZ 3.7 HP Electric Motor, 56 Frame, 3450 RPM, 1-Phase, 230VAC</h1>
+                <h3 class="text-base lg:text-lg">SKU: EM4</h3>
+                <h3 class="text-base lg:text-lg">Visit the controls pro Store</h3>
+                <div class="text-[14px] lg:text-[16px] leading-6 flex flex-wrap w-[265px] justify-evenly lg:justify-between items-center ">
                     <p class="font-semibold">4.9</p>
-                    <p class="w-3 mr-1">⭐</p>
-                    <p class="w-3 mr-1">⭐</p>
-                    <p class="w-3 mr-1">⭐</p>
-                    <p class="w-3 mr-1">⭐</p>
-                    <p class="w-3 mr-1">⭐</p>
-                    <p><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M15.5975 8.00822C15.5201 7.93011 15.4279 7.86811 15.3264 7.82581C15.2248 7.7835 15.1159 7.76172 15.0059 7.76172C14.8959 7.76172 14.7869 7.7835 14.6854 7.82581C14.5838 7.86811 14.4917 7.93011 14.4142 8.00822L10.5975 11.8249C10.5201 11.903 10.4279 11.965 10.3263 12.0073C10.2248 12.0496 10.1159 12.0714 10.0059 12.0714C9.89586 12.0714 9.78694 12.0496 9.68539 12.0073C9.58384 11.965 9.49167 11.903 9.4142 11.8249L5.59754 8.00822C5.52007 7.93011 5.4279 7.86811 5.32635 7.82581C5.2248 7.7835 5.11588 7.76172 5.00587 7.76172C4.89586 7.76172 4.78694 7.7835 4.68539 7.82581C4.58384 7.86811 4.49167 7.93011 4.4142 8.00822C4.25899 8.16435 4.17188 8.37556 4.17188 8.59572C4.17188 8.81587 4.25899 9.02708 4.4142 9.18322L8.2392 13.0082C8.70795 13.4764 9.34337 13.7394 10.0059 13.7394C10.6684 13.7394 11.3038 13.4764 11.7725 13.0082L15.5975 9.18322C15.7527 9.02708 15.8399 8.81587 15.8399 8.59572C15.8399 8.37556 15.7527 8.16435 15.5975 8.00822Z"
-                                fill="#3F66BC" />
-                        </svg>
-                    </p>
+                    <div class="flex items-center">
+                        <span class="w-3 mr-1">⭐</span>
+                        <span class="w-3 mr-1">⭐</span>
+                        <span class="w-3 mr-1">⭐</span>
+                        <span class="w-3 mr-1">⭐</span>
+                        <span class="w-3 mr-1">⭐</span>
+                    </div>
+                    <svg class="hidden lg:block" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M15.5975 8.00822C15.5201 7.93011 15.4279 7.86811 15.3264 7.82581C15.2248 7.7835 15.1159 7.76172 15.0059 7.76172C14.8959 7.76172 14.7869 7.7835 14.6854 7.82581C14.5838 7.86811 14.4917 7.93011 14.4142 8.00822L10.5975 11.8249C10.5201 11.903 10.4279 11.965 10.3263 12.0073C10.2248 12.0496 10.1159 12.0714 10.0059 12.0714C9.89586 12.0714 9.78694 12.0496 9.68539 12.0073C9.58384 11.965 9.49167 11.903 9.4142 11.8249L5.59754 8.00822C5.52007 7.93011 5.4279 7.86811 5.32635 7.82581C5.2248 7.7835 5.11588 7.76172 5.00587 7.76172C4.89586 7.76172 4.78694 7.7835 4.68539 7.82581C4.58384 7.86811 4.49167 7.93011 4.4142 8.00822C4.25899 8.16435 4.17188 8.37556 4.17188 8.59572C4.17188 8.81587 4.25899 9.02708 4.4142 9.18322L8.2392 13.0082C8.70795 13.4764 9.34337 13.7394 10.0059 13.7394C10.6684 13.7394 11.3038 13.4764 11.7725 13.0082L15.5975 9.18322C15.7527 9.02708 15.8399 8.81587 15.8399 8.59572C15.8399 8.37556 15.7527 8.16435 15.5975 8.00822Z" fill="#3F66BC"/>
+                    </svg>
                     <p class="border-l-2 h-[20px] px-2">120 ratings</p>
                 </div>
-                <div
-                    class="bg-[#3F66BC] w-[184px] h-[32px] relative overflow-hidden flex items-center justify-center text-white text-sm font-medium">
-                    <div
-                        class="bg-white w-[64px] h-[64px] absolute right-0 transform translate-y-4 translate-x-11 rotate-45">
-                    </div>
-                    <div class="absolute left-3 z-10 font-bold text-sm leading-5">Pro - Edge’s <span
-                            class="text-[#FCD700]">Choice</span></div>
+                <div class="bg-[#3F66BC] w-full lg:w-[184px] h-[32px] relative overflow-hidden flex items-center justify-center text-white text-sm font-medium">
+                    <div class="bg-white w-[64px] h-[64px] absolute right-0 transform translate-y-4 translate-x-11 rotate-45"></div>
+                    <div class="absolute left-18 md:left-3 z-10 font-bold text-sm leading-5">Pro - Edge’s <span class="text-[#FCD700]">Choice</span></div>
                 </div>
             </div>
-
+        
             <!-- price range  -->
-            <div class="flex flex-col h-[128px] justify-between">
-                <div class="flex items-center justify-between w-[77px] text-[16px] leading-4 text-[#182B55]">
-                    <span>$</span>&nbsp;<h1 class="text-[40px] font-medium leading-12">230</h1>&nbsp;<span> 45</span>
+            <div class="flex flex-col h-auto lg:h-[128px] justify-between gap-4 lg:gap-0">
+                <div class="flex items-center justify-start lg:justify-between w-full lg:w-[77px] text-[16px] leading-4 text-[#182B55]">
+                    <span>$</span>&nbsp;<h1 class="text-3xl lg:text-[40px] font-medium leading-12">230</h1>&nbsp;<span>45</span>
                 </div>
                 <div>
                     <div>
-                        <p class="text-xl leading-8"><span class="font-medium text-[#3F66BC]">Typical price: </span>
+                        <p class="text-lg lg:text-xl leading-8">
+                            <span class="font-medium text-[#3F66BC]">Typical price: </span>
                             <span class="text-[#5D6576] line-through"> $250.99</span>
                         </p>
-                        <div class="flex">
-                            <p class="text-[16px] leading-7"><span class="text-[#5D6576]">Get Fast, </span><span
-                                    class="font-medium text-[#182B55] mr-2">Free Shipping on Orders Over $500.</span>
+                        <div class="flex flex-col lg:flex-row items-start lg:items-center">
+                            <p class="text-[14px] lg:text-[16px] leading-7">
+                                <span class="text-[#5D6576]">Get Fast, </span>
+                                <span class="font-medium text-[#182B55] mr-2">Free Shipping on Orders Over $500.</span>
                             </p>
                             <div class="flex items-center">
-                                <span class="text-[#3F66BC] font-medium text-[16px]">Details</span>
-                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M15.5975 8.00822C15.5201 7.93011 15.4279 7.86811 15.3264 7.82581C15.2248 7.7835 15.1159 7.76172 15.0059 7.76172C14.8959 7.76172 14.7869 7.7835 14.6854 7.82581C14.5838 7.86811 14.4917 7.93011 14.4142 8.00822L10.5975 11.8249C10.5201 11.903 10.4279 11.965 10.3263 12.0073C10.2248 12.0496 10.1159 12.0714 10.0059 12.0714C9.89586 12.0714 9.78694 12.0496 9.68539 12.0073C9.58384 11.965 9.49167 11.903 9.4142 11.8249L5.59754 8.00822C5.52007 7.93011 5.4279 7.86811 5.32635 7.82581C5.2248 7.7835 5.11588 7.76172 5.00587 7.76172C4.89586 7.76172 4.78694 7.7835 4.68539 7.82581C4.58384 7.86811 4.49167 7.93011 4.4142 8.00822C4.25899 8.16435 4.17188 8.37556 4.17188 8.59572C4.17188 8.81587 4.25899 9.02708 4.4142 9.18322L8.2392 13.0082C8.70795 13.4764 9.34337 13.7394 10.0059 13.7394C10.6684 13.7394 11.3038 13.4764 11.7725 13.0082L15.5975 9.18322C15.7527 9.02708 15.8399 8.81587 15.8399 8.59572C15.8399 8.37556 15.7527 8.16435 15.5975 8.00822Z"
-                                        fill="#3F66BC" />
+                                <span class="text-[#3F66BC] font-medium text-[14px] lg:text-[16px]">Details</span>
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M15.5975 8.00822C15.5201 7.93011 15.4279 7.86811 15.3264 7.82581C15.2248 7.7835 15.1159 7.76172 15.0059 7.76172C14.8959 7.76172 14.7869 7.7835 14.6854 7.82581C14.5838 7.86811 14.4917 7.93011 14.4142 8.00822L10.5975 11.8249C10.5201 11.903 10.4279 11.965 10.3263 12.0073C10.2248 12.0496 10.1159 12.0714 10.0059 12.0714C9.89586 12.0714 9.78694 12.0496 9.68539 12.0073C9.58384 11.965 9.49167 11.903 9.4142 11.8249L5.59754 8.00822C5.52007 7.93011 5.4279 7.86811 5.32635 7.82581C5.2248 7.7835 5.11588 7.76172 5.00587 7.76172C4.89586 7.76172 4.78694 7.7835 4.68539 7.82581C4.58384 7.86811 4.49167 7.93011 4.4142 8.00822C4.25899 8.16435 4.17188 8.37556 4.17188 8.59572C4.17188 8.81587 4.25899 9.02708 4.4142 9.18322L8.2392 13.0082C8.70795 13.4764 9.34337 13.7394 10.0059 13.7394C10.6684 13.7394 11.3038 13.4764 11.7725 13.0082L15.5975 9.18322C15.7527 9.02708 15.8399 8.81587 15.8399 8.59572C15.8399 8.37556 15.7527 8.16435 15.5975 8.00822Z" fill="#3F66BC"/>
                                 </svg>
-
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
+        
             <!-- variation card  -->
-            <div class="w-[564px] h-[146px] flex flex-col justify-between">
-                <div class="text-xl leading-8">
+            <div class="w-full h-auto lg:h-[146px] flex flex-col justify-between gap-4 lg:gap-0 pr-3 lg:pr-0">
+                <div class="text-lg lg:text-xl leading-8">
                     <span class="text-[#5D6576]">Size:</span>
                     <span class="text-[#3F66BC] font-semibold">3.7 HP,56 Frame</span>
                 </div>
-                <div class="flex justify-between">
-                    <div
-                        class="w-[134px] h-[98px] bg-[#F8F9FB] hover:bg-[#3F66BC] p-3 cursor-pointer rounded-[12px] border border-[#F8F9FB] hover:border-[#F8F9FB] group transition-all duration-300">
-                        <div
-                            class="w-[110px] h-[74px] flex flex-col justify-between text-[#182B55] group-hover:text-white">
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+                    <div class="w-full h-[98px] bg-[#F8F9FB] hover:bg-[#3F66BC] p-3 cursor-pointer rounded-[12px] border border-[#F8F9FB] hover:border-[#F8F9FB] group transition-all duration-300">
+                        <div class="w-full h-[74px] flex flex-col justify-between text-[#182B55] group-hover:text-white">
                             <div class="h-[36px] relative">
-                                <h1
-                                    class="font-semibold pb-2 text-sm leading-[18px] border-b border-[#3F66BC]/10 group-hover:border-white/25 border-dashed text-[#3F66BC] group-hover:text-white transition-all duration-300">
+                                <h1 class="font-semibold pb-2 text-sm leading-[18px] border-b border-[#3F66BC]/10 group-hover:border-white/25 border-dashed text-[#3F66BC] group-hover:text-white transition-all duration-300">
+                                    2 HP, 56 Frame
+                                </h1>
+                            </div>
+                            <div class="h-[36px] flex flex-col justify-between text-[12px] leading-4 font-medium">
+                                <h1 class="group-hover:text-white">$190.99</h1>
+                                <h1 class="text-[#5D6576] line-through group-hover:text-white">$220.99</h1>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="w-full h-[98px] bg-[#F8F9FB] hover:bg-[#3F66BC] p-3 cursor-pointer rounded-[12px] border border-[#F8F9FB] hover:border-[#F8F9FB] group transition-all duration-300">
+                        <div class="w-full h-[74px] flex flex-col justify-between text-[#182B55] group-hover:text-white">
+                            <div class="h-[36px] relative">
+                                <h1 class="font-semibold pb-2 text-sm leading-[18px] border-b border-[#3F66BC]/10 group-hover:border-white/25 border-dashed text-[#3F66BC] group-hover:text-white transition-all duration-300">
                                     2 HP, 56 Frame
                                 </h1>
                             </div>
@@ -125,14 +130,10 @@
                         </div>
                     </div>
 
-
-                    <div
-                        class="w-[134px] h-[98px] bg-[#F8F9FB] hover:bg-[#3F66BC] p-3 cursor-pointer rounded-[12px] border border-[#F8F9FB] hover:border-[#F8F9FB] group transition-all duration-300">
-                        <div
-                            class="w-[110px] h-[74px] flex flex-col justify-between text-[#182B55] group-hover:text-white">
+                    <div class="w-full h-[98px] bg-[#F8F9FB] hover:bg-[#3F66BC] p-3 cursor-pointer rounded-[12px] border border-[#F8F9FB] hover:border-[#F8F9FB] group transition-all duration-300">
+                        <div class="w-full h-[74px] flex flex-col justify-between text-[#182B55] group-hover:text-white">
                             <div class="h-[36px] relative">
-                                <h1
-                                    class="font-semibold pb-2 text-sm leading-[18px] border-b border-[#3F66BC]/10 group-hover:border-white/25 border-dashed text-[#3F66BC] group-hover:text-white transition-all duration-300">
+                                <h1 class="font-semibold pb-2 text-sm leading-[18px] border-b border-[#3F66BC]/10 group-hover:border-white/25 border-dashed text-[#3F66BC] group-hover:text-white transition-all duration-300">
                                     2 HP, 56 Frame
                                 </h1>
                             </div>
@@ -143,14 +144,10 @@
                         </div>
                     </div>
 
-
-                    <div
-                        class="w-[134px] h-[98px] bg-[#F8F9FB] hover:bg-[#3F66BC] p-3 cursor-pointer rounded-[12px] border border-[#F8F9FB] hover:border-[#F8F9FB] group transition-all duration-300">
-                        <div
-                            class="w-[110px] h-[74px] flex flex-col justify-between text-[#182B55] group-hover:text-white">
+                    <div class="w-full h-[98px] bg-[#F8F9FB] hover:bg-[#3F66BC] p-3 cursor-pointer rounded-[12px] border border-[#F8F9FB] hover:border-[#F8F9FB] group transition-all duration-300">
+                        <div class="w-full h-[74px] flex flex-col justify-between text-[#182B55] group-hover:text-white">
                             <div class="h-[36px] relative">
-                                <h1
-                                    class="font-semibold pb-2 text-sm leading-[18px] border-b border-[#3F66BC]/10 group-hover:border-white/25 border-dashed text-[#3F66BC] group-hover:text-white transition-all duration-300">
+                                <h1 class="font-semibold pb-2 text-sm leading-[18px] border-b border-[#3F66BC]/10 group-hover:border-white/25 border-dashed text-[#3F66BC] group-hover:text-white transition-all duration-300">
                                     2 HP, 56 Frame
                                 </h1>
                             </div>
@@ -160,48 +157,31 @@
                             </div>
                         </div>
                     </div>
-
-
-                    <div
-                        class="w-[134px] h-[98px] bg-[#F8F9FB] hover:bg-[#3F66BC] p-3 cursor-pointer rounded-[12px] border border-[#F8F9FB] hover:border-[#F8F9FB] group transition-all duration-300">
-                        <div
-                            class="w-[110px] h-[74px] flex flex-col justify-between text-[#182B55] group-hover:text-white">
-                            <div class="h-[36px] relative">
-                                <h1
-                                    class="font-semibold pb-2 text-sm leading-[18px] border-b border-[#3F66BC]/10 group-hover:border-white/25 border-dashed text-[#3F66BC] group-hover:text-white transition-all duration-300">
-                                    2 HP, 56 Frame
-                                </h1>
-                            </div>
-                            <div class="h-[36px] flex flex-col justify-between text-[12px] leading-4 font-medium">
-                                <h1 class="group-hover:text-white">$190.99</h1>
-                                <h1 class="text-[#5D6576] line-through group-hover:text-white">$220.99</h1>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
             </div>
         </div>
         <!-- product end of details  -->
 
         <!-- product delivery policy  -->
-        <div class="h-[496px] rounded-xl border-2 bg-[#F8F9FB] border-[#ECF0F9] py-4 px-3">
+        <div class="h-[496px] rounded-xl border-2 bg-[#F8F9FB] border-[#ECF0F9] py-4 px-3 mx-auto lg:mx-0">
             <!-- Add to cart,Buy section  -->
-            <div class="w-[180px] h-[464px] flex flex-col justify-between">
-                <div class="flex items-center justify-between w-[77px] text-[12px] leading-[18px] text-[#182B55]">
+            <div class="w-full max-w-[180px] h-[464px] flex flex-col justify-between space-y-4">
+                <div class="flex items-center w-full text-[12px] leading-[18px] text-[#182B55]">
                     <span>$</span>&nbsp;<h1 class="text-2xl font-semibold leading-8">230</h1>&nbsp;<span> 45</span>
                 </div>
-                <div class="text-[12px] leading-[18px] flex flex-col">
+                <div class="text-[12px] leading-[18px] flex flex-col space-y-2">
                     <p class="text-[#182B55] font-medium"><span class="text-[#4A5A7E]">Get Fast,</span>Free Shipping on
                         Orders Over $500.</p>
-                    <div>
-                        <select id="countries" class="w-[58px] h-[18px] text-[#3F66BC]">
-                            <option selected class="font-medium">Details</option>
-                            <option value="">Details 1</option>
-                            <option value="">Details 2</option>
-                            <option value="">Details 3</option>
-                        </select>
-                    </div>
+                        <div class="flex items-center">
+                            <span class="text-[#3F66BC] font-medium text-[12px]">Details</span>
+                            <svg width="14" height="14" viewBox="0 0 20 20" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M15.5975 8.00822C15.5201 7.93011 15.4279 7.86811 15.3264 7.82581C15.2248 7.7835 15.1159 7.76172 15.0059 7.76172C14.8959 7.76172 14.7869 7.7835 14.6854 7.82581C14.5838 7.86811 14.4917 7.93011 14.4142 8.00822L10.5975 11.8249C10.5201 11.903 10.4279 11.965 10.3263 12.0073C10.2248 12.0496 10.1159 12.0714 10.0059 12.0714C9.89586 12.0714 9.78694 12.0496 9.68539 12.0073C9.58384 11.965 9.49167 11.903 9.4142 11.8249L5.59754 8.00822C5.52007 7.93011 5.4279 7.86811 5.32635 7.82581C5.2248 7.7835 5.11588 7.76172 5.00587 7.76172C4.89586 7.76172 4.78694 7.7835 4.68539 7.82581C4.58384 7.86811 4.49167 7.93011 4.4142 8.00822C4.25899 8.16435 4.17188 8.37556 4.17188 8.59572C4.17188 8.81587 4.25899 9.02708 4.4142 9.18322L8.2392 13.0082C8.70795 13.4764 9.34337 13.7394 10.0059 13.7394C10.6684 13.7394 11.3038 13.4764 11.7725 13.0082L15.5975 9.18322C15.7527 9.02708 15.8399 8.81587 15.8399 8.59572C15.8399 8.37556 15.7527 8.16435 15.5975 8.00822Z"
+                                    fill="#3F66BC" />
+                            </svg>
+
+                        </div>
                 </div>
                 <div class="flex flex-col h-[44px] justify-between">
                     <h1 class="text-sm leading-[18px] text-[#182B55]">Delivery <span
@@ -232,7 +212,7 @@
                     <p class="text-[#3F66BC] font-medium text-[16px] leading-6">In Stock</p>
                     <div>
                         <select id="countries"
-                            class="w-[160px] text-[#182B55] text-[12px] leading-4  border-[1px] border-[#F8F9FB] bg-white">
+                                class="w-[160px] text-[#182B55] text-[12px] leading-4  border-[1px] border-[#F8F9FB] bg-white">
                             <option selected class="font-medium">Quantity: 2</option>
                             <option value="3">Quantity: 3</option>
                             <option value="4">Quantity: 4</option>
@@ -242,7 +222,7 @@
                     </div>
                 </div>
                 <!-- button  -->
-                <div class="h-[72px] flex flex-col justify-between">
+                <div class="h-[72px] flex flex-col justify-between space-y-2">
                     <button
                         class="py-1 px-6 bg-[#FCD700] rounded-[60px] w-full font-medium text-[12px] leading-6 text-[#182B55]">
                         Add to Cart
@@ -252,7 +232,7 @@
                         Buy Now
                     </button>
                 </div>
-                <div class="text-[10px] w-[180px] text-[#5D6576] font-normal space-y-1  p-2">
+                <div class="text-[10px] w-full text-[#5D6576] font-normal space-y-1 p-2">
                     <div class="flex gap-2">
                         <p class="whitespace-nowrap w-[70px]">Ships from</p>
                         <p class="text-[#3F66BC] font-medium text-left w-[100px]">Controls Pro</p>
@@ -272,12 +252,14 @@
                 </div>
             </div>
         </div>
+        
+        
     </div>
 
     <!-- second section  -->
-    <div class="mt-20 max-h-full rounded-[14px] bg-white border-2 border-[#F8F9FB]">
+    <div class="mt-20 w-full rounded-[14px] bg-white border-2 border-[#F8F9FB]">
         <!-- nav type  -->
-        <div class="bg-[#F8F9FB] px-10 py-5 rounded-tl-[14px] rounded-tr-[14px]">
+        <div class="bg-[#F8F9FB] px-4 sm:px-10 py-5 rounded-tl-[14px] rounded-tr-[14px] flex flex-wrap gap-2">
             <button
                 class="border-2 py-2 px-5 rounded-[8px] font-medium text-xl leading-8 text-[#5D6576] border-[#ECF0F8] hover:border[#3F66BC] hover:bg-[#3F66BC] hover:text-white cursor-pointer mr-4 ">
                 Key Features
@@ -324,9 +306,9 @@
     </div>
 
     <!-- third section -->
-    <div class="bg-[#F8F9FB] h-[256px] py-16 px-[120px] flex justify-center items-center gap-6">
-        <div class=" w-[384px] bg-white py-6 px-5 rounded-[12px] flex items-center justify-evenly">
-            <div class="w-[80px] h-[80px] bg-[#F8F9FB] rounded-full relative flex items-center justify-center">
+    <div class="bg-[#F8F9FB] w-full py-16 px-4 md:px-12 lg:px-[120px] flex justify-center items-center gap-6 flex-wrap">
+        <div class="w-full sm:w-[384px] bg-white py-6 px-5 rounded-[12px] flex items-center justify-evenly">
+            <div class="w-[80px] h-[80px] bg-[#F8F9FB] rounded-full flex items-center justify-center">
                 <svg width="52" height="30" viewBox="0 0 52 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
                         d="M21.1258 27.2391C22.7596 25.7161 23.0112 23.3306 21.6877 21.9109C20.3643 20.4911 17.967 20.5749 16.3332 22.0979C14.6994 23.6208 14.4479 26.0064 15.7713 27.4261C17.0947 28.8458 19.492 28.7621 21.1258 27.2391Z"
@@ -345,13 +327,14 @@
                         fill="#3F66BC" />
                 </svg>
             </div>
-            <div class="font-medium">
+            <div class="ml-4">
                 <h1 class="text-[#182B55] text-[24px] leading-8">Free Delivery</h1>
                 <h3 class="text-[#5D6576] text-[16px] leading-6">On Orders Over $500.00</h3>
             </div>
         </div>
-        <div class=" w-[384px] bg-white py-6 px-5 rounded-[12px] flex items-center justify-evenly">
-            <div class="w-[80px] h-[80px] bg-[#F8F9FB] rounded-full relative flex items-center justify-center">
+
+        <div class="w-full sm:w-[384px] bg-white py-6 px-5 rounded-[12px] flex items-center justify-evenly">
+            <div class="w-[80px] h-[80px] bg-[#F8F9FB] rounded-full flex items-center justify-center">
                 <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd" clip-rule="evenodd"
                         d="M28.6395 7.54987C24.6597 7.41734 20.6389 8.50312 17.1675 10.8203C13.2687 13.4255 10.544 17.2727 9.28896 21.5735C8.94238 21.5312 8.52736 21.5499 8.03456 21.6893C6.19465 22.2113 4.81083 23.7189 4.18861 25.0468C3.38158 26.7772 3.04123 29.0657 3.40025 31.4283C3.75678 33.7834 4.75172 35.7247 5.99616 36.93C7.24434 38.1358 8.65367 38.5278 10.0537 38.2335C12.1381 37.7886 13.1716 37.4557 12.8798 35.5138L11.4667 26.1002C11.7517 21.0054 14.3893 16.2093 18.8009 13.26C24.7058 9.31574 32.4475 9.56836 38.0798 13.8922C41.9979 16.8963 44.2728 21.3974 44.5354 26.1226L43.5473 32.7076C41.3434 38.7388 35.8796 42.9164 29.5572 43.5093H25.3473C24.2609 43.5093 23.386 44.3842 23.386 45.4693V46.5035C23.386 47.5893 24.2609 48.4641 25.3473 48.4641H30.6555C31.7412 48.4641 32.6123 47.5893 32.6123 46.5035V45.9628C37.3798 44.7992 41.5412 41.8692 44.251 37.783L45.9515 38.2341C47.3354 38.5932 48.7615 38.1358 50.0091 36.9306C51.2535 35.7247 52.2478 33.784 52.605 31.4289C52.9652 29.0663 52.6149 26.7815 51.8172 25.0474C51.0164 23.3133 49.8236 22.2119 48.4467 21.8168C47.8699 21.6507 47.2439 21.5897 46.7069 21.5735C45.572 17.6846 43.2355 14.1479 39.8681 11.5657C36.5572 9.02516 32.6192 7.68054 28.6395 7.54987Z"
@@ -360,26 +343,30 @@
                         d="M34.8543 24.4822C36.2574 24.4822 37.3948 25.6196 37.3979 27.0264C37.3948 28.4295 36.2574 29.5701 34.8543 29.5701C33.4474 29.5701 32.3069 28.4295 32.3069 27.0264C32.3069 25.6202 33.4481 24.4822 34.8543 24.4822ZM28.0036 24.4822C29.4098 24.4822 30.5473 25.6196 30.5473 27.0264C30.5473 28.4295 29.4098 29.5701 28.0036 29.5701C26.5961 29.5701 25.4587 28.4295 25.4587 27.0264C25.4587 25.6202 26.5961 24.4822 28.0036 24.4822ZM21.1554 24.4822C22.5585 24.4822 23.6991 25.6196 23.6991 27.0264C23.6991 28.4295 22.5585 29.5701 21.1554 29.5701C19.7492 29.5701 18.6112 28.4295 18.6112 27.0264C18.6112 25.6202 19.7492 24.4822 21.1554 24.4822ZM28.0036 13.5547C20.5432 13.5547 14.5312 19.3687 14.5312 27.0264C14.5312 30.7044 15.9219 33.9549 18.1874 36.3398L17.3835 39.9438C17.1184 41.1297 17.941 41.9274 19.0069 41.3338L22.5262 39.3707C24.1987 40.0968 26.0486 40.4982 28.0036 40.4982C35.4665 40.4982 41.4747 34.6878 41.4747 27.0264C41.4747 19.3687 35.4665 13.5547 28.0036 13.5547Z"
                         fill="#3F66BC" />
                 </svg>
-
             </div>
-            <div class="font-medium">
+            <div class="ml-4">
                 <h1 class="text-[#182B55] text-[24px] leading-8">Online Support</h1>
                 <h3 class="text-[#5D6576] text-[16px] leading-6">Support online 24 houre</h3>
             </div>
         </div>
-        <div class=" w-[384px] bg-white py-6 px-5 rounded-[12px] flex items-center justify-evenly">
-            <div class="w-[80px] h-[80px] bg-[#F8F9FB] rounded-full relative flex items-center justify-center">
+
+        <div class="w-full sm:w-[384px] bg-white py-6 px-5 rounded-[12px] flex items-center justify-evenly">
+            <div class="w-[80px] h-[80px] bg-[#F8F9FB] rounded-full flex items-center justify-center">
                 <svg width="41" height="48" viewBox="0 0 41 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
                         d="M9.825 25.1813L12.3187 26.5875V29.9906L9.825 28.5844V25.1813ZM17.1469 29.3063L13.3594 27.1781V30.8812C13.3687 31.2656 12.9188 31.5375 12.5813 31.3313L9.04687 29.3438C8.87812 29.25 8.78438 29.0813 8.78438 28.8938V24.6L5.00625 22.4719V36.3469L17.1469 43.3594V29.3063ZM30.1125 36.3469V22.4813L18.1875 29.2969V43.2281L30.1125 36.3469ZM25.2844 19.8L13.9313 26.2969L17.6625 28.3969L29.625 21.5625L25.9406 19.4344L25.2844 19.8ZM22.3781 17.3812L10.3313 24.2812L12.8719 25.7063L24.8812 18.8344C24.6562 18.7031 22.6594 17.55 22.3781 17.3812ZM5.5125 21.5625C6.45 22.0875 8.34375 23.1562 9.28125 23.6813L21.3375 16.7812L17.5594 14.6063L5.5125 21.5625ZM36.7594 13.7625C32.9344 7.81875 26.0438 3.87188 19.0031 3.51562C18.7313 3.49688 18.525 3.27187 18.525 3V0L9.84375 5.61563L18.525 11.2313V8.57812C18.525 8.2875 18.7687 8.04375 19.0594 8.0625C26.9437 8.08125 34.35 13.7063 36.6281 21.2438C39.2156 28.8656 36.1688 37.7156 29.8875 42.5719C20.4 50.0063 5.98125 46.9688 0 36.5813C7.0875 49.9875 25.5 51.675 35.1844 40.1344C41.4469 32.7469 42.0281 21.8719 36.7594 13.7625Z"
                         fill="#3F66BC" />
                 </svg>
             </div>
-            <div class="font-medium">
+            <div class="ml-4">
                 <h1 class="text-[#182B55] text-[24px] leading-8">Easy Returns</h1>
                 <h3 class="text-[#5D6576] text-[16px] leading-6">90 day refund period</h3>
             </div>
         </div>
+    </div>
+    
+    <div>
+        
     </div>
 
 
