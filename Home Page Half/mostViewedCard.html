@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Document</title>
+</head>
+
+<body>
+    <section class="max-w-[282px] h-[457px] border-2 border-[#F8F9FB] px-4 pt-4 pb-6 bg-[#FFFFFF] font-inter">
+
+        <!-- Product Card Container -->
+        <div class="rounded-xl w-[250px] h-[417px] mb-5 bg-[#FFFFFF]">
+            <div class="bg-[#F8F9FB] flex justify-center items-center relative rounded-xl w-full overflow-hidden">
+                <!-- Product Image -->
+                <img src="./img/mostView.png" alt="" class="h-[167px] ">
+                <!-- Wishlist/Heart Icon Button -->
+                <div class="bg-[#FFFFFF] rounded-full w-9 h-9 flex items-center justify-center absolute top-2 right-2">
+                    <!-- SVG Heart Icon -->
+                    <svg width="20" height="20" viewBox="0 0 18 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="...SVG PATH..." fill="#182B55" />
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Product Content Section -->
+            <div class="flex flex-col justify-between items-start h-[247px] w-[250px]">
+                <!-- Title and Description -->
+                <div class="mb-2">
+                    <h2 class="text-[14px] text-[#3F66BC] font-medium leading-5">Electric Motors & Motor Controls</h2>
+                    <h1 class="text-[#475467] text-lg font-medium leading-[30px]">MAGNETIC STARTER FOR 7.5HP SINGLE
+                        PHASE 230V ELECTRIC MOTORS (40 AMP) – WEG</h1>
+                </div>
+
+                <!-- Price -->
+                <div class="mb-[10px]">
+                    <p class="text-[#3F66BC] text-2xl font-semibold leading-8 gap-2.5">$234.00</p>
+                </div>
+
+                <!-- Add to Cart Button -->
+                <div
+                    class="bg-[#FCD700] rounded-[60px] text-center w-full h-[40px] py-2 px-6 flex items-center justify-center hover:bg-[#e6c200] cursor-pointer transition duration-300">
+                    <h3 class="text-[16px] text-[#182B55] font-medium leading-6">Add to Cart</h3>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+</body>
+
+</html>
