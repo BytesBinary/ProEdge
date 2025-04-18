@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="w-[282px] bg-white space-y-6">
+        <!-- Selected Filters -->
+        <div class="space-y-2">
+            <h2 class="font-semibold text-2xl text-[#182B55] leading-8">Filter</h2>
+
+            <div class="flex flex-wrap gap-2 w-[282px] font-medium">
+                <!-- Individual Filter Tags -->
+                <span
+                    class="flex items-center text-[12px] leading-[16px] bg-[#F8F9FB] text-[#182B55] px-3 py-2 w-[131px] h-[32px] rounded-[40px]">
+                    Electric Motors
+                    <button class="ml-2 text-[#182B55]">&times;</button>
+                </span>
+                <span
+                    class="flex items-center text-[12px] leading-[16px] bg-[#F8F9FB] text-[#182B55] px-3 py-2 w-[131px] h-[32px] rounded-[40px]">
+                    Single Phase
+                    <button class="ml-2 text-[#182B55]">&times;</button>
+                </span>
+                <span
+                    class="flex items-center text-[12px] leading-[16px] bg-[#F8F9FB] text-[#182B55] px-3 py-2 w-[131px] h-[32px] rounded-[40px]">
+                    Fast Shipping
+                    <button class="ml-2 text-[#182B55]">&times;</button>
+                </span>
+
+                <!-- Clear All -->
+                <button class="text-[16px] leading-6 text-[#3F66BC] hover:underline cursor-pointer">Clear All</button>
+            </div>
+        </div>
+
+        <!-- Fast Shipping Checkbox -->
+        <div class="border border-[#ECF0F9] rounded-[8px] px-3 py-[14px] flex items-center space-x-2 bg-[#F8F9FB]">
+            <input type="checkbox" checked class="bg-[#3F66BC] w-4 h-4">
+            <label class="text-[16px] leading-5 text-[#182B55] font-medium cursor-pointer">Fast Shipping</label>
+        </div>
+
+        <!-- Categories Dropdown -->
+        <div x-data="{ open: true }" class="border-[1.5px] rounded-[8px] bg-[#F8F9FB] border-[#ECF0F9]">
+            <!-- Header -->
+            <button @click="open = !open"
+                class="w-full px-3 py-4 flex justify-between items-center text-[18px] leading-6 text-[#182B55] font-medium h-[40px]">
+                Categories
+                <svg :class="{'rotate-180': open}" class="w-4 h-4 transform transition-transform cursor-pointer" fill="none"
+                    stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </button>
+
+            <!-- Content -->
+            <div x-show="open" class="px-3 py-4 text-[16px] leading-5 text-[#3F66BC] font-medium">
+                <div class="border-t-2 border-[#ECF0F9] mb-4"></div>
+                <a href="#" class="hover:underline">Electric Motors & Motor Controls</a>
+            </div>
+        </div>
+
+        <!-- Filter Panel -->
+        <div x-data="{ openMain: true }"
+            class="w-full bg-[#F8F9FB] border-[1.5px] border-[#ECF0F9] rounded-lg p-4 text-sm text-[#182B55] font-medium space-y-4">
+
+            <!-- Main Header -->
+            <div @click="openMain = !openMain" class="flex items-center justify-between cursor-pointer select-none">
+                <h2 class="text-[18px] leading-6 text-[#182B55] font-medium">Electric Motors & Motor Controls</h2>
+                <svg :class="{ 'rotate-180': openMain }" class="w-4 h-4 transform transition-transform text-[#3F66BC]"
+                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </div>
+
+            <!-- Toggleable Content -->
+            <div x-show="openMain" x-transition class="space-y-4">
+
+                <!-- Contactors -->
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" id="contactors" class="peer form-checkbox text-[#3F66BC]" />
+                    <label for="contactors"
+                        class="cursor-pointer peer-checked:text-[#3F66BC] text-[16px] leading-6 text-[#182B55] font-medium peer-checked:font-medium transition-colors">
+                        Contactors
+                    </label>
+                </div>
+
+                <!-- Electric Motors with Sub-options -->
+                <div x-data="{ open: true }">
+                    <div class="flex items-center justify-between cursor-pointer" @click="open = !open">
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" id="electric-motors" class="peer form-checkbox text-[#3F66BC]"
+                                checked />
+                            <label for="electric-motors"
+                                class="cursor-pointer peer-checked:text-[#3F66BC] text-[16px] leading-6 text-[#182B55] font-medium  peer-checked:font-medium transition-colors">
+                                Electric Motors
+                            </label>
+                        </div>
+                        <svg :class="{ 'rotate-180': open }"
+                            class="w-4 h-4 transform transition-transform text-[#3F66BC]" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </div>
+
+                    <div x-show="open" x-transition class="ml-6 mt-2 space-y-2">
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" id="single-phase" class="peer form-checkbox text-[#3F66BC]"
+                                checked />
+                            <label for="single-phase"
+                                class="cursor-pointer peer-checked:text-[#3F66BC] text-sm leading-[18px] text-[#182B55] font-medium  transition-colors">
+                                Single Phase (23)
+                            </label>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" id="three-phase" class="peer form-checkbox text-[#3F66BC]" />
+                            <label for="three-phase"
+                                class="cursor-pointer peer-checked:text-[#3F66BC] text-sm leading-[18px] text-[#182B55] font-medium  transition-colors">
+                                Three Phase (6)
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Magnetic Starters -->
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" id="magnetic-starters" class="peer form-checkbox text-[#3F66BC]" />
+                    <label for="magnetic-starters"
+                        class="cursor-pointer peer-checked:text-[#3F66BC] text-[16px] leading-6 text-[#182B55] font-medium  peer-checked:font-medium transition-colors">
+                        Magnetic Starters
+                    </label>
+                </div>
+
+                <!-- Soft Starts -->
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" id="soft-starts" class="peer form-checkbox text-[#3F66BC]" />
+                    <label for="soft-starts"
+                        class="cursor-pointer peer-checked:text-[#3F66BC] text-[16px] leading-6 text-[#182B55] font-medium  peer-checked:font-medium transition-colors">
+                        Soft Starts
+                    </label>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- price section  -->
+        <div class="w-[282px] p-4 bg-[#F8F9FB] border-[1.5px] border-[#ECF0F9] rounded-[8px]">
+            <div class="flex items-center justify-between cursor-pointer border-b-2 border-[#ECF0F9] pb-4">
+                <h2 class="text-[18px] leading-6 text-[#182B55] font-medium">Price</h2>
+                <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </div>
+
+            <div class="mt-4 space-y-3">
+                <div class="w-full flex items-center justify-between space-x-2 text-[16px] leading-5 text-[#182B55] font-medium">
+                    <div>
+                        <p>Min Price</p>
+                        <input type="text" placeholder="$0 min"
+                            class="w-full px-4 py-2 text-[#5D6576] text-[16px] leading-6 font-medium  border rounded-[8px] border-[#ECF0F9] focus:outline-none focus:ring-2 focus:ring-blue-400" />
+                    </div>
+                    <span class="text-[#3F66BC] h-[2px] w-[10px]">–</span>
+                    <div>
+                        <p>Max Price</p>
+                        <input type="text" placeholder="$990 max"
+                            class="w-full px-4 py-2 text-[#5D6576] text-[16px] leading-6 font-medium  border rounded-[8px] border-[#ECF0F9] focus:outline-none focus:ring-2 focus:ring-blue-400" />
+                    </div>
+                </div>
+
+                <div class="w-full">
+                    <input type="range" min="0" max="990" value="0" class="w-full accent-blue-500" />
+                </div>
+
+                <p class="text-[#5D6576] text-[16px] leading-6 font-medium">Price: $0 – $990</p>
+            </div>
+        </div>
+
+        <!-- made in  -->
+        <div x-data="{ openMain: true }"
+            class="w-full bg-[#F8F9FB] border-[1.5px] border-[#ECF0F9] rounded-lg p-4 text-sm text-[#182B55] font-medium space-y-4">
+
+            <!-- Main Header -->
+            <div @click="openMain = !openMain" class=" flex items-center justify-between cursor-pointer select-none">
+                <h2 class="text-lg font-medium text-[#182B55] leading-6">Made in the USA</h2>
+                <svg :class="{ 'rotate-180': openMain }" class="w-4 h-4 transform transition-transform text-[#3F66BC]"
+                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </div>
+
+            <!-- Toggleable Content -->
+            <div x-show="openMain" x-transition class="space-y-4  pt-3 border-t-2 border-[#ECF0F9]">
+
+                <!-- usa -->
+                <div class="flex items-center gap-2 ">
+                    <input type="checkbox" id="usa" class="peer form-checkbox text-[#3F66BC] font-medium transition-colors text-[16px] leading-5" />
+                    <label for="usa"
+                        class="cursor-pointer peer-checked:text-[#3F66BC] peer-checked:font-medium">
+                        NO (64)
+                    </label>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- items  -->
+        <div x-data="{ openMain: true }"
+            class="w-full bg-[#F8F9FB] border-[1.5px] border-[#ECF0F9] rounded-lg p-4 text-sm text-[#182B55] font-medium space-y-4">
+
+            <!-- Main Header -->
+            <div @click="openMain = !openMain" class=" flex items-center justify-between cursor-pointer select-none">
+                <h2 class="text-lg font-medium text-[#182B55] leading-6">Item</h2>
+                <svg :class="{ 'rotate-180': openMain }" class="w-4 h-4 transform transition-transform text-[#3F66BC]"
+                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </div>
+
+            <!-- Toggleable Content -->
+            <div x-show="openMain" x-transition class="space-y-4  pt-3 border-t-2 border-[#ECF0F9]">
+
+                <!-- items -->
+                <div class="flex flex-col items-start gap-2 ">
+                    <div>
+                        <input type="checkbox" id="reducing_bushing" class="peer form-checkbox text-[#3F66BC]" />
+                        <label for="reducing_bushing"
+                            class="cursor-pointer peer-checked:text-[#3F66BC] peer-checked:font-medium transition-colors text-[16px] leading-5">
+                            Reducing Bushing (9)
+                        </label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="bushing" class="peer form-checkbox text-[#3F66BC]" />
+                        <label for="bushing"
+                            class="cursor-pointer peer-checked:text-[#3F66BC] peer-checked:font-medium transition-colors text-[16px] leading-5">
+                            Bushing (5)
+                        </label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="reducer" class="peer form-checkbox text-[#3F66BC]" />
+                        <label for="reducer"
+                            class="cursor-pointer peer-checked:text-[#3F66BC] peer-checked:font-medium transition-colors text-[16px] leading-5">
+                            Reducer Bushing (2)
+                        </label>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
+
+</html>
