@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>Cart | ProEdge</title>
+</head>
+
+<body class="antialiased bg-[#F8F9FB]">
+    <section class="relative w-full h-[20vh] md:h-[30vh] lg:h-[20vw] overflow-hidden">
+        <!-- Background image -->
+        <img src="./src/images/cart.png" alt="A man using a grinder on wood"
+            class="absolute inset-0 w-full h-full object-cover object-center" />
+
+        <!-- Black overlay -->
+        <div class="absolute inset-0 bg-black/60 bg-opacity-60"></div>
+
+        <!-- Content -->
+        <div class="relative container mx-auto h-full flex flex-col justify-center px-6 md:px-12 lg:px-20 text-white">
+            <h1 class="text-[#FFFFFF] text-3xl md:text-4xl font-bold">Cart</h1>
+            <nav class="mt-2 text-sm md:text-base flex items-center gap-2 md:gap-4">
+                <a href="/" class="hover:underline">Home</a>
+                <span class="mx-1">
+                    <img src="./src/icons/greaterThan.svg" alt="An icon pointing to the right"
+                        srcset="./src/icons/greaterThan.svg" />
+                </span>
+                <a href="./cart.html" class="text-[#FFFFFF]">Cart</a>
+                <img src="./src/icons/greaterThan.svg" alt="An icon pointing to the right"
+                    srcset="./src/icons/greaterThan.svg" />
+                <span class="text-[#FFFFFF]"> Checkout</span>
+            </nav>
+        </div>
+    </section>
+
+    <section class="mt-10 container mx-auto p-5 grid grid-cols-1 md:grid-cols-3 gap-0 md:gap-10">
+        <!-- Shipping Form -->
+        <form action="" class="col-span-2 space-y-8">
+            <!-- 1. Shipping Address -->
+            <div>
+                <h1 class="text-[#182B55] text-xl md:text-3xl font-semibold mb-4">
+                    1. Shipping Address
+                </h1>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="fullname" class="block font-medium text-[#182B55]">Full Name (First & Last
+                            Name)*</label>
+                        <input type="text" id="fullname" name="fullname" required
+                            class="w-full border-2 border-[#ECF0F9] bg-[#FFFFFF] rounded-md p-2 mt-1 focus:outline-none focus:border-blue-500" />
+                    </div>
+                    <div>
+                        <label for="companyname" class="block font-medium text-[#182B55]">Company Name
+                            (optional)</label>
+                        <input type="text" id="companyname" name="companyname"
+                            class="w-full border-2 border-[#ECF0F9] bg-[#FFFFFF] rounded-md p-2 mt-1 focus:outline-none focus:border-blue-500" />
+                    </div>
+                    <div>
+                        <label for="phone" class="block font-medium text-[#182B55]">Phone Number*</label>
+                        <input type="tel" id="phone" name="phone" required
+                            class="w-full border-2 border-[#ECF0F9] bg-[#FFFFFF] rounded-md p-2 mt-1 focus:outline-none focus:border-blue-500" />
+                    </div>
+                    <div>
+                        <label for="email" class="block font-medium text-[#182B55]">Email Address* (For order
+                            confirmation)</label>
+                        <input type="email" id="email" name="email" required
+                            class="w-full border-2 border-[#ECF0F9] bg-[#FFFFFF] rounded-md p-2 mt-1 focus:outline-none focus:border-blue-500" />
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <label for="streetaddress" class="block font-medium text-[#182B55]">Street Address* (No PO
+                        boxes)</label>
+                    <input type="text" id="streetaddress" name="streetaddress" required
+                        class="w-full border-2 border-[#ECF0F9] bg-[#FFFFFF] rounded-md p-2 mt-1 focus:outline-none focus:border-blue-500" />
+                </div>
+
+                <div class="mt-4">
+                    <label for="address2" class="block font-medium text-[#182B55]">Address 2 (optional)</label>
+                    <input type="text" id="address2" name="address2"
+                        class="w-full border-2 border-[#ECF0F9] bg-[#FFFFFF] rounded-md p-2 mt-1 focus:outline-none focus:border-blue-500" />
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-7 gap-4 mt-4">
+                    <div class="col-span-3">
+                        <label for="city" class="block font-medium text-[#182B55]">City*</label>
+                        <input type="text" id="city" name="city" required
+                            class="w-full border-2 border-[#ECF0F9] bg-[#FFFFFF] rounded-md p-2 mt-1 focus:outline-none focus:border-blue-500" />
+                    </div>
+                    <div class="col-span-2">
+                        <label for="state" class="block font-medium text-[#182B55]">State*</label>
+                        <input type="text" id="state" name="state" required
+                            class="w-full border-2 border-[#ECF0F9] bg-[#FFFFFF] rounded-md p-2 mt-1 focus:outline-none focus:border-blue-500" />
+                    </div>
+                    <div class="col-span-2">
+                        <label for="zip" class="block font-medium text-[#182B55]">ZIP Code*</label>
+                        <input type="text" id="zip" name="zip" required
+                            class="w-full border-2 border-[#ECF0F9] bg-[#FFFFFF] rounded-md p-2 mt-1 focus:outline-none focus:border-blue-500" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Delivery Method -->
+            <div class="max-w-md w-full">
+                <h1 class="text-[#182B55] text-xl md:text-3xl font-semibold mb-4">
+                    2. Delivery Method
+                </h1>
+                <div class="flex items-center space-x-2 p-2 bg-[#FFFFFF]">
+                    <input type="radio" id="standard" name="delivery_method" checked
+                        class="w-4 h-4 text-blue-600 focus:ring-blue-500 border-gray-300" />
+                    <label for="standard" class="text-gray-800">Free! Standard Ground</label>
+                </div>
+            </div>
+
+            <!-- 3. Payment Method -->
+            <div>
+                <h1 class="text-[#182B55] text-xl md:text-3xl font-semibold mb-4">
+                    3. Payment
+                </h1>
+
+                <!-- Payment Options -->
+                <div class="flex gap-5 mt-8">
+                    <button type="button" class="bg-[#3F66BC] text-white text-md font-semibold py-3 px-4 rounded-full">
+                        Credit / Debit Card
+                    </button>
+                    <button type="button"
+                        class="bg-[#FFFFFF] text-[#3F66BC] text-md font-semibold border border-[#ECF0F9] py-3 px-5 rounded-full">
+                        PayPal
+                    </button>
+                </div>
+
+                <!-- Card Icons -->
+                <div class="flex justify-start items-center gap-6 my-6">
+                    <img src="./src/bankIcon/visa.svg" alt="Visa Card Icon" />
+                    <img src="./src/bankIcon/mastercard.svg" alt="MasterCard Icon" />
+                    <img src="./src/bankIcon/amex.svg" alt="American Express Icon" />
+                    <img src="./src/bankIcon/discover.svg" alt="Discover Card Icon" />
+                </div>
+
+                <!-- Card Information -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <!-- Card Number -->
+                    <div class="md:col-span-2">
+                        <label for="cardnumber" class="block font-medium text-[#182B55]">Card Number*</label>
+                        <input type="text" id="cardnumber" name="cardnumber" required
+                            class="w-full border-2 border-[#ECF0F9] bg-[#FFFFFF] rounded-md p-2 mt-1 focus:outline-none focus:border-blue-500" />
+                    </div>
+
+                    <!-- Expiration Month -->
+                    <div class="md:col-span-1">
+                        <label for="expmonth" class="block font-medium text-[#182B55]">Expiration Month*</label>
+                        <input type="text" id="expmonth" name="expmonth" placeholder="Month" required
+                            class="w-full border-2 border-[#ECF0F9] bg-[#FFFFFF] rounded-md p-2 mt-1 focus:outline-none focus:border-blue-500" />
+                    </div>
+
+                    <!-- Expiration Year -->
+                    <div class="md:col-span-1">
+                        <label for="expyear" class="block font-medium text-[#182B55]">Expiration Year*</label>
+                        <input type="text" id="expyear" name="expyear" placeholder="Year" required
+                            class="w-full border-2 border-[#ECF0F9] bg-[#FFFFFF] rounded-md p-2 mt-1 focus:outline-none focus:border-blue-500" />
+                    </div>
+
+                    <!-- CVV -->
+                    <div class="md:col-span-2">
+                        <label for="cvv" class="block font-medium text-[#182B55]">Security Number*</label>
+                        <input type="text" id="cvv" name="cvv" placeholder="CVV" required
+                            class="w-full border-2 border-[#ECF0F9] bg-[#FFFFFF] rounded-md p-2 mt-1 focus:outline-none focus:border-blue-500" />
+                    </div>
+
+                    <!-- Name on Card -->
+                    <div class="md:col-span-2">
+                        <label for="cardname" class="block font-medium text-[#182B55]">Name on Card*</label>
+                        <input type="text" id="cardname" name="cardname" required
+                            class="w-full border-2 border-[#ECF0F9] bg-[#FFFFFF] rounded-md p-2 mt-1 focus:outline-none focus:border-blue-500" />
+                    </div>
+                </div>
+
+
+                <!-- Billing Address -->
+                <div class="mt-8">
+                    <h2 class="text-lg font-semibold mb-2 text-[#182B55]">
+                        Billing Address
+                    </h2>
+                    <div class="flex items-center mb-4">
+                        <input type="checkbox" id="sameAsShipping" name="sameAsShipping" class="mr-2" />
+                        <label for="sameAsShipping" class="text-sm text-gray-700">Same as Shipping Address</label>
+                        <button type="button"
+                            class="ml-auto px-4 py-2 rounded-full bg-[##FFFFFF] border-2 border-[#ECF0F9] text-sm text-[#3F66BC] hover:cursor-pointer">
+                            Clear Address Fields
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="billingFullname" class="block font-medium text-[#182B55]">Full Name (First &
+                                Last
+                                Name)*</label>
+                            <input type="text" id="billingFullname" name="billingFullname" required
+                                class="w-full border-2 border-[#ECF0F9] bg-[#FFFFFF] rounded-md p-2 mt-1 focus:outline-none focus:border-blue-500" />
+                        </div>
+                        <div>
+                            <label for="billingCompany" class="block font-medium text-[#182B55]">Company Name
+                                (optional)</label>
+                            <input type="text" id="billingCompany" name="billingCompany"
+                                class="w-full border-2 border-[#ECF0F9] bg-[#FFFFFF] rounded-md p-2 mt-1 focus:outline-none focus:border-blue-500" />
+                        </div>
+                        <div>
+                            <label for="billingPhone" class="block font-medium text-[#182B55]">Phone Number*</label>
+                            <input type="tel" id="billingPhone" name="billingPhone" required
+                                class="w-full border-2 border-[#ECF0F9] bg-[#FFFFFF] rounded-md p-2 mt-1 focus:outline-none focus:border-blue-500" />
+                        </div>
+                        <div>
+                            <label for="billingEmail" class="block font-medium text-[#182B55]">Email Address* For order
+                                confirmation</label>
+                            <input type="email" id="billingEmail" name="billingEmail" required
+                                class="w-full border-2 border-[#ECF0F9] bg-[#FFFFFF] rounded-md p-2 mt-1 focus:outline-none focus:border-blue-500" />
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <label for="billingStreet" class="block font-medium text-[#182B55]">Street Address* No PO
+                            boxes</label>
+                        <input type="text" id="billingStreet" name="billingStreet" required
+                            class="w-full border-2 border-[#ECF0F9] bg-[#FFFFFF] rounded-md p-2 mt-1 focus:outline-none focus:border-blue-500" />
+                    </div>
+
+                    <div class="mt-4">
+                        <label for="billingAddress2" class="block font-medium text-[#182B55]">Address 2 (optional) Apt.,
+                            Floor, Suite,
+                            etc.</label>
+                        <input type="text" id="billingAddress2" name="billingAddress2"
+                            class="w-full border-2 border-[#ECF0F9] bg-[#FFFFFF] rounded-md p-2 mt-1 focus:outline-none focus:border-blue-500" />
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-7 gap-4 mt-4">
+                        <div class="md:col-span-3">
+                            <label for="billingCity" class="block font-medium text-[#182B55]">City*</label>
+                            <input type="text" id="billingCity" name="billingCity" required
+                                class="w-full border-2 border-[#ECF0F9] bg-[#FFFFFF] rounded-md p-2 mt-1 focus:outline-none focus:border-blue-500" />
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="billingState" class="block font-medium text-[#182B55]">State*</label>
+                            <input type="text" id="billingState" name="billingState" required
+                                class="w-full border-2 border-[#ECF0F9] bg-[#FFFFFF] rounded-md p-2 mt-1 focus:outline-none focus:border-blue-500" />
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="billingZip" class="block font-medium text-[#182B55]">ZIP Code*</label>
+                            <input type="text" id="billingZip" name="billingZip" required
+                                class="w-full border-2 border-[#ECF0F9] bg-[#FFFFFF] rounded-md p-2 mt-1 focus:outline-none focus:border-blue-500" />
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <label for="purchaseOrder" class="block font-medium text-[#182B55]">
+                            <div class="flex justify-between">
+                                <span class="inline-block text-[#182B55]">Purchase Order # (optional)</span>
+                                <span class="inline-block text-[#5D6576]">Can contain up to 20 characters
+                                </span>
+                            </div>
+                        </label>
+                        <input type="text" id="purchaseOrder" name="purchaseOrder"
+                            class="w-full border-2 border-[#ECF0F9] bg-[#FFFFFF] rounded-md p-2 mt-1 focus:outline-none focus:border-blue-500"
+                            maxlength="20" />
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <!-- Order Summary -->
+        <div class="p-6 rounded-lg h-fit">
+            <h2 class="text-xl text-[#182B55] md:text-2xl font-semibold mb-6">
+                Order Summary
+            </h2>
+            <div class="bg-[#FFFFFF] p-4 rounded-md">
+                <div class="flex justify-between mb-2 text-[#182B55]">
+                    <span>Subtotal (3 Items)</span>
+                    <span>$810.99</span>
+                </div>
+                <div class="flex justify-between mb-2 text-[#5D6576]">
+                    <span>Shipping</span>
+                    <span>$5.99</span>
+                </div>
+                <div class="flex justify-between mb-4 text-[#5D6576]">
+                    <span>Tax</span>
+                    <span>$0.00</span>
+                </div>
+                <hr class="mb-4" />
+                <div class="flex justify-between text-lg font-semibold mb-6">
+                    <span class="text-[#5D6576]">Total</span>
+                    <span class="text-[#182B55]">$816.99</span>
+                </div>
+                <button type="submit"
+                    class="w-full bg-[#3F66BC] text-white py-3 rounded-full hover:bg-blue-700 transition-colors">
+                    Place Order
+                </button>
+                <p class="text-xs text-[#182B55] text-center mt-3">
+                    By clicking Place Order you agree to Pro Edge’s
+                    <a href="#" class="text-[#3F66BC] underline">Terms & Conditions</a>
+                    and <a href="#" class="text-[#3F66BC] underline">Privacy Policy</a>.
+                </p>
+            </div>
+        </div>
+        <section class="my-10 col-span-2">
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-4 ">
+                <h1 class="text-xl font-semibold text-[#182B55]">4. Cart (3 Items)</h1>
+                <button
+                    class="ml-auto px-4 py-2 rounded-full bg-[##FFFFFF] border-2 border-[#ECF0F9] text-sm text-[#3F66BC] hover:cursor-pointer"">Edit Cart</button>
+            </div>
+            <div class=" flex flex-col gap-4 my-8">
+                    <article
+                        class=" bg-white p-3 sm:p-4 rounded-xl shadow-sm flex flex-col md:flex-row items-start gap-3 sm:gap-4">
+                        <img src="./src/images/products/motor.png" alt="EMZ Electric Motor"
+                            class="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain" />
+
+                        <div class="details flex-1 w-full">
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                                <h2 class="text-[#3F66BC] font-medium text-sm sm:text-base">
+                                    EMZ 3.7 HP Electric Motor, 56 Frame, 3450 RPM, 1-Phase, 230VAC
+                                </h2>
+
+                                <div class="flex items-center gap-1 sm:gap-2 order-last sm:order-none">
+                                    <button
+                                        class="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-[#F8F9FB] rounded-md text-lg">
+                                        <img src="./src/icons/minus.svg" alt="Minus Icon"
+                                            srcset="./src/icons/minus.svg">
+                                    </button>
+                                    <span
+                                        class="bg-[#3F66BC] text-white w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center rounded-md text-sm sm:text-base">
+                                        2
+                                    </span>
+                                    <button
+                                        class="flex justify-center items-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-[#F8F9FB] rounded-md text-lg">
+                                        <img src="./src/icons/plus.svg" alt="plus icon" srcset="./src/icons/plus.svg">
+                                    </button>
+                                </div>
+
+                                <span class="text-lg sm:text-xl font-semibold text-gray-800">
+                                    <span class="align-super text-xs sm:text-sm">$</span>230<span
+                                        class="align-super text-xs sm:text-sm">45</span>
+                                </span>
+                            </div>
+
+                            <p class="text-[#018C01] font-semibold text-lg mt-1 sm:mt-2">In Stock</p>
+
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-2">
+                                <div class="flex items-center text-xs sm:text-sm text-gray-500 space-x-4">
+                                    <span>SKU: EM4</span>
+                                    <span
+                                        class="relative pl-4 before:content-[''] before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-[1px] before:h-4 before:bg-[#ECF0F9]">
+                                        Ships in 1 business day
+                                    </span>
+                                </div>
+
+
+                                <nav class="flex gap-3 text-xs sm:text-sm">
+                                    <button class="text-[#3F66BC] hover:underline">Remove</button>
+
+                                    <div class="mx-3 border-l-2 border-[#ECF0F9]"></div>
+
+                                    <button class="text-[#3F66BC] hover:underline">Save For Later</button>
+                                </nav>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article
+                        class="bg-white p-3 sm:p-4 rounded-xl shadow-sm flex flex-col md:flex-row items-start gap-3 sm:gap-4">
+                        <img src="./src/images/products/motor.png" alt="EMZ Electric Motor"
+                            class="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain" />
+
+                        <div class="details flex-1 w-full">
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                                <h2 class="text-[#3F66BC] font-medium text-sm sm:text-base">
+                                    EMZ 3.7 HP Electric Motor, 56 Frame, 3450 RPM, 1-Phase, 230VAC
+                                </h2>
+
+                                <div class="flex items-center gap-1 sm:gap-2 order-last sm:order-none">
+                                    <button
+                                        class="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-[#F8F9FB] rounded-md text-lg">
+                                        <img src="./src/icons/minus.svg" alt="Minus Icon"
+                                            srcset="./src/icons/minus.svg">
+                                    </button>
+                                    <span
+                                        class="bg-[#3F66BC] text-white w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center rounded-md text-sm sm:text-base">
+                                        2
+                                    </span>
+                                    <button
+                                        class="flex justify-center items-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-[#F8F9FB] rounded-md text-lg">
+                                        <img src="./src/icons/plus.svg" alt="plus icon" srcset="./src/icons/plus.svg">
+                                    </button>
+                                </div>
+
+                                <span class="text-lg sm:text-xl font-semibold text-gray-800">
+                                    <span class="align-super text-xs sm:text-sm">$</span>230<span
+                                        class="align-super text-xs sm:text-sm">45</span>
+                                </span>
+                            </div>
+
+                            <p class="text-[#018C01] font-semibold text-lg mt-1 sm:mt-2">In Stock</p>
+
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-2">
+                                <div class="flex items-center text-xs sm:text-sm text-gray-500 space-x-4">
+                                    <span>SKU: EM4</span>
+                                    <span
+                                        class="relative pl-4 before:content-[''] before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-[1px] before:h-4 before:bg-[#ECF0F9]">
+                                        Ships in 1 business day
+                                    </span>
+                                </div>
+
+
+                                <nav class="flex gap-3 text-xs sm:text-sm">
+                                    <button class="text-[#3F66BC] hover:underline">Remove</button>
+
+                                    <div class="mx-3 border-l-2 border-[#ECF0F9]"></div>
+
+                                    <button class="text-[#3F66BC] hover:underline">Save For Later</button>
+                                </nav>
+                            </div>
+                        </div>
+                    </article>
+
+
+                    <article
+                        class="bg-white p-3 sm:p-4 rounded-xl shadow-sm flex flex-col md:flex-row items-start gap-3 sm:gap-4">
+                        <img src="./src/images/products/motor.png" alt="EMZ Electric Motor"
+                            class="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain" />
+
+                        <div class="details flex-1 w-full">
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                                <h2 class="text-[#3F66BC] font-medium text-sm sm:text-base">
+                                    EMZ 3.7 HP Electric Motor, 56 Frame, 3450 RPM, 1-Phase, 230VAC
+                                </h2>
+
+                                <div class="flex items-center gap-1 sm:gap-2 order-last sm:order-none">
+                                    <button
+                                        class="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-[#F8F9FB] rounded-md text-lg">
+                                        <img src="./src/icons/minus.svg" alt="Minus Icon"
+                                            srcset="./src/icons/minus.svg">
+                                    </button>
+                                    <span
+                                        class="bg-[#3F66BC] text-white w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center rounded-md text-sm sm:text-base">
+                                        2
+                                    </span>
+                                    <button
+                                        class="flex justify-center items-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-[#F8F9FB] rounded-md text-lg">
+                                        <img src="./src/icons/plus.svg" alt="plus icon" srcset="./src/icons/plus.svg">
+                                    </button>
+                                </div>
+
+                                <span class="text-lg sm:text-xl font-semibold text-gray-800">
+                                    <span class="align-super text-xs sm:text-sm">$</span>230<span
+                                        class="align-super text-xs sm:text-sm">45</span>
+                                </span>
+                            </div>
+
+                            <p class="text-[#018C01] font-semibold text-lg mt-1 sm:mt-2">In Stock</p>
+
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-2">
+                                <div class="flex items-center text-xs sm:text-sm text-gray-500 space-x-4">
+                                    <span>SKU: EM4</span>
+                                    <span
+                                        class="relative pl-4 before:content-[''] before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-[1px] before:h-4 before:bg-[#ECF0F9]">
+                                        Ships in 1 business day
+                                    </span>
+                                </div>
+
+
+                                <nav class="flex gap-3 text-xs sm:text-sm">
+                                    <button class="text-[#3F66BC] hover:underline">Remove</button>
+
+                                    <div class="mx-3 border-l-2 border-[#ECF0F9]"></div>
+
+                                    <button class="text-[#3F66BC] hover:underline">Save For Later</button>
+                                </nav>
+                            </div>
+                        </div>
+                    </article>
+
+            </div>
+
+
+            <button type="submit"
+                class="w-full bg-[#3F66BC] text-white py-3 rounded-full hover:bg-blue-700 transition-colors">
+                Place Order
+            </button>
+            <p class="text-sm max-w-md w-full mx-auto text-[#182B55] text-center mt-3">
+                By clicking Place Order you agree to Pro Edge’s
+                <a href="#" class="text-[#3F66BC] underline">Terms & Conditions</a>
+                and <a href="#" class="text-[#3F66BC] underline">Privacy Policy</a>.
+            </p>
+        </section>
+    </section>
+</body>
+
+</html>
