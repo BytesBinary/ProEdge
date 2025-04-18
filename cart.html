@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>Cart | ProEdge</title>
+</head>
+
+<body class="antialiased">
+    <section class="relative w-full h-[20vh] md:h-[30vh] lg:h-[20vw] overflow-hidden">
+        <!-- Background image -->
+        <img src="./src/images/cart.png" alt="A man using a grinder on wood"
+            class="absolute inset-0 w-full h-full object-cover object-center" />
+
+        <!-- Black overlay -->
+        <div class="absolute inset-0 bg-black/60 bg-opacity-60"></div>
+
+        <!-- Content -->
+        <div class="relative container mx-auto h-full flex flex-col justify-center px-6 md:px-12 lg:px-20 text-white">
+            <h1 class="text-3xl md:text-4xl font-bold">Cart</h1>
+            <nav class="mt-2 text-sm md:text-base flex items-center gap-2 md:gap-4">
+                <a href="/" class="hover:underline">Home</a>
+                <span class="mx-1"><img src="./src/icons/greaterThan.svg" alt="An icon pointing to the right"
+                        srcset="./src/icons/greaterThan.svg" /></span>
+                <span class="text-gray-300">Cart</span>
+            </nav>
+        </div>
+    </section>
+
+    <section class="container mx-auto my-16 px-4 md:px-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Cart Items -->
+        <div class="lg:col-span-2 space-y-6">
+            <h1 class="text-2xl md:text-3xl font-semibold text-[#182B55] mb-4">
+                Shopping Cart (3 Items)
+            </h1>
+
+            <!-- Cart Item -->
+            <article
+                class="bg-white p-3 sm:p-4 rounded-xl shadow-sm flex flex-col md:flex-row items-start gap-3 sm:gap-4">
+                <img src="./src/images/products/motor.png" alt="EMZ Electric Motor"
+                    class="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain" />
+
+                <div class="details flex-1 w-full">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                        <h2 class="text-[#3F66BC] font-medium text-sm sm:text-base">
+                            EMZ 3.7 HP Electric Motor, 56 Frame, 3450 RPM, 1-Phase, 230VAC
+                        </h2>
+
+                        <div class="flex items-center gap-1 sm:gap-2 order-last sm:order-none">
+                            <button class="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-[#F8F9FB] rounded-md text-lg">
+                                <img src="./src/icons/minus.svg" alt="Minus Icon" srcset="./src/icons/minus.svg">
+                            </button>
+                            <span
+                                class="bg-[#3F66BC] text-white w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center rounded-md text-sm sm:text-base">
+                                2
+                            </span>
+                            <button class="flex justify-center items-center  w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-[#F8F9FB] rounded-md text-lg">
+                                <img src="./src/icons/plus.svg" alt="plus icon" srcset="./src/icons/plus.svg">
+                            </button>
+                        </div>
+
+                        <span class="text-lg sm:text-xl font-semibold text-gray-800">
+                            <span class="align-super text-xs sm:text-sm">$</span>230<span class="align-super text-xs sm:text-sm">45</span>
+                        </span>
+                    </div>
+
+                    <p class="text-[#018C01] font-semibold text-lg mt-1 sm:mt-2">In Stock</p>
+
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-2">
+                        <div class="flex items-center text-xs sm:text-sm text-gray-500 space-x-4">
+                            <span>SKU: EM4</span>
+                            <span
+                                class="relative pl-4 before:content-[''] before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-[1px] before:h-4 before:bg-[#ECF0F9]">
+                                Ships in 1 business day
+                            </span>
+                        </div>
+
+
+                        <nav class="flex gap-3 text-xs sm:text-sm">
+                            <button class="text-[#3F66BC] hover:underline">Remove</button>
+
+                            <div class="mx-3 border-l-2 border-[#ECF0F9]"></div>
+
+                            <button class="text-[#3F66BC] hover:underline">Save For Later</button>
+                        </nav>
+                    </div>
+                </div>
+            </article>
+            <article
+                class="bg-white p-3 sm:p-4 rounded-xl shadow-sm flex flex-col md:flex-row items-start gap-3 sm:gap-4">
+                <img src="./src/images/products/motor.png" alt="EMZ Electric Motor"
+                    class="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain" />
+
+                <div class="details flex-1 w-full">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                        <h2 class="text-[#3F66BC] font-medium text-sm sm:text-base">
+                            EMZ 3.7 HP Electric Motor, 56 Frame, 3450 RPM, 1-Phase, 230VAC
+                        </h2>
+
+                        <div class="flex items-center gap-1 sm:gap-2 order-last sm:order-none">
+                            <button class="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-[#F8F9FB] rounded-md text-lg">
+                                <img src="./src/icons/minus.svg" alt="Minus Icon" srcset="./src/icons/minus.svg">
+                            </button>
+                            <span
+                                class="bg-[#3F66BC] text-white w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center rounded-md text-sm sm:text-base">
+                                2
+                            </span>
+                            <button class="flex justify-center items-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-[#F8F9FB] rounded-md text-lg">
+                                <img src="./src/icons/plus.svg" alt="plus icon" srcset="./src/icons/plus.svg">
+                            </button>
+                        </div>
+
+                        <span class="text-lg sm:text-xl font-semibold text-gray-800">
+                            <span class="align-super text-xs sm:text-sm">$</span>230<span class="align-super text-xs sm:text-sm">45</span>
+                        </span>
+                    </div>
+
+                    <p class="text-[#018C01] font-semibold text-lg mt-1 sm:mt-2">In Stock</p>
+
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-2">
+                        <div class="flex gap-2 justify-between text-xs sm:text-sm text-gray-500">
+                            <div>
+                                SKU: EM4
+                            </div>
+                            <div class="mx-3 border-l-2 border-[#ECF0F9]"></div>
+                            <div>
+                                Ships in 1 business day
+                            </div>
+                        </div>
+
+                        <nav class="flex gap-3 text-xs sm:text-sm">
+                            <button class="text-[#3F66BC] hover:underline">Remove</button>
+
+                            <div class="mx-3 border-l-2 border-[#ECF0F9]"></div>
+
+                            <button class="text-[#3F66BC] hover:underline">Save For Later</button>
+                        </nav>
+                    </div>
+                </div>
+            </article>
+            <article
+                class="bg-white p-3 sm:p-4 rounded-xl shadow-sm flex flex-col md:flex-row items-start gap-3 sm:gap-4">
+                <img src="./src/images/products/motor.png" alt="EMZ Electric Motor"
+                    class="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain" />
+
+                <div class="details flex-1 w-full">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                        <h2 class="text-[#3F66BC] font-medium text-sm sm:text-base">
+                            EMZ 3.7 HP Electric Motor, 56 Frame, 3450 RPM, 1-Phase, 230VAC
+                        </h2>
+
+                        <div class="flex items-center gap-1 sm:gap-2 order-last sm:order-none">
+                            <button class="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-[#F8F9FB] rounded-md text-lg">
+                                <img src="./src/icons/minus.svg" alt="Minus Icon" srcset="./src/icons/minus.svg">
+                            </button>
+                            <span
+                                class="bg-[#3F66BC] text-white w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center rounded-md text-sm sm:text-base">
+                                2
+                            </span>
+                            <button class="flex justify-center items-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-[#F8F9FB] rounded-md text-lg">
+                                <img src="./src/icons/plus.svg" alt="plus icon" srcset="./src/icons/plus.svg">
+                            </button>
+                        </div>
+
+                        <span class="text-lg sm:text-xl font-semibold text-gray-800">
+                            <span class="align-super text-xs sm:text-sm">$</span>230<span class="align-super text-xs sm:text-sm">45</span>
+                        </span>
+                    </div>
+
+                    <p class="text-[#018C01] font-semibold text-lg mt-1 sm:mt-2">In Stock</p>
+
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-2">
+                        <div class="flex items-center text-xs sm:text-sm text-gray-500 space-x-4">
+                            <span>SKU: EM4</span>
+                            <span
+                                class="relative pl-4 before:content-[''] before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-[1px] before:h-4 before:bg-[#ECF0F9]">
+                                Ships in 1 business day
+                            </span>
+                        </div>
+
+
+                        <nav class="flex gap-3 text-xs sm:text-sm">
+                            <button class="text-[#3F66BC] hover:underline">Remove</button>
+
+                            <div class="mx-3 border-l-2 border-[#ECF0F9]"></div>
+
+                            <button class="text-[#3F66BC] hover:underline">Save For Later</button>
+                        </nav>
+                    </div>
+                </div>
+            </article>
+
+            <section class="my-16">
+                <h1 class="text-2xl md:text-3xl font-semibold text-[#182B55] mb-4">Shopping Later (2 Items)</h1>
+                <article
+                    class="bg-white p-3 sm:p-4 rounded-xl shadow-sm flex flex-col md:flex-row items-start gap-3 sm:gap-4">
+                    <img src="./src/images/products/motor.png" alt="EMZ Electric Motor"
+                        class="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain" />
+
+                    <div class="details flex-1 w-full">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                            <h2 class="text-[#3F66BC] font-medium text-sm sm:text-base">
+                                EMZ 3.7 HP Electric Motor, 56 Frame, 3450 RPM, 1-Phase, 230VAC
+                            </h2>
+
+                            <div class="flex items-center gap-1 sm:gap-2 order-last sm:order-none">
+                                <button class="flex justify-center items-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-[#F8F9FB] rounded-md text-lg">
+                                    <img src="./src/icons/minus.svg" alt="Minus Icon" srcset="./src/icons/minus.svg">
+                                </button>
+                                <span
+                                    class="bg-[#3F66BC] text-white w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center rounded-md text-sm sm:text-base">
+                                    2
+                                </span>
+                                <button class="flex justify-center items-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-[#F8F9FB] rounded-md text-lg">
+                                    <img src="./src/icons/plus.svg" alt="plus icon" srcset="./src/icons/plus.svg">
+                                </button>
+                            </div>
+
+                            <span class="text-lg sm:text-xl font-semibold text-gray-800">
+                                <span class="align-super text-xs sm:text-sm">$</span>230<span class="align-super text-xs sm:text-sm">45</span>
+                            </span>
+                        </div>
+
+                        <p class="text-[#018C01] font-semibold text-lg mt-1 sm:mt-2">In Stock</p>
+
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-2">
+                            <div class="flex items-center text-xs sm:text-sm text-gray-500 space-x-4">
+                                <span>SKU: EM4</span>
+                                <span
+                                    class="relative pl-4 before:content-[''] before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-[1px] before:h-4 before:bg-[#ECF0F9]">
+                                    Ships in 1 business day
+                                </span>
+                            </div>
+
+
+                            <nav class="flex gap-3 text-xs sm:text-sm">
+                                <button class="text-[#3F66BC] hover:underline">Remove</button>
+                                <div class="mx-3 border-l-2 border-[#ECF0F9]"></div>
+                                <button class="text-[#3F66BC] rounded-full px-4 bg-[#FCD700] py-1 hover:underline">Move
+                                    To Cart</button>
+                            </nav>
+                        </div>
+                    </div>
+                </article>
+                <article
+                    class="bg-white p-3 sm:p-4 rounded-xl shadow-sm flex flex-col md:flex-row items-start gap-3 sm:gap-4">
+                    <img src="./src/images/products/motor.png" alt="EMZ Electric Motor"
+                        class="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain" />
+
+                    <div class="details flex-1 w-full">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                            <h2 class="text-[#3F66BC] font-medium text-sm sm:text-base">
+                                EMZ 3.7 HP Electric Motor, 56 Frame, 3450 RPM, 1-Phase, 230VAC
+                            </h2>
+
+                            <div class="flex items-center gap-1 sm:gap-2 order-last sm:order-none">
+                                <button class="flex justify-center items-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-[#F8F9FB] rounded-md text-lg">
+                                    <img src="./src/icons/minus.svg" alt="Minus Icon" srcset="./src/icons/minus.svg">
+                                </button>
+                                <span
+                                    class="bg-[#3F66BC] text-white w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center rounded-md text-sm sm:text-base">
+                                    2
+                                </span>
+                                <button class="flex justify-center items-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-[#F8F9FB] rounded-md text-lg">
+                                    <img src="./src/icons/plus.svg" alt="plus icon" srcset="./src/icons/plus.svg">
+                                </button>
+                            </div>
+
+                            <span class="text-lg sm:text-xl font-semibold text-gray-800">
+                                <span class="align-super text-xs sm:text-sm">$</span>230<span class="align-super text-xs sm:text-sm">45</span>
+                            </span>
+                        </div>
+
+                        <p class="text-[#018C01] font-semibold text-lg mt-1 sm:mt-2">In Stock</p>
+
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-2">
+                            <div class="flex items-center text-xs sm:text-sm text-gray-500 space-x-4">
+                                <span>SKU: EM4</span>
+                                <span
+                                    class="relative pl-4 before:content-[''] before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-[1px] before:h-4 before:bg-[#ECF0F9]">
+                                    Ships in 1 business day
+                                </span>
+                            </div>
+
+                            <nav class="flex gap-3 text-xs sm:text-sm">
+                                <button class="text-[#3F66BC] hover:underline">Remove</button>
+
+                                <div class="mx-3 border-l-2 border-[#ECF0F9]"></div>
+
+                                <button class="text-[#3F66BC] rounded-full px-4 bg-[#FCD700] py-1 hover:underline">Move
+                                    To Cart</button>
+                            </nav>
+                        </div>
+                    </div>
+                </article>
+
+            </section>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="bg-white p-6 rounded-xl shadow-sm">
+            <h2 class="text-2xl font-semibold text-[#182B55] mb-4">
+                Order Summary
+            </h2>
+            <ul class="space-y-2 text-gray-700">
+                <li class="flex justify-between">
+                    <span>Subtotal (3 Items)</span>
+                    <span>$810.99</span>
+                </li>
+                <li class="flex justify-between text-[#5D6576]">
+                    <span>Shipping</span>
+                    <span>$5.99</span>
+                </li>
+                <li class="flex justify-between">
+                    <span>Tax</span>
+                    <span>$0.00</span>
+                </li>
+            </ul>
+
+            <div class="my-3 border-1 border-[#ECF0F9]"></div>
+
+            <div class="flex justify-between font-bold text-lg text-[#182B55]">
+                <span class="text-[#5D6576]">Total</span>
+                <span>$816.99</span>
+            </div>
+            <div class="mt-6 space-y-3">
+                <button class="w-full bg-[#3F66BC] text-white py-2 rounded-full hover:bg-[#3457a4] transition">
+                    Checkout
+                </button>
+                <button
+                    class="w-full border border-[#3F66BC] text-[#3F66BC] py-2 rounded-full hover:bg-[#3F66BC] hover:text-white transition">
+                    Checkout as Guest
+                </button>
+                <p class="text-xs text-center text-[#182B55] mt-2">
+                    Free Shipping on Orders Over $500.
+                </p>
+            </div>
+        </div>
+    </section>
+
+
+</body>
+
+</html>
