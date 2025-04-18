@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Document</title>
+</head>
+
+<body class="bg-white">
+    <!-- header section  -->
+    <div class="relative w-full h-[20vh] md:h-[30vh] lg:h-[20vw] overflow-hidden">
+        <!-- Background image -->
+        <img src="./src/bg.jpeg" alt="A man using a grinder on wood"
+            class="absolute inset-0 w-full h-full object-cover object-center" />
+
+        <!-- Black overlay -->
+        <div class="absolute inset-0 bg-black/60 bg-opacity-60"></div>
+
+        <!-- Content -->
+        <div
+            class="relative container mx-auto h-full flex flex-col justify-center items-start px-6 md:px-12 lg:px-20 text-white">
+            <h1 class="text-3xl md:text-4xl font-semibold">Tech Help</h1>
+            <nav class="mt-2 text-sm md:text-base flex items-center gap-2 md:gap-4">
+                <a href="/" class="hover:underline">Home</a>
+                <img src="./src/greater.png" alt="An icon pointing to the right" class="w-6 h-6" />
+                <span class="text-gray-300">Tech Help</span>
+            </nav>
+        </div>
+    </div>
+
+    <!-- what you like  -->
+    <section class="my-10">
+        <h1 class="text-[#182B55] text-5xl leading-16 font-semibold text-center">What would you like to do?</h1>
+        <div class="grid grid-cols-3 gap-6">
+            <a href="#">
+                <div
+                    class="bg-[#F8F9FB] w-[384px] h-[152px] p-6 rounded-xl hover:shadow-sm flex flex-col items-center justify-between gap-4 mx-auto mt-10">
+                    <img src="./src/pick.png" alt="" class="w-14 h-14">
+                    <h1 class="text-[#3F66BC] text-2xl leading-8 font-medium">Track my Order</h1>
+                </div>
+            </a>
+
+            <a href="#">
+                <div
+                    class="bg-[#F8F9FB] w-[384px] h-[152px] p-6 rounded-xl hover:shadow-sm flex flex-col items-center justify-between gap-4 mx-auto mt-10">
+                    <img src="./src/return.png" alt="" class="w-14 h-14">
+                    <h1 class="text-[#3F66BC] text-2xl leading-8 font-medium">Start a Return</h1>
+                </div>
+            </a>
+
+            <a href="#">
+                <div
+                    class="bg-[#F8F9FB] w-[384px] h-[152px] p-6 rounded-xl hover:shadow-sm flex flex-col items-center justify-between gap-4 mx-auto mt-10">
+                    <img src="./src/history.png" alt="" class="w-14 h-14">
+                    <h1 class="text-[#3F66BC] text-2xl leading-8 font-medium">View order History</h1>
+                </div>
+            </a>
+
+            <a href="#">
+                <div
+                    class="bg-[#F8F9FB] w-[384px] h-[152px] p-6 rounded-xl hover:shadow-sm flex flex-col items-center justify-between gap-4 mx-auto mt-10">
+                    <img src="./src/qoute.png" alt="" class="w-14 h-14">
+                    <h1 class="text-[#3F66BC] text-2xl leading-8 font-medium">Request a qoute</h1>
+                </div>
+            </a>
+            <a href="#">
+                <div
+                    class="bg-[#F8F9FB] w-[384px] h-[152px] p-6 rounded-xl hover:shadow-sm flex flex-col items-center justify-between gap-4 mx-auto mt-10">
+                    <img src="./src/modify.png" alt="" class="w-14 h-14">
+                    <h1 class="text-[#3F66BC] text-2xl leading-8 font-medium">Modify or cancel an order</h1>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- help topics  -->
+    <section class="my-10 bg-[#F8F9FB] py-10" >
+        <h1 class="text-[#182B55] text-5xl leading-16 font-semibold text-center">Help Topics</h1>
+        <div class=" container grid grid-cols-1 md:grid-cols-3 mx-auto gap-10 mt-10">
+            <div class="w-[384px] h-[232px] rounded-xl bg-white">
+                <div
+                    class="bg-[#ECF0F9] h-12 rounded-t-xl py-[9px] px-4 font-semibold text-[#182B55] text-lg leading-[30px]">
+                    <h1>Ordering</h1>
+                </div>
+                <div
+                    class="p-3 font-medium text-[16px] leading-6 text-[#3F66BC] flex flex-col justify-around gap-4 h-[184px]">
+                    <div>
+                        <a href="#">
+                            <h2 class="hover:underline">How long does it take to process and deliver an order
+                                ?</h2>
+                        </a>
+                        <a href="#">
+                            <h2 class="hover:underline">How can I cancel my order?</h2>
+                        </a>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <a href="#" class="hover:underline">See All</a>
+                        <img src="./src/leftArrow.png" alt="" class="w-4 h-4">
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-[384px] h-[232px] rounded-xl bg-white">
+                <div
+                    class="bg-[#ECF0F9] h-12 rounded-t-xl py-[9px] px-4 font-semibold text-[#182B55] text-lg leading-[30px]">
+                    <h1>Ordering</h1>
+                </div>
+                <div
+                    class="p-3 font-medium text-[16px] leading-6 text-[#3F66BC] flex flex-col justify-around gap-4 h-[184px]">
+                    <div>
+                        <a href="#">
+                            <h2 class="hover:underline">How long does it take to process and deliver an order
+                                ?</h2>
+                        </a>
+                        <a href="#">
+                            <h2 class="hover:underline">How can I cancel my order?</h2>
+                        </a>
+                    </div>
+                    <div class="flex items-center gap-2 ">
+                        <a href="#" class="hover:underline">See All</a>
+                        <img src="./src/leftArrow.png" alt="" class="w-4 h-4">
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-[384px] h-[232px] rounded-xl bg-white">
+                <div
+                    class="bg-[#ECF0F9] h-12 rounded-t-xl py-[9px] px-4 font-semibold text-[#182B55] text-lg leading-[30px]">
+                    <h1>Ordering</h1>
+                </div>
+                <div
+                    class="p-3 font-medium text-[16px] leading-6 text-[#3F66BC] flex flex-col justify-around gap-4 h-[184px]">
+                    <div>
+                        <a href="#">
+                            <h2 class="hover:underline">How long does it take to process and deliver an order
+                                ?</h2>
+                        </a>
+                        <a href="#">
+                            <h2 class="hover:underline">How can I cancel my order?</h2>
+                        </a>
+                    </div>
+                    <div class="flex items-center gap-2 ">
+                        <a href="#" class="hover:underline">See All</a>
+                        <img src="./src/leftArrow.png" alt="" class="w-4 h-4">
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-[384px] h-[232px] rounded-xl bg-white">
+                <div
+                    class="bg-[#ECF0F9] h-12 rounded-t-xl py-[9px] px-4 font-semibold text-[#182B55] text-lg leading-[30px]">
+                    <h1>Ordering</h1>
+                </div>
+                <div
+                    class="p-3 font-medium text-[16px] leading-6 text-[#3F66BC] flex flex-col justify-around gap-4 h-[184px]">
+                    <div>
+                        <a href="#">
+                            <h2 class="hover:underline">How long does it take to process and deliver an order
+                                ?</h2>
+                        </a>
+                        <a href="#">
+                            <h2 class="hover:underline">How can I cancel my order?</h2>
+                        </a>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <a href="#" class="hover:underline">See All</a>
+                        <img src="./src/leftArrow.png" alt="" class="w-4 h-4">
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-[384px] h-[232px] rounded-xl bg-white">
+                <div
+                    class="bg-[#ECF0F9] h-12 rounded-t-xl py-[9px] px-4 font-semibold text-[#182B55] text-lg leading-[30px]">
+                    <h1>Ordering</h1>
+                </div>
+                <div
+                    class="p-3 font-medium text-[16px] leading-6 text-[#3F66BC] flex flex-col justify-around gap-4 h-[184px]">
+                    <div>
+                        <a href="#">
+                            <h2 class="hover:underline">How long does it take to process and deliver an order
+                                ?</h2>
+                        </a>
+                        <a href="#">
+                            <h2 class="hover:underline">How can I cancel my order?</h2>
+                        </a>
+                    </div>
+                    <div class="flex items-center gap-2 ">
+                        <a href="#" class="hover:underline">See All</a>
+                        <img src="./src/leftArrow.png" alt="" class="w-4 h-4">
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-[384px] h-[232px] rounded-xl bg-white">
+                <div
+                    class="bg-[#ECF0F9] h-12 rounded-t-xl py-[9px] px-4 font-semibold text-[#182B55] text-lg leading-[30px]">
+                    <h1>Ordering</h1>
+                </div>
+                <div
+                    class="p-3 font-medium text-[16px] leading-6 text-[#3F66BC] flex flex-col justify-around gap-4 h-[184px]">
+                    <div>
+                        <a href="#">
+                            <h2 class="hover:underline">How long does it take to process and deliver an order
+                                ?</h2>
+                        </a>
+                        <a href="#">
+                            <h2 class="hover:underline">How can I cancel my order?</h2>
+                        </a>
+                    </div>
+                    <div class="flex items-center gap-2 ">
+                        <a href="#" class="hover:underline">See All</a>
+                        <img src="./src/leftArrow.png" alt="" class="w-4 h-4">
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-[384px] h-[232px] rounded-xl bg-white">
+                <div
+                    class="bg-[#ECF0F9] h-12 rounded-t-xl py-[9px] px-4 font-semibold text-[#182B55] text-lg leading-[30px]">
+                    <h1>Ordering</h1>
+                </div>
+                <div
+                    class="p-3 font-medium text-[16px] leading-6 text-[#3F66BC] flex flex-col justify-around gap-4 h-[184px]">
+                    <div>
+                        <a href="#">
+                            <h2 class="hover:underline">How long does it take to process and deliver an order
+                                ?</h2>
+                        </a>
+                        <a href="#">
+                            <h2 class="hover:underline">How can I cancel my order?</h2>
+                        </a>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <a href="#" class="hover:underline">See All</a>
+                        <img src="./src/leftArrow.png" alt="" class="w-4 h-4">
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-[384px] h-[232px] rounded-xl bg-white">
+                <div
+                    class="bg-[#ECF0F9] h-12 rounded-t-xl py-[9px] px-4 font-semibold text-[#182B55] text-lg leading-[30px]">
+                    <h1>Ordering</h1>
+                </div>
+                <div
+                    class="p-3 font-medium text-[16px] leading-6 text-[#3F66BC] flex flex-col justify-around gap-4 h-[184px]">
+                    <div>
+                        <a href="#">
+                            <h2 class="hover:underline">How long does it take to process and deliver an order
+                                ?</h2>
+                        </a>
+                        <a href="#">
+                            <h2 class="hover:underline">How can I cancel my order?</h2>
+                        </a>
+                    </div>
+                    <div class="flex items-center gap-2 ">
+                        <a href="#" class="hover:underline">See All</a>
+                        <img src="./src/leftArrow.png" alt="" class="w-4 h-4">
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-[384px] h-[232px] rounded-xl bg-white">
+                <div
+                    class="bg-[#ECF0F9] h-12 rounded-t-xl py-[9px] px-4 font-semibold text-[#182B55] text-lg leading-[30px]">
+                    <h1>Ordering</h1>
+                </div>
+                <div
+                    class="p-3 font-medium text-[16px] leading-6 text-[#3F66BC] flex flex-col justify-around gap-4 h-[184px]">
+                    <div>
+                        <a href="#">
+                            <h2 class="hover:underline">How long does it take to process and deliver an order
+                                ?</h2>
+                        </a>
+                        <a href="#">
+                            <h2 class="hover:underline">How can I cancel my order?</h2>
+                        </a>
+                    </div>
+                    <div class="flex items-center gap-2 ">
+                        <a href="#" class="hover:underline">See All</a>
+                        <img src="./src/leftArrow.png" alt="" class="w-4 h-4">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- policies  -->
+    <section class="my-10">
+        <h1 class="text-[#182B55] text-5xl leading-16 font-semibold text-center">Pro Edge Policies</h1>
+        <div class="flex justify-around gap-10 mt-12">
+            <a href="#">
+                <div
+                    class="w-[282px] h-[168px] rounded-xl hover:shadow-sm py-6 px-4 bg-[#F8F9FB] flex flex-col items-center justify-between gap-6 mx-auto">
+                    <img src="./src/shopping.png" alt="" class="w-16 h-16">
+                    <h3 class="font-medium text-[#182B55] text-2xl leading-8">Shipping</h3>
+                </div>
+            </a>
+
+            <a href="#">
+                <div
+                    class="w-[282px] h-[168px] rounded-xl hover:shadow-sm py-6 px-4 bg-[#F8F9FB] flex flex-col items-center justify-between gap-6 mx-auto">
+                    <img src="./src/retur.png" alt="" class="w-16 h-16">
+                    <h3 class="font-medium text-[#182B55] text-2xl leading-8">Retruns</h3>
+                </div>
+            </a>
+
+            <a href="#">
+                <div
+                    class="w-[282px] h-[168px] rounded-xl hover:shadow-sm py-6 px-4 bg-[#F8F9FB] flex flex-col items-center justify-between gap-6 mx-auto">
+                    <img src="./src/payment.png" alt="" class="w-16 h-16">
+                    <h3 class="font-medium text-[#182B55] text-2xl leading-8">Payment</h3>
+                </div>
+            </a>
+
+            <a href="#">
+                <div
+                    class="w-[282px] h-[168px] rounded-xl hover:shadow-sm py-6 px-4 bg-[#F8F9FB] flex flex-col items-center justify-between gap-6 mx-auto">
+                    <img src="./src/terms.png" alt="" class="w-16 h-16">
+                    <h3 class="font-medium text-[#182B55] text-2xl leading-8">Terms & Confitions</h3>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- footer section  -->
+    <footer class="w-full h-auto md:h-[416px]  bg-[#182B55] flex flex-col items-center justify-evenly py-8 px-4">
+        <div class="flex flex-col lg:flex-row flex-wrap gap-8 items-start justify-between w-full max-w-[1200px]">
+            <div class="w-[292px] h-[214px] flex flex-col justify-evenly">
+                <div>
+                    <img src="./src/logo.png" alt="" class="h-9">
+                </div>
+                <div>
+                    <p class="text-white text-[16px] leading-7 ">Lorem Ipsum is simply dummy text of the printing and
+                        typesetting industry.</p>
+                </div>
+                <div class="relative">
+                    <input type="email"
+                        class="text-[#5D6576] font-medium text-[16px] leading-6 bg-white py-1 pr-[110px] pl-6 h-12 w-full rounded-[26px]"
+                        placeholder="Your email">
+                    <button
+                        class="absolute top-1/2 right-2 transform -translate-y-1/2 bg-[#182B55] text-white py-2 px-5 rounded-4xl h-10 w-[102px] hover:bg-[#294680] transition duration-300 cursor-pointer">
+                        SUBMIT
+                    </button>
+                </div>
+            </div>
+
+            <div class="w-[135px] h-[198px] flex flex-col justify-center text-white">
+                <h1 class="font-medium text-2xl leading-[30px]">Information</h1>
+                <ul class="text-[16px] leading-6 my-1">
+                    <li class="py-2"><a href="#">Products</a></li>
+                    <li class="py-2"><a href="#">Videos</a></li>
+                    <li class="py-2"><a href="#">Tech help</a></li>
+                    <li class="py-2"><a href="#">Contact Us</a></li>
+                </ul>
+            </div>
+
+            <div class="w-[231px] h-[198px] flex flex-col justify-between items-start text-white text-[16px] leading-6">
+                <h1 class="text-2xl leading-[30px] font-medium">Contact Information</h1>
+                <p><span class="font-semibold">Text: </span><a href="tel:6789860346">678-986-0346</a></p>
+                <p><span class="font-semibold">Phone: </span><a href="tel:2364612622">(236) 461-2622</a></p>
+                <p><span class="font-semibold">Fax: </span><a href="fax:2364612622">(236) 461-2622</a></p>
+                <p><span class="font-semibold">Email: </span><a
+                        href="mailto:info@divihardware.com">info@divihardware.com</a></p>
+            </div>
+
+            <div class="w-[292px] h-[190px] flex flex-col justify-between items-start text-white text-[16px] leading-6">
+                <h1 class="text-2xl font-medium leading-[30px]">Warehouse Location</h1>
+                <h3 class="font-semibold">Location</h3>
+                <p>1234 Divi St. San Francisco, CA 93145</p>
+                <h3 class="font-semibold">Open</h3>
+                <p>Mon-Fri 8:00am-5:00pm (est)</p>
+            </div>
+        </div>
+
+        <div class="my-6 border-b border-white/15 max-w-[1200px] w-full"></div>
+
+        <div class="text-[16px] text-white leading-6 font-medium text-center px-4">Copyright ©2025 Pro Edge. All Rights
+            Reserved.</div>
+    </footer>
+
+</html>
