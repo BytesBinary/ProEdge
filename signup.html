@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sign up for a ProEdge account to access exclusive features.">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>ProEdge | Sign Up</title>
+</head>
+<body class="antialiased">
+    <main class="flex items-center justify-center min-h-screen bg-white">
+        <article class="p-4 max-w-[496px] w-full rounded-lg my-7">
+            <header class="mb-8">
+                <div class="flex justify-center mb-8">
+                    <img src="./src/ProEdgeLogo.png" alt="ProEdge Logo" class="w-64 bg-[#182B55] p-2" width="278" height="55.21" />
+                </div>
+                <h1 class="text-4xl font-semibold mt-6 mb-4 text-[#182B55]">
+                    Create Account
+                </h1>
+                <p class="text-[#5D6576] text-lg">Please create an account.</p>
+            </header>
+            <form method="POST" action="#" class="space-y-6">
+                <div class="my-4">
+                    <label for="firstName" class="block text-[#182B55] text-lg font-semibold">First Name</label>
+                    <input type="text" id="firstName" name="firstName" class="w-full p-4 px-6 mt-4 border border-[#ECF0F9] rounded-4xl bg-[#F8F9FB] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                        placeholder="Enter your first name" required />   
+                </div>
+                <div class="my-4">
+                    <label for="lastName" class="block text-[#182B55] text-lg font-semibold">Last Name</label>
+                    <input type="text" id="lastName" name="lastName" class="w-full p-4 px-6 mt-4 border border-[#ECF0F9] rounded-4xl bg-[#F8F9FB] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                        placeholder="Enter your last name" required />
+                </div>
+                <div class="my-4">
+                    <label for="email" class="block text-[#182B55] text-lg font-semibold">Email Address</label>
+                    <input type="email" id="email" name="email" class="w-full p-4 px-6 mt-4 border border-[#ECF0F9] rounded-4xl bg-[#F8F9FB] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                        placeholder="Enter your email" required />   
+                </div>
+                <div class="mb-4">
+                    <label for="password" class="block text-[#182B55] text-lg font-semibold">Password</label>
+                    <input type="password" id="password" name="password"
+                        class="w-full p-4 px-6 mt-4 border border-[#ECF0F9] rounded-4xl bg-[#F8F9FB] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                        placeholder="Enter your password" required />
+                </div>
+                <div class="mb-4">
+                    <label for="confirmPassword" class="block text-[#182B55] text-lg font-semibold">Confirm Password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword"
+                        class="w-full p-4 px-6 mt-4 border border-[#ECF0F9] rounded-4xl bg-[#F8F9FB] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                        placeholder="Confirm your password" required />
+                </div>
+                <button type="submit" class="w-full bg-[#3F66BC] text-lg font-semibold text-white py-4 rounded-4xl hover:bg-[#2E4A8E] transition-colors focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    Sign Up
+                </button>
+            </form>
+            <div class="text-center mt-8">
+                <p class="text-gray-600">Already have an account? <a href="./signin.html" class="text-blue-800">Sign In</a></p>
+            </div>
+        </article>
+    </main> 
+</body>
+</html>
