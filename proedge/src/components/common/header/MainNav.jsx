@@ -1,8 +1,9 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const MainNav = () => {
   return (
-    <>
+
       <nav
         className="bg-[#182B55] text-white md:py-4"
         aria-label="Main navigation"
@@ -111,13 +112,13 @@ const MainNav = () => {
             <div className="flex items-center gap-6 shrink-0">
               {/* <!-- Auth --> */}
               <div className="flex items-center gap-4">
-                <a href="#" className="hover:text-blue-200 transition-colors">
+                <Link to="/auth/signin" className="hover:text-blue-200 transition-colors">
                   Sign In
-                </a>
+                </Link>
                 <div className="h-6 w-px bg-white/25"></div>
-                <a href="#" className="hover:text-blue-200 transition-colors">
+                <Link to="/auth/signup" className="hover:text-blue-200 transition-colors">
                   Sign Up
-                </a>
+                </Link>
               </div>
 
               {/* <!-- Icons --> */}
@@ -147,7 +148,6 @@ const MainNav = () => {
           </div>
         </div>
       </nav>
-    </>
   );
 };
 

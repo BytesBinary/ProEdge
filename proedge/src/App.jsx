@@ -9,7 +9,11 @@ import Products from './pages/products/Product'
 import Videos from './pages/videos/Videos'
 import TechHelp from './pages/tech-help/TechHelp'
 import Contact from './pages/contact/Contact'
+import SignIn from './pages/auth/SignIn'
+import SignUp from './pages/auth/SignUp'
+import ResetPass from './pages/auth/ResetPass'
 import Root from './layouts/Root'
+import Auth from './layouts/Auth'
 
 const router = createBrowserRouter([
   {
@@ -23,6 +27,15 @@ const router = createBrowserRouter([
       { path: 'contact', Component: Contact },
     ],
   },
+  {
+    path:'/auth',
+    Component: Auth,
+    children: [
+      { path: 'signin' , Component: SignIn },
+      { path: 'signup' , Component: SignUp },
+      { path: 'forgot-password', Component: ResetPass }    
+    ]
+  }
 ])
 
 function App() {
