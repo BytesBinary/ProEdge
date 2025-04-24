@@ -2,7 +2,6 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from 'react-router-dom'
-// import reactLogo from './assets/react.svg';
 
 // Components 
 import Home from './pages/home/Home'
