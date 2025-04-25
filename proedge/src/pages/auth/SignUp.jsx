@@ -1,55 +1,34 @@
+// src/pages/auth/SignUp.jsx
 import React from 'react'
 import { Link } from 'react-router-dom'
+import Button from '../../components/common/utils/Button'
+import TextInput from '../../components/common/utils/TextInput'
+import AuthHeader from '../../components/auth/AuthHeader'
+
 const SignUp = () => {
   return (
-    <main class="flex items-center justify-center min-h-screen bg-white">
-        <article class="p-4 max-w-[496px] w-full rounded-lg my-7">
-            <header class="mb-8">
-                <div class="flex justify-center mb-8">
-                    <img src="./src/ProEdgeLogo.png" alt="ProEdge Logo" class="w-64 bg-[#182B55] p-2" width="278" height="55.21" />
-                </div>
-                <h1 class="text-4xl font-semibold mt-6 mb-4 text-[#182B55]">
-                    Create Account
-                </h1>
-                <p class="text-[#5D6576] text-lg">Please create an account.</p>
-            </header>
-            <form method="POST" action="#" class="space-y-6">
-                <div class="my-4">
-                    <label for="firstName" class="block text-[#182B55] text-lg font-semibold">First Name</label>
-                    <input type="text" id="firstName" name="firstName" class="w-full p-4 px-6 mt-4 border border-[#ECF0F9] rounded-4xl bg-[#F8F9FB] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                        placeholder="Enter your first name" required />   
-                </div>
-                <div class="my-4">
-                    <label for="lastName" class="block text-[#182B55] text-lg font-semibold">Last Name</label>
-                    <input type="text" id="lastName" name="lastName" class="w-full p-4 px-6 mt-4 border border-[#ECF0F9] rounded-4xl bg-[#F8F9FB] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                        placeholder="Enter your last name" required />
-                </div>
-                <div class="my-4">
-                    <label for="email" class="block text-[#182B55] text-lg font-semibold">Email Address</label>
-                    <input type="email" id="email" name="email" class="w-full p-4 px-6 mt-4 border border-[#ECF0F9] rounded-4xl bg-[#F8F9FB] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                        placeholder="Enter your email" required />   
-                </div>
-                <div class="mb-4">
-                    <label for="password" class="block text-[#182B55] text-lg font-semibold">Password</label>
-                    <input type="password" id="password" name="password"
-                        class="w-full p-4 px-6 mt-4 border border-[#ECF0F9] rounded-4xl bg-[#F8F9FB] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-                        placeholder="Enter your password" required />
-                </div>
-                <div class="mb-4">
-                    <label for="confirmPassword" class="block text-[#182B55] text-lg font-semibold">Confirm Password</label>
-                    <input type="password" id="confirmPassword" name="confirmPassword"
-                        class="w-full p-4 px-6 mt-4 border border-[#ECF0F9] rounded-4xl bg-[#F8F9FB] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-                        placeholder="Confirm your password" required />
-                </div>
-                <button type="submit" class="w-full bg-[#3F66BC] text-lg font-semibold text-white py-4 rounded-4xl hover:bg-[#2E4A8E] transition-colors focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                    Sign Up
-                </button>
-            </form>
-            <div class="text-center mt-8">
-                <p class="text-gray-600">Already have an account? <Link to="/auth/signin" class="text-blue-800">Sign In</Link></p>
-            </div>
-        </article>
-    </main> 
+    <main className="flex items-center justify-center min-h-screen bg-white">
+      <article className="p-4 max-w-xl w-full rounded-lg my-7">
+        <AuthHeader title="Create Account" subtitle="Please create an account." />
+        
+        <form method="POST" action="#" className="space-y-6">
+          <TextInput label="First Name" id="firstName" name="firstName" placeholder="Enter your first name" required />
+          <TextInput label="Last Name" id="lastName" name="lastName" placeholder="Enter your last name" required />
+          <TextInput type="email" label="Email Address" id="email" name="email" placeholder="Enter your email" required />
+          <TextInput type="password" label="Password" id="password" name="password" placeholder="Enter your password" required />
+          <TextInput type="password" label="Confirm Password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required />
+
+          <Button label="Sign up" />
+        </form>
+
+        <div className="text-center mt-8">
+          <p className="text-gray-600">
+            Already have an account?{' '}
+            <Link to="/auth/signin" className="text-blue-800">Sign In</Link>
+          </p>
+        </div>
+      </article>
+    </main>
   )
 }
 

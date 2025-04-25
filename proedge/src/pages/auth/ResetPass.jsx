@@ -1,53 +1,39 @@
+// src/pages/auth/ResetPass.jsx
 import React from "react";
-import { Link } from "react-router-dom";
+import BackButton from "../../components/common/utils/BackButton";
+import TextInput from "../../components/common/utils/TextInput";
+
 const ResetPass = () => {
   return (
-    <main class="flex items-start justify-center min-h-screen">
-      <article class="bg-white p-8 max-w-[496px] w-full rounded-xl">
-        <header class="mb-8">
-          <Link
-            to="/auth/signin"
-            class="inline-flex items-center gap-2 text-[#3F66BC] border-2 border-[#ECF0F9] p-2 text-md px-3 hover:text-[#2E4A8E] transition-colors rounded-full"
-          >
-            <img src="./src/icons/arrow.svg" alt="Arrow Icon" />
-            <span class="font-medium">Back</span>
-          </Link>
+    <main className="flex items-start justify-center min-h-screen">
+      <article className="bg-white p-8 max-w-xl w-full rounded-xl">
+        <header className="mb-8">
+          <BackButton to="/auth/signin" />
         </header>
 
-        <div class="space-y-6">
-          <div class="space-y-2">
-            <h1 class="text-3xl font-bold text-[#182B55]">Forgot Password?</h1>
-            <p class="text-[#5D6576]">
+        <div className="space-y-6">
+          <div className="space-y-2">
+            <h1 className="text-3xl font-bold text-[#182B55]">
+              Forgot Password?
+            </h1>
+            <p className="text-[#5D6576]">
               Enter your email address and we'll send you a link to reset your
               password.
             </p>
           </div>
 
-          <form class="space-y-6" method="POST" action="#">
-            <div>
-              <label
-                for="email"
-                class="block text-lg font-medium text-[#182B55] mb-2"
-              >
-                Email Address
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                required
-                autocomplete="email"
-                placeholder="Enter your email"
-                class="w-full px-4 py-3 border border-[#ECF0F9] bg-[#F8F9FB] rounded-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-              />
-            </div>
+          <form className="space-y-6" method="POST" action="#">
+            <TextInput
+              type="email"
+              id="email"
+              name="email"
+              label="Email Address"
+              placeholder="Enter your email"
+              required
+            />
 
-            <button
-              type="submit"
-              class="w-full bg-[#3F66BC] text-white py-3 rounded-full hover:bg-[#2E4A8E] transition-colors focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-            >
-              Send Email
-            </button>
+            
+          <Button label="Send Email" />
           </form>
         </div>
       </article>

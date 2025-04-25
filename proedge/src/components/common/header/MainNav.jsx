@@ -133,7 +133,8 @@ const MainNav = () => {
                     className="w-6 h-6"
                   />
                 </button>
-                <button
+                <Link
+                  to="/cart"
                   aria-label="Cart"
                   className="w-12 h-12 flex justify-center items-center rounded-full bg-[#23366B] hover:bg-[#1A2A55] transition-colors"
                 >
@@ -142,7 +143,7 @@ const MainNav = () => {
                     alt="Cart"
                     className="w-6 h-6"
                   />
-                </button>
+                </Link>
               </div>
             </div>
           </div>

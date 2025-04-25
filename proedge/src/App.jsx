@@ -13,7 +13,9 @@ import SignIn from './pages/auth/SignIn'
 import SignUp from './pages/auth/SignUp'
 import ResetPass from './pages/auth/ResetPass'
 import Root from './layouts/Root'
-import Auth from './layouts/Auth'
+// import Auth from './layouts/Auth'
+import CartPage from './pages/cart/Cart'
+import checkout from './pages/checkout/Checkout'
 
 const router = createBrowserRouter([
   {
@@ -25,11 +27,14 @@ const router = createBrowserRouter([
       { path: 'videos', Component: Videos },
       { path: 'tech-help', Component: TechHelp },
       { path: 'contact', Component: Contact },
+      { path: 'cart', Component: CartPage },
+      { path: 'cart/checkout', Component: checkout },
+      { path: 'wish-list', Component: WishList }  
     ],
   },
   {
     path:'/auth',
-    Component: Auth,
+    // Component: Auth,
     children: [
       { path: 'signin' , Component: SignIn },
       { path: 'signup' , Component: SignUp },
