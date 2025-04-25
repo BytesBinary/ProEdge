@@ -16,6 +16,7 @@ import Root from './layouts/Root'
 // import Auth from './layouts/Auth'
 import CartPage from './pages/cart/Cart'
 import checkout from './pages/checkout/Checkout'
+import WishList from './pages/wishlist/WishList'
 
 const router = createBrowserRouter([
   {
@@ -26,7 +27,7 @@ const router = createBrowserRouter([
       { path: 'products', Component: Products },
       { path: 'videos', Component: Videos },
       { path: 'tech-help', Component: TechHelp },
-      { path: 'contact', Component: Contact },
+      { path: 'contact-us', Component: Contact },
       { path: 'cart', Component: CartPage },
       { path: 'cart/checkout', Component: checkout },
       { path: 'wish-list', Component: WishList }  

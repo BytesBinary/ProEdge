@@ -2,6 +2,7 @@
 import React from "react";
 import BackButton from "../../components/common/utils/BackButton";
 import TextInput from "../../components/common/utils/TextInput";
+import Button from "../../components/common/utils/Button";
 
 const ResetPass = () => {
   return (

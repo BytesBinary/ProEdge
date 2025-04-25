@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import TextInput from "../../components/common/utils/TextInput";
 import AuthHeader from "../../components/auth/AuthHeader";
 import CheckboxWithLabel from "../../components/common/utils/CheckBoxWithLabel";
+import Button from "../../components/common/utils/Button";
 
 const SignIn = () => {
   return (

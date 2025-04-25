@@ -23,7 +23,9 @@ const MainNav = () => {
 
             {/* <!-- Mobile Icons (Favorites, Cart) --> */}
             <div className="lg:hidden inline-block">
-              <button
+              <Link
+                to="/wish-list"
+                title="Favorites"
                 aria-label="Favorites"
                 className="w-10 h-10 flex justify-center items-center rounded-full mb-4 bg-[#23366B] hover:bg-[#1A2A55] transition-colors"
               >
@@ -32,8 +34,10 @@ const MainNav = () => {
                   alt="Favorites"
                   className="w-5 h-5"
                 />
-              </button>
-              <button
+              </Link>
+              <Link
+                to="/cart"
+                title="Cart"
                 aria-label="Cart"
                 className="w-10 h-10 flex justify-center items-center rounded-full bg-[#23366B] hover:bg-[#1A2A55] transition-colors"
               >
@@ -42,7 +46,7 @@ const MainNav = () => {
                   alt="Cart"
                   className="w-5 h-5"
                 />
-              </button>
+              </Link>
             </div>
           </div>
 
@@ -72,13 +76,13 @@ const MainNav = () => {
             </form>
             {/* <!-- Auth --> */}
             <div className="flex items-center gap-4">
-              <a href="#" className="hover:text-blue-200 transition-colors">
+              <Link to="/auth/signin" className="hover:text-blue-200 transition-colors">
                 Sign In
-              </a>
+              </Link>
               <div className="h-6 w-px bg-white/25"></div>
-              <a href="#" className="hover:text-blue-200 transition-colors">
+              <Link to="/auth/signup" className="hover:text-blue-200 transition-colors">
                 Sign Up
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -123,7 +127,9 @@ const MainNav = () => {
 
               {/* <!-- Icons --> */}
               <div className="flex items-center gap-3">
-                <button
+                <Link
+                  title="Favorites"
+                  to="/wish-list"
                   aria-label="Favorites"
                   className="w-12 h-12 flex justify-center items-center rounded-full bg-[#23366B] hover:bg-[#1A2A55] transition-colors"
                 >
@@ -132,8 +138,9 @@ const MainNav = () => {
                     alt="Favorites"
                     className="w-6 h-6"
                   />
-                </button>
+                </Link>
                 <Link
+                  title="Cart"
                   to="/cart"
                   aria-label="Cart"
                   className="w-12 h-12 flex justify-center items-center rounded-full bg-[#23366B] hover:bg-[#1A2A55] transition-colors"

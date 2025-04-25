@@ -37,7 +37,7 @@ const NavigationLink = () => {
       </li>
       <li>
         <Link
-          href="/contact-us"
+          to="/contact-us"
           className="relative hover:text-[#3F66BC] transition-colors duration-300 after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-[2px] after:bg-[#3F66BC] hover:after:w-full after:transition-all after:duration-300"
         >
           Contact Us
