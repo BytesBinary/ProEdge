@@ -1,5 +1,7 @@
 import React from 'react'
 
+import PriceCard from './PriceCard'
+
 const ProductInfo = () => {
     return (
 
@@ -78,74 +80,12 @@ const ProductInfo = () => {
                     <span class="text-[#5D6576]">Size:</span>
                     <span class="text-[#3F66BC] font-semibold">3.7 HP,56 Frame</span>
                 </div>
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 w-[564px]">
-                    <div
-                        class="w-[134px]  h-[98px] bg-[#F8F9FB] hover:bg-[#3F66BC] p-3 cursor-pointer rounded-[12px] border border-[#F8F9FB] hover:border-[#F8F9FB] group transition-all duration-300">
-                        <div
-                            class="w-full h-[74px] flex flex-col justify-between text-[#182B55] group-hover:text-white">
-                            <div class="h-[36px] relative">
-                                <h1
-                                    class="font-semibold pb-1 text-sm leading-[18px] border-b border-[#3F66BC]/10 group-hover:border-white/25 border-dashed text-[#3F66BC] group-hover:text-white transition-all duration-300">
-                                    2 HP, 56 Frame
-                                </h1>
-                            </div>
-                            <div class="h-[36px] flex flex-col justify-between text-[12px] leading-4 font-medium">
-                                <h1 class="group-hover:text-white">$190.99</h1>
-                                <h1 class="text-[#5D6576] line-through group-hover:text-white">$220.99</h1>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div
-                        class="w-[134px]  h-[98px] bg-[#F8F9FB] hover:bg-[#3F66BC] p-3 cursor-pointer rounded-[12px] border border-[#F8F9FB] hover:border-[#F8F9FB] group transition-all duration-300">
-                        <div
-                            class="w-full h-[74px] flex flex-col justify-between text-[#182B55] group-hover:text-white">
-                            <div class="h-[36px] relative">
-                                <h1
-                                    class="font-semibold pb-2 text-sm leading-[18px] border-b border-[#3F66BC]/10 group-hover:border-white/25 border-dashed text-[#3F66BC] group-hover:text-white transition-all duration-300">
-                                    2 HP, 56 Frame
-                                </h1>
-                            </div>
-                            <div class="h-[36px] flex flex-col justify-between text-[12px] leading-4 font-medium">
-                                <h1 class="group-hover:text-white">$190.99</h1>
-                                <h1 class="text-[#5D6576] line-through group-hover:text-white">$220.99</h1>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div
-                        class="w-[134px]  h-[98px] bg-[#F8F9FB] hover:bg-[#3F66BC] p-3 cursor-pointer rounded-[12px] border border-[#F8F9FB] hover:border-[#F8F9FB] group transition-all duration-300">
-                        <div
-                            class="w-full h-[74px] flex flex-col justify-between text-[#182B55] group-hover:text-white">
-                            <div class="h-[36px] relative">
-                                <h1
-                                    class="font-semibold pb-2 text-sm leading-[18px] border-b border-[#3F66BC]/10 group-hover:border-white/25 border-dashed text-[#3F66BC] group-hover:text-white transition-all duration-300">
-                                    2 HP, 56 Frame
-                                </h1>
-                            </div>
-                            <div class="h-[36px] flex flex-col justify-between text-[12px] leading-4 font-medium">
-                                <h1 class="group-hover:text-white">$190.99</h1>
-                                <h1 class="text-[#5D6576] line-through group-hover:text-white">$220.99</h1>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div
-                        class="w-[134px] h-[98px] bg-[#F8F9FB] hover:bg-[#3F66BC] p-3 cursor-pointer rounded-[12px] border border-[#F8F9FB] hover:border-[#F8F9FB] group transition-all duration-300">
-                        <div
-                            class="w-full h-[74px] flex flex-col justify-between text-[#182B55] group-hover:text-white">
-                            <div class="h-[36px] relative">
-                                <h1
-                                    class="font-semibold pb-2 text-sm leading-[18px] border-b border-[#3F66BC]/10 group-hover:border-white/25 border-dashed text-[#3F66BC] group-hover:text-white transition-all duration-300">
-                                    2 HP, 56 Frame
-                                </h1>
-                            </div>
-                            <div class="h-[36px] flex flex-col justify-between text-[12px] leading-4 font-medium">
-                                <h1 class="group-hover:text-white">$190.99</h1>
-                                <h1 class="text-[#5D6576] line-through group-hover:text-white">$220.99</h1>
-                            </div>
-                        </div>
-                    </div>
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 w-[564px]">                  
+                    <PriceCard title={"2 HP, 56 Frame"} price="190.99" originalPrice="220.99" />
+                    <PriceCard title={"3 HP, 56 Frame"} price="210.99" originalPrice="240.99" />
+                    <PriceCard title={"3.7 HP, 56 Frame"} price="230.99" originalPrice="260.99" />
+                    <PriceCard title={"5 HP, 56 Frame"} price="250.99" originalPrice="280.99" />
                 </div>
             </div>
         </div>

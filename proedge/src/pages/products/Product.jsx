@@ -4,8 +4,7 @@ import bgImage from '../../assets/images/productDetails/bg.jpeg';
 import greater from '../../assets/images/productDetails/greater.png';
 import m1 from '../../assets/images/productDetails/motor/m1.png';
 import m2 from '../../assets/images/productDetails/motor/m2.png';
-import motor from '../../assets/images/productDetails/motor.png';
-import fridge from '../../assets/images/productDetails/fridge.png';
+
 
 import ProductImage from '../../components/product/ProductImage';
 import DeliveryInfo from '../../components/product/DeliveryInfo';
@@ -15,6 +14,7 @@ import PDS from '../../components/common/utils/ProductDetails/PDS';
 import ProductSpecList from '../../components/product/ProductSpecList';
 import CardComponent from '../../components/product/CardComponent';
 import ProDetails from '../../data/ProDetails/ProDetails';
+import MostViewedSection from '../../components/home/MostViewed';
 
 const Product = () => {
   return (
@@ -73,153 +73,7 @@ const Product = () => {
         </section>
 
 
-        <section class="w-full max-w-[1200px] h-auto mx-auto px-4 my-12">
-          <h1 class="text-[#182B55] font-semibold text-5xl leading-16 text-center">Most Viewed</h1>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 mt-10">
-            <div class="max-w-[282px] h-[457px] border-2 border-[#F8F9FB] px-4 pt-4 pb-6 bg-[#FFFFFF]">
-              <div class="rounded-xl w-full h-[417px] mb-5 bg-[#FFFFFF]">
-                <div
-                  class="bg-[#F8F9FB] flex justify-center items-center relative rounded-xl w-full overflow-hidden">
-                  <img src={fridge} alt="" class="h-[167px]" />
-                    <div
-                      class="bg-[#FFFFFF] rounded-full w-9 h-9 flex items-center justify-center absolute top-2 right-2">
-                      <svg width="20" height="20" viewBox="0 0 18 16" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path
-                          d="M8.99998 15.5C8.46248 15.0233 7.85498 14.5275 7.21248 14H7.20415C4.94165 12.15 2.37748 10.0566 1.24498 7.54829C0.87291 6.74973 0.675732 5.8809 0.666635 4.99996C0.664151 3.7912 1.14895 2.63245 2.01149 1.7856C2.87402 0.938751 4.04147 0.475289 5.24998 0.49996C6.23384 0.501514 7.19651 0.785861 8.02331 1.31913C8.38662 1.55493 8.71533 1.84017 8.99998 2.16663C9.28622 1.84145 9.61502 1.55638 9.97748 1.31913C10.8039 0.785756 11.7664 0.501392 12.75 0.49996C13.9585 0.475289 15.1259 0.938751 15.9885 1.7856C16.851 2.63245 17.3358 3.7912 17.3333 4.99996C17.3248 5.88231 17.1276 6.75262 16.755 7.55246C15.6225 10.0608 13.0591 12.1533 10.7966 14L10.7883 14.0066C10.145 14.5308 9.53831 15.0266 9.00081 15.5066L8.99998 15.5ZM5.24998 2.16663C4.47374 2.15691 3.72504 2.454 3.16665 2.99329C2.62863 3.52176 2.32794 4.24583 2.33324 4.99996C2.34275 5.64204 2.48817 6.27484 2.75998 6.85663C3.29457 7.93888 4.0159 8.91834 4.89081 9.74996C5.71665 10.5833 6.66665 11.39 7.48831 12.0683C7.71581 12.2558 7.94748 12.445 8.17915 12.6341L8.32498 12.7533C8.54748 12.935 8.77748 13.1233 8.99998 13.3083L9.01081 13.2983L9.01581 13.2941H9.02081L9.02831 13.2883H9.03248H9.03664L9.05165 13.2758L9.08581 13.2483L9.09165 13.2433L9.10081 13.2366H9.10581L9.11331 13.23L9.66665 12.7758L9.81165 12.6566C10.0458 12.4658 10.2775 12.2766 10.505 12.0891C11.3266 11.4108 12.2775 10.605 13.1033 9.76746C13.9783 8.93626 14.6997 7.95706 15.2341 6.87496C15.5109 6.28813 15.6584 5.64872 15.6667 4.99996C15.6701 4.24816 15.3696 3.52687 14.8333 2.99996C14.276 2.45823 13.5272 2.1587 12.75 2.16663C11.8016 2.15857 10.8949 2.5561 10.2583 3.25913L8.99998 4.70913L7.74165 3.25913C7.10503 2.5561 6.19838 2.15857 5.24998 2.16663Z"
-                          fill="#182B55" />
-                      </svg>
-
-                    </div>
-                </div>
-                <div class="flex flex-col justify-between items-start h-[247px] w-full">
-                  <div class="mb-2">
-                    <h2 class="text-[14px] text-[#3F66BC] font-medium leading-5">Electric Motors & Motor
-                      Controls</h2>
-                    <h1 class="text-[#475467] text-lg font-medium leading-[30px]">MAGNETIC STARTER FOR 7.5HP
-                      SINGLE PHASE 230V ELECTRIC MOTORS (40 AMP) – WEG</h1>
-                  </div>
-                  <div class="mb-[10px]">
-                    <p class="text-[#3F66BC] text-2xl font-semibold leading-8 gap-2.5">$234.00</p>
-                  </div>
-                  <div
-                    class="bg-[#FCD700] rounded-[60px] text-center w-full h-[40px] py-2 px-6 flex items-center justify-center hover:bg-[#e6c200] cursor-pointer transition duration-300">
-                    <h3 class="text-[16px] text-[#182B55] font-medium leading-6">Add to Cart</h3>
-                  </div>
-
-                </div>
-              </div>
-            </div>
-
-            <div class="max-w-[282px] h-[457px] border-2 border-[#F8F9FB] px-4 pt-4 pb-6 bg-[#FFFFFF] ">
-              <div class="rounded-xl w-full h-[417px] mb-5 bg-[#FFFFFF]">
-                <div
-                  class="bg-[#F8F9FB] flex justify-center items-center relative rounded-xl w-full overflow-hidden">
-                  <img src={motor} alt="" class="h-[167px]" />
-                    <div
-                      class="bg-[#FFFFFF] rounded-full w-9 h-9 flex items-center justify-center absolute top-2 right-2">
-                      <svg width="20" height="20" viewBox="0 0 18 16" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path
-                          d="M8.99998 15.5C8.46248 15.0233 7.85498 14.5275 7.21248 14H7.20415C4.94165 12.15 2.37748 10.0566 1.24498 7.54829C0.87291 6.74973 0.675732 5.8809 0.666635 4.99996C0.664151 3.7912 1.14895 2.63245 2.01149 1.7856C2.87402 0.938751 4.04147 0.475289 5.24998 0.49996C6.23384 0.501514 7.19651 0.785861 8.02331 1.31913C8.38662 1.55493 8.71533 1.84017 8.99998 2.16663C9.28622 1.84145 9.61502 1.55638 9.97748 1.31913C10.8039 0.785756 11.7664 0.501392 12.75 0.49996C13.9585 0.475289 15.1259 0.938751 15.9885 1.7856C16.851 2.63245 17.3358 3.7912 17.3333 4.99996C17.3248 5.88231 17.1276 6.75262 16.755 7.55246C15.6225 10.0608 13.0591 12.1533 10.7966 14L10.7883 14.0066C10.145 14.5308 9.53831 15.0266 9.00081 15.5066L8.99998 15.5ZM5.24998 2.16663C4.47374 2.15691 3.72504 2.454 3.16665 2.99329C2.62863 3.52176 2.32794 4.24583 2.33324 4.99996C2.34275 5.64204 2.48817 6.27484 2.75998 6.85663C3.29457 7.93888 4.0159 8.91834 4.89081 9.74996C5.71665 10.5833 6.66665 11.39 7.48831 12.0683C7.71581 12.2558 7.94748 12.445 8.17915 12.6341L8.32498 12.7533C8.54748 12.935 8.77748 13.1233 8.99998 13.3083L9.01081 13.2983L9.01581 13.2941H9.02081L9.02831 13.2883H9.03248H9.03664L9.05165 13.2758L9.08581 13.2483L9.09165 13.2433L9.10081 13.2366H9.10581L9.11331 13.23L9.66665 12.7758L9.81165 12.6566C10.0458 12.4658 10.2775 12.2766 10.505 12.0891C11.3266 11.4108 12.2775 10.605 13.1033 9.76746C13.9783 8.93626 14.6997 7.95706 15.2341 6.87496C15.5109 6.28813 15.6584 5.64872 15.6667 4.99996C15.6701 4.24816 15.3696 3.52687 14.8333 2.99996C14.276 2.45823 13.5272 2.1587 12.75 2.16663C11.8016 2.15857 10.8949 2.5561 10.2583 3.25913L8.99998 4.70913L7.74165 3.25913C7.10503 2.5561 6.19838 2.15857 5.24998 2.16663Z"
-                          fill="#182B55" />
-                      </svg>
-
-                    </div>
-                </div>
-                <div class="flex flex-col justify-between items-start h-[247px] w-full">
-                  <div class="mb-2">
-                    <h2 class="text-[14px] text-[#3F66BC] font-medium leading-5">Electric Motors & Motor
-                      Controls</h2>
-                    <h1 class="text-[#475467] text-lg font-medium leading-[30px]">MAGNETIC STARTER FOR 7.5HP
-                      SINGLE PHASE 230V ELECTRIC MOTORS (40 AMP) – WEG</h1>
-                  </div>
-                  <div class="mb-[10px]">
-                    <p class="text-[#3F66BC] text-2xl font-semibold leading-8 gap-2.5">$234.00</p>
-                  </div>
-                  <div
-                    class="bg-[#FCD700] rounded-[60px] text-center w-full h-[40px] py-2 px-6 flex items-center justify-center hover:bg-[#e6c200] cursor-pointer transition duration-300">
-                    <h3 class="text-[16px] text-[#182B55] font-medium leading-6">Add to Cart</h3>
-                  </div>
-
-                </div>
-              </div>
-            </div>
-
-            <div class="max-w-[282px] h-[457px] border-2 border-[#F8F9FB] px-4 pt-4 pb-6 bg-[#FFFFFF]">
-              <div class="rounded-xl w-full h-[417px] mb-5 bg-[#FFFFFF]">
-                <div
-                  class="bg-[#F8F9FB] flex justify-center items-center relative rounded-xl w-full overflow-hidden">
-                  <img src={motor} alt="" class="h-[167px]" />
-                    <div
-                      class="bg-[#EE2738] rounded-full w-9 h-9 flex items-center justify-center absolute top-2 right-2">
-                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path
-                          d="M9.99998 17.5C9.46248 17.0233 8.85498 16.5275 8.21248 16H8.20415C5.94165 14.15 3.37748 12.0566 2.24498 9.54829C1.87291 8.74973 1.67573 7.8809 1.66664 6.99996C1.66415 5.7912 2.14895 4.63245 3.01149 3.7856C3.87402 2.93875 5.04147 2.47529 6.24998 2.49996C7.23384 2.50151 8.19651 2.78586 9.02331 3.31913C9.38662 3.55493 9.71533 3.84017 9.99998 4.16663C10.2862 3.84145 10.615 3.55638 10.9775 3.31913C11.8039 2.78576 12.7664 2.50139 13.75 2.49996C14.9585 2.47529 16.1259 2.93875 16.9885 3.7856C17.851 4.63245 18.3358 5.7912 18.3333 6.99996C18.3248 7.88231 18.1276 8.75262 17.755 9.55246C16.6225 12.0608 14.0591 14.1533 11.7966 16L11.7883 16.0066C11.145 16.5308 10.5383 17.0266 10.0008 17.5066L9.99998 17.5ZM6.24998 4.16663C5.47374 4.15691 4.72504 4.454 4.16665 4.99329C3.62863 5.52176 3.32794 6.24583 3.33324 6.99996C3.34275 7.64204 3.48817 8.27484 3.75998 8.85663C4.29457 9.93888 5.0159 10.9183 5.89081 11.75C6.71665 12.5833 7.66665 13.39 8.48831 14.0683C8.71581 14.2558 8.94748 14.445 9.17915 14.6341L9.32498 14.7533C9.54748 14.935 9.77748 15.1233 9.99998 15.3083L10.0108 15.2983L10.0158 15.2941H10.0208L10.0283 15.2883H10.0325H10.0366L10.0516 15.2758L10.0858 15.2483L10.0916 15.2433L10.1008 15.2366H10.1058L10.1133 15.23L10.6666 14.7758L10.8116 14.6566C11.0458 14.4658 11.2775 14.2766 11.505 14.0891C12.3266 13.4108 13.2775 12.605 14.1033 11.7675C14.9783 10.9363 15.6997 9.95706 16.2341 8.87496C16.5109 8.28813 16.6584 7.64872 16.6667 6.99996C16.6701 6.24816 16.3696 5.52687 15.8333 4.99996C15.276 4.45823 14.5272 4.1587 13.75 4.16663C12.8016 4.15857 11.8949 4.5561 11.2583 5.25913L9.99998 6.70913L8.74165 5.25913C8.10503 4.5561 7.19838 4.15857 6.24998 4.16663Z"
-                          fill="white" />
-                      </svg>
-
-
-                    </div>
-                </div>
-                <div class="flex flex-col justify-between items-start h-[247px] w-full">
-                  <div class="mb-2">
-                    <h2 class="text-[14px] text-[#3F66BC] font-medium leading-5">Electric Motors & Motor
-                      Controls</h2>
-                    <h1 class="text-[#475467] text-lg font-medium leading-[30px]">MAGNETIC STARTER FOR 7.5HP
-                      SINGLE PHASE 230V ELECTRIC MOTORS (40 AMP) – WEG</h1>
-                  </div>
-                  <div class="mb-[10px]">
-                    <p class="text-[#3F66BC] text-2xl font-semibold leading-8 gap-2.5">$234.00</p>
-                  </div>
-                  <div
-                    class="bg-[#FCD700] rounded-[60px] text-center w-full h-[40px] py-2 px-6 flex items-center justify-center hover:bg-[#e6c200] cursor-pointer transition duration-300">
-                    <h3 class="text-[16px] text-[#182B55] font-medium leading-6">Add to Cart</h3>
-                  </div>
-
-                </div>
-              </div>
-            </div>
-
-            <div class="max-w-[282px] h-[457px] border-2 border-[#F8F9FB] px-4 pt-4 pb-6 bg-[#FFFFFF]">
-              <div class="rounded-xl w-full h-[417px] mb-5 bg-[#FFFFFF]">
-                <div
-                  class="bg-[#F8F9FB] flex justify-center items-center relative rounded-xl w-full overflow-hidden">
-                  <img src={motor} alt="" class="h-[167px]" />
-                    <div
-                      class="bg-[#FFFFFF] rounded-full w-9 h-9 flex items-center justify-center absolute top-2 right-2">
-                      <svg width="20" height="20" viewBox="0 0 18 16" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path
-                          d="M8.99998 15.5C8.46248 15.0233 7.85498 14.5275 7.21248 14H7.20415C4.94165 12.15 2.37748 10.0566 1.24498 7.54829C0.87291 6.74973 0.675732 5.8809 0.666635 4.99996C0.664151 3.7912 1.14895 2.63245 2.01149 1.7856C2.87402 0.938751 4.04147 0.475289 5.24998 0.49996C6.23384 0.501514 7.19651 0.785861 8.02331 1.31913C8.38662 1.55493 8.71533 1.84017 8.99998 2.16663C9.28622 1.84145 9.61502 1.55638 9.97748 1.31913C10.8039 0.785756 11.7664 0.501392 12.75 0.49996C13.9585 0.475289 15.1259 0.938751 15.9885 1.7856C16.851 2.63245 17.3358 3.7912 17.3333 4.99996C17.3248 5.88231 17.1276 6.75262 16.755 7.55246C15.6225 10.0608 13.0591 12.1533 10.7966 14L10.7883 14.0066C10.145 14.5308 9.53831 15.0266 9.00081 15.5066L8.99998 15.5ZM5.24998 2.16663C4.47374 2.15691 3.72504 2.454 3.16665 2.99329C2.62863 3.52176 2.32794 4.24583 2.33324 4.99996C2.34275 5.64204 2.48817 6.27484 2.75998 6.85663C3.29457 7.93888 4.0159 8.91834 4.89081 9.74996C5.71665 10.5833 6.66665 11.39 7.48831 12.0683C7.71581 12.2558 7.94748 12.445 8.17915 12.6341L8.32498 12.7533C8.54748 12.935 8.77748 13.1233 8.99998 13.3083L9.01081 13.2983L9.01581 13.2941H9.02081L9.02831 13.2883H9.03248H9.03664L9.05165 13.2758L9.08581 13.2483L9.09165 13.2433L9.10081 13.2366H9.10581L9.11331 13.23L9.66665 12.7758L9.81165 12.6566C10.0458 12.4658 10.2775 12.2766 10.505 12.0891C11.3266 11.4108 12.2775 10.605 13.1033 9.76746C13.9783 8.93626 14.6997 7.95706 15.2341 6.87496C15.5109 6.28813 15.6584 5.64872 15.6667 4.99996C15.6701 4.24816 15.3696 3.52687 14.8333 2.99996C14.276 2.45823 13.5272 2.1587 12.75 2.16663C11.8016 2.15857 10.8949 2.5561 10.2583 3.25913L8.99998 4.70913L7.74165 3.25913C7.10503 2.5561 6.19838 2.15857 5.24998 2.16663Z"
-                          fill="#182B55" />
-                      </svg>
-
-                    </div>
-                </div>
-                <div class="flex flex-col justify-between items-start h-[247px] w-full">
-                  <div class="mb-2">
-                    <h2 class="text-[14px] text-[#3F66BC] font-medium leading-5">Electric Motors & Motor
-                      Controls</h2>
-                    <h1 class="text-[#475467] text-lg font-medium leading-[30px]">MAGNETIC STARTER FOR 7.5HP
-                      SINGLE PHASE 230V ELECTRIC MOTORS (40 AMP) – WEG</h1>
-                  </div>
-                  <div class="mb-[10px]">
-                    <p class="text-[#3F66BC] text-2xl font-semibold leading-8 gap-2.5">$234.00</p>
-                  </div>
-                  <div
-                    class="bg-[#FCD700] rounded-[60px] text-center w-full h-[40px] py-2 px-6 flex items-center justify-center hover:bg-[#e6c200] cursor-pointer transition duration-300">
-                    <h3 class="text-[16px] text-[#182B55] font-medium leading-6">Add to Cart</h3>
-                  </div>
-
-                </div>
-              </div>
-            </div>
-
-
-          </div>
-        </section>
+        <MostViewedSection title={"Products related to this items"} />
 
         <div>
 

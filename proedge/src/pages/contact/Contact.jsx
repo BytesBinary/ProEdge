@@ -34,10 +34,9 @@ const Contact = () => {
       </section>
 
 
-      <section class="w-full mt-3 md:mt-20 flex flex-col lg:flex-row justify-around items-start gap-10">
+      <section class="w-full mt-3 md:mt-20 flex flex-col lg:flex-row justify-center items-start gap-10">
 
-        <div
-          class="w-full md:w-[424px] h-[549px] bg-[#3F66BC] py-8 px-6 rounded-[16px] flex flex-col justify-between text-white">
+        <div class="w-full max-w-md h-[549px] bg-[#3F66BC] py-8 px-6 rounded-[16px] flex flex-col justify-between text-white">
           <div class="flex flex-col gap-[16px]">
             <h1 class="font-semibold text-[32px] leading-10">Contact Information</h1>
             <p class="font-medium text-[16px] leading-[26px]">Have questions or need assistance? Reach out to our
@@ -108,7 +107,7 @@ const Contact = () => {
         </div>
 
 
-        <div class="w-full md:w-[720px] h-[630px] relative">
+        <div class="w-full max-w-3xl h-[630px] relative">
           <h1 class="font-semibold text-4xl leading-12">Get In Touch</h1>
           <div class="flex flex-col gap-[16px] mt-8">
             <div class="flex flex-col md:flex-row justify-between gap-6">

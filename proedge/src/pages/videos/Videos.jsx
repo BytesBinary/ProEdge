@@ -2,6 +2,7 @@ import React from 'react'
 import thumbnail from '../../assets/images/vdo.jpeg'
 import bg from '../../assets/images/productDetails/bg.jpeg'
 import greater from '../../assets/images/productDetails/greater.png'
+import VideoCard from '../../components/Video/VideoCard'
 
 const Videos = () => {
   return (
@@ -29,101 +30,48 @@ const Videos = () => {
         <h1 class="text-[#182B55] text-5xl leading-16 font-semibold text-center">Watch Video</h1>
 
         <div class="container grid grid-cols-3 gap-8 mt-10 mx-auto ">
-          <div class="w-[384px] h-[343px] bg-[#F8F9FB] hover:shadow-sm rounded-xl relative cursor-pointer">
-            <a href="#">
-              <img src={thumbnail} alt="" class="w-full h-[211px] rounded-t-xl object-cover" />
-              <div
-                class="absolute top-3 right-3 w-[58px] h-6 rounded-[28px] py-[3px] px-2.5 text-[12px] leading-[18px] bg-white text-[#3F66BC]">
-                10 min</div>
-              <div class="px-4 pt-4 pb-5 flex flex-col gap-2">
-                <h3 class="text-[#3F66BC] text-[16px] leading-6">Pro Edge</h3>
-                <h2 class="text-[#182B55] font-medium text-xl leading-[30px]">Here is Video Tittle Lorem
-                  Ipsum is
-                  simply
-                  dummy text.</h2>
-              </div>
-            </a>
-          </div>
-
-          <div class="w-[384px] h-[343px] bg-[#F8F9FB] hover:shadow-sm rounded-xl relative cursor-pointer">
-            <a href="#">
-              <img src={thumbnail} alt="" class="w-full h-[211px] rounded-t-xl object-cover" />
-              <div
-                class="absolute top-3 right-3 w-[58px] h-6 rounded-[28px] py-[3px] px-2.5 text-[12px] leading-[18px] bg-white text-[#3F66BC]">
-                10 min</div>
-              <div class="px-4 pt-4 pb-5 flex flex-col gap-2">
-                <h3 class="text-[#3F66BC] text-[16px] leading-6">Pro Edge</h3>
-                <h2 class="text-[#182B55] font-medium text-xl leading-[30px]">Here is Video Tittle Lorem
-                  Ipsum is
-                  simply
-                  dummy text.</h2>
-              </div>
-            </a>
-          </div>
-
-          <div class="w-[384px] h-[343px] bg-[#F8F9FB] hover:shadow-sm rounded-xl relative cursor-pointer">
-            <a href="#">
-              <img src={thumbnail} alt="" class="w-full h-[211px] rounded-t-xl object-cover" />
-              <div
-                class="absolute top-3 right-3 w-[58px] h-6 rounded-[28px] py-[3px] px-2.5 text-[12px] leading-[18px] bg-white text-[#3F66BC]">
-                10 min</div>
-              <div class="px-4 pt-4 pb-5 flex flex-col gap-2">
-                <h3 class="text-[#3F66BC] text-[16px] leading-6">Pro Edge</h3>
-                <h2 class="text-[#182B55] font-medium text-xl leading-[30px]">Here is Video Tittle Lorem
-                  Ipsum is
-                  simply
-                  dummy text.</h2>
-              </div>
-            </a>
-          </div>
-
-          <div class="w-[384px] h-[343px] bg-[#F8F9FB] hover:shadow-sm rounded-xl relative cursor-pointer">
-            <a href="#">
-              <img src={thumbnail} alt="" class="w-full h-[211px] rounded-t-xl object-cover" />
-              <div
-                class="absolute top-3 right-3 w-[58px] h-6 rounded-[28px] py-[3px] px-2.5 text-[12px] leading-[18px] bg-white text-[#3F66BC]">
-                10 min</div>
-              <div class="px-4 pt-4 pb-5 flex flex-col gap-2">
-                <h3 class="text-[#3F66BC] text-[16px] leading-6">Pro Edge</h3>
-                <h2 class="text-[#182B55] font-medium text-xl leading-[30px]">Here is Video Tittle Lorem
-                  Ipsum is
-                  simply
-                  dummy text.</h2>
-              </div>
-            </a>
-          </div>
-
-          <div class="w-[384px] h-[343px] bg-[#F8F9FB] hover:shadow-sm rounded-xl relative cursor-pointer">
-            <a href="#">
-              <img src={thumbnail} alt="" class="w-full h-[211px] rounded-t-xl object-cover" />
-              <div
-                class="absolute top-3 right-3 w-[58px] h-6 rounded-[28px] py-[3px] px-2.5 text-[12px] leading-[18px] bg-white text-[#3F66BC]">
-                10 min</div>
-              <div class="px-4 pt-4 pb-5 flex flex-col gap-2">
-                <h3 class="text-[#3F66BC] text-[16px] leading-6">Pro Edge</h3>
-                <h2 class="text-[#182B55] font-medium text-xl leading-[30px]">Here is Video Tittle Lorem
-                  Ipsum is
-                  simply
-                  dummy text.</h2>
-              </div>
-            </a>
-          </div>
-
-          <div class="w-[384px] h-[343px] bg-[#F8F9FB] hover:shadow-sm rounded-xl relative cursor-pointer">
-            <a href="#">
-              <img src={thumbnail} alt="" class="w-full h-[211px] rounded-t-xl object-cover" />
-              <div
-                class="absolute top-3 right-3 w-[58px] h-6 rounded-[28px] py-[3px] px-2.5 text-[12px] leading-[18px] bg-white text-[#3F66BC]">
-                10 min</div>
-              <div class="px-4 pt-4 pb-5 flex flex-col gap-2">
-                <h3 class="text-[#3F66BC] text-[16px] leading-6">Pro Edge</h3>
-                <h2 class="text-[#182B55] font-medium text-xl leading-[30px]">Here is Video Tittle Lorem
-                  Ipsum is
-                  simply
-                  dummy text.</h2>
-              </div>
-            </a>
-          </div>
+          <VideoCard
+            thumbnail={thumbnail}
+            time="10 min"
+            title="Here is Video Title Lorem Ipsum is simply dummy text."
+            description="This is a short description of the video."
+            link="#"
+          />
+          <VideoCard
+            thumbnail={thumbnail}
+            time="5 min"
+            title="Another Video Title"
+            description="This is another video description."
+            link="#"
+          />
+          <VideoCard
+            thumbnail={thumbnail}
+            time="10 min"
+            title="Here is Video Title Lorem Ipsum is simply dummy text."
+            description="This is a short description of the video."
+            link="#"
+          />
+          <VideoCard
+            thumbnail={thumbnail}
+            time="10 min"
+            title="Here is Video Title Lorem Ipsum is simply dummy text."
+            description="This is a short description of the video."
+            link="#"
+          />
+          <VideoCard
+            thumbnail={thumbnail}
+            time="10 min"
+            title="Here is Video Title Lorem Ipsum is simply dummy text."
+            description="This is a short description of the video."
+            link="#"
+          />
+          <VideoCard
+            thumbnail={thumbnail}
+            time="10 min"
+            title="Here is Video Title Lorem Ipsum is simply dummy text."
+            description="This is a short description of the video."
+            link="#"
+          />
         </div>
       </section>
     </div>
