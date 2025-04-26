@@ -4,7 +4,7 @@ const Footer = () => {
   return (
     <footer className="w-full h-auto md:h-[416px]  bg-[#182B55] flex flex-col items-center justify-evenly py-8 px-4">
         <div className="flex flex-col lg:flex-row flex-wrap gap-8 items-start justify-between w-full container">
-            <div className="w-[350px] h-[214px] flex flex-col justify-evenly">
+            <div className="w-[350px] h-[214px] flex flex-col justify-evenly ">
                 <div>
                     <img src={logo} alt={logo} className="h-9" />
                 </div>
@@ -26,10 +26,10 @@ const Footer = () => {
             <div className="w-[135px] h-[198px] flex flex-col justify-center text-white">
                 <h1 className="font-medium text-2xl leading-[30px]">Information</h1>
                 <ul className="text-[16px] leading-6 my-1">
-                    <li className="py-2"><a href="#">Products</a></li>
-                    <li className="py-2"><a href="#">Videos</a></li>
-                    <li className="py-2"><a href="#">Tech help</a></li>
-                    <li className="py-2"><a href="#">Contact Us</a></li>
+                    <li className="py-2 "><a href="#" className='hover:underline' >Products</a></li>
+                    <li className="py-2 "><a href="#" className='hover:underline' >Videos</a></li>
+                    <li className="py-2 "><a href="#" className='hover:underline' >Tech help</a></li>
+                    <li className="py-2 "><a href="#" className='hover:underline' >Contact Us</a></li>
                 </ul>
             </div>
 

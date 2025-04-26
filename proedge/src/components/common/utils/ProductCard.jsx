@@ -8,7 +8,7 @@ const ProductCard = ({ image, category, title, price }) => {
                     className="bg-[#F8F9FB] flex justify-center items-center relative rounded-xl w-full overflow-hidden">
                     <img src={image} alt={image} className="h-[167px]" />
                     <div
-                        className="group bg-[#FFFFFF] hover:bg-[#EE2738] rounded-full w-9 h-9 flex items-center justify-center absolute top-2 right-2 transition duration-300">
+                        className="group bg-[#FFFFFF] hover:bg-[#EE2738] rounded-full w-9 h-9 flex items-center justify-center absolute top-2 right-2 transition duration-300 cursor-pointer">
                         <svg
                             width="20"
                             height="20"
