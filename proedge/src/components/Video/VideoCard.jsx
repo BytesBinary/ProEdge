@@ -1,6 +1,6 @@
 import React from 'react';
 
-const VideoCard = ({ thumbnail, time, title, description, link }) => {
+const VideoCard = ({ thumbnail, time, title, link }) => {
   return (
     <div className="w-[384px] h-[343px] bg-[#F8F9FB] hover:shadow-sm rounded-xl relative cursor-pointer">
       <a href={link}>
@@ -17,7 +17,6 @@ const VideoCard = ({ thumbnail, time, title, description, link }) => {
           <h2 className="text-[#182B55] font-medium text-xl leading-[30px]">
             {title}
           </h2>
-          <p className="text-[#182B55] text-sm leading-5">{description}</p>
         </div>
       </a>
     </div>

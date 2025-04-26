@@ -2,6 +2,8 @@ import React from 'react'
 import thumbnail from '../../assets/images/vdo.jpeg'
 import bg from '../../assets/images/productDetails/bg.jpeg'
 import greater from '../../assets/images/productDetails/greater.png'
+
+
 import VideoCard from '../../components/Video/VideoCard'
 
 const Videos = () => {
@@ -34,42 +36,36 @@ const Videos = () => {
             thumbnail={thumbnail}
             time="10 min"
             title="Here is Video Title Lorem Ipsum is simply dummy text."
-            description="This is a short description of the video."
             link="#"
           />
           <VideoCard
             thumbnail={thumbnail}
             time="5 min"
             title="Another Video Title"
-            description="This is another video description."
             link="#"
           />
           <VideoCard
             thumbnail={thumbnail}
             time="10 min"
             title="Here is Video Title Lorem Ipsum is simply dummy text."
-            description="This is a short description of the video."
             link="#"
           />
           <VideoCard
             thumbnail={thumbnail}
             time="10 min"
             title="Here is Video Title Lorem Ipsum is simply dummy text."
-            description="This is a short description of the video."
             link="#"
           />
           <VideoCard
             thumbnail={thumbnail}
             time="10 min"
             title="Here is Video Title Lorem Ipsum is simply dummy text."
-            description="This is a short description of the video."
             link="#"
           />
           <VideoCard
             thumbnail={thumbnail}
             time="10 min"
             title="Here is Video Title Lorem Ipsum is simply dummy text."
-            description="This is a short description of the video."
             link="#"
           />
         </div>
