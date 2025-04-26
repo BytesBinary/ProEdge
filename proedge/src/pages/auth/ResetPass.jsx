@@ -1,8 +1,8 @@
 // src/pages/auth/ResetPass.jsx
 import React from "react";
-import BackButton from "../../components/common/utils/BackButton";
-import TextInput from "../../components/common/utils/TextInput";
-import Button from "../../components/common/utils/Button";
+import BackButton from "../../components/common/utils/button/BackButton"
+import TextInput from "../../components/common/form/TextInput"
+import Button from '../../components/common/utils/button/Button'
 
 const ResetPass = () => {
   return (

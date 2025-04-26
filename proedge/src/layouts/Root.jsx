@@ -1,16 +1,16 @@
 import { Outlet } from 'react-router-dom'
-import Header from '../components/common/partials/Header'
-import Footer from '../components/common/partials/Footer'
+import Header from '../components/common/header/Header'
+import Footer from '../components/common/footer/Footer'
 
 const Root = () => {
   return (
-    <body className='antialiased'>
+    <>
     <Header />
       <main>
         <Outlet />
       </main>
     <Footer />
-    </body>
+    </>
   )
 }
 

@@ -1,9 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import TextInput from "../../components/common/utils/TextInput";
+import TextInput from "../../components/common/form/TextInput";
 import AuthHeader from "../../components/auth/AuthHeader";
-import CheckboxWithLabel from "../../components/common/utils/CheckBoxWithLabel";
-import Button from "../../components/common/utils/Button";
+import CheckboxWithLabel from "../../components/common/form/CheckBoxWithLabel";
+import Button from '../../components/common/utils/button/Button'
 
 const SignIn = () => {
   return (

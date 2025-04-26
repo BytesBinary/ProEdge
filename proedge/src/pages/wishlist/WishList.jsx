@@ -1,5 +1,5 @@
 import React from "react";
-import SubPageHeader from "../../components/common/utils/SubPageHeader.jsx";
+import SubPageHeader from '../../components/common/utils/banner/SubPageHeader.jsx'
 import bgImage from "../../assets/images/cart.png";
 import WishCard from "../../components/wishlist/WishCard.jsx";
 import DemoCardList from "../../data/wishlist/WishData.js";
@@ -18,7 +18,7 @@ const WishList = () => {
         ]}
       />
 
-      <section className="my-10 container mx-auto px-2 md:px-12 lg:px-20">
+      <section className="my-10 max-w-7xl mx-auto px-2 md:px-12 lg:px-20">
         <h1 className="text-3xl text-[#182B55] font-bold">
           Wish List ({DemoCardList.length} Items)
         </h1>

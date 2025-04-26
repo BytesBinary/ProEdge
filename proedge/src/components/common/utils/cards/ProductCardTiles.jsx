@@ -1,10 +1,14 @@
 import React from "react";
+import plus from "../../../../assets/icons/plus.svg"
+import minus from "../../../../assets/icons/minus.svg"
+import productImage from '../../../../assets/images/products/motor.png'
 
 const ProductCard = ({ product }) => {
   return (
     <article className="bg-white p-3 sm:p-4 rounded-xl shadow-sm flex flex-col md:flex-row items-start gap-3 sm:gap-4">
+      {console.log(product)}
       <img
-        src={product.image}
+        src={product.image || productImage}
         alt={product.name}
         className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain"
       />
@@ -17,13 +21,13 @@ const ProductCard = ({ product }) => {
 
           <div className="flex items-center gap-1 sm:gap-2 order-last sm:order-none">
             <button className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-[#F8F9FB] rounded-md text-lg">
-              <img src="./src/icons/minus.svg" alt="Minus Icon" />
+              <img src={minus} alt="Minus Icon" />
             </button>
             <span className="bg-[#3F66BC] text-white w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center rounded-md text-sm sm:text-base">
               {product.quantity}
             </span>
             <button className="flex justify-center items-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-[#F8F9FB] rounded-md text-lg">
-              <img src="./src/icons/plus.svg" alt="Plus Icon" />
+              <img src={plus} alt="Plus Icon" />
             </button>
           </div>
 

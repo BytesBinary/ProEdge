@@ -2,7 +2,6 @@ const products = [
     {
       id: 1,
       name: "EMZ 3.7 HP Electric Motor, 56 Frame, 3450 RPM, 1-Phase, 230VAC",
-      image: "./src/images/products/motor.png",
       priceDollars: 230,
       priceCents: "45",
       quantity: 2,
@@ -13,7 +12,6 @@ const products = [
     {
       id: 2,
       name: "EMZ 3.7 HP Electric Motor, 56 Frame, 3450 RPM, 1-Phase, 230VAC",
-      image: "./src/images/products/motor.png",
       priceDollars: 230,
       priceCents: "45",
       quantity: 2,
@@ -24,7 +22,6 @@ const products = [
     {
       id: 3,
       name: "EMZ 3.7 HP Electric Motor, 56 Frame, 3450 RPM, 1-Phase, 230VAC",
-      image: "./src/images/products/motor.png",
       priceDollars: 230,
       priceCents: "45",
       quantity: 2,

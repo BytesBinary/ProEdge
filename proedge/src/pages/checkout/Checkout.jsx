@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import SubPageHeader from "../../components/common/utils/SubPageHeader";
+import SubPageHeader from '../../components/common/utils/banner/SubPageHeader'
 import bgImage from "../../assets/images/cart.png";
 import ShippingAddress from "../../components/checkout/ShippingAddress";
 import DeliveryMethod from "../../components/checkout/DeliveryMethod";
@@ -7,11 +7,12 @@ import PaymentOption from "../../components/checkout/PaymentOption";
 import CardIcons from "../../components/checkout/CardIcons";
 import CardInformation from "../../components/checkout/CardInformation";
 import BillingAddress from "../../components/checkout/BillingAdress";
-import OrderSummaryCard from "../../components/cart/OrderSummary";
+import OrderSummaryCard from "../../components/common/utils/cards/OrderSummary";
 import OrderSummary from "../../data/cart/OrderSummary";
-import ProductCardTiles from "../../components/common/utils/ProductCardTiles";
+import ProductCardTiles from "../../components/common/utils/cards/ProductCardTiles";
 import products from "../../data/cart/cartProduct";
-import Button from "../../components/common/utils/Button";
+import Button from "../../components/common/utils/button/Button";
+
 
 const Checkout = () => {
   // 🧠 State for billing form
@@ -72,7 +73,7 @@ const Checkout = () => {
           { label: "Checkout" },
         ]}
       />
-      <section className="mt-10 container mx-auto p-5 grid grid-cols-1 md:grid-cols-3 gap-0 md:gap-10">
+      <section className="mt-10 max-w-7xl mx-auto p-5 grid grid-cols-1 md:grid-cols-3 gap-0 md:gap-10">
         <form className="col-span-2 space-y-8">
           <ShippingAddress />
           <DeliveryMethod />
@@ -115,13 +116,13 @@ const Checkout = () => {
             ))}
           </div>
           <Button label={"Place Order"} />
-          <p class="text-sm max-w-md w-full mx-auto text-[#182B55] text-center mt-3">
+          <p className="text-sm max-w-md w-full mx-auto text-[#182B55] text-center mt-3">
             By clicking Place Order you agree to Pro Edge’s
-            <a href="#" class="text-[#3F66BC] underline">
+            <a href="#" className="text-[#3F66BC] underline">
               Terms & Conditions
             </a>
             and{" "}
-            <a href="#" class="text-[#3F66BC] underline">
+            <a href="#" className="text-[#3F66BC] underline">
               Privacy Policy
             </a>
             .

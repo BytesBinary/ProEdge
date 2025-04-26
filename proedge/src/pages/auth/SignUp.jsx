@@ -1,8 +1,8 @@
 // src/pages/auth/SignUp.jsx
 import React from 'react'
 import { Link } from 'react-router-dom'
-import Button from '../../components/common/utils/Button'
-import TextInput from '../../components/common/utils/TextInput'
+import Button from '../../components/common/utils/button/Button'
+import TextInput from '../../components/common/form/TextInput'
 import AuthHeader from '../../components/auth/AuthHeader'
 
 const SignUp = () => {
