@@ -19,7 +19,7 @@ import MostViewedSection from '../../components/home/MostViewed';
 const Product = () => {
   return (
     <div>
-      <div class="container flex flex-col items-start max-w-full w-full mx-auto">
+      <div class=" flex flex-col items-start max-w-full w-full mx-auto">
 
         <section class="relative w-full h-[20vh] md:h-[30vh] lg:h-[20vw] overflow-hidden">
 
@@ -31,7 +31,7 @@ const Product = () => {
 
 
           <div
-            class="relative container mx-auto h-full flex flex-col justify-center items-start px-6 md:px-12 lg:px-20 text-white">
+            class="relative  mx-auto h-full flex flex-col justify-center items-start px-6 md:px-12 lg:px-20 text-white">
             <h1 class="text-3xl md:text-4xl font-semibold">Products Details</h1>
             <nav class="mt-2 text-sm md:text-base flex items-center gap-2">
               <a href="/" class="hover:underline">Home</a>
@@ -44,14 +44,14 @@ const Product = () => {
         </section>
 
 
-        <section class="my-10 container mx-auto flex flex-col md:flex-row justify-between w-full h-auto items-start gap-6">
+        <section class="my-10 max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between w-full h-auto items-start gap-6">
           <ProductImage m1={m1} m2={m2} />
           <ProductInfo />
           <DeliveryInfo />         
         </section>
 
 
-        <section class="my-10 container mx-auto shadow-sm w-full rounded-[14px] bg-white border-2 border-[#F8F9FB]">
+        <section class="my-10  max-w-[1200px]  mx-auto shadow-sm w-full rounded-[14px] bg-white border-2 border-[#F8F9FB]">
 
           <div class="bg-[#F8F9FB] px-4 sm:px-10 py-5 rounded-tl-[14px] rounded-tr-[14px] flex flex-wrap gap-2">
             <PDS title="Key Features" />
@@ -72,8 +72,9 @@ const Product = () => {
           ))}      
         </section>
 
-
-        <MostViewedSection title={"Products related to this items"} />
+          <section className='max-w-[1200px] mx-auto'>
+            <MostViewedSection title={"Products related to this items"} />
+          </section>
 
         <div>
 

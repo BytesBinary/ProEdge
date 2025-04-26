@@ -31,7 +31,7 @@ const Videos = () => {
       <section class="my-10">
         <h1 class="text-[#182B55] text-5xl leading-16 font-semibold text-center">Watch Video</h1>
 
-        <div class="container grid grid-cols-3 gap-8 mt-10 mx-auto ">
+        <div class="max-w-[1200px] grid grid-cols-3 gap-8 mt-10 mx-auto ">
           <VideoCard
             thumbnail={thumbnail}
             time="10 min"
