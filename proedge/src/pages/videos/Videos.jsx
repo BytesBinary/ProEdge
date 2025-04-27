@@ -19,7 +19,7 @@ const Videos = () => {
           Watch Video
         </h1>
 
-        <div className="max-w-7xl flex-center flex-wrap gap-8 mt-10 mx-auto px-4">
+        <div className="max-w-7xl w-full flex-center flex-wrap gap-8 mt-10 mx-auto px-4">
           {videos.map((video, index) => (
             <VideoCard
               key={index}

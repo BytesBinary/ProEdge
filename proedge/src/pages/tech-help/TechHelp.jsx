@@ -71,7 +71,7 @@ const TechHelp = () => {
       </div>
 
 
-      <section className="my-10 max-w-[1200px] mx-auto">
+      <section className="my-10 max-w-7xl w-full mx-auto">
         <h1 className="text-[#182B55] text-3xl md:text-5xl leading-16 font-semibold text-center">
           What would you like to do?
         </h1>
@@ -83,7 +83,7 @@ const TechHelp = () => {
         </div>
       </section>
 
-      <section className="my-20 md:my-10 max-w-[1200px] mx-auto">
+      <section className="my-20 md:my-10 max-w-7xl w-full mx-auto">
         <h1 className="text-[#182B55] text-3xl md:text-5xl leading-16 font-semibold text-center">
           Help Topics
         </h1>
@@ -101,7 +101,7 @@ const TechHelp = () => {
         </div>
       </section>
 
-      <section className="my-10 max-w-[1200px] mx-auto">
+      <section className="my-10 max-w-7xl w-full mx-auto">
         <h1 className="text-[#182B55] text-3xl md:text-5xl leading-16 font-semibold text-center">
           Pro Edge Policies
         </h1>
