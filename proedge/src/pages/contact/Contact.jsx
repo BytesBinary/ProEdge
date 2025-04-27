@@ -1,200 +1,120 @@
-import React from 'react'
-import bg from '../../assets/images/productDetails/bg.jpeg'
-import greater from '../../assets/images/productDetails/greater.png'
-import call from '../../assets/images/contact/call.png'
-import mail from '../../assets/images/contact/mail.png'
-import location from '../../assets/images/contact/location.png'
-import insta from '../../assets/images/contact/insta.png'
-import fb from '../../assets/images/contact/fb.png'
-import ln from '../../assets/images/contact/in.png'
-import twit from '../../assets/images/contact/twit.png'
-import map from '../../assets/images/contact/map.png'
+import React from "react";
+import { Link } from "react-router-dom";
+import ContactInfoItem from "../../components/contactus/ContactInfoItem";
+import SocialIcon from "../../components/contactus/SocialIcon";
+import InputField from "../../components/contactus/InputField";
+import SelectField from "../../components/contactus/SelectField";
+import TextareaField from "../../components/contactus/TextArea";
+import SubPageHeader from "../../components/common/utils/banner/SubPageHeader";
+import bgImage from "../../assets/images/cart.png";
+import categoryOptions from "../../data/contactus/CategoryOption";
+import breadcrumbs from "../../data/contactus/Breadcrumbs";
+import socialLinks from "../../data/contactus/SocialLinks";
+import formFields from "../../data/contactus/FormFields";
+import contactInfoItems from "../../data/contactus/ContactInfoItems";
+import Map from "../../components/contactus/Map";
+import Button from "../../components/contactus/Button";
 
 const Contact = () => {
   return (
-    <div>
-      <section className="relative w-full h-[20vh] md:h-[30vh] lg:h-[20vw] overflow-hidden">
+    <>
+      <SubPageHeader
+        title="Contact Us"
+        bgImage={bgImage}
+        breadcrumbs={breadcrumbs}
+      />
 
-        <img src={bg} alt="A man using a grinder on wood"
-          className="absolute inset-0 w-full h-full object-cover object-center" />
-
-
-        <div className="absolute inset-0 bg-black/60 bg-opacity-60"></div>
-
-
-        <div
-          className="relative max-w-7xl mx-auto h-full flex flex-col justify-center items-start px-6 md:px-12 lg:px-20 text-white">
-          <h1 className="text-3xl md:text-4xl font-semibold">Contact Us</h1>
-          <nav className="mt-2 text-sm md:text-base flex items-center gap-2 md:gap-4">
-            <a href="/" className="hover:underline">Home</a>
-            <img src={greater} alt="An icon pointing to the right" className="w-6 h-6" />
-            <span className="text-gray-300">Contact</span>
-          </nav>
-        </div>
-      </section>
-
-
-
-      <section class="w-full max-w-[1200px] mx-auto mt-3 md:mt-20 flex flex-col lg:flex-row justify-center items-start gap-10">
-
-
+      <section className="w-full max-w-[1200px] mx-auto mt-3 md:mt-20 flex flex-col lg:flex-row justify-center items-start gap-10">
+        {/* Contact Information Section */}
         <div className="w-full max-w-md h-[549px] bg-[#3F66BC] py-8 px-6 rounded-[16px] flex flex-col justify-between text-white">
           <div className="flex flex-col gap-[16px]">
-            <h1 className="font-semibold text-[32px] leading-10">Contact Information</h1>
-            <p className="font-medium text-[16px] leading-[26px]">Have questions or need assistance? Reach out to our
-              friendly team!</p>
+            <h1 className="font-semibold text-[32px] leading-10">
+              Contact Information
+            </h1>
+            <p className="font-medium text-[16px] leading-[26px]">
+              Have questions or need assistance? Reach out to our friendly team!
+            </p>
           </div>
-          <div className="h-[344.5px] flex flex-col justify-between ">
 
-            <div className="flex gap-4 items-center">
-              <div className="w-12 h-12 bg-[#FFFFFF]/15 rounded-[39px] flex items-center justify-center">
-                <img src={call} alt="" className="w-7 h-7" />
-              </div>
-              <div>
-                <h2 className="font-medium text-[16px] leading-6">Phone Number</h2>
-                <h5 className="text-[16px] leading-5">(236) 461-2622</h5>
-              </div>
-            </div>
-            <div className="border-b-2 border-[#FFFFFF]/10 h-[1.5px]"></div>
-
-            <div className="flex gap-4 items-center">
-              <div className="w-12 h-12 bg-[#FFFFFF]/15 rounded-[39px] flex items-center justify-center">
-                <img src={mail} alt="" className="w-7 h-7" />
-              </div>
-              <div>
-                <h2 className="font-medium text-[16px] leading-6">Email Address</h2>
-                <h5 className="text-[16px] leading-5">info@divihardware.com</h5>
-              </div>
-            </div>
-            <div className="border-b-2 border-[#FFFFFF]/10 h-[1.5px]"></div>
-
-
-            <div className="flex gap-4 items-center">
-              <div className="w-12 h-12 bg-[#FFFFFF]/15 rounded-[39px] flex items-center justify-center">
-                <img src={location} alt="" className="w-7 h-7" />
-              </div>
-              <div>
-                <h2 className="font-medium text-[16px] leading-6">Location</h2>
-                <h5 className="text-[16px] leading-5">1234 Divi St. San Francisco, CA 93145</h5>
-              </div>
-            </div>
-            <div className="border-b-2 border-[#FFFFFF]/10 h-[1.5px]"></div>
-
+          <div className="h-[344.5px] flex flex-col justify-between">
+            {contactInfoItems.map((item, index) => (
+              <ContactInfoItem
+                key={index}
+                icon={item.icon}
+                title={item.title}
+                content={item.content}
+              />
+            ))}
 
             <div className="flex gap-[24px]">
-              <a href="#">
-                <div className="w-10 h-10 bg-[#FFFFFF]/15 rounded-[39px] flex items-center justify-center">
-                  <img src={insta} alt="" className="w-5 h-5" />
-                </div>
-              </a>
-              <a href="#">
-                <div className="w-10 h-10 bg-[#FFFFFF]/15 rounded-[39px] flex items-center justify-center">
-                  <img src={fb} alt="" className="w-5 h-5" />
-                </div>
-              </a>
-              <a href="#">
-                <div className="w-10 h-10 bg-[#FFFFFF]/15 rounded-[39px] flex items-center justify-center">
-                  <img src={ln} alt="" className="w-5 h-5" />
-                </div>
-              </a>
-              <a href="#">
-                <div className="w-10 h-10 bg-[#FFFFFF]/15 rounded-[39px] flex items-center justify-center">
-                  <img src={twit} alt="" className="w-5 h-5" />
-                </div>
-              </a>
+              {socialLinks.map((social, index) => (
+                <SocialIcon key={index} icon={social.icon} href={social.href} />
+              ))}
             </div>
-
           </div>
-
         </div>
 
-
+        {/* Contact Form Section */}
         <div className="w-full max-w-3xl h-[630px] relative">
           <h1 className="font-semibold text-4xl leading-12">Get In Touch</h1>
+
           <div className="flex flex-col gap-[16px] mt-8">
+            {/* First row of fields */}
             <div className="flex flex-col md:flex-row justify-between gap-6">
-
-              <input type="text" id="fname" name="fname" placeholder="First Name*" required
-                className="w-[348px] bg-[#F8F9FB] border border-[#ECF0F9] rounded-[8px] px-4 py-[17px] text-[16px] text-[#5D6576] leading-[22px] placeholder-opacity-100 placeholder-[#5D6576] focus:outline-none focus:ring-2 focus:ring-[#cfd8e6] transition duration-200" />
-
-
-              <input type="text" id="lname" name="lname" placeholder="Last Name*" required
-                className="w-[348px] bg-[#F8F9FB] border border-[#ECF0F9] rounded-[8px] px-4 py-[17px] placeholder-opacity-100 placeholder-[#5D6576] text-[16px] leading-[22px] focus:outline-none focus:ring-2 focus:ring-[#cfd8e6] transition duration-200" />
-            </div>
-            <div className="flex flex-col md:flex-row justify-between gap-6">
-
-              <input type="email" id="email" name="email" placeholder="Email Address*" required
-                className="bg-[#F8F9FB] border border-[#ECF0F9] rounded-[8px] px-4 py-[17px] text-[#5D6576] placeholder-opacity-100 placeholder-[#5D6576] text-[16px] w-[348px] leading-[22px] focus:outline-none focus:ring-2 focus:ring-[#cfd8e6] transition duration-200" />
-
-
-              <input type="tel" id="phone" name="phone" placeholder="Phone Number*" required
-                className="bg-[#F8F9FB] border border-[#ECF0F9] rounded-[8px] px-4 py-[17px] text-[#5D6576] placeholder-opacity-100 placeholder-[#5D6576] text-[16px] w-[348px] leading-[22px] focus:outline-none focus:ring-2 focus:ring-[#cfd8e6] transition duration-200" />
+              {formFields.slice(0, 2).map((field, index) => (
+                <InputField
+                  key={index}
+                  type={field.type}
+                  id={field.id}
+                  name={field.name}
+                  placeholder={field.placeholder}
+                  fullWidth={field.fullWidth}
+                />
+              ))}
             </div>
 
-            <input type="text" id="subject" name="subject" placeholder="Subject*" required
-              className="bg-[#F8F9FB] border border-[#ECF0F9] rounded-[8px] px-4 py-[17px] text-[#5D6576] placeholder-opacity-100 placeholder-[#5D6576] text-[16px] w-[348px] md:w-full leading-[22px] focus:outline-none focus:ring-2 focus:ring-[#cfd8e6] transition duration-200" />
+            {/* Second row of fields */}
+            <div className="flex flex-col md:flex-row justify-between gap-6">
+              {formFields.slice(2, 4).map((field, index) => (
+                <InputField
+                  key={index}
+                  type={field.type}
+                  id={field.id}
+                  name={field.name}
+                  placeholder={field.placeholder}
+                  fullWidth={field.fullWidth}
+                />
+              ))}
+            </div>
 
+            {/* Full width fields */}
+            {formFields.slice(4).map((field, index) => (
+              <InputField
+                key={index}
+                type={field.type}
+                id={field.id}
+                name={field.name}
+                placeholder={field.placeholder}
+                fullWidth={field.fullWidth}
+              />
+            ))}
 
-            <select id="category" name="category" required
-              className="bg-[#F8F9FB] border border-[#ECF0F9] rounded-[8px] px-4 py-[17px] text-[#5D6576] text-[16px] leading-[22px] w-[348px] md:w-full focus:outline-none focus:ring-2 focus:ring-[#cfd8e6] transition duration-200">
-              <option value="" disabled selected>Select a Category</option>
-              <option value="general">General Inquiry</option>
-              <option value="support">Customer Support</option>
-              <option value="feedback">Feedback</option>
-              <option value="partnership">Partnership</option>
-              <option value="other">Other</option>
-            </select>
+            <SelectField
+              id="category"
+              name="category"
+              options={categoryOptions}
+            />
 
+            <TextareaField id="details" name="details" placeholder="Details*" />
 
-            <textarea id="details" name="details" placeholder="Details*" required rows="5"
-              className="bg-[#F8F9FB] border border-[#ECF0F9] rounded-[8px] px-4 pt-4 pb-[47px] w-[348px] md:w-full text-[#5D6576] text-[16px] placeholder-opacity-100 placeholder-[#5D6576] leading-[22px] resize-none focus:outline-none focus:ring-2 focus:ring-[#cfd8e6] transition duration-200"></textarea>
-            <a href="#">
-              <button
-                className="md:absolute right-0 bottom-0 bg-[#3F66BC] rounded-[180px] py-4 px-8 text-white text-lg leading-6 hover:bg-[#3F66BC]/80 cursor-pointer">Submit
-                Now
-              </button>
-            </a>
+            <Button className="md:absolute right-0 bottom-0">Submit Now</Button>
           </div>
-
         </div>
-
       </section>
 
+      <Map />
+    </>
+  );
+};
 
-
-      <section class="mt-48 md:mt-18">
-      <div style={{ position: 'relative', width: '100%', height: '400px' }}>
-      <iframe
-        src="https://maps.google.com/maps?q=san+francisco&output=embed"
-        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
-        loading="lazy"
-        allowFullScreen
-        title="Google Map"
-      ></iframe>
-      <a
-        href="https://freeairecipegenerator.com"
-        rel="noopener noreferrer"
-        target="_blank"
-        style={{
-          position: 'absolute',
-          width: '1px',
-          height: '1px',
-          padding: 0,
-          margin: '-1px',
-          overflow: 'hidden',
-          clip: 'rect(0,0,0,0)',
-          whiteSpace: 'nowrap',
-          border: 0,
-        }}
-      >
-        freeairecipegenerator.com
-      </a>
-    </div>
-
-      </section>
-
-    </div>
-  )
-}
-
-export default Contact
+export default Contact;

@@ -1,14 +1,8 @@
-import React from 'react'
-import Filter from '../../components/category/Filter'
+import React from "react";
+import Filter from "../../components/category/Filter";
 
 const Category = () => {
-  return (
-    <div>
-      <div>
-        <Filter />
-      </div>
-    </div>
-  )
-}
+  return <Filter />;
+};
 
-export default Category
+export default Category;
