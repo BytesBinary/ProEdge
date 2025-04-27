@@ -4,7 +4,6 @@ import {
   FiMenu,
   FiX,
   FiSearch,
-  FiUser,
   FiHeart,
   FiShoppingCart,
 } from "react-icons/fi";
@@ -16,7 +15,6 @@ const MobileNav = () => {
   const navLinks = [
     { to: "/", text: "Home" },
     { to: "/products", text: "Products" },
-    { to: "/about", text: "About Us" },
     { to: "/videos", text: "Videos" },
     { to: "/tech-help", text: "TechHelp" },
     { to: "/contact-us", text: "Contact" },

@@ -60,7 +60,7 @@ const DeliveryInfo = () => {
 
   return (
     <div className="h-auto max-w-xs rounded-xl border-2 bg-[#F8F9FB] border-[#ECF0F9] py-4 px-3 mx-auto lg:mx-0">
-      <div className="w-full max-w-[180px] flex flex-col justify-between space-y-4">
+      <div className="w-full max-w-xs md:max-w-[180px] flex flex-col justify-between space-y-4">
         {/* Price */}
         <Price priceData={priceData} />
 

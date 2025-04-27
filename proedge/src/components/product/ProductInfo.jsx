@@ -97,7 +97,7 @@ const ProductInfo = () => {
           <span className="text-[#3F66BC] font-semibold">3.7 HP,56 Frame</span>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-15 max-w-2xl">
+        <div className="grid grid-cols-2 lg:grid-cols-4 mx-auto gap-4 md:gap-15 max-w-2xl">
           {priceOptions.map((option, index) => (
             <PriceCard
               key={index}

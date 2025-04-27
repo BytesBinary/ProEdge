@@ -32,7 +32,7 @@ const formFields = [
       id: "subject",
       name: "subject",
       placeholder: "Subject*",
-      fullWidth: true
+      fullWidth: false
     }
   ];
 export default formFields;  
