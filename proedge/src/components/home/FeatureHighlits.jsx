@@ -42,7 +42,7 @@ const FeatureHighlights = () => {
 
   return (
     <section
-      className="max-w-7xl mx-auto py-12 grid grid-cols-1 lg:grid-cols-3 gap-6"
+      className="max-w-7xl w-full mx-auto py-12 grid grid-cols-1 lg:grid-cols-3 gap-6"
       aria-label="Feature Highlights"
     >
       {cards.map((card, index) => (

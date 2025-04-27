@@ -15,7 +15,7 @@ const PageHeader = ({ title = "Title", bgImage, breadcrumbs = [] }) => {
       <div className="absolute inset-0 bg-black/60 bg-opacity-60"></div>
 
       {/* Content */}
-      <div className="relative max-w-7xl mx-auto h-full flex flex-col justify-center px-6 md:px-12 lg:px-20 text-white">
+      <div className="relative max-w-7xl w-full mx-auto h-full flex flex-col justify-center px-6 md:px-12 lg:px-20 text-white">
         <h1 className="text-3xl md:text-4xl font-bold">{title}</h1>
         <nav className="mt-2 text-sm md:text-base flex items-center gap-2 md:gap-4">
           {breadcrumbs.map((crumb, index) => (

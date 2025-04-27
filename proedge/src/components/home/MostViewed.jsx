@@ -21,7 +21,7 @@ const products = [
 
 const MostViewedSection = ({ title }) => {
   return (
-    <section className="max-w-7xl mx-auto px-4 py-10">
+    <section className="max-w-7xl w-full mx-auto px-4 py-10">
       <h1 className="text-[#182B55] font-semibold text-2xl md:text-5xl text-center mb-10">
         {title}
       </h1>

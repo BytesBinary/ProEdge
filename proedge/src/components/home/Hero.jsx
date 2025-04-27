@@ -3,7 +3,7 @@ import HeroImage from '../../assets/images/heroImage.png'
 const Hero = () => {
   return (
 
-    <section className="relative max-w-7xl mx-auto w-full overflow-hidden rounded-2xl" aria-labelledby="hero-heading">
+    <section className="relative max-w-7xl w-full mx-auto overflow-hidden rounded-2xl" aria-labelledby="hero-heading">
         <picture>
             <source srcSet={HeroImage} type="image/webp/png" />
             <img src={HeroImage}
@@ -12,7 +12,7 @@ const Hero = () => {
         </picture>
 
         <div className="absolute inset-0 bg-black/50">
-            <div className="max-w-7xl mx-auto flex flex-col justify-center items-start h-full px-4 sm:px-6 md:px-8 py-10">
+            <div className="max-w-7xl w-full mx-auto flex flex-col justify-center items-start h-full px-4 sm:px-6 md:px-8 py-10">
                 <header>
                     <h1 id="hero-heading"
                         className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold max-w-[95%] sm:max-w-[80%] md:max-w-[495px] leading-tight">

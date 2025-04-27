@@ -28,7 +28,7 @@ const Product = () => {
 
           <div className="absolute inset-0 bg-black/60 bg-opacity-60"></div>
 
-          <div className="relative max-w-7xl mx-auto h-full flex flex-col justify-center items-start px-6 md:px-12 lg:px-20 text-white">
+          <div className="relative max-w-7xl w-full mx-auto h-full flex flex-col justify-center items-start px-6 md:px-12 lg:px-20 text-white">
             <h1 className="text-3xl md:text-4xl font-semibold">
               Products Details
             </h1>
@@ -54,25 +54,25 @@ const Product = () => {
           </div>
         </section>
 
-        <section className="my-10 max-w-7xl mx-auto flex flex-col md:flex-row justify-between w-full h-auto items-start gap-6">
+        <section className="my-10 max-w-7xl w-full mx-auto flex flex-col md:flex-row justify-between h-auto items-start gap-6">
           <ProductImage thumbnails={[m1, m1, m1, m1]} mainImage={m2} />
           <ProductInfo />
           <DeliveryInfo />
         </section>
 
-        <section className="my-10 max-w-7xl mx-auto shadow-sm w-full rounded-[14px] bg-white border-2 border-[#F8F9FB]">
-          <div className="bg-[#F8F9FB] px-4 sm:px-10 py-5 rounded-tl-[14px] rounded-tr-[14px] flex flex-wrap gap-2">
+        <section className="my-10 max-w-7xl w-full mx-auto shadow-sm rounded-2xl bg-white border-2 border-[#F8F9FB]">
+          <div className="bg-[#F8F9FB] px-4 sm:px-10 py-5 rounded-tl-2xl rounded-tr-2xl flex flex-wrap gap-2">
             <PDS title="Key Features" />
             <PDS title="Product Details" />
             <PDS title="Product Information" />
           </div>
 
-          <div className="text-[16px] leading-6 w-[280px] text-[#182B55] font-medium space-y-1  p-10">
+          <div className="text-[16px] leading-6 w-2xs text-[#182B55] font-medium space-y-1 p-10">
             <ProductSpecList />
           </div>
         </section>
 
-        <section className=" my-10 bg-[#F8F9FB] w-full py-16 px-4 md:px-12 flex justify-center items-center gap-6 flex-wrap">
+        <section className="my-10 bg-[#F8F9FB] w-full py-16 px-4 md:px-12 flex justify-center items-center gap-6 flex-wrap">
           {ProDetails.map((item, index) => (
             <CardComponent
               key={index}

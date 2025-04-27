@@ -57,7 +57,9 @@ const TechHelp = () => {
         <img src={bg} alt="A man using a grinder on wood" className="absolute inset-0 w-full h-full object-cover object-center" />
         <div className="absolute inset-0 bg-black/60"></div>
 
+
         <div className="relative container mx-auto h-full flex flex-col justify-center items-start px-6 md:px-12 lg:px-20 text-white">
+
           <h1 className="text-3xl md:text-4xl font-semibold">Tech Help</h1>
           <nav className="mt-2 text-sm md:text-base flex items-center gap-2 md:gap-4">
             <a href="/" className="hover:underline">Home</a>
@@ -67,8 +69,10 @@ const TechHelp = () => {
         </div>
       </div>
 
+
       <section className="my-10 max-w-7xl mx-auto">
         <h1 className="text-[#182B55] text-3xl md:text-5xl leading-tight font-semibold text-center">
+
           What would you like to do?
         </h1>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
@@ -95,8 +99,10 @@ const TechHelp = () => {
         </div>
       </section>
 
+
       <section className="my-10 max-w-7xl mx-auto">
         <h1 className="text-[#182B55] text-3xl md:text-5xl leading-tight font-semibold text-center">
+
           Pro Edge Policies
         </h1>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-8">
