@@ -13,7 +13,7 @@ const BrowseProduct = () => {
   };
 
   return (
-    <div className="relative group w-full md:w-full max-w-2xs">
+    <div className="relative group w-full max-w-2xs">
       {/* Button Trigger */}
       <button className="w-full px-5 py-4 bg-[#182B55] text-white rounded-full flex justify-between items-center gap-2">
         <MenuIcon />

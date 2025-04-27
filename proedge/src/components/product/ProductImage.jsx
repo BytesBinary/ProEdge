@@ -16,7 +16,8 @@ const ProductImage = ({ thumbnails, mainImage }) => {
       </div>
 
       {/* Main Image */}
-      <div className="w-full md:w-72 h-52 md:h-104 mt-4 md:mt-0 rounded-xl bg-[#F8F9FB] flex items-center justify-center">
+
+      <div className="w-full md:w-2xs h-[200px] md:h-[398px] mt-4 md:mt-0 rounded-xl bg-[#F8F9FB] flex items-center justify-center">
         <img src={mainImage} alt="Main Product" className="max-w-full max-h-full" />
       </div>
     </div>
