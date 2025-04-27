@@ -11,9 +11,9 @@ import ProductInfo from "../../components/product/ProductInfo";
 
 import PDS from "../../components/common/utils/ProductDetails/PDS";
 import ProductSpecList from "../../components/product/ProductSpecList";
-import ProductCard from "../../components/common/utils/cards/ProductCard";
 import ProDetails from "../../data/ProDetails/ProDetails";
 import MostViewedSection from "../../components/home/MostViewed";
+import CardComponent from "../../components/product/CardComponent";
 
 const Product = () => {
   return (
@@ -74,7 +74,7 @@ const Product = () => {
 
         <section className=" my-10 bg-[#F8F9FB] w-full py-16 px-4 md:px-12 flex justify-center items-center gap-6 flex-wrap">
           {ProDetails.map((item, index) => (
-            <ProductCard
+            <CardComponent
               key={index}
               icon={item.icon}
               title={item.title}
