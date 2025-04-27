@@ -1,5 +1,6 @@
 const MenuIcon = () => (
     <svg
+      className="hidden md:block"
       width="21"
       height="21"
       fill="none"

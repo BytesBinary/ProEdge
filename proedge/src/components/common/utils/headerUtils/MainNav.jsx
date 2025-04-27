@@ -1,8 +1,7 @@
 import React from "react";
-import MobileNav from "./mainNav/MainNavMobile"
+import MobileNav from "./mainNav/MainNavMobile"; // Updated import
 import DesktopNav from "./mainNav/MainNavDesktop";
 import { Link } from "react-router-dom";
-
 
 const MainNav = () => {
   return (
@@ -14,19 +13,13 @@ const MainNav = () => {
             <img
               src="./src/assets/ProEdgeLogo.png"
               alt="ProEdge Logo"
-              className="h-8  w-auto"
+              className="h-8 w-auto"
               loading="lazy"
             />
           </Link>
           <MobileNav />
         </div>
-
-        {/* Mobile Search & Auth */}
-        <div className="w-full lg:hidden">
-          <MobileNav.SearchAndAuth />
-        </div>
-
-        {/* Desktop Search & Auth */}
+        
         <div className="hidden lg:flex w-3/4 items-center justify-between gap-2">
           <DesktopNav />
         </div>

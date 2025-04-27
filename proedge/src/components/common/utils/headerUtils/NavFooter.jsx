@@ -5,18 +5,19 @@ import BrowseProduct from "./BrowseProduct";
 
 const Navfooter = () => {
   return (
-    <>
-      <nav className="bg-white" aria-label="additional navigation">
-        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between px-4 py-6 sm:px-6 gap-y-4">
-          {/* Browse Button */}
-            <BrowseProduct />         
-          {/*  Navigation Links */}
-            <NavigationLink />
+    <nav className="bg-white" aria-label="additional navigation">
+      <div className="max-w-7xl mx-auto flex flex-row items-center justify-between px-4 py-2 md:py-6 sm:px-6 gap-y-4 gap-x-3 md:gap-x-0">
+        {/* Browse Button and Navigation Links - stacked on mobile, separate on desktop */}
+        <div className="w-full lg:w-auto flex flex-col lg:flex-row items-center gap-4">
+          <BrowseProduct />
+          <NavigationLink />
+        </div>
 
-          {/* Call Button */}
+        {/* Call Button - now paired with Browse Button on mobile */}
+        <div className="w-full lg:w-auto flex flex-col sm:flex-row gap-x-4 text-xs md:text-xl">
           <Link
             to="tel:2364612622"
-            className="w-full sm:w-full md:w-full lg:w-[310px] inline-flex items-center justify-center gap-2 px-6 py-4 rounded-full bg-[#3F66BC] text-white hover:bg-[#182B55] transition-colors"
+            className="w-full sm:w-auto lg:w-[310px] inline-flex items-center justify-center gap-2 px-2 md:px-6 py-4 rounded-full bg-[#3F66BC] text-white hover:bg-[#182B55] transition-colors"
           >
             <svg
               width="24"
@@ -24,7 +25,6 @@ const Navfooter = () => {
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
-              {/* [Phone Icon Paths] */}
               <path
                 fillRule="evenodd"
                 clipRule="evenodd"
@@ -41,8 +41,8 @@ const Navfooter = () => {
             <span>(236) 461-2622</span>
           </Link>
         </div>
-      </nav>
-    </>
+      </div>
+    </nav>
   );
 };
 

@@ -17,7 +17,7 @@ const BrowseProduct = () => {
       {/* Button Trigger */}
       <button className="w-full px-5 py-4 bg-[#182B55] text-white rounded-full flex justify-between items-center gap-2">
         <MenuIcon />
-        <span className="text-md md:text-lg font-semibold">
+        <span className="text-xs md:text-lg font-semibold">
           Browse Products
         </span>
         <DropdownArrowIcon />
