@@ -11,7 +11,7 @@ const ProductSpecList = () => {
   ];
 
   return (
-    <div className="text-[16px] leading-6 w-[280px] text-[#182B55] font-medium space-y-1 p-10">
+    <div className="text-base leading-6 max-w-xs text-[#182B55] font-medium space-y-1 p-6">
       {specs.map((spec, index) => (
         <ProductSpecItem key={index} label={spec.label} value={spec.value} />
       ))}

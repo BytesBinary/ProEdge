@@ -59,8 +59,8 @@ const DeliveryInfo = () => {
   ];
 
   return (
-    <div className="h-[496px] max-w-[204px] rounded-xl border-2 bg-[#F8F9FB] border-[#ECF0F9] py-4 px-3 mx-auto lg:mx-0">
-      <div className="w-full max-w-[180px] h-[464px] flex flex-col justify-between space-y-4">
+    <div className="h-auto max-w-xs rounded-xl border-2 bg-[#F8F9FB] border-[#ECF0F9] py-4 px-3 mx-auto lg:mx-0">
+      <div className="w-full max-w-[180px] flex flex-col justify-between space-y-4">
         {/* Price */}
         <Price priceData={priceData} />
 
@@ -79,7 +79,7 @@ const DeliveryInfo = () => {
         ))}
 
         {/* Info Items */}
-        <div className="text-[10px] w-full text-[#5D6576] font-normal space-y-1 p-2">
+        <div className="text-xs w-full text-[#5D6576] font-normal space-y-1 p-2">
           {infoItems.map((item, index) => (
             <InfoItem key={index} item={item} />
           ))}
