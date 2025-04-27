@@ -7,7 +7,7 @@ import CallIcon from "../../../../assets/icons/CallIcon.jsx";
 const Navfooter = () => {
   return (
     <nav aria-label="Secondary navigation">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 md:py-4">
+      <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 py-3 md:py-4">
         <div className="flex flex-row items-center justify-between gap-4">
 
           {/* Left Section - Browse Products */}

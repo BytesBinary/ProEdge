@@ -73,7 +73,7 @@ const Checkout = () => {
           { label: "Checkout" },
         ]}
       />
-      <section className="mt-10 max-w-7xl mx-auto p-5 grid grid-cols-1 md:grid-cols-3 gap-0 md:gap-10">
+      <section className="mt-10 max-w-7xl w-full mx-auto p-5 grid grid-cols-1 md:grid-cols-3 gap-0 md:gap-10">
         <form className="col-span-2 space-y-8">
           <ShippingAddress />
           <DeliveryMethod />

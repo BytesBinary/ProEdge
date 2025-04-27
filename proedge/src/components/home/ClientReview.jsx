@@ -25,9 +25,9 @@ const ClientReviews = ({
   reviews = []
 }) => {
   return (
-    <section className="w-full max-w-[1200px] mx-auto px-4 my-10">
+    <section className="w-full max-w-7xl mx-auto px-4 my-10">
       <div className="flex flex-col lg:flex-row justify-between my-12">
-        <div className="w-full lg:w-[329px] h-[266px] flex flex-col justify-between items-start mb-8 lg:mb-0 lg:mr-[84px]">
+        <div className="w-full lg:w-xs h-[266px] flex flex-col justify-between items-start mb-8 lg:mb-0 lg:mr-[84px]">
           <div>
             <h1 className="font-semibold text-[32px] leading-10">{heading}</h1>
             <p className="text-[#5D6576] font-normal text-[16px] leading-[26px]">{description}</p>

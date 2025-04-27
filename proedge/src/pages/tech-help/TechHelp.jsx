@@ -59,7 +59,7 @@ const TechHelp = () => {
         <img src={bg} alt="A man using a grinder on wood" className="absolute inset-0 w-full h-full object-cover object-center" />
         <div className="absolute inset-0 bg-black/60 bg-opacity-60"></div>
 
-        <div className="relative container mx-auto h-full flex flex-col justify-center items-start px-6 md:px-12 lg:px-20 text-white">
+        <div className="relative max-w-7xl mx-auto h-full flex flex-col justify-center items-start px-6 md:px-12 lg:px-20 text-white">
 
           <h1 className="text-3xl md:text-4xl font-semibold">Tech Help</h1>
           <nav className="mt-2 text-sm md:text-base flex items-center gap-2 md:gap-4">
