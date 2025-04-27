@@ -1,4 +1,3 @@
-
 import React from 'react';
 import bg from '../../assets/images/productDetails/bg.jpeg';
 import greater from '../../assets/images/productDetails/greater.png';
@@ -25,7 +24,6 @@ const TechHelp = () => {
     { image: qoute, title: 'Request a quote', link: '#' },
     { image: modify, title: 'Modify or cancel an order', link: '#' },
   ];
-
 
   const helpTopics = [
     {
@@ -55,40 +53,44 @@ const TechHelp = () => {
 
   return (
     <div>
+      {/* Hero Section */}
       <div className="relative w-full h-[20vh] md:h-[30vh] lg:h-[20vw] overflow-hidden">
-        <img src={bg} alt="A man using a grinder on wood" className="absolute inset-0 w-full h-full object-cover object-center" />
-        <div className="absolute inset-0 bg-black/60 bg-opacity-60"></div>
-
+        <img
+          src={bg}
+          alt="A man using a grinder on wood"
+          className="absolute inset-0 w-full h-full object-cover object-center"
+        />
+        <div className="absolute inset-0 bg-black/60"></div>
         <div className="relative container mx-auto h-full flex flex-col justify-center items-start px-6 md:px-12 lg:px-20 text-white">
-
           <h1 className="text-3xl md:text-4xl font-semibold">Tech Help</h1>
           <nav className="mt-2 text-sm md:text-base flex items-center gap-2 md:gap-4">
-            <a href="/" className="hover:underline">Home</a>
+            <a href="/" className="hover:underline">
+              Home
+            </a>
             <img src={greater} alt="An icon pointing to the right" className="w-6 h-6" />
             <span className="text-gray-300">Tech Help</span>
           </nav>
         </div>
       </div>
 
-
-      <section className="my-10 max-w-[1200px] mx-auto">
-        <h1 className="text-[#182B55] text-3xl md:text-5xl leading-16 font-semibold text-center">
+      {/* What to Do Section */}
+      <section className="my-10 max-w-7xl mx-auto">
+        <h1 className="text-[#182B55] text-3xl md:text-5xl font-semibold text-center">
           What would you like to do?
         </h1>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
           {whatToDo.map((item, index) => (
             <Icon key={index} imageSrc={item.image} title={item.title} link={item.link} />
-
           ))}
         </div>
       </section>
 
-      <section className="my-20 md:my-10 max-w-[1200px] mx-auto">
-        <h1 className="text-[#182B55] text-3xl md:text-5xl leading-16 font-semibold text-center">
+      {/* Help Topics Section */}
+      <section className="my-20 md:my-10 max-w-7xl mx-auto">
+        <h1 className="text-[#182B55] text-3xl md:text-5xl font-semibold text-center">
           Help Topics
         </h1>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mt-10">
-
           {helpTopics.map((topic, index) => (
             <FAQ
               key={index}
@@ -101,8 +103,9 @@ const TechHelp = () => {
         </div>
       </section>
 
-      <section className="my-10 max-w-[1200px] mx-auto">
-        <h1 className="text-[#182B55] text-3xl md:text-5xl leading-16 font-semibold text-center">
+      {/* Policies Section */}
+      <section className="my-10 max-w-7xl mx-auto">
+        <h1 className="text-[#182B55] text-3xl md:text-5xl font-semibold text-center">
           Pro Edge Policies
         </h1>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-8">
@@ -114,6 +117,5 @@ const TechHelp = () => {
     </div>
   );
 };
-
 
 export default TechHelp;

@@ -2,11 +2,11 @@ import React from 'react';
 
 const FAQ = ({ heading, questions, seeAllLink, leftArrow }) => {
   return (
-    <div className="w-full md:w-[384px] p-1 md:p-0 h-[232px] rounded-xl bg-white hover:shadow-sm">
-      <div className="bg-[#ECF0F9] h-12 rounded-t-xl py-[9px] px-4 font-semibold text-[#182B55] text-lg leading-[30px]">
+    <div className="w-full md:max-w-sm p-2 rounded-xl bg-white hover:shadow-sm">
+      <div className="bg-gray-100 h-12 rounded-t-xl flex items-center px-4 font-semibold text-blue-900 text-lg">
         <h1>{heading}</h1>
       </div>
-      <div className="p-3 font-medium text-[16px] leading-6 text-[#3F66BC] flex flex-col justify-around gap-4 h-[184px]">
+      <div className="p-4 font-medium text-blue-600 flex flex-col gap-4">
         <div className="flex flex-col gap-2">
           {questions.map((q, index) => (
             <a key={index} href={q.href} className="hover:underline">
@@ -15,7 +15,9 @@ const FAQ = ({ heading, questions, seeAllLink, leftArrow }) => {
           ))}
         </div>
         <div className="flex items-center gap-2">
-          <a href={seeAllLink} className="hover:underline">See All</a>
+          <a href={seeAllLink} className="hover:underline">
+            See All
+          </a>
           <img src={leftArrow} alt="Arrow" className="w-4 h-4" />
         </div>
       </div>
