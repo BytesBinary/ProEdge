@@ -1,6 +1,13 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { FiMenu, FiX, FiSearch, FiUser, FiHeart, FiShoppingCart } from "react-icons/fi";
+import {
+  FiMenu,
+  FiX,
+  FiSearch,
+  FiUser,
+  FiHeart,
+  FiShoppingCart,
+} from "react-icons/fi";
 
 const MobileNav = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,26 +17,31 @@ const MobileNav = () => {
     { to: "/", text: "Home" },
     { to: "/products", text: "Products" },
     { to: "/about", text: "About Us" },
-    { to: "/contact", text: "Contact" }
+    { to: "/videos", text: "Videos" },
+    { to: "/tech-help", text: "TechHelp" },
+    { to: "/contact-us", text: "Contact" },
   ];
 
   // Auth links data
   const authLinks = [
     { to: "/auth/signin", text: "Sign In" },
-    { to: "/auth/signup", text: "Sign Up" }
+    { to: "/auth/signup", text: "Sign Up" },
   ];
 
   return (
     <div className="lg:hidden">
       {/* Mobile Nav Trigger */}
       <div className="flex items-center gap-4">
-       
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="p-2 rounded-full bg-[#23366B] hover:bg-[#1A2A55] transition-colors"
           aria-label="Menu"
         >
-          {isOpen ? <FiX className="w-5 h-5" /> : <FiMenu className="w-5 h-5" />}
+          {isOpen ? (
+            <FiX className="w-5 h-5" />
+          ) : (
+            <FiMenu className="w-5 h-5" />
+          )}
         </button>
       </div>
 
@@ -125,7 +137,7 @@ const MobileNav = () => {
 const SearchAndAuth = () => {
   const authLinks = [
     { to: "/auth/signin", text: "Sign In" },
-    { to: "/auth/signup", text: "Sign Up" }
+    { to: "/auth/signup", text: "Sign Up" },
   ];
 
   return (
