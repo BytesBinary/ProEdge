@@ -3,7 +3,7 @@ import React from 'react'
 const ProductImage = ({m1,m2}) => {
     return (
 
-        <div class="w-full md:max-w-[384px] flex flex-col md:flex-row justify-around md:h-[398px]">
+        <div className="w-full md:max-w-[384px] flex flex-col md:flex-row justify-around md:h-[398px]">
 
 
             <div className="flex md:flex-col items-center md:items-start justify-center gap-3 md:gap-0">

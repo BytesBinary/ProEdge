@@ -1,4 +1,4 @@
-// Subcategory List Component
+
 import { Link } from "react-router-dom";
 
 const SubcategoryList = ({ title, items }) => (

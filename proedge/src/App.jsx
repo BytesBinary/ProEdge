@@ -14,7 +14,7 @@ import SignIn from './pages/auth/SignIn'
 import SignUp from './pages/auth/SignUp'
 import ResetPass from './pages/auth/ResetPass'
 import Root from './layouts/Root'
-// import Auth from './layouts/Auth'
+import Auth from './layouts/Auth'
 import CartPage from './pages/cart/Cart'
 import checkout from './pages/checkout/Checkout'
 import WishList from './pages/wishlist/WishList'
@@ -37,7 +37,7 @@ const router = createBrowserRouter([
   },
   {
     path:'/auth',
-    // Component: Auth,
+    Component: Auth,
     children: [
       { path: 'signin' , Component: SignIn },
       { path: 'signup' , Component: SignUp },

@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import NavigationLink from "./NavigationLink";
 import BrowseProduct from "./BrowseProduct";
 
@@ -13,8 +14,8 @@ const Navfooter = () => {
             <NavigationLink />
 
           {/* Call Button */}
-          <a
-            href="tel:2364612622"
+          <Link
+            to="tel:2364612622"
             className="w-full sm:w-full md:w-full lg:w-[310px] inline-flex items-center justify-center gap-2 px-6 py-4 rounded-full bg-[#3F66BC] text-white hover:bg-[#182B55] transition-colors"
           >
             <svg
@@ -38,7 +39,7 @@ const Navfooter = () => {
               />
             </svg>
             <span>(236) 461-2622</span>
-          </a>
+          </Link>
         </div>
       </nav>
     </>

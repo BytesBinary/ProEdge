@@ -1,6 +1,6 @@
 import React from 'react';
 import IconComponent from '../common/utils/ProductDetails/IconComponent';
-import HeadingComponent from '../common/utils/ProductDetails/HeadingComponent';
+import HeadingComponent from '../ProductDetails/HeadingComponent';
 
 const CardComponent = ({icon,title,subtitle}) => {
   return (

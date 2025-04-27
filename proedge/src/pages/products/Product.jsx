@@ -1,95 +1,152 @@
-import React from 'react'
+import React from 'react';
 
-import bgImage from '../../assets/images/productDetails/bg.jpeg';
-import greater from '../../assets/images/productDetails/greater.png';
-import m1 from '../../assets/images/productDetails/motor/m1.png';
-import m2 from '../../assets/images/productDetails/motor/m2.png';
+const DeliveryInfo = () => {
+  // Price data
+  const priceData = {
+    dollar: "$",
+    whole: "230",
+    cents: "45"
+  };
 
+  // Shipping info data
+  const shippingInfo = {
+    title: "Get Fast,",
+    description: "Free Shipping on Orders Over $500.",
+    details: "Details"
+  };
 
-import ProductImage from '../../components/product/ProductImage';
-import DeliveryInfo from '../../components/product/DeliveryInfo';
-import ProductInfo from '../../components/product/ProductInfo';
+  // Delivery info data
+  const deliveryInfo = {
+    title: "Delivery",
+    date: "Thursday, April 3",
+    location: "Deliver to New York 10001"
+  };
 
-import PDS from '../../components/common/utils/ProductDetails/PDS';
-import ProductSpecList from '../../components/product/ProductSpecList';
-import CardComponent from '../../components/product/CardComponent';
-import ProDetails from '../../data/ProDetails/ProDetails';
-import MostViewedSection from '../../components/home/MostViewed';
+  // Stock and quantity data
+  const stockData = {
+    status: "In Stock",
+    quantities: [2, 3, 4, 5, 6]
+  };
 
-const Product = () => {
+  // Button data
+  const buttons = [
+    {
+      text: "Add to Cart",
+      bgColor: "bg-[#FCD700]",
+      hoverColor: "hover:bg-[#FCD700]/70",
+      textColor: "text-[#182B55]"
+    },
+    {
+      text: "Buy Now",
+      bgColor: "bg-[#3F66BC]",
+      hoverColor: "hover:bg-[#3F66BC]/80",
+      textColor: "text-white"
+    }
+  ];
+
+  // Info items data
+  const infoItems = [
+    { label: "Ships from", value: "Controls Pro" },
+    { label: "Sold by", value: "FMhotu" },
+    { label: "Returns", value: "30-day refund/replacement" },
+    { label: "Payment", value: "Secure transaction" }
+  ];
+
   return (
-    <div>
-      <div class=" flex flex-col items-start max-w-full w-full mx-auto">
-
-
-        <section className="relative w-full h-[20vh] md:h-[30vh] lg:h-[20vw] overflow-hidden">
-
-          <img src={bgImage} alt="A man using a grinder on wood"
-            className="absolute inset-0 w-full h-full object-cover object-center" />
-
-
-          <div className="absolute inset-0 bg-black/60 bg-opacity-60"></div>
-
-
-          <div
-
-            class="relative  mx-auto h-full flex flex-col justify-center items-start px-6 md:px-12 lg:px-20 text-white">
-            <h1 class="text-3xl md:text-4xl font-semibold">Products Details</h1>
-            <nav class="mt-2 text-sm md:text-base flex items-center gap-2">
-              <a href="/" class="hover:underline">Home</a>
-              <img src={greater} alt="An icon pointing to the right" class="w-6 h-6" />
-              <a href="#" class="hover:underline">Products</a>
-              <img src={greater} alt="An icon pointing to the right" class="w-6 h-6" />
-              <span class="text-gray-300">Product Details</span>
-
-            </nav>
-          </div>
-        </section>
-
-
-        <section class="my-10 max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between w-full h-auto items-start gap-6">
-
-          <ProductImage m1={m1} m2={m2} />
-          <ProductInfo />
-          <DeliveryInfo />         
-        </section>
-
-
-
-        <section class="my-10  max-w-[1200px]  mx-auto shadow-sm w-full rounded-[14px] bg-white border-2 border-[#F8F9FB]">
-
-
-          <div className="bg-[#F8F9FB] px-4 sm:px-10 py-5 rounded-tl-[14px] rounded-tr-[14px] flex flex-wrap gap-2">
-            <PDS title="Key Features" />
-            <PDS title="Product Details" />
-            <PDS title="Product Information" />      
-          </div>
-
-          <div className="text-[16px] leading-6 w-[280px] text-[#182B55] font-medium space-y-1  p-10">
-            <ProductSpecList />           
-          </div>
-        </section>
-
-
-        <section
-          className=" my-10 bg-[#F8F9FB] w-full py-16 px-4 md:px-12 lg:px-[120px] flex justify-center items-center gap-6 flex-wrap">
-           {ProDetails.map((item, index) => (
-            <CardComponent key={index} icon={item.icon} title={item.title} subtitle={item.subtitle} />
-          ))}      
-        </section>
-
-          <section className='max-w-[1200px] mx-auto'>
-            <MostViewedSection title={"Products related to this items"} />
-          </section>
-
-        <div>
-
+    <div className="h-[496px] max-w-[204px] rounded-xl border-2 bg-[#F8F9FB] border-[#ECF0F9] py-4 px-3 mx-auto lg:mx-0">
+      <div className="w-full max-w-[180px] h-[464px] flex flex-col justify-between space-y-4">
+        {/* Price */}
+        <div className="flex items-center w-full text-[12px] leading-[18px] text-[#182B55]">
+          <span>{priceData.dollar}</span>&nbsp;
+          <h1 className="text-2xl font-semibold leading-8">{priceData.whole}</h1>&nbsp;
+          <span>{priceData.cents}</span>
         </div>
 
+        {/* Shipping Info */}
+        <div className="text-[12px] leading-[18px] flex flex-col space-y-2">
+          <p className="text-[#182B55] font-medium">
+            <span className="text-[#4A5A7E]">{shippingInfo.title}</span>{shippingInfo.description}
+          </p>
+          <div className="flex items-center">
+            <span className="text-[#3F66BC] font-medium text-[12px]">{shippingInfo.details}</span>
+            <svg width="14" height="14" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M15.5975 8.00822C15.5201 7.93011 15.4279 7.86811 15.3264 7.82581C15.2248 7.7835 15.1159 7.76172 15.0059 7.76172C14.8959 7.76172 14.7869 7.7835 14.6854 7.82581C14.5838 7.86811 14.4917 7.93011 14.4142 8.00822L10.5975 11.8249C10.5201 11.903 10.4279 11.965 10.3263 12.0073C10.2248 12.0496 10.1159 12.0714 10.0059 12.0714C9.89586 12.0714 9.78694 12.0496 9.68539 12.0073C9.58384 11.965 9.49167 11.903 9.4142 11.8249L5.59754 8.00822C5.52007 7.93011 5.4279 7.86811 5.32635 7.82581C5.2248 7.7835 5.11588 7.76172 5.00587 7.76172C4.89586 7.76172 4.78694 7.7835 4.68539 7.82581C4.58384 7.86811 4.49167 7.93011 4.4142 8.00822C4.25899 8.16435 4.17188 8.37556 4.17188 8.59572C4.17188 8.81587 4.25899 9.02708 4.4142 9.18322L8.2392 13.0082C8.70795 13.4764 9.34337 13.7394 10.0059 13.7394C10.6684 13.7394 11.3038 13.4764 11.7725 13.0082L15.5975 9.18322C15.7527 9.02708 15.8399 8.81587 15.8399 8.59572C15.8399 8.37556 15.7527 8.16435 15.5975 8.00822Z"
+                fill="#3F66BC"
+              />
+            </svg>
+          </div>
+        </div>
 
+        {/* Delivery Info */}
+        <div className="flex flex-col h-[44px] justify-between">
+          <h1 className="text-sm leading-[18px] text-[#182B55]">
+            {deliveryInfo.title} <span className="font-medium text-[#000000]">{deliveryInfo.date}</span>
+          </h1>
+          <div className="flex items-center">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g clipPath="url(#clip0_313_4747)">
+                <path
+                  d="M6 3C5.60444 3 5.21776 3.1173 4.88886 3.33706C4.55996 3.55682 4.30362 3.86918 4.15224 4.23463C4.00087 4.60009 3.96126 5.00222 4.03843 5.39018C4.1156 5.77814 4.30608 6.13451 4.58579 6.41421C4.86549 6.69392 5.22186 6.8844 5.60982 6.96157C5.99778 7.03874 6.39992 6.99914 6.76537 6.84776C7.13082 6.69638 7.44318 6.44004 7.66294 6.11114C7.8827 5.78224 8 5.39556 8 5C8 4.46957 7.78929 3.96086 7.41422 3.58579C7.03914 3.21071 6.53043 3 6 3ZM6 6C5.80222 6 5.60888 5.94135 5.44443 5.83147C5.27998 5.72159 5.15181 5.56541 5.07612 5.38268C5.00043 5.19996 4.98063 4.99889 5.01922 4.80491C5.0578 4.61093 5.15304 4.43275 5.29289 4.29289C5.43275 4.15304 5.61093 4.0578 5.80491 4.01921C5.99889 3.98063 6.19996 4.00043 6.38268 4.07612C6.56541 4.15181 6.72159 4.27998 6.83147 4.44443C6.94135 4.60888 7 4.80222 7 5C7 5.26522 6.89464 5.51957 6.70711 5.70711C6.51957 5.89464 6.26522 6 6 6Z"
+                  fill="#3F66BC"
+                />
+                <path
+                  d="M5.99625 12.001C5.57522 12.0032 5.15981 11.9044 4.78478 11.713C4.40976 11.5216 4.08605 11.2432 3.84075 10.901C1.93525 8.2725 0.96875 6.2965 0.96875 5.0275C0.96875 3.69412 1.49843 2.41536 2.44127 1.47252C3.38411 0.529682 4.66287 0 5.99625 0C7.32963 0 8.60839 0.529682 9.55123 1.47252C10.4941 2.41536 11.0238 3.69412 11.0238 5.0275C11.0238 6.2965 10.0573 8.2725 8.15175 10.901C7.90645 11.2432 7.58274 11.5216 7.20772 11.713C6.8327 11.9044 6.41728 12.0032 5.99625 12.001ZM5.99625 1.0915C4.95246 1.09269 3.95176 1.50786 3.21369 2.24594C2.47561 2.98401 2.06044 3.98471 2.05925 5.0285C2.05925 6.0335 3.00575 7.892 4.72375 10.2615C4.8696 10.4624 5.06094 10.6259 5.28211 10.7386C5.50328 10.8514 5.748 10.9102 5.99625 10.9102C6.2445 10.9102 6.48922 10.8514 6.71039 10.7386C6.93157 10.6259 7.1229 10.4624 7.26875 10.2615C8.98675 7.892 9.93325 6.0335 9.93325 5.0285C9.93206 3.98471 9.51689 2.98401 8.77881 2.24594C8.04074 1.50786 7.04004 1.09269 5.99625 1.0915Z"
+                  fill="#3F66BC"
+                />
+              </g>
+              <defs>
+                <clipPath id="clip0_313_4747">
+                  <rect width="12" height="12" fill="white" />
+                </clipPath>
+              </defs>
+            </svg>
+            <p className="ml-1 text-[#3F66BC] text-[10px] leading-[18px] font-medium">{deliveryInfo.location}</p>
+          </div>
+        </div>
+
+        {/* Stock and Quantity */}
+        <div className="flex flex-col h-16 justify-between">
+          <p className="text-[#3F66BC] font-medium text-[16px] leading-6">{stockData.status}</p>
+          <div>
+            <select
+              id="countries"
+              className="w-[160px] text-[#182B55] text-[12px] leading-4 border-[1px] border-[#F8F9FB] bg-white"
+            >
+              {stockData.quantities.map((quantity) => (
+                <option key={quantity} value={quantity} className="font-medium">
+                  Quantity: {quantity}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Buttons */}
+        <div className="h-[72px] flex flex-col justify-between space-y-2">
+          {buttons.map((button, index) => (
+            <a href="#" key={index}>
+              <button
+                className={`py-1 px-6 cursor-pointer ${button.bgColor} rounded-[60px] w-full font-medium text-[12px] leading-6 ${button.textColor} ${button.hoverColor}`}
+              >
+                {button.text}
+              </button>
+            </a>
+          ))}
+        </div>
+
+        {/* Info Items */}
+        <div className="text-[10px] w-full text-[#5D6576] font-normal space-y-1 p-2">
+          {infoItems.map((item, index) => (
+            <div key={index} className="flex gap-2">
+              <p className="whitespace-nowrap w-[70px]">{item.label}</p>
+              <p className="text-[#3F66BC] font-medium text-left w-[100px]">{item.value}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Product
+export default DeliveryInfo;
