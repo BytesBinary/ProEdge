@@ -17,7 +17,6 @@ const WishList = () => {
           { label: "Wish List" },
         ]}
       />
-
       <section className="my-10 max-w-7xl mx-auto px-2 md:px-12 lg:px-20">
         <h1 className="text-3xl text-[#182B55] font-bold">
           Wish List ({DemoCardList.length} Items)
