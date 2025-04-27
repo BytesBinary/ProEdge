@@ -31,7 +31,14 @@ const Videos = () => {
       <section className="my-10">
         <h1 className="text-[#182B55] text-5xl leading-16 font-semibold text-center">Watch Video</h1>
 
-        <div className="max-w-7xl grid grid-cols-3 gap-8 mt-10 mx-auto ">
+
+        <div class="max-w-[1200px] grid grid-cols-3 gap-8 mt-10 mx-auto ">
+          <VideoCard
+            thumbnail={thumbnail}
+            time="10 min"
+            title="Here is Video Title Lorem Ipsum is simply dummy text."
+            link="#"
+          />
           <VideoCard
             thumbnail={thumbnail}
             time="5 min"

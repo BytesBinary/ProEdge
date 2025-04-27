@@ -6,7 +6,9 @@ const ProductInfo = () => {
     return (
 
         <div
-            className="w-full lg:w-1/3 h-auto lg:h-[554px] flex flex-col justify-between items-start gap-6 lg:gap-0 p-1 lg:p-0">
+
+            class="w-full lg:max-w-[564px] h-auto lg:h-[554px] flex flex-col justify-between items-start gap-6 lg:gap-0 p-1 lg:p-0">
+
 
             <div
                 className="text-lg leading-7 text-[#3F66BC] font-medium h-auto lg:h-[232px] flex flex-col justify-between gap-4 lg:gap-0">

@@ -34,7 +34,9 @@ const Contact = () => {
       </section>
 
 
-      <section className="w-full mt-3 md:mt-20 flex flex-col lg:flex-row justify-center items-start gap-10">
+
+      <section class="w-full max-w-[1200px] mx-auto mt-3 md:mt-20 flex flex-col lg:flex-row justify-center items-start gap-10">
+
 
         <div className="w-full max-w-md h-[549px] bg-[#3F66BC] py-8 px-6 rounded-[16px] flex flex-col justify-between text-white">
           <div className="flex flex-col gap-[16px]">
@@ -159,8 +161,36 @@ const Contact = () => {
       </section>
 
 
-      <section className="mt-48 md:mt-18">
-        <img src={map} alt="" className="w-full h-[400px] object-cover " />
+
+      <section class="mt-48 md:mt-18">
+      <div style={{ position: 'relative', width: '100%', height: '400px' }}>
+      <iframe
+        src="https://maps.google.com/maps?q=san+francisco&output=embed"
+        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
+        loading="lazy"
+        allowFullScreen
+        title="Google Map"
+      ></iframe>
+      <a
+        href="https://freeairecipegenerator.com"
+        rel="noopener noreferrer"
+        target="_blank"
+        style={{
+          position: 'absolute',
+          width: '1px',
+          height: '1px',
+          padding: 0,
+          margin: '-1px',
+          overflow: 'hidden',
+          clip: 'rect(0,0,0,0)',
+          whiteSpace: 'nowrap',
+          border: 0,
+        }}
+      >
+        freeairecipegenerator.com
+      </a>
+    </div>
+
       </section>
 
     </div>

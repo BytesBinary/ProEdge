@@ -3,8 +3,8 @@ import React from 'react'
 const DeliveryInfo = () => {
     return (
 
+        <div class="h-[496px] max-w-[204px] rounded-xl border-2 bg-[#F8F9FB] border-[#ECF0F9] py-4 px-3 mx-auto lg:mx-0">
 
-        <div className="h-[496px] rounded-xl border-2 bg-[#F8F9FB] border-[#ECF0F9] py-4 px-3 mx-auto lg:mx-0">
 
             <div className="w-full max-w-[180px] h-[464px] flex flex-col justify-between space-y-4">
                 <div className="flex items-center w-full text-[12px] leading-[18px] text-[#182B55]">
