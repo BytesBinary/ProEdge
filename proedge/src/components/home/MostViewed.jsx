@@ -1,11 +1,8 @@
 
-
-// MostViewedSection.jsx
 import React from "react";
-import ProductCard from "../common/utils/ProductCard";
 import product1 from "../../assets/images/products/product.png"
 import product2 from "../../assets/images/products/motor.png"
-
+import ProductCard from "../common/utils/cards/ProductCard";
 const products = [
   {
     image: product1,
@@ -24,7 +21,7 @@ const products = [
 
 const MostViewedSection = ({ title }) => {
   return (
-    <section className="container mx-auto px-4 py-10">
+    <section className="max-w-7xl mx-auto px-4 py-10">
       <h1 className="text-[#182B55] font-semibold text-2xl md:text-5xl text-center mb-10">
         {title}
       </h1>

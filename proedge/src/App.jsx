@@ -10,7 +10,14 @@ import Videos from './pages/videos/Videos'
 import Category from './pages/category/Category'
 import TechHelp from './pages/tech-help/TechHelp'
 import Contact from './pages/contact/Contact'
+import SignIn from './pages/auth/SignIn'
+import SignUp from './pages/auth/SignUp'
+import ResetPass from './pages/auth/ResetPass'
 import Root from './layouts/Root'
+// import Auth from './layouts/Auth'
+import CartPage from './pages/cart/Cart'
+import checkout from './pages/checkout/Checkout'
+import WishList from './pages/wishlist/WishList'
 
 const router = createBrowserRouter([
   {
@@ -22,9 +29,21 @@ const router = createBrowserRouter([
       { path: 'videos', Component: Videos },
       { path: 'category', Component: Category },
       { path: 'tech-help', Component: TechHelp },
-      { path: 'contact', Component: Contact },
+      { path: 'contact-us', Component: Contact },
+      { path: 'cart', Component: CartPage },
+      { path: 'cart/checkout', Component: checkout },
+      { path: 'wish-list', Component: WishList }  
     ],
   },
+  {
+    path:'/auth',
+    // Component: Auth,
+    children: [
+      { path: 'signin' , Component: SignIn },
+      { path: 'signup' , Component: SignUp },
+      { path: 'forgot-password', Component: ResetPass }    
+    ]
+  }
 ])
 
 function App() {

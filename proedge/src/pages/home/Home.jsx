@@ -34,7 +34,7 @@ const Home = () => {
       <FeatureHighlits />
       <ServiceFeatures />
       <ShopCategorySection />
-      <MostViewedSection />
+      <MostViewedSection title={"Most Viewed"}/>
       <PromoBanner />
       <ClientReviews reviews={reviewsData} />
       <StockBanner />

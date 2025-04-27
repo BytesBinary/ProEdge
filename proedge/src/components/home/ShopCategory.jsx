@@ -60,7 +60,7 @@ const ShopCategorySection = () => {
       </div>
 
       <div className="bg-[#3F66BC] py-16 md:py-28 relative">
-        <div className="container mx-auto md:absolute md:bottom-20 md:left-1/2 md:-translate-x-1/2">
+        <div className="w-full max-w-7xl md:absolute md:bottom-20 md:left-1/2 md:-translate-x-1/2">
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-6 px-6 text-white text-center">
             {categories.map((category, index) => (
               <CategoryItem key={index} {...category} />

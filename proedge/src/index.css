@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* Reusable utility classes */
+/* Reusable utility classNamees */
 @layer components {
   /* Flex utilities */
   .flex-center {

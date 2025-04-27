@@ -1,7 +1,7 @@
 import React from 'react'
-import NavHeader from '../header/NavHeader'
-import MainNav from '../header/MainNav'
-import Navfooter from '../header/NavFooter'
+import NavHeader from '../utils/headerUtils/NavHeader'
+import MainNav from '../utils/headerUtils/MainNav'
+import Navfooter from '../utils/headerUtils/NavFooter'
 
 const Header = () => {
   return (
