@@ -11,7 +11,7 @@ const navLinks = [
 
 const NavigationLink = () => {
   return (
-    <ul className="flex justify-evenly items-center gap-5 md:gap-6 w-full text-sm md:text-lg lg:text-xl text-[#5D6576] font-semibold">
+    <ul className="hidden md:flex justify-evenly items-center gap-5 md:gap-6 w-full text-sm md:text-lg lg:text-xl text-[#5D6576] font-semibold">
       {navLinks.map((link, index) => (
         <li key={index}>
           <Link
