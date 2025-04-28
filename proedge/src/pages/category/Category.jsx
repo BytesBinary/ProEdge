@@ -3,6 +3,7 @@ import { useState } from "react";
 import Filter from "../../components/category/Filter";
 import Card from "../../components/category/Card";
 import Pagination from "../../components/category/Pagination";
+import { IoFilterSharp } from "react-icons/io5";
 
 const Category = () => {
   const [currentPage, setCurrentPage] = useState(2);
@@ -19,9 +20,12 @@ const Category = () => {
         </div>
         <div className="w-full flex flex-col">
           <div className="flex justify-around md:justify-between items-center">
-            <h1>Showing 23 items</h1>
+            <div className=" md:hidden bg-[#F8F9FB] border border-[#F8F9FB] rounded-[42px] px-6 py-3 pr-8 text-md leading-4 font-medium text-[#182B55] inline-flex gap-2">
+            <IoFilterSharp /> <span>Filter</span>
+            </div>
+            <h1 className="hidden md:block">Showing 23 items</h1>
             <div className="max-w-80 flex">
-              <div className="bg-[#F8F9FB] border-2 border-[#ECF0F9] rounded-[42px] w-24 h-12 py-3 px-5 mx-auto lg:mx-0 flex items-center justify-between">
+              <div className="bg-[#F8F9FB] hidden  border-2 border-[#ECF0F9] rounded-[42px] w-24 h-12 py-3 px-5 mx-auto lg:mx-0 md:flex items-center justify-around">
                 <svg
                   width="20"
                   height="20"
@@ -46,7 +50,7 @@ const Category = () => {
                 </h2>
               </div>
               <div className="relative inline-block">
-                <select className="appearance-none bg-[#F8F9FB] border border-[#F8F9FB] rounded-[42px] px-6 py-3 pr-8 text-lg leading-6 font-medium text-[#182B55] focus:outline-none">
+                <select className="appearance-none bg-[#F8F9FB] border border-[#F8F9FB] rounded-[42px] px-6 py-3 pr-8 text-md md:text-lg leading-4 md:leading-6 font-medium text-[#182B55] focus:outline-none">
                   <option>Relevance</option>
                   <option>Newest</option>
                   <option>Oldest</option>
