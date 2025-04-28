@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 // Reusable ToggleSection Component
 const ToggleSection = ({ title, children, isOpen, setIsOpen }) => {
@@ -10,12 +10,19 @@ const ToggleSection = ({ title, children, isOpen, setIsOpen }) => {
       >
         <h2 className="text-lg font-medium text-[#182B55] leading-6">{title}</h2>
         <svg
-          className={`w-4 h-4 transform transition-transform ${isOpen ? 'rotate-180' : ''}`}
+          className={`w-4 h-4 transform transition-transform ${
+            isOpen ? "rotate-180" : ""
+          }`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
         >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M19 9l-7 7-7-7"
+          />
         </svg>
       </div>
       {isOpen && <div className="space-y-4 pt-3 border-t-2 border-[#ECF0F9]">{children}</div>}
@@ -27,7 +34,12 @@ const ToggleSection = ({ title, children, isOpen, setIsOpen }) => {
 const Checkbox = ({ id, label, defaultChecked = false }) => {
   return (
     <div className="flex items-center gap-2">
-      <input type="checkbox" id={id} className="peer form-checkbox text-[#3F66BC]" defaultChecked={defaultChecked} />
+      <input
+        type="checkbox"
+        id={id}
+        className="peer form-checkbox text-[#3F66BC]"
+        defaultChecked={defaultChecked}
+      />
       <label
         htmlFor={id}
         className="cursor-pointer peer-checked:text-[#3F66BC] text-[16px] leading-6 text-[#182B55] font-medium peer-checked:font-medium transition-colors"
@@ -48,12 +60,19 @@ const PriceRange = ({ isOpen, setIsOpen }) => {
       >
         <h2 className="text-[18px] leading-6 text-[#182B55] font-medium">Price</h2>
         <svg
-          className={`w-4 h-4 transform transition-transform ${isOpen ? 'rotate-180' : ''}`}
+          className={`w-4 h-4 transform transition-transform ${
+            isOpen ? "rotate-180" : ""
+          }`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
         >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M19 9l-7 7-7-7"
+          />
         </svg>
       </div>
       {isOpen && (
@@ -78,7 +97,13 @@ const PriceRange = ({ isOpen, setIsOpen }) => {
             </div>
           </div>
           <div className="w-full">
-            <input type="range" min="0" max="990" defaultValue="0" className="w-full accent-blue-500" />
+            <input
+              type="range"
+              min="0"
+              max="990"
+              defaultValue="0"
+              className="w-full accent-blue-500"
+            />
           </div>
           <p className="text-[#5D6576] text-[16px] leading-6 font-medium">Price: $0 – $990</p>
         </div>
@@ -87,7 +112,7 @@ const PriceRange = ({ isOpen, setIsOpen }) => {
   );
 };
 
-const Filter = () => {
+const Filter = ({ onClose }) => {
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(true);
   const [isElectricMotorsOpen, setIsElectricMotorsOpen] = useState(true);
   const [isMadeInUSAOpen, setIsMadeInUSAOpen] = useState(true);
@@ -96,31 +121,27 @@ const Filter = () => {
 
   return (
     <>
-      <div className="w-[282px] bg-white space-y-6">
-        {/* Filter Section */}
+      <div className="w-[282px] bg-white space-y-6 h-screen lg:h-auto overflow-y-auto">
+        {/* Filter Header with Close Button */}
         <div className="space-y-2">
-          <h2 className="font-semibold text-2xl text-[#182B55] leading-8">Filter</h2>
-          <div className="flex flex-wrap gap-2 w-[282px] font-medium">
-            <span className="flex items-center text-[12px] leading-[16px] bg-[#F8F9FB] text-[#182B55] px-3 py-2 w-[131px] h-[32px] rounded-[40px]">
-              Electric Motors
-              <button className="ml-2 text-[#182B55]">&times;</button>
-            </span>
-            <span className="flex items-center text-[12px] leading-[16px] bg-[#F8F9FB] text-[#182B55] px-3 py-2 w-[131px] h-[32px] rounded-[40px]">
-              Single Phase
-              <button className="ml-2 text-[#182B55]">&times;</button>
-            </span>
-            <span className="flex items-center text-[12px] leading-[16px] bg-[#F8F9FB] text-[#182B55] px-3 py-2 w-[131px] h-[32px] rounded-[40px]">
-              Fast Shipping
-              <button className="ml-2 text-[#182B55]">&times;</button>
-            </span>
-            <button className="text-[16px] leading-6 text-[#3F66BC] hover:underline cursor-pointer">Clear All</button>
+          <div className="flex justify-between items-center">
+            <h2 className="font-semibold text-2xl text-[#182B55] leading-8 px-5 md:px-0 pt-5 md:pt-0">Filter</h2>
+            {/* Mobile Close Button */}
+            <button
+              onClick={onClose}
+              className="lg:hidden text-4xl text-[#182B55] hover:text-gray-600 px-5"
+            >
+              &times;
+            </button>
           </div>
         </div>
 
         {/* Fast Shipping Checkbox */}
         <div className="border border-[#ECF0F9] rounded-[8px] px-3 py-[14px] flex items-center space-x-2 bg-[#F8F9FB]">
           <input type="checkbox" defaultChecked className="bg-[#3F66BC] w-4 h-4" />
-          <label className="text-[16px] leading-5 text-[#182B55] font-medium cursor-pointer">Fast Shipping</label>
+          <label className="text-[16px] leading-5 text-[#182B55] font-medium cursor-pointer">
+            Fast Shipping
+          </label>
         </div>
 
         {/* Categories Section */}

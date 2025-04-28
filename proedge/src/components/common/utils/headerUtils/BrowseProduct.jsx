@@ -47,7 +47,7 @@ const BrowseProduct = () => {
         className="w-full px-5 py-4 bg-[#182B55] text-white rounded-full flex justify-between items-center gap-2 transition-all"
       >
         <MenuIcon />
-        <span className="text-xs md:text-lg font-semibold">
+        <span className="text-md md:text-lg font-medium">
           Browse Products
         </span>
         <DropdownArrowIcon className={`transition-transform ${isOpen ? 'rotate-180' : ''}`} />
