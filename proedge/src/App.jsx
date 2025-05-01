@@ -5,9 +5,9 @@ import {
 
 // Components 
 import Home from './pages/home/Home'
-import Products from './pages/products/Product'
+import Products from './pages/products/Products'
+import ProductDetails from './pages/product-details/ProductDetails'
 import Videos from './pages/videos/Videos'
-import Category from './pages/category/Category'
 import TechHelp from './pages/tech-help/TechHelp'
 import Contact from './pages/contact/Contact'
 import SignIn from './pages/auth/SignIn'
@@ -26,8 +26,8 @@ const router = createBrowserRouter([
     children: [
       { index: true, Component: Home },
       { path: 'products', Component: Products },
+      { path: 'products/:title', Component: ProductDetails },
       { path: 'videos', Component: Videos },
-      { path: 'category', Component: Category },
       { path: 'tech-help', Component: TechHelp },
       { path: 'contact-us', Component: Contact },
       { path: 'cart', Component: CartPage },
