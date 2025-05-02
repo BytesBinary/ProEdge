@@ -1,18 +1,29 @@
-
 import { Link } from "react-router-dom";
+import { formatCategoryName } from "../../../../../helper/slugifier/slugify";
 
-const SubcategoryList = ({ title, items }) => (
+const SubcategoryList = ({ title, items, selectedCategoryId }) => (
   <div className="space-y-3">
     <h3 className="font-semibold text-gray-800 mb-2">{title}</h3>
-    <ul className="space-y-2 text-sm">
+    <h3 className="font-semibold ">
+      <Link
+      to={`/products?sub_category=${formatCategoryName(
+                title
+                )}-${selectedCategoryId}`}
+        className="text-[#3F66BC]  hover:text-[#2E4A8E] transition-colors"
+      >
+        Shop All
+      </Link>
+    </h3>
+    
+    <ul className="space-y-2 text-sm ">
       {items.map((item, index) => (
         <li key={index}>
           <Link
-            to={item.path || "#"}
-            className="flex justify-between items-center text-gray-600 hover:text-[#3F66BC]"
+            to={item.path }
+            className="flex justify-between items-center text-gray-600 hover:text-[#95a3c2]"
           >
             <span>{item.name}</span>
-            {item.count && (
+            {item.count > 0 && (
               <span className="text-[#3F66BC] text-sm">({item.count})</span>
             )}
           </Link>

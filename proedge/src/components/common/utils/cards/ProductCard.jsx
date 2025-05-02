@@ -1,4 +1,5 @@
 import React from "react";
+import { FiDollarSign } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 
 const ProductCard = ({ image, category, title, price }) => {
@@ -18,7 +19,12 @@ const ProductCard = ({ image, category, title, price }) => {
     >
       <div className="rounded-xl w-full h-[417px] mb-5 bg-[#FFFFFF]">
         <div className="bg-[#F8F9FB] flex justify-center items-center relative rounded-xl w-full overflow-hidden">
-          <img src={image} alt={image} className="h-[167px]" />
+          <img
+            src={`${import.meta.env.VITE_SERVER_URL}/assets/${image}`}
+            alt="product"
+            className="h-[167px] w-full object-cover rounded-lg"
+          />
+
           <div className="group bg-[#FFFFFF] hover:bg-[#EE2738] rounded-full w-9 h-9 flex items-center justify-center absolute top-2 right-2 transition duration-300 cursor-pointer">
             <svg
               width="20"
@@ -38,16 +44,15 @@ const ProductCard = ({ image, category, title, price }) => {
         <div className="flex flex-col justify-between items-start h-[247px] w-full">
           <div className="mb-2">
             <h2 className="text-[14px] text-[#3F66BC] font-medium leading-10">
-              {" "}
-              {category}{" "}
+              {category}
             </h2>
             <h1 className="text-[#475467] text-lg font-medium leading-[30px]">
               {title}
             </h1>
           </div>
           <div className="mb-[10px]">
-            <p className="text-[#3F66BC] text-2xl font-semibold leading-8 gap-2.5">
-              ${price}
+            <p className="text-[#3F66BC] text-2xl font-semibold leading-8 gap-y-2.5 flex items-center  justify-start">
+             <FiDollarSign/> {price}
             </p>
           </div>
           <div className="bg-[#FCD700] rounded-[60px] text-center w-full h-[40px] py-2 px-6 flex items-center justify-center hover:bg-[#e6c200] cursor-pointer transition duration-300">
