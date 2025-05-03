@@ -5,7 +5,7 @@ import Pagination from "../../components/category/Pagination";
 import { IoFilterSharp } from "react-icons/io5";
 import { CategoryContext } from "../../context/CategoryContext";
 import { useProductContext } from "../../context/ProductContext";
-import PriceCard from "../../components/product/PriceCard";
+// import PriceCard from "../../components/product/PriceCard";
 import PageHeader from "../../components/common/utils/banner/SubPageHeader";
 import bgImage from "../../assets/images/cart.png";
 

@@ -1,8 +1,10 @@
 const ProductImage = ({ thumbnails, mainImage }) => {
+  console.log(thumbnails, "thumbnails");
+  thumbnails.map((thumb, index) => console.log(thumb.id, "thumb"));
   return (
     <div className="w-full md:max-w-sm flex flex-col md:flex-row justify-around md:h-auto">
       {/* Thumbnails */}
-      <div className="flex md:flex-col items-center md:items-start justify-center gap-3 md:gap-0">
+      <div className="flex md:flex-col items-center md:items-start justify-center gap-3 md:gap-0 overflow-y-auto">
         {thumbnails.map((thumb, index) => (
           <div
             key={index}
