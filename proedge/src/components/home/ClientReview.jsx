@@ -88,7 +88,13 @@ const ClientReview = ({
           <Swiper
             spaceBetween={20}
             loop={true}
-            autoplay={{ delay: 2000, disableOnInteraction: false }}
+            speed={700}
+            autoplay={{
+              delay: 2000,
+              disableOnInteraction: false,
+              pauseOnMouseEnter: false,
+              stopOnLastSlide: false
+            }}
             pagination={{
               clickable: true,
               el: ".review-pagination",
