@@ -8,8 +8,12 @@ export default defineConfig({
     tailwindcss(),
   ],
   server: {
-    host: 'localhost',
+    host: '0.0.0.0',  // Allows access from any host (i.e., external IPs can access)
     port: 3001,
+    allowedHosts: ['proedge.bytesbinary.top', 'localhost'],
+    fs: {
+      allow: ['/var/www/ProEdge']
+    }
   },
   build: {
     // Increase the chunk size warning limit to suppress the warning if you prefer
@@ -28,3 +32,4 @@ export default defineConfig({
     },
   },
 });
+
