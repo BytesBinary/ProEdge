@@ -7,6 +7,8 @@ import { CategoryContext } from "../../context/CategoryContext";
 import { useProductContext } from "../../context/ProductContext";
 import PriceCard from "../../components/product/PriceCard";
 import PageHeader from "../../components/common/utils/banner/SubPageHeader";
+import bgImage from "../../assets/images/cart.png";
+
 
 const Category = () => {
   const [currentPage, setCurrentPage] = useState(2);
@@ -163,7 +165,7 @@ const Category = () => {
 
   return (
     <>
-      <PageHeader />
+      <PageHeader title="Categories" bgImage={bgImage} breadcrumbs={[{ link: "/", label: "Home" }, { label: "Products" }]}/>
       <div className="w-full max-w-[1200px] mx-auto mt-3 md:mt-20 flex flex-col lg:flex-row justify-between items-start gap-10">
         {/* Desktop Filter Section */}
         <div className="hidden lg:block w-64">
