@@ -2,6 +2,7 @@ import React from "react";
 import MobileNav from "./mainNav/MainNavMobile"; // Updated import
 import DesktopNav from "./mainNav/MainNavDesktop";
 import { Link } from "react-router-dom";
+import logo from "../../../../assets/ProEdgeLogo.png"; 
 
 const MainNav = () => {
   return (
@@ -11,7 +12,7 @@ const MainNav = () => {
         <div className="flex w-full lg:w-auto justify-between items-center gap-2">
           <Link to="/" className="flex items-center shrink-0">
             <img
-              src="./src/assets/ProEdgeLogo.png"
+              src={logo}
               alt="ProEdge Logo"
               className="h-8 w-auto"
               loading="lazy"

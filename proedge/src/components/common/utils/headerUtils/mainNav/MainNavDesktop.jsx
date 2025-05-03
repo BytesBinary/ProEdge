@@ -1,5 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import find from "../../../../../assets/icons/search.svg"; // Updated import
+import fav from "../../../../../assets/icons/favorite.svg"; // Updated import
+import cart from "../../../../../assets/icons/cart.svg"; // Updated import
+
 
 const authLinks = [
   { path: "/auth/signin", label: "Sign In" },
@@ -30,7 +34,7 @@ const DesktopNav = () => {
           >
             <span className="hidden lg:inline">Search</span>
             <img
-              src="./src/assets/icons/search.svg"
+              src={find}
               alt="Search"
               className="w-6 h-6"
             />
