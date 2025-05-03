@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { CategoryContext } from "../../context/CategoryContext";
 import { formatCategoryName } from "../../helper/slugifier/slugify";
 import { useLocation } from "react-router-dom";
@@ -25,22 +25,15 @@ const ToggleSection = ({ title, children, isOpen, setIsOpen }) => (
 );
 
 // Reusable Checkbox with proper state management
-const Checkbox = ({ id, label, defaultChecked = false, onChange }) => {
-  const [isChecked, setIsChecked] = useState(defaultChecked);
-
-  const handleChange = (e) => {
-    setIsChecked(e.target.checked);
-    if (onChange) onChange(e);
-  };
-
+const Checkbox = ({ id, label, toggle, onChange }) => {
   return (
     <div className="flex items-center gap-2">
       <input
         type="checkbox"
         id={id}
         className="peer form-checkbox text-[#3F66BC]"
-        checked={isChecked}
-        onChange={handleChange}
+        checked={toggle}  // Fully controlled by parent
+        onChange={onChange}  // Directly use parent's onChange
       />
       <label
         htmlFor={id}
@@ -130,20 +123,152 @@ const Filter = ({ onClose }) => {
   const [isMadeInUSAOpen, setIsMadeInUSAOpen] = useState(true);
   const [isItemOpen, setIsItemOpen] = useState(true);
   const [fastShipping, setFastShipping] = useState(true);
+  const { categories,singleCategory, setSingleCategory} = useContext(CategoryContext); 
 
-  const categories = useContext(CategoryContext);
-  const query = new URLSearchParams(useLocation().search);
-  const parent_slug_category = query.get("parent_category");
-  const sub_slug_category = query.get("sub_category");
-  const child_slug_category = query.get("child_category");
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search); 
+  useEffect(() => {
+    const parentSlug = queryParams.get("parent_category");
+    const subSlug = queryParams.get("sub_category");
+    const childSlug = queryParams.get("child_category");
 
-  const selectedParentSlug = parent_slug_category;
-  const selectedSubSlug = sub_slug_category;
-  const selectedChildSlug = child_slug_category;
-  console.log(selectedParentSlug,"selectedParentSlug");
-  console.log(selectedSubSlug,"selectedSubSlug");
-  console.log(selectedChildSlug,"selectedChildSlug");
-  console.log(categories, "categories");
+    const formatCategories = (categories) => {
+      const processCategory = (category) => {
+        const name =
+          category.category_name ||
+          category.child_category_name ||
+          category.subcategory_name ||
+          "";
+        const slug = `${formatCategoryName(name)}-${category.id}`;
+        const newCategory = {
+          ...category,
+          slug,
+          toggle: false,
+        };
+        if (category.sub_category) {
+          newCategory.sub_category = category.sub_category.map(processCategory);
+        }
+        if (category.child_category) {
+          newCategory.child_category = category.child_category.map(processCategory);
+        }
+        return newCategory;
+      };
+      return categories.map(processCategory);
+    };
+
+    const formatted = formatCategories(categories || []);
+
+    formatted.forEach((parent) => {
+      let parentHasMatch = false;
+
+      if (parentSlug) {
+        parent.toggle = parent.slug === parentSlug;
+        parentHasMatch = parent.toggle;
+      }
+
+      parent.sub_category?.forEach((sub) => {
+        let subHasMatch = false;
+
+        if (subSlug) {
+          sub.toggle = sub.slug === subSlug;
+          subHasMatch = sub.toggle;
+        }
+
+        if (childSlug) {
+          sub.child_category?.forEach((child) => {
+            if (child.slug === childSlug) {
+              child.toggle = true;
+              subHasMatch = true;
+              parentHasMatch = true;
+            } else {
+              child.toggle = false;
+            }
+          });
+        }
+
+        if (subSlug) {
+          sub.toggle = sub.slug === subSlug;
+          if (sub.toggle) parentHasMatch = true;
+        } else {
+          sub.toggle = subHasMatch;
+        }
+      });
+
+      if (parentSlug) {
+        parent.toggle = parent.slug === parentSlug;
+      } else {
+        parent.toggle = parentHasMatch;
+      }
+    });
+
+    const matched = formatted.find((p) => p.toggle);
+    setSingleCategory(matched || null);
+  }, [location.search, categories, setSingleCategory]);
+
+  const handleCategoryToggle = (level, id, parentId = null) => {
+    setSingleCategory(prev => {
+      // Create deep copy of the category object
+      const updatedCategory = JSON.parse(JSON.stringify(prev));
+      
+      if (level === 'parent') {
+        // Toggle only the parent category
+        updatedCategory.toggle = !updatedCategory.toggle;
+        
+        // If parent is being unchecked, uncheck all children
+        if (!updatedCategory.toggle) {
+          updatedCategory.sub_category?.forEach(sub => {
+            sub.toggle = false;
+            sub.child_category?.forEach(child => {
+              child.toggle = false;
+            });
+          });
+        }
+      } 
+      else if (level === 'sub') {
+        // Find and toggle the sub-category
+        const subIndex = updatedCategory.sub_category?.findIndex(sub => sub.id === id);
+        if (subIndex !== -1 && subIndex !== undefined) {
+          updatedCategory.sub_category[subIndex].toggle = 
+            !updatedCategory.sub_category[subIndex].toggle;
+          
+          // If sub-category is being unchecked, uncheck its children
+          if (!updatedCategory.sub_category[subIndex].toggle) {
+            updatedCategory.sub_category[subIndex].child_category?.forEach(child => {
+              child.toggle = false;
+            });
+          }
+          // If sub-category is being checked, ensure parent is checked
+          else {
+            updatedCategory.toggle = true;
+          }
+        }
+      } 
+      else if (level === 'child') {
+        // Find and toggle the child category
+        for (const sub of updatedCategory.sub_category || []) {
+          const childIndex = sub.child_category?.findIndex(child => child.id === id);
+          if (childIndex !== -1 && childIndex !== undefined) {
+            sub.child_category[childIndex].toggle = 
+              !sub.child_category[childIndex].toggle;
+            
+            // If child is being checked, ensure sub and parent are checked
+            if (sub.child_category[childIndex].toggle) {
+              sub.toggle = true;
+              updatedCategory.toggle = true;
+            }
+            break;
+          }
+        }
+      }
+      
+      return updatedCategory;
+    });
+  };
+
+  // Calculate total stock for parent category by summing all sub-category stocks
+  const parentTotalStock = singleCategory?.sub_category?.reduce((sum, sub) => {
+    return sum + (sub.total_stock || 0);
+  }, 0) || 0;
 
   return (
     <div className="w-[282px] bg-white space-y-6 h-screen lg:h-auto overflow-y-auto">
@@ -162,7 +287,7 @@ const Filter = ({ onClose }) => {
         </div>
       </div>
 
-      {/* Fast Shipping */}
+      {/* Fast Shipping Toggle */}
       <div className="border border-[#ECF0F9] rounded-[8px] px-3 py-[14px] flex items-center space-x-2 bg-[#F8F9FB]">
         <input 
           type="checkbox" 
@@ -175,64 +300,69 @@ const Filter = ({ onClose }) => {
         </label>
       </div>
 
-      {/* Categories */}
-      <ToggleSection title="Categories" isOpen={isCategoriesOpen} setIsOpen={setIsCategoriesOpen}>
-        {categories?.categories?.map((parent) => {
-          const parentSlugId = formatCategoryName(parent.category_name ? parent.category_name:"nvnnv") + "-" + parent.id;
-          const isParentChecked = selectedParentSlug === parentSlugId;
-
-          return (
-            <div key={parent.id}>
-              <Checkbox
-                id={`parent-${parent.id}`}
-                label={parent.category_name}
-                defaultChecked={isParentChecked}
-              />
-              {parent.sub_category?.map((sub) => {
-                const subSlugId = `${formatCategoryName(sub.sub_category_name?sub.sub_category_name:"vfvnnv")}-${sub.id}`;
-                const isSubChecked =
-                  selectedSubSlug === subSlugId ||
-                  selectedChildSlug?.startsWith(formatCategoryName(sub.sub_category_name));
-
-                return (
-                  <div key={sub.id} className="ml-4 mt-2">
+      {/* Categories Section */}
+      <ToggleSection 
+        title="Categories" 
+        isOpen={isCategoriesOpen} 
+        setIsOpen={setIsCategoriesOpen}
+      ><p className="text-2xl leading-5 text-[#1748b1] font-medium cursor-pointer">  
+        {singleCategory?.category_name}
+        
+          </p>
+      </ToggleSection>
+      <ToggleSection 
+        title="Categories" 
+        isOpen={isCategoriesOpen} 
+        setIsOpen={setIsCategoriesOpen}
+      >
+        {singleCategory && (
+          <div key={singleCategory.id}>
+            {/* Parent Category Checkbox */}
+            <Checkbox
+              id={`parent-${singleCategory.id}`}
+              label={`${singleCategory.category_name} (${parentTotalStock})`}
+              toggle={singleCategory.toggle}
+              onChange={() => handleCategoryToggle('parent', singleCategory.id)}
+            />
+            
+            {/* Sub Categories */}
+            {singleCategory.sub_category?.map((sub) => (
+              <div key={sub.id} className="ml-4 mt-2">
+                {/* Sub-category Checkbox */}
+                <Checkbox
+                  id={`sub-${sub.id}`}
+                  label={`${sub.subcategory_name} (${sub.total_stock || 0})`}
+                  toggle={sub.toggle}
+                  onChange={() => handleCategoryToggle('sub', sub.id)}
+                />
+                
+                {/* Child Categories */}
+                <div className="ml-4 mt-2 space-y-2">
+                  {sub.child_category?.map((child) => (
                     <Checkbox
-                      id={`sub-${sub.id}`}
-                      label={sub.sub_category_name}
-                      defaultChecked={isSubChecked}
+                      key={child.id}
+                      id={`child-${child.id}`}
+                      label={`${child.child_category_name} (${child.total_stock || 0})`}
+                      toggle={child.toggle}
+                      onChange={() => handleCategoryToggle('child', child.id, sub.id)}
                     />
-                    <div className="ml-4 mt-2 space-y-2">
-                      {sub.child_category?.map((child) => {
-                        const childSlugId = `${formatCategoryName(child.child_category_name?child.child_category_name:"rnvnnv")}-${child.id}`;
-                        const isChildChecked = selectedChildSlug === childSlugId;
-
-                        return (
-                          <Checkbox
-                            key={child.id}
-                            id={`child-${child.id}`}
-                            label={`${child.child_category_name} (${child.total_stock})`}
-                            defaultChecked={isChildChecked}
-                          />
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          );
-        })}
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </ToggleSection>
 
-      {/* Price Filter */}
+      {/* Price Range Filter */}
       <PriceRange isOpen={isPriceOpen} setIsOpen={setIsPriceOpen} />
 
-      {/* Made in USA */}
+      {/* Made in USA Filter */}
       <ToggleSection title="Made in the USA" isOpen={isMadeInUSAOpen} setIsOpen={setIsMadeInUSAOpen}>
         <Checkbox id="usa" label="NO (64)" />
       </ToggleSection>
 
-      {/* Item Type */}
+      {/* Item Type Filter */}
       <ToggleSection title="Item" isOpen={isItemOpen} setIsOpen={setIsItemOpen}>
         <Checkbox id="reducing_bushing" label="Reducing Bushing (9)" />
         <Checkbox id="bushing" label="Bushing (5)" />

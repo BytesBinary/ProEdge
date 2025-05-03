@@ -8,12 +8,17 @@ export const CartContext = createContext({
   removeFromCart: () => {},
   clearCart: () => {},
   getCartTotal: () => 0,
+  wishlistItems: [],
+  addToWishlist: () => {},
+  removeFromWishlist: () => {},
+  isInWishlist: () => false,
 });
 
 export function CartProvider({ children }) {
   const isBrowser = typeof window !== 'undefined';
-//   const { products } = useProductContext(); 
+  // const { products } = useProductContext(); 
 
+  // Cart functionality
   const [cartItems, setCartItems] = useState(() => {
     if (isBrowser) {
       const storedCartItems = localStorage.getItem('cartItems');
@@ -22,6 +27,16 @@ export function CartProvider({ children }) {
     return [];
   });
 
+  // Wishlist functionality
+  const [wishlistItems, setWishlistItems] = useState(() => {
+    if (isBrowser) {
+      const storedWishlistItems = localStorage.getItem('wishlistItems');
+      return storedWishlistItems ? JSON.parse(storedWishlistItems) : [];
+    }
+    return [];
+  });
+
+  // Cart methods
   const addToCart = (item) => {
     const isItemInCart = cartItems.find(cartItem => cartItem.id === item.id);
     if (!isItemInCart) {
@@ -42,12 +57,34 @@ export function CartProvider({ children }) {
     }, 0);
   };
 
+  // Wishlist methods
+  const addToWishlist = (item) => {
+    const isItemInWishlist = wishlistItems.find(wishlistItem => wishlistItem.id === item.id);
+    if (!isItemInWishlist) {
+      setWishlistItems(prev => [...prev, { ...item }]);
+    }
+  };
+
+  const removeFromWishlist = (item) => {
+    setWishlistItems(prev => prev.filter(wishlistItem => wishlistItem.id !== item.id));
+  };
+
+  const isInWishlist = (itemId) => {
+    return wishlistItems.some(item => item.id === itemId);
+  };
+
   // Sync with localStorage
   useEffect(() => {
     if (isBrowser) {
       localStorage.setItem('cartItems', JSON.stringify(cartItems));
     }
   }, [cartItems]);
+
+  useEffect(() => {
+    if (isBrowser) {
+      localStorage.setItem('wishlistItems', JSON.stringify(wishlistItems));
+    }
+  }, [wishlistItems]);
 
   return (
     <CartContext.Provider
@@ -57,6 +94,10 @@ export function CartProvider({ children }) {
         removeFromCart,
         clearCart,
         getCartTotal,
+        wishlistItems,
+        addToWishlist,
+        removeFromWishlist,
+        isInWishlist,
       }}
     >
       {children}

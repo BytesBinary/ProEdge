@@ -1,63 +1,66 @@
-import React from "react";
-
-import bgImage from "../../assets/images/productDetails/bg.jpeg";
-import greater from "../../assets/images/productDetails/greater.png";
-import m1 from "../../assets/images/productDetails/motor/m1.png";
-import m2 from "../../assets/images/productDetails/motor/m2.png";
-
+import { useEffect, useState } from "react";
+import { useProductContext } from "../../context/ProductContext";
+import { useParams } from "react-router-dom";
 import ProductImage from "../../components/product/ProductImage";
+import ProductVariation from "../../components/product/ProductVariation";
 import DeliveryInfo from "../../components/product/DeliveryInfo";
-import ProductInfo from "../../components/product/ProductInfo";
-
 import PDS from "../../components/common/utils/ProductDetails/PDS";
 import ProductSpecList from "../../components/product/ProductSpecList";
-import ProDetails from "../../data/ProDetails/ProDetails";
-import MostViewedSection from "../../components/home/MostViewed";
-import CardComponent from "../../components/product/CardComponent";
 
 const Product = () => {
+  const [singleProduct, setSingleProduct] = useState(null);
+
+  const { fetchProductById } = useProductContext();
+  const { title } = useParams();
+
+  const match = title?.match(/-(\d+)$/);
+  const id = match ? parseInt(match[1], 10) : null;
+
+  const fetchSingleProduct = async () => {
+    const product = await fetchProductById(id);
+    setSingleProduct(product);
+  };
+
+  useEffect(() => {
+    fetchSingleProduct();
+  }, []);
+  console.log(singleProduct);
+
+  if (!singleProduct) return <div>Loading...</div>;
+
+  // Get the first variation (assuming there's at least one)
+  const variation = singleProduct.variation[0];
+
   return (
     <div>
       <div className="flex flex-col items-start w-full mx-auto">
-        <section className="relative w-full h-[20vh] md:h-[30vh] lg:h-[20vw] overflow-hidden">
-          <img
-            src={bgImage}
-            alt="A man using a grinder on wood"
-            className="absolute inset-0 w-full h-full object-cover object-center"
-          />
-
-          <div className="absolute inset-0 bg-black/60 bg-opacity-60"></div>
-
-          <div className="relative max-w-7xl w-full mx-auto h-full flex flex-col justify-center items-start px-6 md:px-12 lg:px-20 text-white">
-            <h1 className="text-3xl md:text-4xl font-semibold">
-              Products Details
-            </h1>
-            <nav className="mt-2 text-sm md:text-base flex items-center gap-2">
-              <a href="/" className="hover:underline">
-                Home
-              </a>
-              <img
-                src={greater}
-                alt="An icon pointing to the right"
-                className="w-6 h-6"
-              />
-              <a href="#" className="hover:underline">
-                Products
-              </a>
-              <img
-                src={greater}
-                alt="An icon pointing to the right"
-                className="w-6 h-6"
-              />
-              <span className="text-gray-300">Product Details</span>
-            </nav>
-          </div>
-        </section>
+        {/* ... (keep the existing header section) ... */}
 
         <section className="my-10 max-w-7xl w-full mx-auto flex flex-col md:flex-row justify-between h-auto items-start gap-6">
-          <ProductImage thumbnails={[m1, m1, m1, m1]} mainImage={m2} />
-          <ProductInfo />
-          <DeliveryInfo />
+          <ProductImage
+            thumbnails={[variation.image]} // You might need to adjust this based on actual image data
+            mainImage={variation.image}
+          />
+
+          <ProductVariation
+            title={singleProduct.title}
+            sku={variation.sku_code}
+            rating={variation.rating}
+            totalRatings={variation.total_ratings}
+            currentPrice={variation.offer_price}
+            originalPrice={variation.regular_price}
+            description={variation.product_details}
+            features={variation.features}
+          />
+
+          <DeliveryInfo
+            product={singleProduct}
+            imageId={variation.image.id} 
+            price={variation.offer_price}
+            originalPrice={variation.regular_price}
+            stock={variation.stock}
+            sku={variation.sku_code}
+          />
         </section>
 
         <section className="my-10 max-w-7xl w-full mx-auto shadow-sm rounded-2xl bg-white border-2 border-[#F8F9FB]">
@@ -72,7 +75,7 @@ const Product = () => {
           </div>
         </section>
 
-        <section className="my-10 bg-[#F8F9FB] w-full py-16 px-4 md:px-12 flex justify-center items-center gap-6 flex-wrap">
+        {/* <section className="my-10 bg-[#F8F9FB] w-full py-16 px-4 md:px-12 flex justify-center items-center gap-6 flex-wrap">
           {ProDetails.map((item, index) => (
             <CardComponent
               key={index}
@@ -81,9 +84,9 @@ const Product = () => {
               subtitle={item.subtitle}
             />
           ))}
-        </section>
+        </section> */}
 
-        <MostViewedSection title={"Products related to this items"} />
+        {/* <MostViewedSection title={"Products related to this items"} /> */}
       </div>
     </div>
   );

@@ -1,16 +1,22 @@
 import { createContext, useState, useEffect } from "react";
 import axios from "axios";
+import { formatCategoryName } from "../helper/slugifier/slugify";
 
 export const CategoryContext = createContext({
   categories: [],
+  singleCategory: null, 
+  setSingleCategory: () => {},
   loading: false,
   error: null,
 });
 
 export function CategoryProvider({ children }) {
   const [categories, setCategories] = useState([]);
+    const [singleCategory, setSingleCategory] = useState(null);
+  
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
 
   const GRAPHQL_URL = import.meta.env.VITE_SERVER_URL + "/graphql";
 
@@ -111,8 +117,107 @@ export function CategoryProvider({ children }) {
     fetchCategoriesAndStock();
   }, []);
 
+   const formatCategories = (categories) => {
+      const processCategory = (category) => {
+        // Create slug from category_name or child_category_name or subcategory_name
+        const name =
+          category.category_name ||
+          category.child_category_name ||
+          category.subcategory_name ||
+          "";
+        const slug = `${formatCategoryName(name)}-${category.id}`;
+        // Create new category object with additional fields
+  
+        const newCategory = {
+          ...category,
+          slug,
+          toggle: false,
+        };
+  
+        // Process subcategories recursively if they exist
+        if (category.sub_category) {
+          newCategory.sub_category = category.sub_category.map(processCategory);
+        }
+  
+        // Process child categories recursively if they exist
+        if (category.child_category) {
+          newCategory.child_category =
+            category.child_category.map(processCategory);
+        }
+  
+        return newCategory;
+      };
+  
+      return categories.map(processCategory);
+    };
+  
+    useEffect(() => {
+      if (!categories?.length) return;
+  
+      const query = new URLSearchParams(location.search);
+      const parentSlug = query.get("parent_category");
+      const subSlug = query.get("sub_category");
+      const childSlug = query.get("child_category");
+  
+      const formatted = formatCategories(categories || []);
+  
+      formatted.forEach((parent) => {
+        let parentHasMatch = false;
+  
+        // Check if parent matches (if parentSlug is provided)
+        if (parentSlug) {
+          parent.toggle = parent.slug === parentSlug;
+          parentHasMatch = parent.toggle;
+        }
+  
+        parent.sub_category?.forEach((sub) => {
+          let subHasMatch = false;
+  
+          // Check if subcategory matches (if subSlug is provided)
+          if (subSlug) {
+            sub.toggle = sub.slug === subSlug;
+            subHasMatch = sub.toggle;
+          }
+  
+          // If childSlug is provided, check child categories
+          if (childSlug) {
+            sub.child_category?.forEach((child) => {
+              if (childSlug === child.slug) {
+                child.toggle = true;
+                subHasMatch = true;
+                parentHasMatch = true;
+              } else {
+                child.toggle = false;
+              }
+            });
+          }
+  
+          // If subSlug was provided, override toggle based on subSlug match
+          if (subSlug) {
+            sub.toggle = sub.slug === subSlug;
+            if (sub.toggle) parentHasMatch = true;
+          } else {
+            sub.toggle = subHasMatch;
+          }
+        });
+  
+        // If parentSlug was provided, override toggle based on parentSlug match
+        if (parentSlug) {
+          parent.toggle = parent.slug === parentSlug;
+        } else {
+          parent.toggle = parentHasMatch;
+        }
+      });
+      const finalformmatted = formatted.filter((parent) => {
+        return parent.toggle === true;
+      });
+      setSingleCategory(finalformmatted[0]);
+  
+      // setSingleCategory(foundCategory);
+    }, [location.search, categories]);
+
   return (
-    <CategoryContext.Provider value={{ categories, loading, error }}>
+    <CategoryContext.Provider value={{ categories,singleCategory,setSingleCategory, loading, error, }}>
       {children}
     </CategoryContext.Provider>
   );

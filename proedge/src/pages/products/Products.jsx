@@ -6,216 +6,135 @@ import { IoFilterSharp } from "react-icons/io5";
 import { CategoryContext } from "../../context/CategoryContext";
 import { useProductContext } from "../../context/ProductContext";
 import PriceCard from "../../components/product/PriceCard";
-import { formatCategoryName } from "../../helper/slugifier/slugify";
-import { useLocation } from "react-router-dom";
+import PageHeader from "../../components/common/utils/banner/SubPageHeader";
 
 const Category = () => {
   const [currentPage, setCurrentPage] = useState(2);
   const [showFilter, setShowFilter] = useState(false);
-  const [singleCategory, setSingleCategory] = useState(null);
 
-  const location = useLocation();
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
   const { products, loading } = useProductContext();
-  const { categories: fetchedCategories } = useContext(CategoryContext);
-  console.log(fetchedCategories, "categories");
-  const formatCategories = (categories) => {
-    const processCategory = (category) => {
-      // Create slug from category_name or child_category_name or subcategory_name
-      const name =
-        category.category_name ||
-        category.child_category_name ||
-        category.subcategory_name ||
-        "";
-      const slug = `${formatCategoryName(name)}-${category.id}`;
-      // Create new category object with additional fields
+  const { singleCategory } = useContext(CategoryContext);
+  console.log(products, "singleCategory");  
+  
+  
 
-      const newCategory = {
-        ...category,
-        slug,
-        toggle: false,
-      };
+  // Function to generate a slug from a string
+  // Function to generate a slug from a string
+  const generateSlug = (str) => {
+    if (!str) return "";
+    return str
+      .toLowerCase()
+      .replace(/[^\w\s-]/g, "") // Remove non-word characters
+      .replace(/\s+/g, "-") // Replace spaces with hyphens
+      .replace(/--+/g, "-"); // Replace multiple hyphens with single
+  };
 
-      // Process subcategories recursively if they exist
-      if (category.sub_category) {
-        newCategory.sub_category = category.sub_category.map(processCategory);
-      }
+  // Add slug to each product based on its category hierarchy
+  const productsWithSlugs = products.map((product) => {
+    const parentName =
+      product.product_category?.sub_category?.parent_category?.category_name ||
+      "";
+    const subName =
+      product.product_category?.sub_category?.subcategory_name || "";
+    const childName = product.product_category?.child_category_name || "";
 
-      // Process child categories recursively if they exist
-      if (category.child_category) {
-        newCategory.child_category =
-          category.child_category.map(processCategory);
-      }
+    const parentId =
+      product.product_category?.sub_category?.parent_category?.id || "";
+    const subId = product.product_category?.sub_category?.id || "";
+    const childId = product.product_category?.id || "";
 
-      return newCategory;
+    // Generate slugs for each part
+    const parentSlug = parentName
+      ? `${generateSlug(parentName)}-${parentId}`
+      : "";
+    const subSlug = subName ? `${generateSlug(subName)}-${subId}` : "";
+    const childSlug = childName ? `${generateSlug(childName)}-${childId}` : "";
+
+    // Combine them to create the full product slug
+    const productSlug = [parentSlug, subSlug, childSlug]
+      .filter(Boolean)
+      .join("-");
+
+    return {
+      ...product,
+      slug: product.slug || productSlug, // Use existing slug if available, otherwise use generated one
+      // Also add individual slugs to the category structure for easier access
+      product_category: {
+        ...product.product_category,
+        slug: childSlug,
+        sub_category: {
+          ...product.product_category?.sub_category,
+          slug: subSlug,
+          parent_category: {
+            ...product.product_category?.sub_category?.parent_category,
+            slug: parentSlug,
+          },
+        },
+      },
     };
+  });
 
-    return categories.map(processCategory);
-  };
+  // Now filter products based on the selected category using the generated slugs
+  const filteredProducts = productsWithSlugs.filter((product) => {
+    // Extract product category details using the generated slugs
+    const productChildSlug = product.product_category?.slug;
+    const productSubSlug = product.product_category?.sub_category?.slug;
+    const productParentSlug =
+      product.product_category?.sub_category?.parent_category?.slug;
 
-  useEffect(() => {
-    if (!fetchedCategories?.length) return;
-
-    const query = new URLSearchParams(location.search);
-    const parentSlug = query.get("parent_category");
-    const subSlug = query.get("sub_category");
-    const childSlug = query.get("child_category");
-
-    const formatted = formatCategories(fetchedCategories || []);
-
-    formatted.forEach((parent) => {
-      let parentHasMatch = false;
-
-      // Check if parent matches (if parentSlug is provided)
-      if (parentSlug) {
-        parent.toggle = parent.slug === parentSlug;
-        parentHasMatch = parent.toggle;
-      }
-
-      parent.sub_category?.forEach((sub) => {
-        let subHasMatch = false;
-
-        // Check if subcategory matches (if subSlug is provided)
-        if (subSlug) {
-          sub.toggle = sub.slug === subSlug;
-          subHasMatch = sub.toggle;
-        }
-
-        // If childSlug is provided, check child categories
-        if (childSlug) {
-          sub.child_category?.forEach((child) => {
-            if (childSlug === child.slug) {
-              child.toggle = true;
-              subHasMatch = true;
-              parentHasMatch = true;
-            } else {
-              child.toggle = false;
-            }
-          });
-        }
-
-        // If subSlug was provided, override toggle based on subSlug match
-        if (subSlug) {
-          sub.toggle = sub.slug === subSlug;
-          if (sub.toggle) parentHasMatch = true;
-        } else {
-          sub.toggle = subHasMatch;
-        }
-      });
-
-      // If parentSlug was provided, override toggle based on parentSlug match
-      if (parentSlug) {
-        parent.toggle = parent.slug === parentSlug;
-      } else {
-        parent.toggle = parentHasMatch;
-      }
-    });
-    const finalformmatted = formatted.filter((parent) => {
-      return parent.toggle === true;
-    });
-    setSingleCategory(finalformmatted[0]);
-
-    // setSingleCategory(foundCategory);
-  }, [location.search, fetchedCategories]);
-
- // Function to generate a slug from a string
-// Function to generate a slug from a string
-const generateSlug = (str) => {
-  if (!str) return '';
-  return str
-    .toLowerCase()
-    .replace(/[^\w\s-]/g, '') // Remove non-word characters
-    .replace(/\s+/g, '-')     // Replace spaces with hyphens
-    .replace(/--+/g, '-');    // Replace multiple hyphens with single
-};
-
-// Add slug to each product based on its category hierarchy
-const productsWithSlugs = products.map(product => {
-  const parentName = product.product_category?.sub_category?.parent_category?.category_name || '';
-  const subName = product.product_category?.sub_category?.subcategory_name || '';
-  const childName = product.product_category?.child_category_name || '';
-  
-  const parentId = product.product_category?.sub_category?.parent_category?.id || '';
-  const subId = product.product_category?.sub_category?.id || '';
-  const childId = product.product_category?.id || '';
-  
-  // Generate slugs for each part
-  const parentSlug = parentName ? `${generateSlug(parentName)}-${parentId}` : '';
-  const subSlug = subName ? `${generateSlug(subName)}-${subId}` : '';
-  const childSlug = childName ? `${generateSlug(childName)}-${childId}` : '';
-  
-  // Combine them to create the full product slug
-  const productSlug = [parentSlug, subSlug, childSlug].filter(Boolean).join('-');
-  
-  return {
-    ...product,
-    slug: product.slug || productSlug, // Use existing slug if available, otherwise use generated one
-    // Also add individual slugs to the category structure for easier access
-    product_category: {
-      ...product.product_category,
-      slug: childSlug,
-      sub_category: {
-        ...product.product_category?.sub_category,
-        slug: subSlug,
-        parent_category: {
-          ...product.product_category?.sub_category?.parent_category,
-          slug: parentSlug
-        }
-      }
+    // If no category is selected at all, show all products
+    if (!singleCategory?.toggle && 
+        !singleCategory?.sub_category?.some(sub => sub.toggle)) {
+      return true;
     }
-  };
+
+    // Check if parent matches (if parent is toggled in singleCategory)
+    const parentMatch =
+      singleCategory?.toggle && singleCategory.slug === productParentSlug;
+
+    // If parent doesn't match, exclude the product
+    if (singleCategory?.toggle && !parentMatch) return false;
+
+    // Check if any sub-category is toggled
+    const hasToggledSub = singleCategory?.sub_category?.some(
+      (sub) => sub.toggle
+    );
+
+    // If no sub-category is toggled, include all products under parent
+    if (!hasToggledSub) return true;
+
+    // Check if current product's sub-category matches any toggled sub-category
+    const subMatch = singleCategory?.sub_category?.some(
+      (sub) => sub.toggle && sub.slug === productSubSlug
+    );
+
+    // If sub-category doesn't match any toggled sub-category, exclude
+    if (!subMatch) return false;
+
+    // Check if any child category is toggled under the matched sub-category
+    const matchedSub = singleCategory.sub_category.find(
+      (sub) => sub.toggle && sub.slug === productSubSlug
+    );
+    const hasToggledChild = matchedSub?.child_category?.some(
+      (child) => child.toggle
+    );
+
+    // If no child category is toggled, include all products under the sub-category
+    if (!hasToggledChild) return true;
+
+    // Check if current product's child category matches any toggled child category
+    const childMatch = matchedSub.child_category.some(
+      (child) => child.toggle && child.slug === productChildSlug
+    );
+
+    // Only include if child category matches
+    return childMatch;
 });
 
-// Now filter products based on the selected category using the generated slugs
-const filteredProducts = productsWithSlugs.filter((product) => {
-  // Extract product category details using the generated slugs
-  const productChildSlug = product.product_category?.slug;
-  const productSubSlug = product.product_category?.sub_category?.slug;
-  const productParentSlug = product.product_category?.sub_category?.parent_category?.slug;
-  
-  // Check if parent matches (if parent is toggled in singleCategory)
-  const parentMatch = singleCategory?.toggle && 
-                     singleCategory.slug === productParentSlug;
-  
-  // If parent doesn't match, exclude the product
-  if (!parentMatch) return false;
-  
-  // Check if any sub-category is toggled
-  const hasToggledSub = singleCategory?.sub_category?.some(sub => sub.toggle);
-  
-  // If no sub-category is toggled, include all products under parent
-  if (!hasToggledSub) return true;
-  
-  // Check if current product's sub-category matches any toggled sub-category
-  const subMatch = singleCategory?.sub_category?.some(
-    sub => sub.toggle && sub.slug === productSubSlug
-  );
-  
-  // If sub-category doesn't match any toggled sub-category, exclude
-  if (!subMatch) return false;
-  
-  // Check if any child category is toggled under the matched sub-category
-  const matchedSub = singleCategory.sub_category.find(
-    sub => sub.toggle && sub.slug === productSubSlug
-  );
-  const hasToggledChild = matchedSub?.child_category?.some(child => child.toggle);
-  
-  // If no child category is toggled, include all products under the sub-category
-  if (!hasToggledChild) return true;
-  
-  // Check if current product's child category matches any toggled child category
-  const childMatch = matchedSub.child_category.some(
-    child => child.toggle && child.slug === productChildSlug
-  );
-  
-  // Only include if child category matches
-  return childMatch;
-});
-
-  console.log(filteredProducts, "pro");  
   const formattedProducts = filteredProducts.map((product) => {
     const variation = product.variation?.[0] || {};
     const features = variation.features || [];
@@ -241,8 +160,10 @@ const filteredProducts = productsWithSlugs.filter((product) => {
     };
   });
 
+
   return (
     <>
+    <PageHeader/>
       <div className="w-full max-w-[1200px] mx-auto mt-3 md:mt-20 flex flex-col lg:flex-row justify-between items-start gap-10">
         {/* Desktop Filter Section */}
         <div className="hidden lg:block w-64">
@@ -390,10 +311,12 @@ const filteredProducts = productsWithSlugs.filter((product) => {
             {formattedProducts.map((product) => (
               <Card
                 key={product.id}
+                id={product.id}
                 category={product.category_name}
                 title={product.title}
                 image={product.image?.id}
                 price={product.price}
+                variation={product.variation}
               />
             ))}
           </div>
@@ -406,10 +329,20 @@ const filteredProducts = productsWithSlugs.filter((product) => {
           />
         </div>
 
-        {/* Filter Section (mobile popup with backdrop blur) */}
         {showFilter && (
           <div className="fixed lg:hidden left-0 top-0 h-screen w-full z-50 transform transition-transform duration-300 ease-in-out bg-white/5 shadow-sm backdrop-blur-xs">
-            <Filter onClose={() => setShowFilter(false)} singleCategory={singleCategory} />
+            {!singleCategory ? (
+              <div className="p-4 text-center">Loading categories...</div>
+            ) : singleCategory.id === "error" ? (
+              <div className="p-4 text-red-500">
+                {singleCategory.category_name}
+              </div>
+            ) : (
+              <Filter
+                onClose={() => setShowFilter(false)}
+               
+              />
+            )}
           </div>
         )}
       </div>
