@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
 import Button from '../../components/common/utils/button/Button';
 import TextInput from '../../components/common/form/TextInput';
 import AuthHeader from '../../components/auth/AuthHeader';
 import axios from 'axios';
 
 const SignUp = () => {
+  const navigate = useNavigate(); // Initialize navigate function
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -40,7 +41,6 @@ const SignUp = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Updated mutation
   const SIGN_UP_MUTATION = `
     mutation CreateCustomer($data: create_customer_input!) {
       create_customer_item(data: $data) {
@@ -60,7 +60,6 @@ const SignUp = () => {
     setLoading(true);
 
     try {
-      console.log('Form data:', formData);
       const response = await axios.post(
         `${import.meta.env.VITE_SERVER_URL}/graphql`,
         {
@@ -84,10 +83,9 @@ const SignUp = () => {
       if (response.data.errors) {
         setErrors({ submit: 'Sign up failed. Please try again later.' });
       } else {
-        console.log('Sign up successful:', response.data);
+        navigate('/auth/signin');
       }
     } catch (error) {
-      console.error('Sign up failed:', error.response || error);
       setErrors({ submit: 'Sign up failed. Please try again later.' });
     } finally {
       setLoading(false);
