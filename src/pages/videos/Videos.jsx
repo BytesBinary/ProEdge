@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import SubPageHeader from '../../components/common/utils/banner/SubPageHeader';
 import VideoCard from '../../components/Video/VideoCard';
 // import videos from '../../data/videos/Video';
-import pageData from '../../data/videos/PageData';
+// import pageData from '../../data/videos/PageData';
 
 // data/videos/Video.js
 const videos = [
