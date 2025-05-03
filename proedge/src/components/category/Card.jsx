@@ -11,7 +11,7 @@ const Card = ({ id,title, price, image, category,variation }) => {
           category={category}
           title={title}
           price={price}
-         variation={variation}
+          variation={variation}
         />
       </div>
     </section>
