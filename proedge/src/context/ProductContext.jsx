@@ -27,6 +27,7 @@ const ALL_PRODUCTS_QUERY = `
       variation {
         id
         variation_name
+        variation_value
         features
         regular_price
         offer_price
@@ -65,6 +66,7 @@ const SINGLE_PRODUCT_QUERY = `
       variation {
         id
         variation_name
+        variation_value 
         features
         regular_price
         offer_price

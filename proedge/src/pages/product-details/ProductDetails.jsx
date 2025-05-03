@@ -9,57 +9,67 @@ import ProductSpecList from "../../components/product/ProductSpecList";
 
 const Product = () => {
   const [singleProduct, setSingleProduct] = useState(null);
+  const [singleVariation, setSingleVariation] = useState(null);
+  const [features, setFeatures] = useState(null);
 
   const { fetchProductById } = useProductContext();
   const { title } = useParams();
 
+  // Extract product ID from URL
   const match = title?.match(/-(\d+)$/);
   const id = match ? parseInt(match[1], 10) : null;
 
-  const fetchSingleProduct = async () => {
-    const product = await fetchProductById(id);
-    setSingleProduct(product);
-  };
+  useEffect(() => {
+    const fetchSingleProduct = async () => {
+      if (id) {
+        const product = await fetchProductById(id);
+        setSingleProduct(product);
+      }
+    };
+
+    fetchSingleProduct();
+  }, [id]);
+
+  console.log(singleProduct,'singleProduct'); 
 
   useEffect(() => {
-    fetchSingleProduct();
-  }, []);
-  console.log(singleProduct);
+    if (singleProduct && singleProduct.variation?.length > 0) {
+      setSingleVariation(singleProduct.variation[0]);
+      setFeatures(singleProduct.variation[0].features);  
+    }
+  }, [singleProduct]);
 
-  if (!singleProduct) return <div>Loading...</div>;
-
-  // Get the first variation (assuming there's at least one)
-  const variation = singleProduct.variation[0];
+  if (!singleProduct || !singleVariation) {
+    return <div>Loading product...</div>;
+  }
 
   return (
     <div>
       <div className="flex flex-col items-start w-full mx-auto">
-        {/* ... (keep the existing header section) ... */}
-
         <section className="my-10 max-w-7xl w-full mx-auto flex flex-col md:flex-row justify-between h-auto items-start gap-6">
           <ProductImage
-            thumbnails={[variation.image]} // You might need to adjust this based on actual image data
-            mainImage={variation.image}
+            thumbnails={[singleVariation.image]}
+            mainImage={singleVariation.image}
           />
 
           <ProductVariation
             title={singleProduct.title}
-            sku={variation.sku_code}
-            rating={variation.rating}
-            totalRatings={variation.total_ratings}
-            currentPrice={variation.offer_price}
-            originalPrice={variation.regular_price}
-            description={variation.product_details}
-            features={variation.features}
+            sku={singleVariation.sku_code}
+            rating={singleVariation.rating}
+            totalRatings={singleVariation.total_ratings}
+            currentPrice={singleVariation.offer_price}
+            originalPrice={singleVariation.regular_price}
+            description={singleVariation.product_details}
+            features={singleVariation.features}
           />
 
           <DeliveryInfo
             product={singleProduct}
-            imageId={variation.image.id} 
-            price={variation.offer_price}
-            originalPrice={variation.regular_price}
-            stock={variation.stock}
-            sku={variation.sku_code}
+            imageId={singleVariation.image.id}
+            price={singleVariation.offer_price}
+            originalPrice={singleVariation.regular_price}
+            stock={singleVariation.stock}
+            sku={singleVariation.sku_code}
           />
         </section>
 
@@ -71,22 +81,9 @@ const Product = () => {
           </div>
 
           <div className="text-[16px] leading-6 w-2xs text-[#182B55] font-medium space-y-1 p-10">
-            <ProductSpecList />
+            <ProductSpecList features={features}/>
           </div>
         </section>
-
-        {/* <section className="my-10 bg-[#F8F9FB] w-full py-16 px-4 md:px-12 flex justify-center items-center gap-6 flex-wrap">
-          {ProDetails.map((item, index) => (
-            <CardComponent
-              key={index}
-              icon={item.icon}
-              title={item.title}
-              subtitle={item.subtitle}
-            />
-          ))}
-        </section> */}
-
-        {/* <MostViewedSection title={"Products related to this items"} /> */}
       </div>
     </div>
   );
