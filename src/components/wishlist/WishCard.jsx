@@ -14,7 +14,7 @@ const WishCard = ({
   return (
     <article className="bg-white p-4 rounded-xl shadow-sm flex flex-col md:flex-row items-start gap-4">
       <img
-        src={image}
+        src={`${import.meta.env.VITE_SERVER_URL}/assets/${image}`}
         alt={title}
         className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain"
       />
