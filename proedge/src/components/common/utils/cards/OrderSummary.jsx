@@ -1,9 +1,14 @@
-const OrderSummaryCard = ({ cart }) => {
-    const { items, shipping, tax } = cart;
+import { useNavigate } from "react-router-dom";
 
-    const itemsCount = items.reduce((sum, item) => sum + item.quantity, 0);
-    const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const total = subtotal + shipping + tax;
+const OrderSummaryCard = ({ cart }) => {
+    // Add safe navigation with default values
+    const itemsCount = cart?.itemsCount || 0;
+    const subtotal = cart?.subtotal || 0;
+    const shipping = cart?.shipping || 0;
+    const tax = cart?.tax || 0;
+    const total = cart?.total || 0;
+
+    const navigate=useNavigate();
 
     return (
         <div className="bg-white p-6 rounded-xl shadow-sm">
@@ -33,7 +38,7 @@ const OrderSummaryCard = ({ cart }) => {
             </div>
 
             <div className="mt-6 space-y-3">
-                <button className="w-full bg-[#3F66BC] text-white py-2 rounded-full hover:bg-[#3457a4] transition">
+                <button onClick={() => navigate('/cart/checkout')} className="w-full bg-[#3F66BC] text-white py-2 rounded-full hover:bg-[#3457a4] transition">
                     Checkout
                 </button>
                 <button
