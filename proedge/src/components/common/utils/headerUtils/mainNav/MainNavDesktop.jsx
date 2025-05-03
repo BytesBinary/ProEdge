@@ -11,8 +11,8 @@ const authLinks = [
 ];
 
 const actionIcons = [
-  { path: "/wish-list", icon: fav, alt: "Favorites" },
-  { path: "/cart", icon: cart, alt: "Cart" },
+  { path: "/wish-list", icon: "./src/assets/icons/favorite.svg", alt: "Favorites", count: 5 },
+  { path: "/cart", icon: "./src/assets/icons/cart.svg", alt: "Cart", count: 3 },
 ];
 
 const DesktopNav = () => {
@@ -67,10 +67,18 @@ const DesktopNav = () => {
               to={icon.path}
               title={icon.alt}
               aria-label={icon.alt}
-              className="w-12 h-12 flex justify-center items-center rounded-full bg-[#23366B] hover:bg-[#1A2A55] transition-colors"
+              className="relative w-12 h-12 flex justify-center items-center rounded-full bg-[#23366B] hover:bg-[#1A2A55] transition-colors"
             >
+              {/* Notification Badge */}
+              {icon.count > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 bg-red-600 text-white text-sm font-semibold px-1.5 py-1 rounded-full leading-none min-w-[20px] text-center">
+                  {icon.count > 99 ? "99+" : icon.count}
+                </span>
+              )}
+
               <img src={icon.icon} alt={icon.alt} className="w-6 h-6" />
             </Link>
+
           ))}
         </div>
       </div>

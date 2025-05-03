@@ -1,63 +1,112 @@
-import React from "react";
-
-import bgImage from "../../assets/images/productDetails/bg.jpeg";
-import greater from "../../assets/images/productDetails/greater.png";
-import m1 from "../../assets/images/productDetails/motor/m1.png";
-import m2 from "../../assets/images/productDetails/motor/m2.png";
-
+import { useEffect, useState } from "react";
+import { useProductContext } from "../../context/ProductContext";
+import { useParams } from "react-router-dom";
 import ProductImage from "../../components/product/ProductImage";
+import ProductVariation from "../../components/product/ProductVariation";
 import DeliveryInfo from "../../components/product/DeliveryInfo";
-import ProductInfo from "../../components/product/ProductInfo";
-
 import PDS from "../../components/common/utils/ProductDetails/PDS";
 import ProductSpecList from "../../components/product/ProductSpecList";
-import ProDetails from "../../data/ProDetails/ProDetails";
-import MostViewedSection from "../../components/home/MostViewed";
-import CardComponent from "../../components/product/CardComponent";
+import PageHeader from "../../components/common/utils/banner/SubPageHeader";
+import bgImage from "../../assets/images/productDetails/bg.jpeg";
 
 const Product = () => {
+  const [singleProduct, setSingleProduct] = useState(null);
+  const [singleVariation, setSingleVariation] = useState(null);
+  const [features, setFeatures] = useState(null);
+ 
+  const [selectedVariationId, setSelectedVariationId] = useState(null);
+  const { fetchProductById } = useProductContext();
+  const { title } = useParams();
+
+  // Extract product ID from URL
+  const match = title?.match(/-(\d+)$/);
+  const id = match ? parseInt(match[1], 10) : null;
+
+  useEffect(() => {
+    const fetchSingleProduct = async () => {
+      if (id) {
+        const product = await fetchProductById(id);
+        setSingleProduct(product);
+      }
+    };
+
+    fetchSingleProduct();
+  }, [id]);
+
+  console.log(singleProduct, "singleProduct");
+  // console.log(singleVariation, "singleVariation");
+
+  useEffect(() => {
+    if (singleProduct?.variation?.length > 0) {
+      const defaultVariation = singleProduct.variation.find(
+        (v) => v.id === selectedVariationId
+      ) || singleProduct.variation[0];
+  
+      setSingleVariation(defaultVariation);
+      setSelectedVariationId(defaultVariation.id);
+    }
+  }, [singleProduct]);
+  
+
+const handleVariationChange = (selectedVariation) => {
+  console.log(selectedVariation, "selectedVariation");  
+  setSingleVariation(selectedVariation);
+  setSelectedVariationId(selectedVariation.id);
+};
+
+  if (!singleProduct || !singleVariation) {
+    return <div>Loading product...</div>;
+  }
+  const breadcrumbs = [
+    { label: "Home", link: "/" },
+    { label: "Products", link: "/products" },
+    { label: singleProduct.title },
+  ];
+  const thumbnails = Array.isArray(singleProduct.variation)
+  ? singleProduct.variation.map(v => v.image)
+  : [];
+
+
+
   return (
-    <div>
+    <>
+      <PageHeader
+        title="Product Details"
+        bgImage={bgImage}
+        breadcrumbs={breadcrumbs}
+      />
+
       <div className="flex flex-col items-start w-full mx-auto">
-        <section className="relative w-full h-[20vh] md:h-[30vh] lg:h-[20vw] overflow-hidden">
-          <img
-            src={bgImage}
-            alt="A man using a grinder on wood"
-            className="absolute inset-0 w-full h-full object-cover object-center"
+        <section className="my-10 max-w-7xl w-full mx-auto flex flex-col md:flex-row justify-between h-auto items-start gap-6">
+          <ProductImage
+            thumbnails={thumbnails}
+            mainImage={singleVariation.image}
           />
 
-          <div className="absolute inset-0 bg-black/60 bg-opacity-60"></div>
+          <ProductVariation
+            title={singleProduct.title}
+            sku={singleVariation.sku_code}
+            rating={singleVariation.rating}
+            totalRatings={singleVariation.total_ratings}
+            currentPrice={singleVariation.offer_price}
+            originalPrice={singleVariation.regular_price}
+            productDetails={singleVariation.product_details}
+            features={singleVariation.features}
+            variationName={singleVariation.variation_name}
+            variationValue={singleVariation.variation_value}
+            priceOptions={singleProduct.variation} 
+            onVariationChange={handleVariationChange}
+            selectedVariationId={selectedVariationId}
+          />
 
-          <div className="relative max-w-7xl w-full mx-auto h-full flex flex-col justify-center items-start px-6 md:px-12 lg:px-20 text-white">
-            <h1 className="text-3xl md:text-4xl font-semibold">
-              Products Details
-            </h1>
-            <nav className="mt-2 text-sm md:text-base flex items-center gap-2">
-              <a href="/" className="hover:underline">
-                Home
-              </a>
-              <img
-                src={greater}
-                alt="An icon pointing to the right"
-                className="w-6 h-6"
-              />
-              <a href="#" className="hover:underline">
-                Products
-              </a>
-              <img
-                src={greater}
-                alt="An icon pointing to the right"
-                className="w-6 h-6"
-              />
-              <span className="text-gray-300">Product Details</span>
-            </nav>
-          </div>
-        </section>
-
-        <section className="my-10 max-w-7xl w-full mx-auto flex flex-col md:flex-row justify-between h-auto items-start gap-6">
-          <ProductImage thumbnails={[m1, m1, m1, m1]} mainImage={m2} />
-          <ProductInfo />
-          <DeliveryInfo />
+          <DeliveryInfo
+            product={singleProduct}
+            imageId={singleVariation.image.id}
+            price={singleVariation.offer_price}
+            originalPrice={singleVariation.regular_price}
+            stock={singleVariation.stock}
+            sku={singleVariation.sku_code}
+          />
         </section>
 
         <section className="my-10 max-w-7xl w-full mx-auto shadow-sm rounded-2xl bg-white border-2 border-[#F8F9FB]">
@@ -68,24 +117,11 @@ const Product = () => {
           </div>
 
           <div className="text-[16px] leading-6 w-2xs text-[#182B55] font-medium space-y-1 p-10">
-            <ProductSpecList />
+            <ProductSpecList features={features} />
           </div>
         </section>
-
-        <section className="my-10 bg-[#F8F9FB] w-full py-16 px-4 md:px-12 flex justify-center items-center gap-6 flex-wrap">
-          {ProDetails.map((item, index) => (
-            <CardComponent
-              key={index}
-              icon={item.icon}
-              title={item.title}
-              subtitle={item.subtitle}
-            />
-          ))}
-        </section>
-
-        <MostViewedSection title={"Products related to this items"} />
       </div>
-    </div>
+    </>
   );
 };
 

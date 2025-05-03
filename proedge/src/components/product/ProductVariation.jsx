@@ -1,31 +1,35 @@
-import React from "react";
-import PriceCard from "./PriceCard";
+import VariationCard from "./VariationCard";
 
-const ProductInfo = () => {
-  const priceOptions = [
-    { title: "2 HP, 56 Frame", price: "190.99", originalPrice: "220.99" },
-    { title: "3 HP, 56 Frame", price: "210.99", originalPrice: "240.99" },
-    { title: "3.7 HP, 56 Frame", price: "230.99", originalPrice: "260.99" },
-    { title: "5 HP, 56 Frame", price: "250.99", originalPrice: "280.99" },
-  ];
-
+const ProductVariation = ({
+  title,
+  sku,
+  rating,
+  totalRatings,
+  currentPrice,
+  originalPrice,
+  variationName,
+  variationValue,
+  priceOptions = [],
+  onVariationChange, 
+  selectedVariationId 
+}) => {
   return (
     <div className="w-full lg:max-w-lg h-auto flex flex-col justify-between items-start gap-6 lg:gap-0 p-1 lg:p-0">
       {/* Product Details */}
       <div className="text-lg leading-7 text-[#3F66BC] font-medium flex flex-col justify-between gap-4 lg:gap-0">
         <h1 className="text-xl lg:text-2xl leading-7 lg:leading-9 text-[#182B55]">
-          EMZ 3.7 HP Electric Motor, 56 Frame, 3450 RPM, 1-Phase, 230VAC
+          {title}
         </h1>
-        <h3 className="text-base lg:text-lg">SKU: EM4</h3>
+        <h3 className="text-base lg:text-lg">SKU: {sku}</h3>
         <h3 className="text-base lg:text-lg">Visit the controls pro Store</h3>
         <div className="text-sm lg:text-base leading-6 flex flex-wrap max-w-xs justify-evenly lg:justify-between items-center">
-          <p className="font-semibold">4.9</p>
+          <p className="font-semibold">{rating}</p>
           <div className="flex items-center">
-            <span className="w-3 mr-1">⭐</span>
-            <span className="w-3 mr-1">⭐</span>
-            <span className="w-3 mr-1">⭐</span>
-            <span className="w-3 mr-1">⭐</span>
-            <span className="w-3 mr-1">⭐</span>
+            {[...Array(5)].map((_, i) => (
+              <span key={i} className="w-3 mr-1">
+                {i < Math.floor(rating) ? '⭐' : '☆'}
+              </span>
+            ))}
           </div>
           <svg
             className="hidden lg:block"
@@ -40,27 +44,28 @@ const ProductInfo = () => {
               fill="#3F66BC"
             />
           </svg>
-          <p className="border-l-2 h-5 px-2">120 ratings</p>
+          <p className="border-l-2 h-5 px-2">{totalRatings} ratings</p>
         </div>
         <div className="bg-[#3F66BC] w-full lg:max-w-xs h-8 relative overflow-hidden flex items-center justify-center text-white text-sm font-medium">
           <div className="bg-white w-16 h-16 absolute right-0 transform translate-y-4 translate-x-11 rotate-45"></div>
           <div className="absolute left-4 md:left-3 z-10 font-bold text-sm leading-5">
-            Pro - Edge’s <span className="text-[#FCD700]">Choice</span>
+            Pro - Edge's <span className="text-[#FCD700]">Choice</span>
           </div>
         </div>
       </div>
 
       {/* Price Section */}
-      <div className="flex flex-col h-auto lg:h-32 justify-center  gap-4 lg:gap-0">
+      <div className="flex flex-col h-auto lg:h-32 justify-center gap-4 lg:gap-0">
         <div className="flex items-center justify-start lg:justify-start w-full lg:max-w-xs text-base leading-4 text-[#182B55]">
           <span>$</span>&nbsp;
-          <h1 className="text-3xl lg:text-4xl font-medium leading-12">230</h1>
-          &nbsp;<span>45</span>
+          <h1 className="text-3xl lg:text-4xl font-medium leading-12">
+            {currentPrice}
+          </h1>
         </div>
         <div>
           <p className="text-lg lg:text-xl leading-8">
             <span className="font-medium text-[#3F66BC]">Typical price: </span>
-            <span className="text-[#5D6576] line-through"> $250.99</span>
+            <span className="text-[#5D6576] line-through"> ${originalPrice}</span>
           </p>
           <div className="flex flex-col lg:flex-row items-start lg:items-center">
             <p className="text-sm lg:text-base leading-7">
@@ -93,23 +98,27 @@ const ProductInfo = () => {
       {/* Size Options */}
       <div className="w-full h-auto lg:h-36 flex flex-col justify-between gap-4 lg:gap-0 pr-3 lg:pr-0">
         <div className="text-lg lg:text-xl leading-8">
-          <span className="text-[#5D6576]">Size:</span>
-          <span className="text-[#3F66BC] font-semibold">3.7 HP,56 Frame</span>
+          <span className="text-[#5D6576]">{variationName}:</span>
+          <span className="text-[#3F66BC] font-semibold"> {variationValue}</span>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 mx-auto gap-4 md:gap-15 max-w-2xl">
-          {priceOptions.map((option, index) => (
-            <PriceCard
-              key={index}
-              title={option.title}
-              price={option.price}
-              originalPrice={option.originalPrice}
-            />
-          ))}
-        </div>
+        {priceOptions.length > 0 && (
+  <div className="grid grid-cols-2 lg:grid-cols-4 mx-auto gap-4 md:gap-15 max-w-2xl">
+    {priceOptions.map((option, index) => (
+      <VariationCard
+        key={option.id} // Use option.id instead of index for better key
+        title={option.variation_value}
+        price={option.offer_price}
+        originalPrice={option.regular_price}
+        onClick={() => onVariationChange(option)}
+        isSelected={option.id === selectedVariationId}
+      />
+    ))}
+  </div>
+)}
       </div>
     </div>
   );
 };
 
-export default ProductInfo;
+export default ProductVariation;

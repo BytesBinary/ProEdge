@@ -8,7 +8,7 @@ const ProductCard = ({ product }) => {
     <article className="bg-white p-3 sm:p-4 rounded-xl shadow-sm flex flex-col md:flex-row items-start gap-3 sm:gap-4">
       {console.log(product)}
       <img
-        src={product.image || productImage}
+        src={`${import.meta.env.VITE_SERVER_URL}/assets/${product.image}`}
         alt={product.name}
         className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain"
       />
@@ -16,7 +16,7 @@ const ProductCard = ({ product }) => {
       <div className="details flex-1 w-full">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <h2 className="text-[#3F66BC] font-medium text-sm sm:text-base">
-            {product.name}
+            {product.title}
           </h2>
 
           <div className="flex items-center gap-1 sm:gap-2 order-last sm:order-none">
@@ -33,13 +33,13 @@ const ProductCard = ({ product }) => {
 
           <span className="text-lg sm:text-xl font-semibold text-gray-800">
             <span className="align-super text-xs sm:text-sm">$</span>
-            {product.priceDollars}
-            <span className="align-super text-xs sm:text-sm">{product.priceCents}</span>
+            {product.price}
+            {/* <span className="align-super text-xs sm:text-sm">{product.priceCents}</span> */}
           </span>
         </div>
 
         <p className="text-[#018C01] font-semibold text-lg mt-1 sm:mt-2">
-          {product.inStock ? "In Stock" : "Out of Stock"}
+          {product.stock >0? "In Stock" : "Out of Stock"}
         </p>
 
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-2">

@@ -1,6 +1,6 @@
 import RightArrowIcon from "./icons/RightArrowIcon";
 
-const CategoryItem = ({ icon, title, onClick }) => (
+const CategoryItem = ({ icon, title, totalStock, onClick }) => (
   <div className="group w-full">
     <div
       className="block group/item p-4 hover:bg-[#3F66BC] cursor-pointer transition-colors min-h-[64px]"
@@ -13,9 +13,11 @@ const CategoryItem = ({ icon, title, onClick }) => (
             alt={title}
             className="w-14 h-14 rounded-full object-cover"
           />
-          <span className="text-[#182B55] font-medium group-hover/item:text-white">
-            {title}
-          </span>
+          <div>
+            <span className="text-[#182B55] font-medium group-hover/item:text-white">
+              {title}
+            </span>
+          </div>
         </div>
         <RightArrowIcon className="text-[#182B55] group-hover/item:text-white transition-colors" />
       </div>
