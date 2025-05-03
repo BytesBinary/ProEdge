@@ -6,12 +6,15 @@ import ProductVariation from "../../components/product/ProductVariation";
 import DeliveryInfo from "../../components/product/DeliveryInfo";
 import PDS from "../../components/common/utils/ProductDetails/PDS";
 import ProductSpecList from "../../components/product/ProductSpecList";
+import PageHeader from "../../components/common/utils/banner/SubPageHeader";
+import bgImage from "../../assets/images/productDetails/bg.jpeg";
 
 const Product = () => {
   const [singleProduct, setSingleProduct] = useState(null);
   const [singleVariation, setSingleVariation] = useState(null);
   const [features, setFeatures] = useState(null);
-
+ 
+  const [selectedVariationId, setSelectedVariationId] = useState(null);
   const { fetchProductById } = useProductContext();
   const { title } = useParams();
 
@@ -30,25 +33,53 @@ const Product = () => {
     fetchSingleProduct();
   }, [id]);
 
-  console.log(singleProduct,'singleProduct'); 
+  console.log(singleProduct, "singleProduct");
+  // console.log(singleVariation, "singleVariation");
 
   useEffect(() => {
-    if (singleProduct && singleProduct.variation?.length > 0) {
-      setSingleVariation(singleProduct.variation[0]);
-      setFeatures(singleProduct.variation[0].features);  
+    if (singleProduct?.variation?.length > 0) {
+      const defaultVariation = singleProduct.variation.find(
+        (v) => v.id === selectedVariationId
+      ) || singleProduct.variation[0];
+  
+      setSingleVariation(defaultVariation);
+      setSelectedVariationId(defaultVariation.id);
     }
   }, [singleProduct]);
+  
+
+const handleVariationChange = (selectedVariation) => {
+  console.log(selectedVariation, "selectedVariation");  
+  setSingleVariation(selectedVariation);
+  setSelectedVariationId(selectedVariation.id);
+};
 
   if (!singleProduct || !singleVariation) {
     return <div>Loading product...</div>;
   }
+  const breadcrumbs = [
+    { label: "Home", link: "/" },
+    { label: "Products", link: "/products" },
+    { label: singleProduct.title },
+  ];
+  const thumbnails = Array.isArray(singleProduct.variation)
+  ? singleProduct.variation.map(v => v.image)
+  : [];
+
+
 
   return (
-    <div>
+    <>
+      <PageHeader
+        title="Product Details"
+        bgImage={bgImage}
+        breadcrumbs={breadcrumbs}
+      />
+
       <div className="flex flex-col items-start w-full mx-auto">
         <section className="my-10 max-w-7xl w-full mx-auto flex flex-col md:flex-row justify-between h-auto items-start gap-6">
           <ProductImage
-            thumbnails={[singleVariation.image]}
+            thumbnails={thumbnails}
             mainImage={singleVariation.image}
           />
 
@@ -59,8 +90,13 @@ const Product = () => {
             totalRatings={singleVariation.total_ratings}
             currentPrice={singleVariation.offer_price}
             originalPrice={singleVariation.regular_price}
-            description={singleVariation.product_details}
+            productDetails={singleVariation.product_details}
             features={singleVariation.features}
+            variationName={singleVariation.variation_name}
+            variationValue={singleVariation.variation_value}
+            priceOptions={singleProduct.variation} 
+            onVariationChange={handleVariationChange}
+            selectedVariationId={selectedVariationId}
           />
 
           <DeliveryInfo
@@ -81,11 +117,11 @@ const Product = () => {
           </div>
 
           <div className="text-[16px] leading-6 w-2xs text-[#182B55] font-medium space-y-1 p-10">
-            <ProductSpecList features={features}/>
+            <ProductSpecList features={features} />
           </div>
         </section>
       </div>
-    </div>
+    </>
   );
 };
 

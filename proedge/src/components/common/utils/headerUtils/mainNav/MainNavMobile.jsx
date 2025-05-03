@@ -26,6 +26,12 @@ const MobileNav = () => {
     { to: "/auth/signup", text: "Sign Up" },
   ];
 
+  const actionIcons = [
+    { path: "/wish-list", icon: "./src/assets/icons/favorite.svg", alt: "Favorites", count: 5 },
+    { path: "/cart", icon: "./src/assets/icons/cart.svg", alt: "Cart", count: 3 },
+  ];
+
+
   return (
     <div className="lg:hidden">
       {/* Mobile Nav Trigger */}
@@ -106,20 +112,24 @@ const MobileNav = () => {
             {/* Footer with Cart & Fav Icons */}
             <div className="pb-8 flex flex-col items-center">
               <div className="flex gap-4 mb-4">
-                <Link
-                  to="/wish-list"
-                  className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
-                  aria-label="Wishlist"
-                >
-                  <FiHeart className="w-5 h-5 text-white" />
-                </Link>
-                <Link
-                  to="/cart"
-                  className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
-                  aria-label="Cart"
-                >
-                  <FiShoppingCart className="w-5 h-5 text-white" />
-                </Link>
+                {actionIcons.map((icon, index) => (
+                  <Link
+                    key={index}
+                    to={icon.path}
+                    title={icon.alt}
+                    aria-label={icon.alt}
+                    className="relative w-12 h-12 flex justify-center items-center rounded-full bg-[#23366B] hover:bg-[#1A2A55] transition-colors"
+                  >
+                    {/* Red Notification Bubble */}
+                    {icon.count > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-red-600 text-white text-sm font-bold px-1.5 py-[1px] rounded-full min-w-[18px] text-center leading-none">
+                        {icon.count > 99 ? "99+" : icon.count}
+                      </span>
+                    )}
+
+                    <img src={icon.icon} alt={icon.alt} className="w-6 h-6" />
+                  </Link>
+                ))}
               </div>
               <p className="text-center text-white/70 text-sm">
                 © {new Date().getFullYear()} ProEdge Tools
