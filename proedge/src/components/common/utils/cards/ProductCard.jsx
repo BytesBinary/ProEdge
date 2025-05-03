@@ -3,7 +3,7 @@ import { FiDollarSign } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { CartContext } from "../../../../context/CartContext";
 
-const ProductCard = ({ id, image, category, title, price,variation }) => {
+const ProductCard = ({ id, image, category, title, price, variation }) => {
   const {
     addToCart,
     removeFromCart,

@@ -18,9 +18,9 @@ const Category = () => {
 
   const { products, loading } = useProductContext();
   const { singleCategory } = useContext(CategoryContext);
-  console.log(products, "singleCategory");  
-  
-  
+  console.log(products, "singleCategory");
+
+
 
   // Function to generate a slug from a string
   // Function to generate a slug from a string
@@ -87,8 +87,8 @@ const Category = () => {
       product.product_category?.sub_category?.parent_category?.slug;
 
     // If no category is selected at all, show all products
-    if (!singleCategory?.toggle && 
-        !singleCategory?.sub_category?.some(sub => sub.toggle)) {
+    if (!singleCategory?.toggle &&
+      !singleCategory?.sub_category?.some(sub => sub.toggle)) {
       return true;
     }
 
@@ -133,7 +133,7 @@ const Category = () => {
 
     // Only include if child category matches
     return childMatch;
-});
+  });
 
   const formattedProducts = filteredProducts.map((product) => {
     const variation = product.variation?.[0] || {};
@@ -163,7 +163,7 @@ const Category = () => {
 
   return (
     <>
-    <PageHeader/>
+      <PageHeader />
       <div className="w-full max-w-[1200px] mx-auto mt-3 md:mt-20 flex flex-col lg:flex-row justify-between items-start gap-10">
         {/* Desktop Filter Section */}
         <div className="hidden lg:block w-64">
@@ -340,7 +340,7 @@ const Category = () => {
             ) : (
               <Filter
                 onClose={() => setShowFilter(false)}
-               
+
               />
             )}
           </div>

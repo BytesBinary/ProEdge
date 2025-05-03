@@ -8,25 +8,6 @@ import PromoBanner from "../../components/home/PromoBanner";
 import ClientReviews from "../../components/home/ClientReview";
 import StockBanner from "../../components/home/StockBanner";
 
-const reviewsData = [
-  {
-    name: "Jerome Bell",
-    role: "Store customer",
-    image: "/images/jerome.png",
-    title: "Makes me happy",
-    review:
-      "Love Eclectic Accessories! Unique, high-quality pieces that always get compliments. Highly recommend!",
-  },
-  {
-    name: "Devon Lane",
-    role: "Store customer",
-    image: "/images/devon.png",
-    title: "Stylish and Unique",
-    review:
-      "Every time I wear them, I get asked where they're from. The quality is amazing!",
-  },
-];
-
 const Home = () => {
   return (
     <>
@@ -36,7 +17,7 @@ const Home = () => {
       <ShopCategorySection />
       <MostViewedSection title={"Most Viewed"}/>
       <PromoBanner />
-      <ClientReviews reviews={reviewsData} />
+      <ClientReviews />
       <StockBanner />
     </>
   );
