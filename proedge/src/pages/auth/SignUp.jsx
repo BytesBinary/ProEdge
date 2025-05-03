@@ -17,7 +17,6 @@ const SignUp = () => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
-  // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -26,7 +25,6 @@ const SignUp = () => {
     });
   };
 
-  // Simple form validation
   const validate = () => {
     const newErrors = {};
 
@@ -42,15 +40,10 @@ const SignUp = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // GraphQL Mutation for user registration
+  // Updated mutation
   const SIGN_UP_MUTATION = `
-    mutation CreateUser($firstName: String!, $lastName: String!, $email: String!, $password: String!) {
-      customer(data: {
-        first_name: $firstName
-        last_name: $lastName
-        email: $email
-        password: $password
-      }) {
+    mutation CreateCustomer($data: create_customer_input!) {
+      create_customer_item(data: $data) {
         id
         first_name
         last_name
@@ -59,26 +52,26 @@ const SignUp = () => {
     }
   `;
 
-  // Handle form submission with GraphQL request
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent default form submission
-    console.log("yaa")
+    e.preventDefault();
 
-  
     if (!validate()) return;
-  
+
     setLoading(true);
-    
+
     try {
+      console.log('Form data:', formData);
       const response = await axios.post(
-        `${import.meta.env.VITE_SERVER_URL}/graphql`, 
+        `${import.meta.env.VITE_SERVER_URL}/graphql`,
         {
           query: SIGN_UP_MUTATION,
           variables: {
-            firstName: formData.firstName,
-            lastName: formData.lastName,
-            email: formData.email,
-            password: formData.password,
+            data: {
+              first_name: formData.firstName,
+              last_name: formData.lastName,
+              email: formData.email,
+              password: formData.password,
+            },
           },
         },
         {
@@ -87,13 +80,10 @@ const SignUp = () => {
           },
         }
       );
-  
-      console.log('GraphQL response:', response.data);
-  
+
       if (response.data.errors) {
         setErrors({ submit: 'Sign up failed. Please try again later.' });
       } else {
-        // Success - redirect or show success message
         console.log('Sign up successful:', response.data);
       }
     } catch (error) {
@@ -103,7 +93,6 @@ const SignUp = () => {
       setLoading(false);
     }
   };
-  
 
   return (
     <main className="flex items-center justify-center min-h-screen bg-white">
@@ -168,15 +157,13 @@ const SignUp = () => {
           {errors.submit && (
             <div className="text-red-600 text-center">{errors.submit}</div>
           )}
-          <button  type='submit'>btn</button>
 
-          <Button 
-           onClick={handleSubmit}
-            bgColor="bg-[#3F66BC]" 
-            hoverColor="hover:bg-[#2E4A8E]" 
-            textColor="text-white" 
-            label={loading ? 'Signing up...' : 'Sign up'} 
-            disabled={loading} 
+          <Button
+            type="submit"
+            bgColor="bg-[#3F66BC]"
+            hoverColor="hover:bg-[#2E4A8E]"
+            textColor="text-white"
+            label={loading ? 'Signing up...' : 'Sign up'}
           />
         </form>
 
