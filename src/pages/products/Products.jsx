@@ -11,7 +11,6 @@ import bgImage from "../../assets/images/cart.png";
 
 
 const Category = () => {
-  const [currentPage, setCurrentPage] = useState(2);
   const [showFilter, setShowFilter] = useState(false);
 
   const handlePageChange = (page) => {
@@ -162,6 +161,21 @@ const Category = () => {
     };
   });
 
+  //Codes for pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+  const totalItems = formattedProducts.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  
+  // Calculate indexes for slicing
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  
+  // Get current page's items
+  const currentItems = formattedProducts.slice(startIndex, endIndex);
+
+
+  console.log(formattedProducts,'formatted products');
 
   return (
     <>
@@ -178,7 +192,7 @@ const Category = () => {
           <div className="hidden lg:flex items-center justify-between mb-6">
             {/* Showing Items */}
             <h1 className="text-[#182B55] font-medium text-lg">
-              Showing 23 items
+              Showing {currentItems.length} items
             </h1>
 
             <div className="flex items-center gap-4">
@@ -310,7 +324,7 @@ const Category = () => {
 
           {/* Cards */}
           <div className="grid grid-cols-1 gap-6 mt-10 sm:grid-cols-2 md:grid-cols-3">
-            {formattedProducts.map((product) => (
+            {currentItems.map((product) => (
               <Card
                 key={product.id}
                 id={product.id}
@@ -326,7 +340,7 @@ const Category = () => {
           {/* Pagination */}
           <Pagination
             currentPage={currentPage}
-            totalPages={9}
+            totalPages={totalPages}
             onPageChange={handlePageChange}
           />
         </div>
