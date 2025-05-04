@@ -19,11 +19,7 @@ const Category = () => {
 
   const { products, loading } = useProductContext();
   const { singleCategory } = useContext(CategoryContext);
-  console.log(products, "singleCategory");
 
-
-
-  // Function to generate a slug from a string
   // Function to generate a slug from a string
   const generateSlug = (str) => {
     if (!str) return "";
@@ -173,9 +169,6 @@ const Category = () => {
   
   // Get current page's items
   const currentItems = formattedProducts.slice(startIndex, endIndex);
-
-
-  console.log(formattedProducts,'formatted products');
 
   return (
     <>
