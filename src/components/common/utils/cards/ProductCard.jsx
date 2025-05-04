@@ -3,10 +3,9 @@ import { FiDollarSign } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { CartContext } from "../../../../context/CartContext";
 
-const ProductCard = ({ id, image, category, title, price, variation }) => {
+const ProductCard = ({ productId,variationId,variation_name, stock,sku,image, category, title, price }) => {
   const {
     addToCart,
-    removeFromCart,
     isInWishlist,
     addToWishlist,
     removeFromWishlist,
@@ -14,8 +13,8 @@ const ProductCard = ({ id, image, category, title, price, variation }) => {
   } = useContext(CartContext);  
   const navigate = useNavigate();
   
-  const isInCart = cartItems.some(item => item.id === id);
-  const isWishlisted = isInWishlist(id);
+  const isInCart = cartItems.some(item => item.variationId === variationId);
+  const isWishlisted = isInWishlist(productId );
 
   const handleClick = () => {
     const slug = title
@@ -25,12 +24,12 @@ const ProductCard = ({ id, image, category, title, price, variation }) => {
       .slice(0, 20)                 // Take first 10 characters only
       .replace(/\s+/g, "-")         // Replace spaces with dashes
       .replace(/-+/g, "-");         // Replace multiple dashes with single dash
-    navigate(`/single-product/${slug}-${id}`);
+    navigate(`/single-product/${slug}-${productId}`);
   };
 
   const handleWishlistClick = (e) => {
     e.stopPropagation();
-    const product = { id, image, category, title, price };
+    const product = { productId,variationId,variation_name,stock,sku, image, category, title, price };
     if (isWishlisted) {
       removeFromWishlist(product);
     } else {
@@ -40,9 +39,9 @@ const ProductCard = ({ id, image, category, title, price, variation }) => {
 
   const handleAddToCart = (e) => {
     e.stopPropagation();
-    const product = { id, image, category, title, price };
+    const product = { productId,variationId,variation_name, stock,sku,image, category, title, price };
     if (isInCart) {
-      removeFromCart(product);
+      navigate("/cart");
     } else {
       addToCart(product);
     }
@@ -90,7 +89,7 @@ const ProductCard = ({ id, image, category, title, price, variation }) => {
               {category}
             </h2>
             <h1 className="text-[#182B55] text-lg font-medium leading-[30px]">
-              {title}
+              {variation_name}
             </h1>
           </div>
           <div className="mb-[10px]">
@@ -105,7 +104,7 @@ const ProductCard = ({ id, image, category, title, price, variation }) => {
             }`}
           >
             <h3 className="text-[16px] font-medium leading-6">
-              {isInCart ? "Remove from Cart" : "Add to Cart"}
+              {isInCart ? "View Cart" : "Add to Cart"}
             </h3>
           </div>
         </div>

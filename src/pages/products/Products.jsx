@@ -132,29 +132,42 @@ const Category = () => {
     return childMatch;
   });
 
-  const formattedProducts = filteredProducts.map((product) => {
-    const variation = product.variation?.[0] || {};
-    const features = variation.features || [];
-
-    // Build title: "Product Title (Feature1, Feature2) - VariationName"
-    const featureText = features.map((f) => f.feature_value).join(", ");
-    let title = product.title;
-    if (featureText) title += ` (${featureText})`;
-    if (variation.variation_name) title += ` - ${variation.variation_name}`;
-
-    // Get parent category name (fallback to empty string)
-    const categoryName =
-      product.product_category?.sub_category?.parent_category?.category_name ||
-      product.sub_category?.parent_category?.category_name ||
-      "";
-
-    return {
-      id: product.id,
-      image: variation.image || null,
-      title: title.trim(),
-      price: variation.regular_price || 0,
-      category_name: categoryName, // Parent category name
-    };
+  // formattedProducts  
+  const formattedProducts = filteredProducts.flatMap((product) => {
+    // If no variations, return a single product with basic info
+    if (!product.variation || product.variation.length === 0) {
+      return {
+        id: product.id,
+        image: product.image,
+        title: product.title,
+        price: product.price || 0,
+        category_name: product.product_category?.sub_category?.parent_category?.category_name || "",
+        variation: null
+      };
+    }
+  
+    // Map each variation to a separate product entry
+    return product.variation.map((variation) => {
+      const features = variation.features || [];
+      const featureText = features.map((f) => f.feature_value).join(", ");
+      
+      let title = product.title;
+      if (featureText) title += ` (${featureText})`;
+      if (variation.variation_name) title += ` - ${variation.variation_name}`;
+  
+      return {
+        id: product.id, 
+        variationId: variation.id, 
+        variation_name: variation.variation_name,
+        image: variation.image || product.image, 
+        title: title.trim(),
+        stock: variation.stock || 0,
+        sku: variation.sku_code || "", 
+        price: variation.offer_price > 0 ? variation.offer_price : variation.regular_price,
+        category_name: product.product_category?.sub_category?.parent_category?.category_name || "",
+        variation: variation 
+      };
+    });
   });
 
   //Codes for pagination
@@ -319,12 +332,16 @@ const Category = () => {
           <div className="grid grid-cols-1 gap-6 mt-10 sm:grid-cols-2 md:grid-cols-3">
             {currentItems.map((product) => (
               <Card
-                key={product.id}
-                id={product.id}
+                key={product.variationId}
+                productId={product.id}
+                variationId={product.variationId} 
+                variation_name={product.variation_name}
                 category={product.category_name}
                 title={product.title}
                 image={product.image?.id}
                 price={product.price}
+                stock={product.stock} 
+                sku={product.sku} 
                 variation={product.variation}
               />
             ))}

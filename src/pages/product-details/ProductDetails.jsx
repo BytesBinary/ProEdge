@@ -38,19 +38,30 @@ const Product = () => {
 
   useEffect(() => {
     if (singleProduct?.variation?.length > 0) {
-      const defaultVariation =
-        singleProduct.variation.find((v) => v.id === selectedVariationId) ||
-        singleProduct.variation[0];
+      const defaultVariation = selectedVariationId
+        ? singleProduct.variation.find(v => v.id === selectedVariationId)
+        : singleProduct.variation[0];
 
-      setSingleVariation(defaultVariation);
-      setSelectedVariationId(defaultVariation.id);
+      if (defaultVariation) {
+        setSingleVariation(defaultVariation);
+        setSelectedVariationId(defaultVariation.id);
+      }
     }
-  }, [singleProduct]);
+  }, [singleProduct, selectedVariationId]);
+
 
   const handleVariationChange = (selectedVariation) => {
-    console.log(selectedVariation, "selectedVariation");
-    setSingleVariation(selectedVariation);
-    setSelectedVariationId(selectedVariation.id);
+    if (!selectedVariation) return;
+
+    // Find the full variation object from the product's variations
+    const fullVariation = singleProduct.variation.find(
+      v => v.id === selectedVariation.id
+    );
+
+    if (fullVariation) {
+      setSingleVariation(fullVariation);
+      setSelectedVariationId(fullVariation.id);
+    }
   };
 
   if (!singleProduct || !singleVariation) {
@@ -62,9 +73,17 @@ const Product = () => {
     { label: singleProduct.title },
   ];
   const thumbnails = Array.isArray(singleProduct.variation)
-    ? singleProduct.variation.map((v) => v.image)
+    ? singleProduct.variation.map(v => ({
+      id: v.id,
+      image: v.image?.id || '', // Safe access to image id
+      option: v
+    }))
     : [];
 
+  // Safe access to main image
+  const mainImage = singleVariation.image?.id
+    ? `${import.meta.env.VITE_SERVER_URL}/assets/${singleVariation.image.id}`
+    : singleVariation.image || '';
   return (
     <>
       <PageHeader
@@ -72,61 +91,57 @@ const Product = () => {
         bgImage={bgImage}
         breadcrumbs={breadcrumbs}
       />
+      <div className="flex flex-col items-center justify-center w-full mx-auto">
+        <section className="my-10 max-w-7xl w-full mx-auto flex flex-col lg:flex-row gap-6 items-center lg:items-start justify-center md:justify-evenly">
+          <ProductImage
+            thumbnails={thumbnails}
+            mainImage={mainImage}
+            onVariationChange={handleVariationChange}
 
-<div className="flex flex-col items-center justify-center w-full mx-auto">
-  {/* Product Showcase Section */}
-  <section className="my-10 max-w-7xl w-full mx-auto flex flex-col lg:flex-row gap-6 items-center lg:items-start justify-center md:justify-evenly">
-    {/* Image & Variation Info */}
-    <div className="flex flex-col md:flex-row w-full gap-4 justify-center md:justify-between">
-      <ProductImage
-        thumbnails={thumbnails}
-        mainImage={singleVariation.image}
-      />
+          />
+          <ProductVariation
+            title={singleProduct.title}
+            sku={singleVariation.sku_code}
+            rating={singleVariation.rating}
+            totalRatings={singleVariation.total_ratings}
+            currentPrice={singleVariation.offer_price}
+            originalPrice={singleVariation.regular_price}
+            productDetails={singleVariation.product_details}
+            features={singleVariation.features}
+            variationName={singleVariation.variation_name}
+            variationValue={singleVariation.variation_value}
+            priceOptions={singleProduct.variation}
+            onVariationChange={handleVariationChange}
+            selectedVariationId={selectedVariationId}
+          />
+          <DeliveryInfo
+            product={singleProduct}
+            productId={singleProduct.id}
+            variationId={singleVariation.id}
+            imageId={singleVariation.image.id}
+            variation_name={singleVariation.variation_name}
+            offer_price={singleVariation.offer_price}
+            originalPrice={singleVariation.regular_price}
+            stock={singleVariation.stock}
+            sku={singleVariation.sku_code}
+          />
+        </section>
 
-      <ProductVariation
-        title={singleProduct.title}
-        sku={singleVariation.sku_code}
-        rating={singleVariation.rating}
-        totalRatings={singleVariation.total_ratings}
-        currentPrice={singleVariation.offer_price}
-        originalPrice={singleVariation.regular_price}
-        productDetails={singleVariation.product_details}
-        features={singleVariation.features}
-        variationName={singleVariation.variation_name}
-        variationValue={singleVariation.variation_value}
-        priceOptions={singleProduct.variation}
-        onVariationChange={handleVariationChange}
-        selectedVariationId={selectedVariationId}
-      />
-    </div>
+        {/* Product Specifications Section */}
+        <section className="my-10 max-w-7xl w-full mx-auto rounded-2xl border-2 border-[#F8F9FB] bg-white shadow-sm">
+          {/* Tab Header */}
+          <div className="bg-[#F8F9FB] px-4 sm:px-10 py-5 rounded-t-2xl flex flex-wrap gap-2">
+            <PDS title="Key Features" />
+            <PDS title="Product Details" />
+            <PDS title="Product Information" />
+          </div>
 
-    {/* Delivery Panel */}
-    <DeliveryInfo
-      product={singleProduct}
-      imageId={singleVariation.image.id}
-      price={singleVariation.offer_price}
-      originalPrice={singleVariation.regular_price}
-      stock={singleVariation.stock}
-      sku={singleVariation.sku_code}
-    />
-  </section>
-
-  {/* Product Specifications Section */}
-  <section className="my-10 max-w-7xl w-full mx-auto rounded-2xl border-2 border-[#F8F9FB] bg-white shadow-sm">
-    {/* Tab Header */}
-    <div className="bg-[#F8F9FB] px-4 sm:px-10 py-5 rounded-t-2xl flex flex-wrap gap-2">
-      <PDS title="Key Features" />
-      <PDS title="Product Details" />
-      <PDS title="Product Information" />
-    </div>
-
-    {/* Features List */}
-    <div className="text-base leading-6 text-[#182B55] font-medium space-y-1 p-10">
-      <ProductSpecList features={features} />
-    </div>
-  </section>
-</div>
-
+          {/* Features List */}
+          <div className="text-[16px] leading-6 w-2xs text-[#182B55] font-medium space-y-1 p-10">
+            <ProductSpecList features={singleVariation.features} />
+          </div>
+        </section>
+      </div>
     </>
   );
 };
