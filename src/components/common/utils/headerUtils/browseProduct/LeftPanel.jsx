@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import CategoryItem from "./CategoryItem";
 import { CategoryContext } from "../../../../../context/CategoryContext";
 
-const LeftPanel = ({ onCategoryClick }) => {
+const LeftPanel = ({ onCategoryClick, selectedCategory }) => {
   const { categories, loading, error } = useContext(CategoryContext);
 
   if (loading) return <p>Loading categories...</p>;
@@ -19,11 +19,12 @@ const LeftPanel = ({ onCategoryClick }) => {
             title={category.category_name}
             totalStock={category.total_stock || 0}
             onClick={() => onCategoryClick(category)}
+            isSelected={selectedCategory && selectedCategory.id === category.id}
           />
         ))}
       </nav>
     </div>
   );
-};
+};  
 
 export default LeftPanel;

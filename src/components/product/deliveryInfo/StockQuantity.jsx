@@ -3,7 +3,7 @@ import React from "react";
 const StockQuantity = ({ stockData }) => {
   return (
     <div className="flex flex-col h-16 justify-between">
-      <p className="text-[#3F66BC] font-medium text-[16px] leading-6">
+      <p className={`${stockData.status === "In Stock" ? "text-[#3F66BC]" : "text-red-500"} font-medium text-[16px] leading-6`}>
         {stockData.status}
       </p>
       <div>

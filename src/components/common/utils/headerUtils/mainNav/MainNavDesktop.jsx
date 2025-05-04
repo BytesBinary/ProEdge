@@ -1,27 +1,13 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import find from "../../../../../assets/icons/search.svg"; // Updated import
-import fav from "../../../../../assets/icons/favorite.svg"; // Updated import
-import cart from "../../../../../assets/icons/cart.svg"; // Updated import
-import { CartContext } from "../../../../../context/CartContext"; 
 
 const authLinks = [
   { path: "/auth/signin", label: "Sign In" },
   { path: "/auth/signup", label: "Sign Up" },
 ];
 
-const DesktopNav = () => {
-  const { 
-    cartItems, 
-    wishlistItems,
-  } = useContext(CartContext);
-
-  const actionIcons = [
-    { path: "/wish-list", icon: "./src/assets/icons/favorite.svg", alt: "Favorites", count: wishlistItems.length },
-    { path: "/cart", icon: "./src/assets/icons/cart.svg", alt: "Cart", count: cartItems.length },
-  ];
-  
-
+const DesktopNav = ({actionIcons}) => {
   return (
     <>
       {/* Search Bar */}

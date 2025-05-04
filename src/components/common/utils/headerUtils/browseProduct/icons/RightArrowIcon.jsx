@@ -1,5 +1,7 @@
 // Right Arrow Icon Component
-const RightArrowIcon = ({ className }) => (
+const RightArrowIcon = ({ className }) => {
+console.log(className,'className');
+  return(
   <svg
     className={className}
     width="15"
@@ -14,5 +16,6 @@ const RightArrowIcon = ({ className }) => (
     />
   </svg>
 );
+}
 
 export default RightArrowIcon;

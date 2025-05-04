@@ -8,7 +8,7 @@ import {
   FiShoppingCart,
 } from "react-icons/fi";
 
-const MobileNav = () => {
+const MobileNav = ({actionIcons}) => {
   const [isOpen, setIsOpen] = useState(false);
 
   // Navigation links data
@@ -24,11 +24,6 @@ const MobileNav = () => {
   const authLinks = [
     { to: "/auth/signin", text: "Sign In" },
     { to: "/auth/signup", text: "Sign Up" },
-  ];
-
-  const actionIcons = [
-    { path: "/wish-list", icon: "./src/assets/icons/favorite.svg", alt: "Favorites", count: 5 },
-    { path: "/cart", icon: "./src/assets/icons/cart.svg", alt: "Cart", count: 3 },
   ];
 
 
@@ -119,6 +114,7 @@ const MobileNav = () => {
                     title={icon.alt}
                     aria-label={icon.alt}
                     className="relative w-12 h-12 flex justify-center items-center rounded-full bg-[#23366B] hover:bg-[#1A2A55] transition-colors"
+                    onClick={() => setIsOpen(false)}
                   >
                     {/* Red Notification Bubble */}
                     {icon.count > 0 && (
