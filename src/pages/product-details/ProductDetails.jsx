@@ -38,21 +38,31 @@ const Product = () => {
 
   useEffect(() => {
     if (singleProduct?.variation?.length > 0) {
-      const defaultVariation = singleProduct.variation.find(
-        (v) => v.id === selectedVariationId
-      ) || singleProduct.variation[0];
-  
-      setSingleVariation(defaultVariation);
-      setSelectedVariationId(defaultVariation.id);
+      const defaultVariation = selectedVariationId
+        ? singleProduct.variation.find(v => v.id === selectedVariationId)
+        : singleProduct.variation[0];
+      
+      if (defaultVariation) {
+        setSingleVariation(defaultVariation);
+        setSelectedVariationId(defaultVariation.id);
+      }
     }
-  }, [singleProduct]);
+  }, [singleProduct, selectedVariationId]);
   
 
-const handleVariationChange = (selectedVariation) => {
-  console.log(selectedVariation, "selectedVariation");  
-  setSingleVariation(selectedVariation);
-  setSelectedVariationId(selectedVariation.id);
-};
+  const handleVariationChange = (selectedVariation) => {
+    if (!selectedVariation) return;
+    
+    // Find the full variation object from the product's variations
+    const fullVariation = singleProduct.variation.find(
+      v => v.id === selectedVariation.id
+    );
+    
+    if (fullVariation) {
+      setSingleVariation(fullVariation);
+      setSelectedVariationId(fullVariation.id);
+    }
+  };
 
   if (!singleProduct || !singleVariation) {
     return <div>Loading product...</div>;
@@ -63,8 +73,17 @@ const handleVariationChange = (selectedVariation) => {
     { label: singleProduct.title },
   ];
   const thumbnails = Array.isArray(singleProduct.variation)
-  ? singleProduct.variation.map(v => v.image)
-  : [];
+    ? singleProduct.variation.map(v => ({
+        id: v.id,          
+        image: v.image?.id || '', // Safe access to image id
+        option: v          
+      }))
+    : [];
+
+  // Safe access to main image
+  const mainImage = singleVariation.image?.id 
+    ? `${import.meta.env.VITE_SERVER_URL}/assets/${singleVariation.image.id}`
+    : singleVariation.image || '';
 
 
 
@@ -80,7 +99,9 @@ const handleVariationChange = (selectedVariation) => {
         <section className="my-10 max-w-7xl w-full mx-auto flex flex-col md:flex-row justify-between h-auto items-start gap-6">
           <ProductImage
             thumbnails={thumbnails}
-            mainImage={singleVariation.image}
+            mainImage={mainImage} 
+            onVariationChange={handleVariationChange}
+
           />
 
           <ProductVariation
@@ -101,8 +122,11 @@ const handleVariationChange = (selectedVariation) => {
 
           <DeliveryInfo
             product={singleProduct}
+            productId={singleProduct.id}  
+            variationId={singleVariation.id}  
             imageId={singleVariation.image.id}
-            price={singleVariation.offer_price}
+            variation_name={singleVariation.variation_name} 
+            offer_price={singleVariation.offer_price}
             originalPrice={singleVariation.regular_price}
             stock={singleVariation.stock}
             sku={singleVariation.sku_code}
@@ -117,7 +141,7 @@ const handleVariationChange = (selectedVariation) => {
           </div>
 
           <div className="text-[16px] leading-6 w-2xs text-[#182B55] font-medium space-y-1 p-10">
-            <ProductSpecList features={features} />
+            <ProductSpecList features={singleVariation.features} />
           </div>
         </section>
       </div>
