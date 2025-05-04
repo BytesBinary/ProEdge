@@ -2,9 +2,9 @@ const ProductImage = ({ thumbnails, mainImage }) => {
   console.log(thumbnails, "thumbnails");
   thumbnails.map((thumb, index) => console.log(thumb.id, "thumb"));
   return (
-    <div className="w-full md:max-w-sm flex flex-col md:flex-row justify-around md:h-auto">
+    <div className="w-full flex flex-col md:flex-row justify-around md:h-auto">
       {/* Thumbnails */}
-      <div className="flex md:flex-col items-center md:items-start justify-center gap-3 md:gap-0 overflow-y-auto">
+      <div className="flex md:flex-col items-center md:items-start justify-center gap-3 md:gap-0 overflow-x-auto md:overflow-y-auto">
         {thumbnails.map((thumb, index) => (
           <div
             key={index}
@@ -13,6 +13,7 @@ const ProductImage = ({ thumbnails, mainImage }) => {
             <img 
               src={thumb?.id ? `${import.meta.env.VITE_SERVER_URL}/assets/${thumb.id}` : thumb} 
               alt={`Thumbnail ${index + 1}`} 
+              className="w-full"
             />
           </div>
         ))}

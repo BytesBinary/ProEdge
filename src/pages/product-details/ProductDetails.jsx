@@ -13,7 +13,7 @@ const Product = () => {
   const [singleProduct, setSingleProduct] = useState(null);
   const [singleVariation, setSingleVariation] = useState(null);
   const [features, setFeatures] = useState(null);
- 
+
   const [selectedVariationId, setSelectedVariationId] = useState(null);
   const { fetchProductById } = useProductContext();
   const { title } = useParams();
@@ -38,21 +38,20 @@ const Product = () => {
 
   useEffect(() => {
     if (singleProduct?.variation?.length > 0) {
-      const defaultVariation = singleProduct.variation.find(
-        (v) => v.id === selectedVariationId
-      ) || singleProduct.variation[0];
-  
+      const defaultVariation =
+        singleProduct.variation.find((v) => v.id === selectedVariationId) ||
+        singleProduct.variation[0];
+
       setSingleVariation(defaultVariation);
       setSelectedVariationId(defaultVariation.id);
     }
   }, [singleProduct]);
-  
 
-const handleVariationChange = (selectedVariation) => {
-  console.log(selectedVariation, "selectedVariation");  
-  setSingleVariation(selectedVariation);
-  setSelectedVariationId(selectedVariation.id);
-};
+  const handleVariationChange = (selectedVariation) => {
+    console.log(selectedVariation, "selectedVariation");
+    setSingleVariation(selectedVariation);
+    setSelectedVariationId(selectedVariation.id);
+  };
 
   if (!singleProduct || !singleVariation) {
     return <div>Loading product...</div>;
@@ -63,10 +62,8 @@ const handleVariationChange = (selectedVariation) => {
     { label: singleProduct.title },
   ];
   const thumbnails = Array.isArray(singleProduct.variation)
-  ? singleProduct.variation.map(v => v.image)
-  : [];
-
-
+    ? singleProduct.variation.map((v) => v.image)
+    : [];
 
   return (
     <>
@@ -76,51 +73,60 @@ const handleVariationChange = (selectedVariation) => {
         breadcrumbs={breadcrumbs}
       />
 
-      <div className="flex flex-col items-start w-full mx-auto">
-        <section className="my-10 max-w-7xl w-full mx-auto flex flex-col md:flex-row justify-between h-auto items-start gap-6">
-          <ProductImage
-            thumbnails={thumbnails}
-            mainImage={singleVariation.image}
-          />
+<div className="flex flex-col items-center justify-center w-full mx-auto">
+  {/* Product Showcase Section */}
+  <section className="my-10 max-w-7xl w-full mx-auto flex flex-col lg:flex-row gap-6 items-center lg:items-start justify-center md:justify-evenly">
+    {/* Image & Variation Info */}
+    <div className="flex flex-col md:flex-row w-full gap-4 justify-center md:justify-between">
+      <ProductImage
+        thumbnails={thumbnails}
+        mainImage={singleVariation.image}
+      />
 
-          <ProductVariation
-            title={singleProduct.title}
-            sku={singleVariation.sku_code}
-            rating={singleVariation.rating}
-            totalRatings={singleVariation.total_ratings}
-            currentPrice={singleVariation.offer_price}
-            originalPrice={singleVariation.regular_price}
-            productDetails={singleVariation.product_details}
-            features={singleVariation.features}
-            variationName={singleVariation.variation_name}
-            variationValue={singleVariation.variation_value}
-            priceOptions={singleProduct.variation} 
-            onVariationChange={handleVariationChange}
-            selectedVariationId={selectedVariationId}
-          />
+      <ProductVariation
+        title={singleProduct.title}
+        sku={singleVariation.sku_code}
+        rating={singleVariation.rating}
+        totalRatings={singleVariation.total_ratings}
+        currentPrice={singleVariation.offer_price}
+        originalPrice={singleVariation.regular_price}
+        productDetails={singleVariation.product_details}
+        features={singleVariation.features}
+        variationName={singleVariation.variation_name}
+        variationValue={singleVariation.variation_value}
+        priceOptions={singleProduct.variation}
+        onVariationChange={handleVariationChange}
+        selectedVariationId={selectedVariationId}
+      />
+    </div>
 
-          <DeliveryInfo
-            product={singleProduct}
-            imageId={singleVariation.image.id}
-            price={singleVariation.offer_price}
-            originalPrice={singleVariation.regular_price}
-            stock={singleVariation.stock}
-            sku={singleVariation.sku_code}
-          />
-        </section>
+    {/* Delivery Panel */}
+    <DeliveryInfo
+      product={singleProduct}
+      imageId={singleVariation.image.id}
+      price={singleVariation.offer_price}
+      originalPrice={singleVariation.regular_price}
+      stock={singleVariation.stock}
+      sku={singleVariation.sku_code}
+    />
+  </section>
 
-        <section className="my-10 max-w-7xl w-full mx-auto shadow-sm rounded-2xl bg-white border-2 border-[#F8F9FB]">
-          <div className="bg-[#F8F9FB] px-4 sm:px-10 py-5 rounded-tl-2xl rounded-tr-2xl flex flex-wrap gap-2">
-            <PDS title="Key Features" />
-            <PDS title="Product Details" />
-            <PDS title="Product Information" />
-          </div>
+  {/* Product Specifications Section */}
+  <section className="my-10 max-w-7xl w-full mx-auto rounded-2xl border-2 border-[#F8F9FB] bg-white shadow-sm">
+    {/* Tab Header */}
+    <div className="bg-[#F8F9FB] px-4 sm:px-10 py-5 rounded-t-2xl flex flex-wrap gap-2">
+      <PDS title="Key Features" />
+      <PDS title="Product Details" />
+      <PDS title="Product Information" />
+    </div>
 
-          <div className="text-[16px] leading-6 w-2xs text-[#182B55] font-medium space-y-1 p-10">
-            <ProductSpecList features={features} />
-          </div>
-        </section>
-      </div>
+    {/* Features List */}
+    <div className="text-base leading-6 text-[#182B55] font-medium space-y-1 p-10">
+      <ProductSpecList features={features} />
+    </div>
+  </section>
+</div>
+
     </>
   );
 };

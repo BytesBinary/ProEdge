@@ -4,7 +4,7 @@ const DeliveryInfocard = ({ deliveryInfo }) => {
   return (
     <div className="flex flex-col h-[44px] justify-between">
       <h1 className="text-sm leading-[18px] text-[#182B55]">
-        {deliveryInfo.title}{" "}
+        {deliveryInfo.title ?? ""}{" "}
         <span className="font-medium text-[#000000]">{deliveryInfo.date}</span>
       </h1>
       <div className="flex items-center">

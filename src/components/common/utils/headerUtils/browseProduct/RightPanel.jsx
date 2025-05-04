@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import SubcategoryList from "./SubCategoryList";
 import { formatCategoryName } from "../../../../../helper/slugifier/slugify";
 
-const RightPanel = ({ selectedCategory }) => {
+const RightPanel = ({ selectedCategory, setIsOpen }) => {
   if (!selectedCategory) {
     return (
       <div className="lg:w-4/7 p-6 text-gray-500">
@@ -11,6 +11,11 @@ const RightPanel = ({ selectedCategory }) => {
       </div>
     );
   }
+
+  const closeBar = () => {
+    setIsOpen(false);
+  };
+
   console.log(selectedCategory, "se");
   return (
     <div className="lg:w-4/7 p-6">
@@ -23,27 +28,30 @@ const RightPanel = ({ selectedCategory }) => {
             selectedCategory.category_name
           )}-${selectedCategory.id}`}
           className="text-[#3F66BC] text-md hover:text-[#2E4A8E] transition-colors"
+          onClick={closeBar}
         >
           Shop All
         </Link>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 overflow-y-auto">
-  {selectedCategory.sub_category.map((sub) => (
-    <SubcategoryList
-      key={sub.id}
-      title={sub.subcategory_name}
-      items={sub.child_category.map((child) => ({
-        name: child.child_category_name,
-        count: child.total_stock,
-        path: `/products?child_category=${formatCategoryName(child.child_category_name)}-${child.id}`,
-        sub_category: sub.subcategory_name,
-      }))}
-      selectedCategoryId={sub.id}
-    />
-  ))}
-</div>
-
+        {selectedCategory.sub_category.map((sub) => (
+          <SubcategoryList
+            closeBar={closeBar}
+            key={sub.id}
+            title={sub.subcategory_name}
+            items={sub.child_category.map((child) => ({
+              name: child.child_category_name,
+              count: child.total_stock,
+              path: `/products?child_category=${formatCategoryName(
+                child.child_category_name
+              )}-${child.id}`,
+              sub_category: sub.subcategory_name,
+            }))}
+            selectedCategoryId={sub.id}
+          />
+        ))}
+      </div>
     </div>
   );
 };
