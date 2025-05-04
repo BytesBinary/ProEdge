@@ -97,7 +97,7 @@ const Product = () => {
             thumbnails={thumbnails}
             mainImage={mainImage}
             onVariationChange={handleVariationChange}
-
+            
           />
           <ProductVariation
             title={singleProduct.title}

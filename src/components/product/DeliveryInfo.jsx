@@ -1,5 +1,23 @@
 import React, { useContext, useState, useEffect } from "react";
 import { CartContext } from "../../context/CartContext";
+<<<<<<< HEAD
+import Price from "./deliveryInfo/Price";
+import ShippingInfo from "./deliveryInfo/ShippingInfo";
+import DeliveryInfocard from "./deliveryInfo/DeliveryInfocard";
+import StockQuantity from "./deliveryInfo/StockQuantity";
+import InfoItem from "./deliveryInfo/InfoItem";
+
+const DeliveryInfo = ({
+  product,
+  imageId,
+  price,
+  originalPrice,
+  stock,
+  sku,
+}) => {
+  const { cartItems, addToCart, removeFromCart } = useContext(CartContext);
+  const [quantity, setQuantity] = useState(1);
+=======
 import { useNavigate } from "react-router-dom";
 
 const DeliveryInfo = ({
@@ -23,6 +41,7 @@ const DeliveryInfo = ({
     setQuantity,
   } = useContext(CartContext);
 
+>>>>>>> origin/feature/productpage
   const [isInCart, setIsInCart] = useState(false);
   const [cartItem, setCartItem] = useState(null);
 
@@ -30,6 +49,24 @@ const DeliveryInfo = ({
 
   // Check if product is in cart and get its quantity
   useEffect(() => {
+<<<<<<< HEAD
+    const cartItem = cartItems.find((item) => item.id === product.id);
+    setIsInCart(!!cartItem);
+    setCartQuantity(cartItem?.quantity || 0);
+  }, [cartItems, product.id]);
+
+  // Ensure we have proper numeric values
+  const numericPrice =
+    typeof price === "string"
+      ? parseFloat(price.replace(/[^0-9.]/g, ""))
+      : Number(price);
+
+  const numericOriginalPrice = originalPrice
+    ? typeof originalPrice === "string"
+      ? parseFloat(originalPrice.replace(/[^0-9.]/g, ""))
+      : Number(originalPrice)
+    : null;
+=======
     const item = cartItems.find((item) => item.variationId === variationId);
     setIsInCart(!!item);
     setCartItem(item);
@@ -39,6 +76,7 @@ const DeliveryInfo = ({
       setQuantity(1);
     }
   }, [cartItems, variationId]);
+>>>>>>> origin/feature/productpage
 
   const handleAddToCart = () => {
     const itemToAdd = {
@@ -51,7 +89,11 @@ const DeliveryInfo = ({
       quantity,
       sku,
       image: imageId,
+<<<<<<< HEAD
+      stock: stock,
+=======
       stock,
+>>>>>>> origin/feature/productpage
     };
     addToCart(itemToAdd);
   };
@@ -59,6 +101,20 @@ const DeliveryInfo = ({
   
 
   const handleQuantityChange = (newQuantity) => {
+<<<<<<< HEAD
+    setQuantity(newQuantity);
+
+    if (isInCart) {
+      const updatedItem = {
+        id: product.id,
+        title: product.title,
+        price: numericPrice,
+        regular_price: numericOriginalPrice,
+        quantity: newQuantity,
+        sku: sku,
+        image: imageId,
+        stock: stock,
+=======
     const numQuantity = parseInt(newQuantity);
     if (isNaN(numQuantity)) return;
 
@@ -68,11 +124,52 @@ const DeliveryInfo = ({
       const updatedItem = {
         ...cartItem,
         quantity: numQuantity,
+>>>>>>> origin/feature/productpage
       };
       addToCart(updatedItem);
     }
   };
 
+<<<<<<< HEAD
+  // Button Component
+  const Button = ({
+    text,
+    bgColor,
+    hoverColor,
+    textColor,
+    onClick,
+    disabled,
+  }) => {
+    return (
+      <button
+        className={`${bgColor} ${hoverColor} ${textColor} py-2 rounded-full w-full transition-colors`}
+        onClick={onClick}
+        disabled={disabled}
+      >
+        {text}
+      </button>
+    );
+  };
+
+  // Prepare data for components
+  const buttons = [
+    {
+      text: isInCart ? "Remove from Cart" : "Add to Cart",
+      bgColor: isInCart ? "bg-red-500" : "bg-[#FCD700]",
+      hoverColor: isInCart ? "hover:bg-red-600" : "hover:bg-[#FCD700]/70",
+      textColor: isInCart ? "text-white" : "text-[#182B55]",
+      onClick: isInCart ? handleRemoveFromCart : handleAddToCart,
+      disabled: stock <= 0,
+    },
+    {
+      text: "Buy Now",
+      bgColor: "bg-[#3F66BC]",
+      hoverColor: "hover:bg-[#3F66BC]/80",
+      textColor: "text-white",
+      disabled: stock <= 0,
+    },
+  ];
+=======
   const toggleWishlist = () => {
     const item = {
       productId,
@@ -197,6 +294,7 @@ const DeliveryInfo = ({
       )}
     </div>
   );
+>>>>>>> origin/feature/productpage
 
   const WishlistButton = () => (
     <button
@@ -268,24 +366,26 @@ const DeliveryInfo = ({
   };
 
   return (
-    // <div className="max-w-xs w-full rounded-xl border-2 border-[#ECF0F9] bg-[#F8F9FB] p-4 space-y-4">
-    // {/* Price Section */}
-    // <Price priceData={priceData} />
-  
-    // {/* Shipping Information */}
-    // <ShippingInfo shippingInfo={shippingInfo} />
-  
-    // {/* Delivery Information */}
-    // <DeliveryInfocard deliveryInfo={deliveryInfo} />
-  
-    // {/* Stock and Quantity Selector */}
-    // <StockQuantity stockData={stockData} />
-  
-    // {/* Cart Quantity Indicator */}
-    // {isInCart && (
-    //   <div className="text-center text-sm text-green-600">
-    //     {cartQuantity} in cart
+<<<<<<< HEAD
     <div className="max-w-xs w-full rounded-xl border-2 border-[#ECF0F9] bg-[#F8F9FB] p-4 space-y-4">
+    {/* Price Section */}
+    <Price priceData={priceData} />
+  
+    {/* Shipping Information */}
+    <ShippingInfo shippingInfo={shippingInfo} />
+  
+    {/* Delivery Information */}
+    <DeliveryInfocard deliveryInfo={deliveryInfo} />
+  
+    {/* Stock and Quantity Selector */}
+    <StockQuantity stockData={stockData} />
+  
+    {/* Cart Quantity Indicator */}
+    {isInCart && (
+      <div className="text-center text-sm text-green-600">
+        {cartQuantity} in cart
+=======
+    <div className="w-full max-w-xs border-2 border-[#ECF0F9] rounded-xl bg-[#F8F9FB] p-4">
       <div className="flex flex-col gap-4">
         {/* Price Display */}
         <PriceDisplay />
@@ -318,8 +418,9 @@ const DeliveryInfo = ({
             <span className="font-medium">Payment:</span> Secure transaction
           </p>
         </div>
+>>>>>>> origin/feature/productpage
       </div>
-    {/* )} */}
+    )}
   
     {/* Action Buttons */}
     <div className="space-y-2">
