@@ -266,7 +266,6 @@ const OrderTable = () => {
                     onClick={() => setShowDetails(false)}
                   >
                     <span className="sr-only">Close</span>
-                    <XCircleIcon className="h-6 w-6" aria-hidden="true" />
                   </button>
                 </div>
 
