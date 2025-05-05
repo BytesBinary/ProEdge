@@ -18,9 +18,9 @@ import PolicyIcon from '../../components/TechHelp/PolicyIcon';
 
 const TechHelp = () => {
   const whatToDo = [
-    { image: pick, title: 'Track an order', link: '#' },
+    { image: pick, title: 'Track an order', link: '/track-order' },
     { image: returning, title: 'Start a return', link: '#' },
-    { image: history, title: 'View order history', link: '#' },
+    { image: history, title: 'View order history', link: '/order-history' },
     { image: qoute, title: 'Request a quote', link: '#' },
     { image: modify, title: 'Modify or cancel an order', link: '#' },
   ];

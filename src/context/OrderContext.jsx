@@ -127,7 +127,7 @@ export const OrderProvider = ({ children }) => {
           headers: { 'Content-Type': 'application/json' },
         }
       );
-
+        console.log(response.data.data)
       if (response.data.errors) {
         throw new Error(response.data.errors[0].message);
       }
