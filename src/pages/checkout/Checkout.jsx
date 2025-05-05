@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import SubPageHeader from "../../components/common/utils/banner/SubPageHeader";
@@ -17,41 +17,10 @@ import { useAuth } from "../../context/AuthContext";
 import { useOrderContext } from "../../context/OrderContext";
 
 const Checkout = () => {
+  const { user } = useAuth(); 
   const navigate = useNavigate();
-  const { user } = useAuth();
   const { cartItems, getCartTotal,removeFromCart, clearCart } = useContext(CartContext);
   const {createOrder}=useOrderContext();
-  
-  // Single order data state
-  const [orderData, setOrderData] = useState({
-    name: "",
-    company_name: "",
-    phone_number: "",
-    email: "",
-    street_address: "",
-    address_two: "",
-    city: "",
-    state: "",
-    delivery_method: "standard",
-    zip_code: "",
-    shipping_charge: 0,
-    subtotal: getCartTotal(),
-    tax: 0,
-    order_status: "pending",
-    payment_method: "credit-card",
-
-    billing_name: "",
-    billing_company_name: "",
-    billing_phone_number: "",
-    billing_email: "",
-    billing_street_address: "",
-    billing_address_two: "",
-    billing_city: "",
-    billing_state: "",
-    billing_zip_code: "",
-  });
-
-  // Payment details state (separate as they're not part of the order data model)
   const [paymentDetails, setPaymentDetails] = useState({
     cardNumber: "",
     cardName: "",
@@ -63,6 +32,63 @@ const Checkout = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // Single order data state
+  const [orderData, setOrderData] = useState(() => {
+    // Load from localStorage
+    const savedOrder = localStorage.getItem('currentOrder');
+    const savedUser = JSON.parse(localStorage.getItem('user'));
+    const currentUser = user || savedUser; 
+    
+    const defaultData = {
+      name: currentUser ? `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim() : "",
+      company_name: "",
+      phone_number: "",
+      email: currentUser?.email || "",
+      street_address: "",
+      address_two: "",
+      city: "",
+      state: "",
+      delivery_method: "standard",
+      zip_code: "",
+      shipping_charge: 0,
+      subtotal: getCartTotal(),
+      tax: 0,
+      order_status: "pending",
+      payment_method: "credit-card",
+      billing_name: currentUser ? `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim() : "",
+      billing_company_name: "",
+      billing_phone_number: "",
+      billing_email: currentUser?.email || "",
+      billing_street_address: "",
+      billing_address_two: "",
+      billing_city: "",
+      billing_state: "",
+      billing_zip_code: "",
+    };
+  
+    return savedOrder ? { ...defaultData, ...JSON.parse(savedOrder) } : defaultData;
+  });
+  
+  
+  
+ 
+  // Update user data when auth state changes
+useEffect(() => {
+  const currentUser = user || JSON.parse(localStorage.getItem('user'));
+  if(cartItems.length === 0) {
+    navigate("/products");  
+  }
+  if (currentUser) {
+    setOrderData(prev => ({
+      ...prev,
+      name: `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim(),
+      email: currentUser.email || prev.email,
+      billing_name: `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim(),
+      billing_email: currentUser.email || prev.billing_email
+    }));
+  }
+}, [user,cartItems]);
+  
   // Handle shipping/billing address changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -155,15 +181,16 @@ const Checkout = () => {
   };
 
   // Handle order submission
+ 
   const handlePlaceOrder = async () => {
     if (!validateForm()) {
       setError("Please fill in all required fields");
       return;
     }
-
+  
     setLoading(true);
     setError(null);
-
+  
     try {
       const finalOrderData = {
         ...orderData,
@@ -175,19 +202,21 @@ const Checkout = () => {
         //   price: item.price,
         //   name: item.name,
         // })),
-        // payment_details:
+        // payment_details: 
         //   orderData.payment_method === "credit-card"
         //     ? {
         //         last4: paymentDetails.cardNumber.slice(-4),
-        //         brand: "visa", // Determine from card number
+        //         brand: "visa",
         //       }
         //     : null,
       };
-
+  
       const response = await createOrder(finalOrderData);
-      console.log("Order response:", response.id);  
+      console.log("Order response:", response.id);
+  
+      // Save to localStorage before navigation
+      localStorage.setItem('currentOrder', JSON.stringify(finalOrderData));
       
-
       clearCart();
       navigate(`/order-confirmation/${response.id}`);
     } catch (err) {
@@ -200,7 +229,6 @@ const Checkout = () => {
       setLoading(false);
     }
   };
-
   // Delivery method handler
   const handleDeliveryMethodChange = (method, shippingCharge) => {
     setOrderData((prev) => ({
