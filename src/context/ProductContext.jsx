@@ -79,8 +79,7 @@ const SINGLE_PRODUCT_QUERY = `
         product_info
         sku_code
         rating
-        total_ratings
-        is_made_usa
+        total_ratings        
         image {
           id
         }

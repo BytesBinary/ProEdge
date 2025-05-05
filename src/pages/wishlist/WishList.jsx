@@ -9,6 +9,7 @@ const WishList = () => {
   const { 
       wishlistItems,  
       removeFromWishlist,
+      addToCart
     } = useContext(CartContext);
 
   return (
@@ -28,16 +29,17 @@ const WishList = () => {
         </h1>
 
         <div className="flex flex-col gap-6 mt-6">
-          {wishlistItems.map((item) => {
+          {wishlistItems.map((item, index) => {
             const [dollars, cents] = item.price.toFixed(2).split(".");
 
             return (
               <WishCard
-                key={item.id}
+                key={index}
                 image={item.image}
                 title={item.title}
                 priceDollars={dollars}
                 priceCents={`.${cents}`}
+                onAddToCart={() => addToCart(item)}
                 inStock={item.stock}
                 sku={`SKU-${item.sku}`}
                 shippingInfo="Free Shipping"

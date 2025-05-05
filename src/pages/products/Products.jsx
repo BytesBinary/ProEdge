@@ -194,7 +194,7 @@ const Category = () => {
 
   //Codes for pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 9;
   const totalItems = priceFilteredProducts.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
