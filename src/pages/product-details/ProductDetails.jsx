@@ -14,7 +14,7 @@ const Product = () => {
   const [singleVariation, setSingleVariation] = useState(null);
   const [features, setFeatures] = useState(null);
 
-  const [activeTab, setActiveTab] = useState("Key Features");
+  const [activeTab, setActiveTab] = useState("Features");
 
   const handleTabChange = (tabName) => {
     setActiveTab(tabName);
@@ -38,9 +38,6 @@ const Product = () => {
 
     fetchSingleProduct();
   }, [id]);
-
-  // console.log(singleProduct, "singleProduct");
-  // console.log(singleVariation, "singleVariation");
 
   useEffect(() => {
     if (singleProduct?.variation?.length > 0) {
@@ -89,6 +86,7 @@ const Product = () => {
   const mainImage = singleVariation.image?.id
     ? `${import.meta.env.VITE_SERVER_URL}/assets/${singleVariation.image.id}`
     : singleVariation.image || "";
+
   return (
     <>
       <PageHeader
@@ -158,51 +156,28 @@ const Product = () => {
           <div className="p-4 sm:p-6">
             {activeTab === "Features" && (
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-900">
-                  Product Highlights
-                </h3>
-                <div className="grid grid-cols-1 gap-4">
+                <div className="grid grid-cols-1 gap-4 bg-gray-50 rounded-lg">
                   <ProductSpecList features={singleVariation.features} />
                 </div>
               </div>
             )}
-
-            {/* Delivery Panel */}
-            <DeliveryInfo
-              product={singleProduct}
-              imageId={singleVariation?.image?.id || "default-image.jpg"} // fallback image ID or path
-              price={singleVariation?.offer_price ?? singleVariation?.regular_price ?? "N/A"}
-              originalPrice={singleVariation?.regular_price ?? "N/A"}
-              stock={singleVariation?.stock ?? 0}
-              sku={singleVariation?.sku_code ?? "N/A"}
-            />
-
-        </section>
-
-        {activeTab === "Info" && (
-          <div className="space-y-6">
-            <div>
-              <h3 className="text-md md:text-lg font-semibold text-gray-900 mb-3">
-                Description
-              </h3>
-              <div className="text-gray-700 whitespace-pre-line">
-                {singleVariation.product_details}
+            {activeTab === "Details" && (
+              <div className="space-y-4">
+                <div className="bg-gray-50 rounded-lg p-4">
+                  {singleVariation.product_details}
+                </div>
               </div>
-            </div>
-
-            <div>
-              <h3 className="text-md md:text-lg font-semibold text-gray-900 mb-3">
-                Additional Information
-              </h3>
-              <div className="text-gray-700 whitespace-pre-line">
-                {singleVariation.product_info}
+            )}
+            {activeTab === "Info" && (
+              <div className="space-y-6">
+                <div className="bg-gray-50 rounded-lg p-4">
+                  {singleVariation.product_info}
+                </div>
               </div>
-            </div>
+            )}
           </div>
-        )}
+        </section>
       </div>
-    </section >
-      </div >
     </>
   );
 };
