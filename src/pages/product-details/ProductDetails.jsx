@@ -33,7 +33,7 @@ const Product = () => {
     fetchSingleProduct();
   }, [id]);
 
-  console.log(singleProduct, "singleProduct");
+  // console.log(singleProduct, "singleProduct");
   // console.log(singleVariation, "singleVariation");
 
   useEffect(() => {
@@ -48,7 +48,7 @@ const Product = () => {
   }, [singleProduct]);
 
   const handleVariationChange = (selectedVariation) => {
-    console.log(selectedVariation, "selectedVariation");
+    // console.log(selectedVariation, "selectedVariation");
     setSingleVariation(selectedVariation);
     setSelectedVariationId(selectedVariation.id);
   };
@@ -100,15 +100,16 @@ const Product = () => {
       />
     </div>
 
-    {/* Delivery Panel */}
-    <DeliveryInfo
-      product={singleProduct}
-      imageId={singleVariation.image.id}
-      price={singleVariation.offer_price}
-      originalPrice={singleVariation.regular_price}
-      stock={singleVariation.stock}
-      sku={singleVariation.sku_code}
-    />
+   {/* Delivery Panel */}
+<DeliveryInfo
+  product={singleProduct}
+  imageId={singleVariation?.image?.id || "default-image.jpg"} // fallback image ID or path
+  price={singleVariation?.offer_price ?? singleVariation?.regular_price ?? "N/A"}
+  originalPrice={singleVariation?.regular_price ?? "N/A"}
+  stock={singleVariation?.stock ?? 0}
+  sku={singleVariation?.sku_code ?? "N/A"}
+/>
+
   </section>
 
   {/* Product Specifications Section */}
