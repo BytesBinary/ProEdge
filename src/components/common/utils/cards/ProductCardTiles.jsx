@@ -5,7 +5,7 @@ import { CartContext } from "../../../../context/CartContext";
 
 const ProductCard = ({ product,onRemove  }) => {
 
-  console.log(product, 'product')
+  console.log(onRemove, 'product')
    const { 
     IncrementQuantity,
     DecrementQuantity,

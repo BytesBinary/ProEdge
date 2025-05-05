@@ -21,9 +21,10 @@ import { ProductProvider } from "./context/ProductContext";
 import { CartProvider } from "./context/CartContext";
 import {  CategoryProvider } from "./context/CategoryContext";
 import OrderTable from "./pages/order/OrdersTable";
-import { OrderProvider } from "./context/OrderContext";
 import TrackOrderModal from "./components/order/TrackOrder";
 import TrackOrderPage from "./pages/order/TrackOrderPage";
+import { AuthProvider } from "./context/AuthContext";
+import { OrderProvider } from "./context/OrderContext";
 
 const router = createBrowserRouter([
   {
@@ -58,15 +59,17 @@ const router = createBrowserRouter([
 
 function App() {
   return (
+    <AuthProvider>
     <CategoryProvider>
-    <CartProvider>
       <ProductProvider>
-        <OrderProvider>
-        <RouterProvider router={router} />
-        </OrderProvider>
+        <CartProvider>
+          <OrderProvider>
+            <RouterProvider router={router} />
+          </OrderProvider>
+        </CartProvider>
       </ProductProvider>
-    </CartProvider>
     </CategoryProvider>
+  </AuthProvider>
   );
 }
 

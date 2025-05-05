@@ -39,8 +39,39 @@ const ALL_ORDERS_QUERY = `
 `;
 
 const SINGLE_ORDER_QUERY = `
-  query GetOrderById($id: GraphQLStringOrFloat!) {
-    order(filter: { id: { _eq: $id } }) {
+  query GetOrderById($id: ID!) {
+    order_by_id(id: $id) {
+      id
+      name
+      company_name
+      phone_number
+      email
+      street_address
+      address_two
+      city
+      state
+      delivery_method
+      zip_code
+      shipping_charge
+      subtotal
+      tax
+      order_status
+      payment_method
+      billing_name
+      billing_company_name
+      billing_phone_number
+      billing_email
+      billing_street_address
+      billing_address_two
+      billing_city
+      billing_state
+      billing_zip_code
+    }
+  }
+`;
+const UPDATE_ORDER_MUTATION = `
+  mutation UpdateOrder($id: ID!, $data: update_order_input!) {
+    update_order_item(id: $id, data: $data) {
       id
       name
       company_name
@@ -70,9 +101,10 @@ const SINGLE_ORDER_QUERY = `
   }
 `;
 
+
 const CREATE_ORDER_MUTATION = `
-  mutation CreateOrder($input: create_order_input!) {
-    create_order(input: $input) {
+  mutation CreateOrder($data: create_order_input!) {
+    create_order_item(data: $data) {
       id
       name
       company_name
@@ -101,6 +133,15 @@ const CREATE_ORDER_MUTATION = `
     }
   }
 `;
+
+const DELETE_ORDER_MUTATION = `
+  mutation DeleteOrder($id: ID!) {
+    delete_order_item(id: $id) {
+      id
+    }
+  }
+`;
+
 
 export const OrderProvider = ({ children }) => {
   const [orders, setOrders] = useState([]);
@@ -131,7 +172,7 @@ export const OrderProvider = ({ children }) => {
       if (response.data.errors) {
         throw new Error(response.data.errors[0].message);
       }
-      setOrders(response.data.data.order || []);
+      setOrders(response.data.data.orders || []);
     } catch (error) {
       console.error('GraphQL fetch error:', error);
       setError(error.message);
@@ -166,7 +207,7 @@ export const OrderProvider = ({ children }) => {
         throw new Error(response.data.errors[0].message);
       }
 
-      const order = response.data.data.order?.[0];
+      const order = response.data.data.orders_by_id;
       if (order) {
         setCurrentOrder(order);
         return order;
@@ -182,45 +223,123 @@ export const OrderProvider = ({ children }) => {
   };
 
   const createOrder = async (orderData) => {
-    setCreating(true);
-    setError(null);
+    setCreating(true);  
+    setError(null);    
+  
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_SERVER_URL}/graphql`,
         {
           query: CREATE_ORDER_MUTATION,
-          variables: {
-            input: {
-              ...orderData,
-              // Ensure required fields are included
-              order_status: orderData.order_status || 'pending',
-              payment_method: orderData.payment_method || 'unpaid',
-              shipping_charge: orderData.shipping_charge || 0,
-              tax: orderData.tax || 0,
-              subtotal: orderData.subtotal || 0
-            }
-          }
+          variables: { data: orderData },  
         },
         {
           headers: { 'Content-Type': 'application/json' },
         }
       );
-
+  
+      console.log(response.data, 'response'); 
+    
       if (response.data.errors) {
-        throw new Error(response.data.errors[0].message);
+        throw new Error(response.data.errors[0].message);  
       }
-
-      const newOrder = response.data.data.create_order;
-      setOrders(prev => [...prev, newOrder]);
+  
+      const newOrder = response.data.data.create_order_item;
+      setOrders((prev) => [...prev, newOrder]);  
+  
       return newOrder;
     } catch (error) {
       console.error('GraphQL mutation error:', error);
+      setError(error.message);  
+      return null;
+    } finally {
+      setCreating(false); 
+    }
+  };
+  
+  //update order
+  const updateOrder = async (orderId, updatedFields) => {
+    setCreating(true);
+    setError(null);
+  
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_SERVER_URL}/graphql`,
+        {
+          query: UPDATE_ORDER_MUTATION,
+          variables: {
+            id: orderId,
+            data: updatedFields, // Pass updated fields as the data for the mutation
+          },
+        },
+        {
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+  
+      console.log(response.data, 'update response');
+  
+      // Handle errors if they exist
+      if (response.data.errors) {
+        throw new Error(response.data.errors[0].message);
+      }
+  
+      // If successful, update the state
+      const updatedOrder = response.data.data.update_order_item;
+  
+      setOrders((prevOrders) =>
+        prevOrders.map((order) =>
+          order.id === updatedOrder.id ? updatedOrder : order
+        )
+      );
+  
+      return updatedOrder;
+    } catch (error) {
+      console.error('GraphQL update error:', error);
       setError(error.message);
       return null;
     } finally {
       setCreating(false);
     }
   };
+  
+  const deleteOrder = async (orderId) => {
+    setCreating(true);
+    setError(null);
+  
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_SERVER_URL}/graphql`,
+        {
+          query: DELETE_ORDER_MUTATION,
+          variables: {
+            id: orderId,
+          },
+        },
+        {
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+  
+      console.log(response.data, 'delete response');
+  
+      if (response.data.errors) {
+        throw new Error(response.data.errors[0].message);
+      }
+  
+      const deleted = response.data.data.delete_order_item;
+      setOrders(prev => prev.filter(order => order.id !== deleted.id)); 
+  
+      return deleted;
+    } catch (error) {
+      console.error('GraphQL delete error:', error);
+      setError(error.message);
+      return null;
+    } finally {
+      setCreating(false);
+    }
+  };
+  
 
   return (
     <OrderContext.Provider
@@ -233,6 +352,8 @@ export const OrderProvider = ({ children }) => {
         creating,
         fetchOrderById,
         createOrder,
+        updateOrder,
+        deleteOrder,
         refetchOrders: fetchOrders,
       }}
     >
