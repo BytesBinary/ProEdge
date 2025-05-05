@@ -14,7 +14,6 @@ const Cart = () => {
     removeFromWishlist,
     getCartTotal 
   } = useContext(CartContext);
-  console.log(cartItems, 'cartItems');  
 
   // Calculate order summary data dynamically
   const orderSummary = {
