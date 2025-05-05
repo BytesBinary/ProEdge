@@ -33,7 +33,6 @@ const OrderTablePage = () => {
     } else {
       alert("Order ID not found");
     }
-    const order = orders.find((o) => o.id === trackingId.trim());
     if (order) {
       setSelectedOrder(order);
       setShowTrackModal(false);

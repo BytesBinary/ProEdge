@@ -1,20 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import OrderDetailsModal from "../../components/order/OrderDetails";
 import { useOrderContext } from "../../context/OrderContext";
 import { useParams } from "react-router-dom";
+import { CartContext } from "../../context/CartContext";
 
 const OrderDetailsPage = () => {
   const [singleOrderData, setSingleOrderData] = useState(null);
-  const [isOrderDetailsPage,setIsOrderDetailsPage]=useState(false);
+  const [isOrderDetailsPage, setIsOrderDetailsPage] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const params = useParams();
 
+  const { clearCart } = useContext(CartContext);
+
   const { fetchOrderById } = useOrderContext();
   console.log(params, "params");
+  useEffect(() => {
+    clearCart();
+  }, []);
 
   useEffect(() => {
-    setIsOrderDetailsPage(true);    
+    setIsOrderDetailsPage(true);
     const fetchOrderDetails = async () => {
       try {
         setLoading(true);
@@ -48,7 +54,10 @@ const OrderDetailsPage = () => {
 
   return (
     <div>
-      <OrderDetailsModal isOrderDetailsPage={isOrderDetailsPage}  order={singleOrderData} />
+      <OrderDetailsModal
+        isOrderDetailsPage={isOrderDetailsPage}
+        order={singleOrderData}
+      />
     </div>
   );
 };
