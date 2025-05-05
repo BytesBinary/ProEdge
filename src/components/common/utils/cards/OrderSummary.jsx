@@ -48,7 +48,7 @@ const OrderSummaryCard = ({ cart }) => {
       </div>
 
       <div className="mt-6 space-y-3">
-        {isCheckoutPage && (
+        {!isCheckoutPage && (
           <div className="flex flex-col gap-3">
             <button
               onClick={() => navigate("/cart/checkout")}

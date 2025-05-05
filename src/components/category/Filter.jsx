@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState,useRef } from "react";
 import { CategoryContext } from "../../context/CategoryContext";
 import { formatCategoryName } from "../../helper/slugifier/slugify";
 import { useLocation } from "react-router-dom";
+import { useProductContext } from "../../context/ProductContext";
 
 // Reusable ToggleSection
 const ToggleSection = ({ title, children, isOpen, setIsOpen }) => (
@@ -44,13 +45,14 @@ const Checkbox = ({ id, label, toggle, onChange }) => {
     </div>
   );
 };
-const PriceRange = ({ isOpen, setIsOpen, maxRangeLimit = 1000000 }) => {
-  const [minPrice, setMinPrice] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(maxRangeLimit);
+const PriceRange = ({ isOpen, setIsOpen,  }) => {
+ 
   const [activeThumb, setActiveThumb] = useState(null);
   const containerRef = useRef(null);
   const minThumbRef = useRef(null);
   const maxThumbRef = useRef(null);
+
+  const {minPrice, setMinPrice, maxPrice, setMaxPrice, maxRangeLimit} = useProductContext();
 
   useEffect(() => {
     setMaxPrice(maxRangeLimit);
@@ -228,6 +230,8 @@ const Filter = ({ onClose }) => {
     const formatted = formatCategories(categories || []);
 
     formatted.forEach((parent) => {
+
+      
       let parentHasMatch = false;
 
       if (parentSlug) {

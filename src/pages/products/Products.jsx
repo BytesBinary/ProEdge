@@ -10,16 +10,18 @@ import PageHeader from "../../components/common/utils/banner/SubPageHeader";
 import bgImage from "../../assets/images/cart.png";
 import { CartContext } from "../../context/CartContext";
 
-
 const Category = () => {
   const [showFilter, setShowFilter] = useState(false);
+  const { minPrice, maxPrice } = useProductContext();
+
+  const { products, loading } = useProductContext();
+  const { singleCategory } = useContext(CategoryContext);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
-  const { products, loading } = useProductContext();
-  const { singleCategory } = useContext(CategoryContext);
+  console.log(minPrice,maxPrice,"minPrice,maxPrice"); 
 
   // Function to generate a slug from a string
   const generateSlug = (str) => {
@@ -77,7 +79,7 @@ const Category = () => {
   });
 
   // Now filter products based on the selected category using the generated slugs
-  const filteredProducts = productsWithSlugs.filter((product) => {
+  const categoryfilteredProducts = productsWithSlugs.filter((product) => {
     // Extract product category details using the generated slugs
     const productChildSlug = product.product_category?.slug;
     const productSubSlug = product.product_category?.sub_category?.slug;
@@ -85,8 +87,10 @@ const Category = () => {
       product.product_category?.sub_category?.parent_category?.slug;
 
     // If no category is selected at all, show all products
-    if (!singleCategory?.toggle &&
-      !singleCategory?.sub_category?.some(sub => sub.toggle)) {
+    if (
+      !singleCategory?.toggle &&
+      !singleCategory?.sub_category?.some((sub) => sub.toggle)
+    ) {
       return true;
     }
 
@@ -132,9 +136,8 @@ const Category = () => {
     // Only include if child category matches
     return childMatch;
   });
-
-  // formattedProducts  
-  const formattedProducts = filteredProducts.flatMap((product) => {
+  // formattedProducts
+  const formattedProducts = categoryfilteredProducts.flatMap((product) => {
     // If no variations, return a single product with basic info
     if (!product.variation || product.variation.length === 0) {
       return {
@@ -142,8 +145,10 @@ const Category = () => {
         image: product.image,
         title: product.title,
         price: product.price || 0,
-        category_name: product.product_category?.sub_category?.parent_category?.category_name || "",
-        variation: null
+        category_name:
+          product.product_category?.sub_category?.parent_category
+            ?.category_name || "",
+        variation: null,
       };
     }
   
@@ -151,51 +156,64 @@ const Category = () => {
     return product.variation.map((variation) => {
       const features = variation.features || [];
       const featureText = features.map((f) => f.feature_value).join(", ");
-      
+  
       let title = product.title;
       if (featureText) title += ` (${featureText})`;
       if (variation.variation_name) title += ` - ${variation.variation_name}`;
   
       return {
-        id: product.id, 
-        variationId: variation.id, 
+        id: product.id,
+        variationId: variation.id,
         variation_name: variation.variation_name,
-        image: variation.image || product.image, 
+        image: variation.image || product.image,
         title: title.trim(),
         stock: variation.stock || 0,
-        sku: variation.sku_code || "", 
-        price: variation.offer_price > 0 ? variation.offer_price : variation.regular_price,
-        category_name: product.product_category?.sub_category?.parent_category?.category_name || "",
-        variation: variation 
+        sku: variation.sku_code || "",
+        price:
+          variation.offer_price > 0
+            ? variation.offer_price
+            : variation.regular_price,
+        category_name:
+          product.product_category?.sub_category?.parent_category
+            ?.category_name || "",
+        variation: variation,
       };
     });
   });
 
+
+const pricefilteredproducts=formattedProducts.filter((product) => {
+
+  const productPrice = product.offer_price || product.price || 0;
+  return productPrice >= minPrice && productPrice <= maxPrice;  
+})
+
+
   //Codes for pagination
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-  const totalItems = formattedProducts.length;
+  const totalItems = pricefilteredproducts.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
-  
+
   // Calculate indexes for slicing
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  
-  // Get current page's items
-  const currentItems = formattedProducts.slice(startIndex, endIndex);
 
+  // Get current page's items
+  const currentItems = pricefilteredproducts.slice(startIndex, endIndex);
 
   //Check wishList Items
-  const { 
-      cartItems, 
-      wishlistItems,
-    } = useContext(CartContext);
+  const { cartItems, wishlistItems } = useContext(CartContext);
 
-    const wishListItem = wishlistItems.length;
+  const wishListItem = wishlistItems.length;
 
   return (
     <>
-      <PageHeader title="Categories" bgImage={bgImage} breadcrumbs={[{ link: "/", label: "Home" }, { label: "Products" }]}/>
+      <PageHeader
+        title="Categories"
+        bgImage={bgImage}
+        breadcrumbs={[{ link: "/", label: "Home" }, { label: "Products" }]}
+      />
       <div className="w-full max-w-[1200px] mx-auto mt-3 md:mt-20 flex flex-col lg:flex-row justify-between items-start gap-10">
         {/* Desktop Filter Section */}
         <div className="hidden lg:block w-64">
@@ -344,14 +362,14 @@ const Category = () => {
               <Card
                 key={product.variationId}
                 productId={product.id}
-                variationId={product.variationId} 
+                variationId={product.variationId}
                 variation_name={product.variation_name}
                 category={product.category_name}
                 title={product.title}
                 image={product.image?.id}
                 price={product.price}
-                stock={product.stock} 
-                sku={product.sku} 
+                stock={product.stock}
+                sku={product.sku}
                 variation={product.variation}
               />
             ))}
@@ -374,10 +392,7 @@ const Category = () => {
                 {singleCategory.category_name}
               </div>
             ) : (
-              <Filter
-                onClose={() => setShowFilter(false)}
-
-              />
+              <Filter onClose={() => setShowFilter(false)} />
             )}
           </div>
         )}
