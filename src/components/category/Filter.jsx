@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState,useRef } from "react";
 import { CategoryContext } from "../../context/CategoryContext";
 import { formatCategoryName } from "../../helper/slugifier/slugify";
 import { useLocation } from "react-router-dom";
@@ -44,71 +44,140 @@ const Checkbox = ({ id, label, toggle, onChange }) => {
     </div>
   );
 };
-
-// Reusable Price Range with state management
-const PriceRange = ({ isOpen, setIsOpen }) => {
+const PriceRange = ({ isOpen, setIsOpen, maxRangeLimit = 1000000 }) => {
   const [minPrice, setMinPrice] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(990);
-  const [priceRange, setPriceRange] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(maxRangeLimit);
+  const [activeThumb, setActiveThumb] = useState(null);
+  const containerRef = useRef(null);
+  const minThumbRef = useRef(null);
+  const maxThumbRef = useRef(null);
 
-  const handlePriceChange = (e) => {
-    const value = parseInt(e.target.value);
-    setPriceRange(value);
-    setMaxPrice(value);
+  useEffect(() => {
+    setMaxPrice(maxRangeLimit);
+  }, [maxRangeLimit]);
+
+  const handleMouseDown = (thumb) => {
+    setActiveThumb(thumb);
   };
 
+  const calculateValue = (clientX) => {
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = clientX - rect.left;
+    let percentage = (x / rect.width) * 100;
+    percentage = Math.max(0, Math.min(100, percentage));
+    return Math.round((percentage / 100) * maxRangeLimit);
+  };
+
+  const handleMouseMove = (e) => {
+    if (!activeThumb || !containerRef.current) return;
+    
+    const newValue = calculateValue(e.clientX);
+    
+    if (activeThumb === 'min') {
+      const clampedValue = Math.min(newValue, maxPrice - 1);
+      setMinPrice(clampedValue);
+    } else {
+      const clampedValue = Math.max(newValue, minPrice + 1);
+      setMaxPrice(clampedValue);
+    }
+  };
+
+  const handleMouseUp = () => {
+    setActiveThumb(null);
+  };
+
+  const handleTouchMove = (e) => {
+    handleMouseMove(e.touches[0]);
+  };
+
+  const handleMinChange = (value) => {
+    const newValue = Math.min(Math.max(0, value), maxPrice - 1);
+    setMinPrice(newValue);
+  };
+
+  const handleMaxChange = (value) => {
+    const newValue = Math.max(Math.min(maxRangeLimit, value), minPrice + 1);
+    setMaxPrice(newValue);
+  };
+
+  const minPosition = (minPrice / maxRangeLimit) * 100;
+  const maxPosition = (maxPrice / maxRangeLimit) * 100;
+
   return (
-    <div className="w-[282px] p-4 bg-[#F8F9FB] border-[1.5px] border-[#ECF0F9] rounded-[8px]">
-      <div
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-between cursor-pointer border-b-2 border-[#ECF0F9] pb-4"
-      >
-        <h2 className="text-[18px] leading-6 text-[#182B55] font-medium">Price</h2>
-        <svg
-          className={`w-4 h-4 transform transition-transform ${isOpen ? "rotate-180" : ""}`}
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-        </svg>
-      </div>
+    <div className="p-4 w-64 bg-[#F8F9FB] border-[1.5px] border-[#ECF0F9] rounded-[8px]">
+      {/* Header remains the same */}
+
       {isOpen && (
-        <div className="mt-4 space-y-3">
-          <div className="w-full flex items-center justify-between space-x-2 text-[16px] leading-5 text-[#182B55] font-medium">
-            <div>
-              <p>Min Price</p>
+        <div className="mt-4 space-y-4">
+          {/* Input fields */}
+          <div className="flex gap-2">
+            <div className="flex-1">
+              <label className="block text-sm text-[#182B55] font-medium mb-1">Min Price</label>
               <input
                 type="number"
-                placeholder="$0 min"
                 value={minPrice}
-                onChange={(e) => setMinPrice(parseInt(e.target.value) || 0)}
-                className="w-full px-4 py-2 text-[#5D6576] text-[16px] leading-6 font-medium border rounded-[8px] border-[#ECF0F9] focus:outline-none focus:ring-2 focus:ring-blue-400"
+                onChange={(e) => handleMinChange(Number(e.target.value))}
+                className="w-full px-3 py-2 border border-[#ECF0F9] rounded-md text-[#5D6576]"
+                min={0}
+                max={maxPrice - 1}
               />
             </div>
-            <span className="text-[#3F66BC] h-[2px] w-[10px]">–</span>
-            <div>
-              <p>Max Price</p>
+            <div className="flex items-end text-[#3F66BC]">–</div>
+            <div className="flex-1">
+              <label className="block text-sm text-[#182B55] font-medium mb-1">Max Price</label>
               <input
                 type="number"
-                placeholder="$990 max"
                 value={maxPrice}
-                onChange={(e) => setMaxPrice(parseInt(e.target.value) || 990)}
-                className="w-full px-4 py-2 text-[#5D6576] text-[16px] leading-6 font-medium border rounded-[8px] border-[#ECF0F9] focus:outline-none focus:ring-2 focus:ring-blue-400"
+                onChange={(e) => handleMaxChange(Number(e.target.value))}
+                className="w-full px-3 py-2 border border-[#ECF0F9] rounded-md text-[#5D6576]"
+                min={minPrice + 1}
+                max={maxRangeLimit}
               />
             </div>
           </div>
-          <div className="w-full">
-            <input
-              type="range"
-              min={minPrice}
-              max="990"
-              value={priceRange}
-              onChange={handlePriceChange}
-              className="w-full accent-blue-500"
+
+          {/* Slider container */}
+          <div 
+            className="relative h-10"
+            ref={containerRef}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleMouseUp}
+          >
+            {/* Track */}
+            <div className="absolute top-1/2 left-0 right-0 h-1 bg-[#ECF0F9] rounded-full -translate-y-1/2" />
+
+            {/* Active range */}
+            <div
+              className="absolute top-1/2 h-1 bg-blue-500 rounded-full -translate-y-1/2"
+              style={{
+                left: `${minPosition}%`,
+                width: `${maxPosition - minPosition}%`,
+              }}
+            />
+
+            {/* Min thumb */}
+            <div
+              ref={minThumbRef}
+              className="absolute w-4 h-4 bg-white border-2 border-blue-500 rounded-full top-1/2 -translate-y-1/2 cursor-pointer shadow-sm"
+              style={{ left: `${minPosition}%` }}
+              onMouseDown={() => handleMouseDown('min')}
+              onTouchStart={() => handleMouseDown('min')}
+            />
+
+            {/* Max thumb */}
+            <div
+              ref={maxThumbRef}
+              className="absolute w-4 h-4 bg-white border-2 border-blue-500 rounded-full top-1/2 -translate-y-1/2 cursor-pointer shadow-sm"
+              style={{ left: `${maxPosition}%` }}
+              onMouseDown={() => handleMouseDown('max')}
+              onTouchStart={() => handleMouseDown('max')}
             />
           </div>
-          <p className="text-[#5D6576] text-[16px] leading-6 font-medium">
+
+          <p className="text-[#5D6576] text-[16px] font-medium">
             Price: ${minPrice} – ${maxPrice}
           </p>
         </div>
@@ -355,7 +424,9 @@ const Filter = ({ onClose }) => {
       </ToggleSection>
 
       {/* Price Range Filter */}
-      <PriceRange isOpen={isPriceOpen} setIsOpen={setIsPriceOpen} />
+      <ToggleSection title="Price" isOpen={isPriceOpen} setIsOpen={setIsPriceOpen}>
+  <PriceRange isOpen={isPriceOpen} setIsOpen={setIsPriceOpen} />
+</ToggleSection>
 
       {/* Made in USA Filter */}
       <ToggleSection title="Made in the USA" isOpen={isMadeInUSAOpen} setIsOpen={setIsMadeInUSAOpen}>
