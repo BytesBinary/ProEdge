@@ -20,6 +20,7 @@ import WishList from "./pages/wishlist/WishList";
 import { ProductProvider } from "./context/ProductContext";
 import { CartProvider } from "./context/CartContext";
 import {  CategoryProvider } from "./context/CategoryContext";
+import OrderTable from "./pages/order/OrdersTable";
 
 const router = createBrowserRouter([
   {
@@ -35,6 +36,7 @@ const router = createBrowserRouter([
       { path: "cart", Component: CartPage },
       { path: "cart/checkout", Component: Checkout },
       { path: "wish-list", Component: WishList },
+      { path: "order-history", Component: OrderTable },
     ],
   },
   {
