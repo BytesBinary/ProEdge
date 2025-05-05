@@ -70,11 +70,44 @@ const SINGLE_ORDER_QUERY = `
   }
 `;
 
+const CREATE_ORDER_MUTATION = `
+  mutation CreateOrder($input: create_order_input!) {
+    create_order(input: $input) {
+      id
+      name
+      company_name
+      phone_number
+      email
+      street_address
+      address_two
+      city
+      state
+      delivery_method
+      zip_code
+      shipping_charge
+      subtotal
+      tax
+      order_status
+      payment_method
+      billing_name
+      billing_company_name
+      billing_phone_number
+      billing_email
+      billing_street_address
+      billing_address_two
+      billing_city
+      billing_state
+      billing_zip_code
+    }
+  }
+`;
+
 export const OrderProvider = ({ children }) => {
   const [orders, setOrders] = useState([]);
   const [currentOrder, setCurrentOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [orderLoading, setOrderLoading] = useState(false);
+  const [creating, setCreating] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -98,7 +131,6 @@ export const OrderProvider = ({ children }) => {
       if (response.data.errors) {
         throw new Error(response.data.errors[0].message);
       }
-      console.log(response.data.data, 'response');    
       setOrders(response.data.data.order || []);
     } catch (error) {
       console.error('GraphQL fetch error:', error);
@@ -109,16 +141,13 @@ export const OrderProvider = ({ children }) => {
     }
   };
 
-  
   const fetchOrderById = async (id) => {
-    // First try to find in local orders
     const localOrder = orders.find(order => order.id === id);
     if (localOrder) {
       setCurrentOrder(localOrder);
       return localOrder;
     }
 
-    // If not found locally, fetch from API
     setOrderLoading(true);
     setError(null);
     try {
@@ -152,6 +181,47 @@ export const OrderProvider = ({ children }) => {
     }
   };
 
+  const createOrder = async (orderData) => {
+    setCreating(true);
+    setError(null);
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_SERVER_URL}/graphql`,
+        {
+          query: CREATE_ORDER_MUTATION,
+          variables: {
+            input: {
+              ...orderData,
+              // Ensure required fields are included
+              order_status: orderData.order_status || 'pending',
+              payment_method: orderData.payment_method || 'unpaid',
+              shipping_charge: orderData.shipping_charge || 0,
+              tax: orderData.tax || 0,
+              subtotal: orderData.subtotal || 0
+            }
+          }
+        },
+        {
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+
+      if (response.data.errors) {
+        throw new Error(response.data.errors[0].message);
+      }
+
+      const newOrder = response.data.data.create_order;
+      setOrders(prev => [...prev, newOrder]);
+      return newOrder;
+    } catch (error) {
+      console.error('GraphQL mutation error:', error);
+      setError(error.message);
+      return null;
+    } finally {
+      setCreating(false);
+    }
+  };
+
   return (
     <OrderContext.Provider
       value={{
@@ -160,7 +230,9 @@ export const OrderProvider = ({ children }) => {
         error,
         currentOrder,
         orderLoading,
+        creating,
         fetchOrderById,
+        createOrder,
         refetchOrders: fetchOrders,
       }}
     >
