@@ -212,6 +212,7 @@ useEffect(() => {
       };
   
       const response = await createOrder(finalOrderData);
+
       console.log("Order response:", response.id);
   
       // Save to localStorage before navigation

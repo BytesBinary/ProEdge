@@ -21,6 +21,8 @@ import { ProductProvider } from "./context/ProductContext";
 import { CartProvider } from "./context/CartContext";
 import {  CategoryProvider } from "./context/CategoryContext";
 import OrderTable from "./pages/order/OrdersTable";
+import TrackOrderModal from "./components/order/TrackOrder";
+import TrackOrderPage from "./pages/order/TrackOrderPage";
 import { AuthProvider } from "./context/AuthContext";
 import { OrderProvider } from "./context/OrderContext";
 
@@ -39,6 +41,9 @@ const router = createBrowserRouter([
       { path: "cart/checkout", Component: Checkout },
       { path: "wish-list", Component: WishList },
       { path: "order-history", Component: OrderTable },
+      { path: "track-order", Component: TrackOrderPage },
+      { path: "return-order", Component: TrackOrderPage },
+      { path: "modify-order", Component: TrackOrderPage },
     ],
   },
   {

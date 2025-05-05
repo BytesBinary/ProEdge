@@ -168,11 +168,11 @@ export const OrderProvider = ({ children }) => {
           headers: { 'Content-Type': 'application/json' },
         }
       );
-
+        // console.log(response.data.data.order,'fetched orders')
       if (response.data.errors) {
         throw new Error(response.data.errors[0].message);
       }
-      setOrders(response.data.data.orders || []);
+      setOrders(response.data.data.order || []);
     } catch (error) {
       console.error('GraphQL fetch error:', error);
       setError(error.message);
@@ -207,7 +207,7 @@ export const OrderProvider = ({ children }) => {
         throw new Error(response.data.errors[0].message);
       }
 
-      const order = response.data.data.orders_by_id;
+      const order = response.data.data.order_by_id;
       if (order) {
         setCurrentOrder(order);
         return order;
@@ -238,7 +238,7 @@ export const OrderProvider = ({ children }) => {
         }
       );
   
-      console.log(response.data, 'response'); 
+      // console.log(response.data, 'response'); 
     
       if (response.data.errors) {
         throw new Error(response.data.errors[0].message);  
@@ -277,7 +277,7 @@ export const OrderProvider = ({ children }) => {
         }
       );
   
-      console.log(response.data, 'update response');
+      // console.log(response.data, 'update response');
   
       // Handle errors if they exist
       if (response.data.errors) {
@@ -321,7 +321,7 @@ export const OrderProvider = ({ children }) => {
         }
       );
   
-      console.log(response.data, 'delete response');
+      // console.log(response.data, 'delete response');
   
       if (response.data.errors) {
         throw new Error(response.data.errors[0].message);
