@@ -374,7 +374,7 @@ const Filter = ({ onClose }) => {
         title="Categories" 
         isOpen={isCategoriesOpen} 
         setIsOpen={setIsCategoriesOpen}
-      ><p className="text-2xl leading-5 text-[#1748b1] font-medium cursor-pointer">  
+      ><p className="text-md leading-5 text-[#1748b1] font-medium cursor-pointer">  
         {singleCategory?.category_name}
         
           </p>
