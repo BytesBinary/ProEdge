@@ -8,6 +8,7 @@ import { useProductContext } from "../../context/ProductContext";
 // import PriceCard from "../../components/product/PriceCard";
 import PageHeader from "../../components/common/utils/banner/SubPageHeader";
 import bgImage from "../../assets/images/cart.png";
+import { CartContext } from "../../context/CartContext";
 
 
 const Category = () => {
@@ -183,6 +184,15 @@ const Category = () => {
   // Get current page's items
   const currentItems = formattedProducts.slice(startIndex, endIndex);
 
+
+  //Check wishList Items
+  const { 
+      cartItems, 
+      wishlistItems,
+    } = useContext(CartContext);
+
+    const wishListItem = wishlistItems.length;
+
   return (
     <>
       <PageHeader title="Categories" bgImage={bgImage} breadcrumbs={[{ link: "/", label: "Home" }, { label: "Products" }]}/>
@@ -224,7 +234,7 @@ const Category = () => {
                   </defs>
                 </svg>
                 <h2 className="text-[#182B55] font-medium text-xl leading-6">
-                  10
+                  {wishListItem}
                 </h2>
               </div>
 
