@@ -41,6 +41,8 @@ const router = createBrowserRouter([
       { path: "wish-list", Component: WishList },
       { path: "order-history", Component: OrderTable },
       { path: "track-order", Component: TrackOrderPage },
+      { path: "return-order", Component: TrackOrderPage },
+      { path: "modify-order", Component: TrackOrderPage },
     ],
   },
   {
