@@ -26,15 +26,17 @@ const ToggleSection = ({ title, children, isOpen, setIsOpen }) => (
 );
 
 // Reusable Checkbox with proper state management
-const Checkbox = ({ id, label, toggle, onChange }) => {
+const Checkbox = ({ id, label }) => {
+  const {isMadeUsa,setIsmadeUsa} = useProductContext();
+
   return (
     <div className="flex items-center gap-2">
       <input
         type="checkbox"
         id={id}
         className="peer form-checkbox text-[#3F66BC]"
-        checked={toggle}  // Fully controlled by parent
-        onChange={onChange}  // Directly use parent's onChange
+        checked={isMadeUsa}  
+        onChange={()=>{setIsmadeUsa(!isMadeUsa)}}   
       />
       <label
         htmlFor={id}

@@ -12,7 +12,7 @@ import { CartContext } from "../../context/CartContext";
 
 const Category = () => {
   const [showFilter, setShowFilter] = useState(false);
-  const { minPrice, maxPrice } = useProductContext();
+  const { minPrice, maxPrice,isMadeUsa } = useProductContext();
 
   const { products, loading } = useProductContext();
   const { singleCategory } = useContext(CategoryContext);
@@ -149,6 +149,7 @@ const Category = () => {
           product.product_category?.sub_category?.parent_category
             ?.category_name || "",
         variation: null,
+        made_in_usa: product.made_in_usa,
       };
     }
   
@@ -177,22 +178,24 @@ const Category = () => {
           product.product_category?.sub_category?.parent_category
             ?.category_name || "",
         variation: variation,
+        made_in_usa:  product.made_in_usa,  
       };
     });
   });
 
 
-const pricefilteredproducts=formattedProducts.filter((product) => {
-
-  const productPrice = product.offer_price || product.price || 0;
-  return productPrice >= minPrice && productPrice <= maxPrice;  
-})
+  const priceFilteredProducts = formattedProducts.filter((product) => {
+    const productPrice = product.offer_price || product.price || 0;
+    const productMadeUsa = product?.made_in_usa===isMadeUsa;
+    
+    return (productPrice >= minPrice && productPrice <= maxPrice) || productMadeUsa;
+  });
 
 
   //Codes for pagination
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-  const totalItems = pricefilteredproducts.length;
+  const totalItems = priceFilteredProducts.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   // Calculate indexes for slicing
@@ -200,12 +203,13 @@ const pricefilteredproducts=formattedProducts.filter((product) => {
   const endIndex = startIndex + itemsPerPage;
 
   // Get current page's items
-  const currentItems = pricefilteredproducts.slice(startIndex, endIndex);
+  const currentItems = priceFilteredProducts.slice(startIndex, endIndex);
 
   //Check wishList Items
   const { cartItems, wishlistItems } = useContext(CartContext);
 
   const wishListItem = wishlistItems.length;
+  console.log(isMadeUsa, "isMadeUsa");  
 
   return (
     <>

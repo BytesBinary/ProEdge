@@ -12,6 +12,8 @@ const ALL_PRODUCTS_QUERY = `
       id
       title
       slug
+      made_in_usa
+
       product_category {
         id
         child_category_name
@@ -51,6 +53,8 @@ const SINGLE_PRODUCT_QUERY = `
       id
       title
       slug
+      made_in_usa
+
       product_category {
         id
         child_category_name
@@ -76,6 +80,7 @@ const SINGLE_PRODUCT_QUERY = `
         sku_code
         rating
         total_ratings
+        is_made_usa
         image {
           id
         }
@@ -90,6 +95,7 @@ export const ProductProvider = ({ children }) => {
   const [currentProduct, setCurrentProduct] = useState(null);
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(maxRangeLimit);
+  const [isMadeUsa, setIsmadeUsa] = useState(false);
   const [loading, setLoading] = useState(true);
   const [productLoading, setProductLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -176,6 +182,8 @@ export const ProductProvider = ({ children }) => {
         maxPrice,
         setMaxPrice,
         maxRangeLimit,
+        isMadeUsa,
+        setIsmadeUsa,
         loading,
         error,
         currentProduct,
