@@ -14,6 +14,12 @@ const Product = () => {
   const [singleVariation, setSingleVariation] = useState(null);
   const [features, setFeatures] = useState(null);
 
+  const [activeTab, setActiveTab] = useState("Key Features");
+
+  const handleTabChange = (tabName) => {
+    setActiveTab(tabName);
+  };
+
   const [selectedVariationId, setSelectedVariationId] = useState(null);
   const { fetchProductById } = useProductContext();
   const { title } = useParams();
@@ -39,7 +45,7 @@ const Product = () => {
   useEffect(() => {
     if (singleProduct?.variation?.length > 0) {
       const defaultVariation = selectedVariationId
-        ? singleProduct.variation.find(v => v.id === selectedVariationId)
+        ? singleProduct.variation.find((v) => v.id === selectedVariationId)
         : singleProduct.variation[0];
 
       if (defaultVariation) {
@@ -49,13 +55,12 @@ const Product = () => {
     }
   }, [singleProduct, selectedVariationId]);
 
-
   const handleVariationChange = (selectedVariation) => {
     if (!selectedVariation) return;
 
     // Find the full variation object from the product's variations
     const fullVariation = singleProduct.variation.find(
-      v => v.id === selectedVariation.id
+      (v) => v.id === selectedVariation.id
     );
 
     if (fullVariation) {
@@ -73,17 +78,17 @@ const Product = () => {
     { label: singleProduct.title },
   ];
   const thumbnails = Array.isArray(singleProduct.variation)
-    ? singleProduct.variation.map(v => ({
-      id: v.id,
-      image: v.image?.id || '', // Safe access to image id
-      option: v
-    }))
+    ? singleProduct.variation.map((v) => ({
+        id: v.id,
+        image: v.image?.id || "", // Safe access to image id
+        option: v,
+      }))
     : [];
 
   // Safe access to main image
   const mainImage = singleVariation.image?.id
     ? `${import.meta.env.VITE_SERVER_URL}/assets/${singleVariation.image.id}`
-    : singleVariation.image || '';
+    : singleVariation.image || "";
   return (
     <>
       <PageHeader
@@ -97,7 +102,6 @@ const Product = () => {
             thumbnails={thumbnails}
             mainImage={mainImage}
             onVariationChange={handleVariationChange}
-            
           />
           <ProductVariation
             title={singleProduct.title}
@@ -128,17 +132,119 @@ const Product = () => {
         </section>
 
         {/* Product Specifications Section */}
-        <section className="my-10 max-w-7xl w-full mx-auto rounded-2xl border-2 border-[#F8F9FB] bg-white shadow-sm">
+        <section className="my-10 max-w-7xl w-full mx-auto rounded-2xl border border-gray-200 bg-white shadow-sm">
           {/* Tab Header */}
-          <div className="bg-[#F8F9FB] px-4 sm:px-10 py-5 rounded-t-2xl flex flex-wrap gap-2">
-            <PDS title="Key Features" />
-            <PDS title="Product Details" />
-            <PDS title="Product Information" />
+          <div className="border-b border-gray-200 px-2 md:px-6 py-4 rounded-t-2xl">
+            <nav className="flex space-x-0 md:space-x-8 gap-1 md:gap-4">
+              <PDS
+                title="Key Features"
+                callBack={() => handleTabChange("Features")}
+                active={activeTab === "Features"}
+              />
+              <PDS
+                title="Product Details"
+                callBack={() => handleTabChange("Details")}
+                active={activeTab === "Details"}
+              />
+              <PDS
+                title="Product Info"
+                callBack={() => handleTabChange("Info")}
+                active={activeTab === "Info"}
+              />
+            </nav>
           </div>
 
-          {/* Features List */}
-          <div className="text-[16px] leading-6 w-2xs text-[#182B55] font-medium space-y-1 p-10">
-            <ProductSpecList features={singleVariation.features} />
+          {/* Content Area */}
+          <div className="p-4 sm:p-6">
+            {activeTab === "Features" && (
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Product Highlights
+                </h3>
+                <div className="grid grid-cols-1 gap-4">
+                  <ProductSpecList features={singleVariation.features} />
+                </div>
+              </div>
+            )}
+
+            {activeTab === "Details" && (
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Product Specifications
+                </h3>
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <dl className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2">
+                    <div className="sm:col-span-1">
+                      <dt className="text-sm font-medium text-gray-500">
+                        Color
+                      </dt>
+                      <dd className="mt-1 text-sm text-gray-900 capitalize">
+                        {singleVariation.variation_value}
+                      </dd>
+                    </div>
+                    <div className="sm:col-span-1">
+                      <dt className="text-sm font-medium text-gray-500">SKU</dt>
+                      <dd className="mt-1 text-sm text-gray-900">
+                        {singleVariation.sku_code}
+                      </dd>
+                    </div>
+                    <div className="sm:col-span-1">
+                      <dt className="text-sm font-medium text-gray-500">
+                        Price
+                      </dt>
+                      <dd className="mt-1 text-sm text-gray-900">
+                        {new Intl.NumberFormat("en-US", {
+                          style: "currency",
+                          currency: "USD",
+                        }).format(singleVariation.regular_price / 100)}
+                      </dd>
+                    </div>
+                    <div className="sm:col-span-1">
+                      <dt className="text-sm font-medium text-gray-500">
+                        Rating
+                      </dt>
+                      <dd className="mt-1 text-sm text-gray-900">
+                        {singleVariation.rating} (
+                        {singleVariation.total_ratings.toLocaleString()}{" "}
+                        reviews)
+                      </dd>
+                    </div>
+                    <div className="sm:col-span-1">
+                      <dt className="text-sm font-medium text-gray-500">
+                        Availability
+                      </dt>
+                      <dd className="mt-1 text-sm text-gray-900">
+                        {singleVariation.stock > 0
+                          ? "In Stock"
+                          : "Out of Stock"}
+                      </dd>
+                    </div>
+                  </dl>
+                </div>
+              </div>
+            )}
+
+            {activeTab === "Info" && (
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-md md:text-lg font-semibold text-gray-900 mb-3">
+                    Description
+                  </h3>
+                  <div className="text-gray-700 whitespace-pre-line">
+                    {singleVariation.product_details}
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-md md:text-lg font-semibold text-gray-900 mb-3">
+                    Additional Information
+                  </h3>
+                  <div className="text-gray-700 whitespace-pre-line">
+                    {singleVariation.product_info}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </section>
       </div>
