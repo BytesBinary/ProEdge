@@ -21,6 +21,10 @@ import { ProductProvider } from "./context/ProductContext";
 import { CartProvider } from "./context/CartContext";
 import {  CategoryProvider } from "./context/CategoryContext";
 import OrderTable from "./pages/order/OrdersTable";
+import TrackOrderPage from "./pages/order/TrackOrderPage";
+import { AuthProvider } from "./context/AuthContext";
+import { OrderProvider } from "./context/OrderContext";
+import OrderDetailsPage from "./pages/order/OrderDetailsPage";
 
 const router = createBrowserRouter([
   {
@@ -37,6 +41,10 @@ const router = createBrowserRouter([
       { path: "cart/checkout", Component: Checkout },
       { path: "wish-list", Component: WishList },
       { path: "order-history", Component: OrderTable },
+      { path: "order-details/:orderid", Component: OrderDetailsPage },
+      { path: "track-order", Component: TrackOrderPage },
+      { path: "return-order", Component: TrackOrderPage },
+      { path: "modify-order", Component: TrackOrderPage },
     ],
   },
   {
@@ -52,13 +60,17 @@ const router = createBrowserRouter([
 
 function App() {
   return (
+    <AuthProvider>
     <CategoryProvider>
-    <CartProvider>
       <ProductProvider>
-        <RouterProvider router={router} />
+        <CartProvider>
+          <OrderProvider>
+            <RouterProvider router={router} />
+          </OrderProvider>
+        </CartProvider>
       </ProductProvider>
-    </CartProvider>
     </CategoryProvider>
+  </AuthProvider>
   );
 }
 

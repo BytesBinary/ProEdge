@@ -41,7 +41,7 @@ export function CartProvider({ children }) {
 
   // Cart methods
   const addToCart = (item) => {
-    console.log(item, 'item')
+    // console.log(item, 'item')
     const isItemInCart = cartItems.find(cartItem => cartItem.variationId === item.variationId);
     if (!isItemInCart) {
       setCartItems(prev => [...prev, { ...item,quantity }]);
