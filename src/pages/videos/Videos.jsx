@@ -1,20 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import SubPageHeader from '../../components/common/utils/banner/SubPageHeader';
 import VideoCard from '../../components/Video/VideoCard';
-// import videos from '../../data/videos/Video';
-// import pageData from '../../data/videos/PageData';
-
-// data/videos/Video.js
-const videos = [
-  {
-    title: "Get the Most from Your Tools",
-    link: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-  },
-  {
-    title: "Behind the Scenes: Manufacturing Excellence",
-    link: "https://www.youtube.com/watch?v=Zi_XLOBDo_Y"
-  }
-];
 import pageData from '../../data/videos/PageData';
 import axios from 'axios';
 
