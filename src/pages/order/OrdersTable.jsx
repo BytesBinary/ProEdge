@@ -11,6 +11,7 @@ const OrderTablePage = () => {
   const [showDetails, setShowDetails] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
 
+
   const [showTrackModal, setShowTrackModal] = useState(false);
   const [trackingId, setTrackingId] = useState("");
 
@@ -23,6 +24,15 @@ const OrderTablePage = () => {
   };
 
   const handleTrackOrder = () => {
+    const order = orders.find((o) => o.id === trackingId.trim());
+    if (order) {
+      setSelectedOrder(order);
+      setShowTrackModal(false);
+      setShowDetails(true);
+      setTrackingId(""); // reset
+    } else {
+      alert("Order ID not found");
+    }
     const order = orders.find((o) => o.id === trackingId.trim());
     if (order) {
       setSelectedOrder(order);
