@@ -14,7 +14,7 @@ const Product = () => {
   const [singleVariation, setSingleVariation] = useState(null);
   const [features, setFeatures] = useState(null);
 
-  const [activeTab, setActiveTab] = useState("Key Features");
+  const [activeTab, setActiveTab] = useState("Features");
 
   const handleTabChange = (tabName) => {
     setActiveTab(tabName);
@@ -38,9 +38,6 @@ const Product = () => {
 
     fetchSingleProduct();
   }, [id]);
-
-  // console.log(singleProduct, "singleProduct");
-  // console.log(singleVariation, "singleVariation");
 
   useEffect(() => {
     if (singleProduct?.variation?.length > 0) {
@@ -79,16 +76,17 @@ const Product = () => {
   ];
   const thumbnails = Array.isArray(singleProduct.variation)
     ? singleProduct.variation.map((v) => ({
-        id: v.id,
-        image: v.image?.id || "", // Safe access to image id
-        option: v,
-      }))
+      id: v.id,
+      image: v.image?.id || "", // Safe access to image id
+      option: v,
+    }))
     : [];
 
   // Safe access to main image
   const mainImage = singleVariation.image?.id
     ? `${import.meta.env.VITE_SERVER_URL}/assets/${singleVariation.image.id}`
     : singleVariation.image || "";
+
   return (
     <>
       <PageHeader
@@ -158,90 +156,22 @@ const Product = () => {
           <div className="p-4 sm:p-6">
             {activeTab === "Features" && (
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-900">
-                  Product Highlights
-                </h3>
-                <div className="grid grid-cols-1 gap-4">
+                <div className="grid grid-cols-1 gap-4 bg-gray-50 rounded-lg">
                   <ProductSpecList features={singleVariation.features} />
                 </div>
               </div>
             )}
-
             {activeTab === "Details" && (
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-900">
-                  Product Specifications
-                </h3>
                 <div className="bg-gray-50 rounded-lg p-4">
-                  <dl className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2">
-                    <div className="sm:col-span-1">
-                      <dt className="text-sm font-medium text-gray-500">
-                        Color
-                      </dt>
-                      <dd className="mt-1 text-sm text-gray-900 capitalize">
-                        {singleVariation.variation_value}
-                      </dd>
-                    </div>
-                    <div className="sm:col-span-1">
-                      <dt className="text-sm font-medium text-gray-500">SKU</dt>
-                      <dd className="mt-1 text-sm text-gray-900">
-                        {singleVariation.sku_code}
-                      </dd>
-                    </div>
-                    <div className="sm:col-span-1">
-                      <dt className="text-sm font-medium text-gray-500">
-                        Price
-                      </dt>
-                      <dd className="mt-1 text-sm text-gray-900">
-                        {new Intl.NumberFormat("en-US", {
-                          style: "currency",
-                          currency: "USD",
-                        }).format(singleVariation.regular_price / 100)}
-                      </dd>
-                    </div>
-                    <div className="sm:col-span-1">
-                      <dt className="text-sm font-medium text-gray-500">
-                        Rating
-                      </dt>
-                      <dd className="mt-1 text-sm text-gray-900">
-                        {singleVariation.rating} (
-                        {singleVariation.total_ratings.toLocaleString()}{" "}
-                        reviews)
-                      </dd>
-                    </div>
-                    <div className="sm:col-span-1">
-                      <dt className="text-sm font-medium text-gray-500">
-                        Availability
-                      </dt>
-                      <dd className="mt-1 text-sm text-gray-900">
-                        {singleVariation.stock > 0
-                          ? "In Stock"
-                          : "Out of Stock"}
-                      </dd>
-                    </div>
-                  </dl>
+                  {singleVariation.product_details}
                 </div>
               </div>
             )}
-
             {activeTab === "Info" && (
               <div className="space-y-6">
-                <div>
-                  <h3 className="text-md md:text-lg font-semibold text-gray-900 mb-3">
-                    Description
-                  </h3>
-                  <div className="text-gray-700 whitespace-pre-line">
-                    {singleVariation.product_details}
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="text-md md:text-lg font-semibold text-gray-900 mb-3">
-                    Additional Information
-                  </h3>
-                  <div className="text-gray-700 whitespace-pre-line">
-                    {singleVariation.product_info}
-                  </div>
+                <div className="bg-gray-50 rounded-lg p-4">
+                  {singleVariation.product_info}
                 </div>
               </div>
             )}
