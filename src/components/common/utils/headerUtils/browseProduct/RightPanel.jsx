@@ -16,7 +16,7 @@ const RightPanel = ({ selectedCategory, setIsOpen }) => {
     setIsOpen(false);
   };
 
-  console.log(selectedCategory, "se");
+  // console.log(selectedCategory, "se");
   return (
     <div className="lg:w-4/7 p-6">
       <div className="flex items-center justify-between mb-6">

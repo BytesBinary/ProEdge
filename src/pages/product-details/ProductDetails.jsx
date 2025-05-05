@@ -33,8 +33,8 @@ const Product = () => {
     fetchSingleProduct();
   }, [id]);
 
-  console.log(singleProduct, "singleProduct");
-  console.log(singleVariation, "singleVariation");
+  // console.log(singleProduct, "singleProduct");
+  // console.log(singleVariation, "singleVariation");
 
   useEffect(() => {
     if (singleProduct?.variation?.length > 0) {

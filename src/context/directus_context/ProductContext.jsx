@@ -17,7 +17,7 @@ export const ProductProvider = ({ children }) => {
 
   const fetchProductsAndCategories = async () => {
     setLoading(true);
-    console.log(directus,"directus")
+    // console.log(directus,"directus")
 
     try {
       // Fetch products

@@ -73,11 +73,10 @@ const Checkout = () => {
   
  
   // Update user data when auth state changes
+// Separate useEffect hooks for different concerns
 useEffect(() => {
+  // Handle user data synchronization
   const currentUser = user || JSON.parse(localStorage.getItem('user'));
-  if(cartItems.length === 0) {
-    navigate("/products");  
-  }
   if (currentUser) {
     setOrderData(prev => ({
       ...prev,
@@ -87,8 +86,14 @@ useEffect(() => {
       billing_email: currentUser.email || prev.billing_email
     }));
   }
-}, [user,cartItems]);
-  
+}, [user]); // Only depend on user changes
+
+useEffect(() => {
+  // Only redirect if not loading (not in the middle of placing an order)
+  if (cartItems.length === 0 && location.pathname !== "/products" && !loading) {
+    navigate("/products");
+  }
+}, [cartItems, navigate, location.pathname, loading]);
   // Handle shipping/billing address changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -212,13 +217,14 @@ useEffect(() => {
       };
   
       const response = await createOrder(finalOrderData);
+
       console.log("Order response:", response.id);
   
       // Save to localStorage before navigation
       localStorage.setItem('currentOrder', JSON.stringify(finalOrderData));
       
-      clearCart();
-      navigate(`/order-confirmation/${response.id}`);
+      await navigate(`/order-details/${response.id}`);  
+
     } catch (err) {
       console.error("Order submission error:", err);
       setError(

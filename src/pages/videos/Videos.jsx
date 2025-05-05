@@ -47,7 +47,7 @@ const Videos = () => {
         }
       );
 
-      console.log(response.data); // Log the full response to check structure
+      // console.log(response.data); // Log the full response to check structure
 
       if (response.data.errors) {
         throw new Error(response.data.errors[0].message);
@@ -68,7 +68,7 @@ const Videos = () => {
     fetchVideos();
   }, []);
 
-  console.log(videos, "videos"); // Check videos in console
+  // console.log(videos, "videos"); // Check videos in console
   
   return (
     <div>
