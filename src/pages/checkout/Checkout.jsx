@@ -185,7 +185,7 @@ const Checkout = () => {
       };
 
       const response = await createOrder(finalOrderData);
-      console.log("Order response:", response.id);  
+      // console.log("Order response:", response.id);  
       
 
       clearCart();

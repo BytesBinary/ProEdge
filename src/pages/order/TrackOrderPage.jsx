@@ -45,7 +45,7 @@ const TrackOrderPage = () => {
     description: "Manage your order here.",
   };
   const [info, setInfo] = useState(initialContent);
-  console.log(pathname, "pathname");
+  // console.log(pathname, "pathname");
 
   useEffect(() => {
     const content = pageContent[pathname] || {

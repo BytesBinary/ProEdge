@@ -6,9 +6,11 @@ import { EyeIcon, ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/
 
 const OrderDataTable = ({ onViewDetails }) => {
   const { orders, loading } = useOrderContext();
+  // console.log(loading,'loading');
+  // console.log(orders,'orders');
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const ordersPerPage = 5;
+  const ordersPerPage = 10;
 
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "short", day: "numeric" };
