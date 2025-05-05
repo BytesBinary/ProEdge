@@ -10,7 +10,9 @@ import {
   PrinterIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
+import jsPDF from "jspdf";
 import { useEffect, useRef } from "react";
+import { BiDownload } from "react-icons/bi";
 
 const OrderDetailsModal = ({ order, onClose }) => {
   const printRef = useRef(null);
@@ -39,84 +41,157 @@ const OrderDetailsModal = ({ order, onClose }) => {
       : "N/A",
   };
 
-  const handlePrint = () => {
-    const printWindow = window.open("", "", "width=900,height=650");
-    const printContent = printRef.current.innerHTML;
-
-    printWindow.document.write(`
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <title>Invoice - Order #${order.id}</title>
-            <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-            <style>
-              @media print {
-                body {
-                  padding: 20px;
-                  font-size: 14px;
-                }
-                .no-print {
-                  display: none !important;
-                }
-              }
-              .print-header {
-                margin-bottom: 20px;
-                padding-bottom: 10px;
-                border-bottom: 1px solid #e2e8f0;
-              }
-              .print-section {
-                margin-top: 20px;
-              }
-              .print-row {
-                display: flex;
-                margin-bottom: 15px;
-              }
-              .print-col {
-                flex: 1;
-                padding: 0 10px;
-              }
-              .print-summary {
-                margin-top: 20px;
-                border-top: 1px solid #e2e8f0;
-                padding-top: 10px;
-              }
-              .print-total {
-                font-weight: bold;
-                color: #2563eb;
-                margin-top: 10px;
-                padding-top: 10px;
-                border-top: 1px solid #e2e8f0;
-              }
-            </style>
-          </head>
-          <body class="bg-white text-gray-800">
-            <div class="print-header">
-              <h1 class="text-2xl font-bold">Order #${order.id}</h1>
-              <div class="flex items-center mt-2">
-                <span class="text-sm text-gray-500 mr-3">Status:</span>
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-                  order.order_status === "completed"
-                    ? "bg-green-100 text-green-800"
-                    : order.order_status === "processing"
-                    ? "bg-blue-100 text-blue-800"
-                    : "bg-red-100 text-red-800"
-                }">
-                  ${order.order_status === "completed" ? "✓ " : ""}
-                  ${order.order_status}
-                </span>
-              </div>
-            </div>
-            ${printContent}
-          </body>
-        </html>
-      `);
-
-    printWindow.document.close();
-    setTimeout(() => {
-      printWindow.print();
-      printWindow.close();
-    }, 500);
-  };
+    const handleDownload = () => {
+      const doc = new jsPDF();
+      
+      // Color scheme from your Tailwind design
+      const bgColor = '#f9fafb'; // bg-gray-50
+      const textColor = '#111827'; // text-gray-900
+      const mutedTextColor = '#4b5563'; // text-gray-600
+      const borderColor = '#e5e7eb'; // border-gray-200
+      const primaryColor = '#374151'; // Matching your modal's heading color
+      
+      // Page setup
+      const margin = 15;
+      let yPos = margin;
+      
+      // Header with border
+      doc.setFontSize(20);
+      doc.setTextColor(textColor);
+      doc.setFont('helvetica', 'bold');
+      doc.text(`Order Details - #${order.id}`, margin, yPos);
+      doc.setFontSize(12);
+      doc.setTextColor(mutedTextColor);
+      doc.text(`Order ID: ${order.id}`, margin, yPos + 8);
+      
+      // Add divider line
+      doc.setDrawColor(borderColor);
+      doc.line(margin, yPos + 15, 200 - margin, yPos + 15);
+      
+      yPos += 25;
+      
+      // Two-column layout
+      const colWidth = 85;
+      
+      // Customer Information
+      doc.setFillColor(bgColor);
+      doc.rect(margin, yPos, colWidth, 60, 'F');
+      doc.rect(margin, yPos, colWidth, 60, 'S'); // border
+      
+      doc.setFontSize(14);
+      doc.setTextColor(textColor);
+      doc.text('Customer Information', margin + 5, yPos + 10);
+      
+      doc.setFontSize(10);
+      doc.setTextColor(mutedTextColor);
+      let textY = yPos + 18;
+      
+      const customerDetails = [
+        { label: 'Company:', value: order.company_name || 'N/A' },
+        { label: 'Email:', value: order.email || 'N/A' },
+        { label: 'Phone:', value: order.phone_number || 'N/A' },
+        { label: 'Address:', value: order.street_address || 'N/A' },
+        { value: `${order.city}, ${order.state} - ${order.zip_code}` }
+      ];
+      
+      customerDetails.forEach(detail => {
+        if(detail.label) {
+          doc.text(`${detail.label} ${detail.value}`, margin + 5, textY);
+        } else {
+          doc.text(detail.value, margin + 5, textY);
+        }
+        textY += 7;
+      });
+      
+      // Billing Information
+      const billingX = margin + colWidth + 10;
+      doc.setFillColor(bgColor);
+      doc.rect(billingX, yPos, colWidth, 60, 'F');
+      doc.rect(billingX, yPos, colWidth, 60, 'S'); // border
+      
+      doc.setFontSize(14);
+      doc.setTextColor(textColor);
+      doc.text('Billing Information', billingX + 5, yPos + 10);
+      
+      doc.setFontSize(10);
+      doc.setTextColor(mutedTextColor);
+      textY = yPos + 18;
+      
+      const billingDetails = [
+        { label: 'Name:', value: billing.name || 'N/A' },
+        ...(billing.company ? [{ label: 'Company:', value: billing.company }] : []),
+        { label: 'Email:', value: billing.email || 'N/A' },
+        { label: 'Phone:', value: billing.phone || 'N/A' },
+        { label: 'Address:', value: billing.address || 'N/A' }
+      ];
+      
+      billingDetails.forEach(detail => {
+        doc.text(`${detail.label} ${detail.value}`, billingX + 5, textY);
+        textY += 7;
+      });
+      
+      yPos += 70;
+      
+      // Order Summary (full width)
+      doc.setFillColor(bgColor);
+      doc.rect(margin, yPos, 180, 45, 'F');
+      doc.rect(margin, yPos, 180, 45, 'S'); // border
+      
+      doc.setFontSize(14);
+      doc.setTextColor(textColor);
+      doc.text('Order Summary', margin + 5, yPos + 10);
+      
+      // Payment Details (left column)
+      doc.setFontSize(10);
+      doc.setTextColor(mutedTextColor);
+      textY = yPos + 18;
+      
+      const paymentDetails = [
+        { label: 'Payment Method:', value: order.payment_method || 'N/A' },
+        { label: 'Delivery Method:', value: order.delivery_method || 'N/A' },
+        { label: 'Order Date:', 
+          value: new Date(order.created_at || order.date).toLocaleDateString() }
+      ];
+      
+      paymentDetails.forEach(detail => {
+        doc.text(`${detail.label} ${detail.value}`, margin + 5, textY);
+        textY += 7;
+      });
+      
+      // Amount Details (right column)
+      const amountX = margin + 100;
+      textY = yPos + 18;
+      
+      const amountDetails = [
+        { label: 'Subtotal:', value: order.subtotal?.toFixed(2) || "0.00" },
+        { label: 'Shipping:', value: order.shipping_charge?.toFixed(2) || "0.00" },
+        { label: 'Tax:', value: order.tax?.toFixed(2) || "0.00" }
+      ];
+      
+      amountDetails.forEach(detail => {
+        doc.text(detail.label, amountX, textY);
+        doc.text(`$${detail.value}`, 200 - margin - 5, textY, { align: 'right' });
+        textY += 7;
+      });
+      
+      // Total amount
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(textColor);
+      doc.text('Total:', amountX, yPos + 39);
+      doc.text(`$${totalAmount.toFixed(2)}`, 200 - margin - 5, yPos + 39, { align: 'right' });
+      
+      // Add total divider line
+      doc.setDrawColor(borderColor);
+      doc.line(amountX, yPos + 35, 200 - margin, yPos + 35);
+      
+      // Footer
+      doc.setFontSize(10);
+      doc.setTextColor(mutedTextColor);
+      doc.text('Thank you for your business!', 105, 280, { align: 'center' });
+      doc.text('If you have any questions, please contact our support team.', 105, 285, { align: 'center' });
+      
+      doc.save(`Invoice_Order_${order.id}.pdf`);
+    };
 
   return (
     <div
@@ -285,11 +360,11 @@ const OrderDetailsModal = ({ order, onClose }) => {
           <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
             <button
               type="button"
-              onClick={handlePrint}
+              onClick={handleDownload}
               className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
             >
-              <PrinterIcon className="h-5 w-5 mr-2" />
-              Print Invoice
+              <BiDownload className="h-5 w-5 mr-2" />
+              Donwload Invoice
             </button>
             <button
               type="button"
