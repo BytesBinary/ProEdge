@@ -14,6 +14,12 @@ const Product = () => {
   const [singleVariation, setSingleVariation] = useState(null);
   const [features, setFeatures] = useState(null);
 
+  const [activeTab, setActiveTab] = useState("Features");
+
+  const handleTabChange = (tabName) => {
+    setActiveTab(tabName);
+  };
+
   const [selectedVariationId, setSelectedVariationId] = useState(null);
   const { fetchProductById } = useProductContext();
   const { title } = useParams();
@@ -33,13 +39,10 @@ const Product = () => {
     fetchSingleProduct();
   }, [id]);
 
-  console.log(singleProduct, "singleProduct");
-  console.log(singleVariation, "singleVariation");
-
   useEffect(() => {
     if (singleProduct?.variation?.length > 0) {
       const defaultVariation = selectedVariationId
-        ? singleProduct.variation.find(v => v.id === selectedVariationId)
+        ? singleProduct.variation.find((v) => v.id === selectedVariationId)
         : singleProduct.variation[0];
 
       if (defaultVariation) {
@@ -49,13 +52,12 @@ const Product = () => {
     }
   }, [singleProduct, selectedVariationId]);
 
-
   const handleVariationChange = (selectedVariation) => {
     if (!selectedVariation) return;
 
     // Find the full variation object from the product's variations
     const fullVariation = singleProduct.variation.find(
-      v => v.id === selectedVariation.id
+      (v) => v.id === selectedVariation.id
     );
 
     if (fullVariation) {
@@ -73,17 +75,18 @@ const Product = () => {
     { label: singleProduct.title },
   ];
   const thumbnails = Array.isArray(singleProduct.variation)
-    ? singleProduct.variation.map(v => ({
+    ? singleProduct.variation.map((v) => ({
       id: v.id,
-      image: v.image?.id || '', // Safe access to image id
-      option: v
+      image: v.image?.id || "", // Safe access to image id
+      option: v,
     }))
     : [];
 
   // Safe access to main image
   const mainImage = singleVariation.image?.id
     ? `${import.meta.env.VITE_SERVER_URL}/assets/${singleVariation.image.id}`
-    : singleVariation.image || '';
+    : singleVariation.image || "";
+
   return (
     <>
       <PageHeader
@@ -97,7 +100,6 @@ const Product = () => {
             thumbnails={thumbnails}
             mainImage={mainImage}
             onVariationChange={handleVariationChange}
-            
           />
           <ProductVariation
             title={singleProduct.title}
@@ -128,17 +130,51 @@ const Product = () => {
         </section>
 
         {/* Product Specifications Section */}
-        <section className="my-10 max-w-7xl w-full mx-auto rounded-2xl border-2 border-[#F8F9FB] bg-white shadow-sm">
+        <section className="my-10 max-w-7xl w-full mx-auto rounded-2xl border border-gray-200 bg-white shadow-sm">
           {/* Tab Header */}
-          <div className="bg-[#F8F9FB] px-4 sm:px-10 py-5 rounded-t-2xl flex flex-wrap gap-2">
-            <PDS title="Key Features" />
-            <PDS title="Product Details" />
-            <PDS title="Product Information" />
+          <div className="border-b border-gray-200 px-2 md:px-6 py-4 rounded-t-2xl">
+            <nav className="flex space-x-0 md:space-x-8 gap-1 md:gap-4">
+              <PDS
+                title="Key Features"
+                callBack={() => handleTabChange("Features")}
+                active={activeTab === "Features"}
+              />
+              <PDS
+                title="Product Details"
+                callBack={() => handleTabChange("Details")}
+                active={activeTab === "Details"}
+              />
+              <PDS
+                title="Product Info"
+                callBack={() => handleTabChange("Info")}
+                active={activeTab === "Info"}
+              />
+            </nav>
           </div>
 
-          {/* Features List */}
-          <div className="text-[16px] leading-6 w-2xs text-[#182B55] font-medium space-y-1 p-10">
-            <ProductSpecList features={singleVariation.features} />
+          {/* Content Area */}
+          <div className="p-4 sm:p-6">
+            {activeTab === "Features" && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 gap-4 bg-gray-50 rounded-lg">
+                  <ProductSpecList features={singleVariation.features} />
+                </div>
+              </div>
+            )}
+            {activeTab === "Details" && (
+              <div className="space-y-4">
+                <div className="bg-gray-50 rounded-lg p-4">
+                  {singleVariation.product_details}
+                </div>
+              </div>
+            )}
+            {activeTab === "Info" && (
+              <div className="space-y-6">
+                <div className="bg-gray-50 rounded-lg p-4">
+                  {singleVariation.product_info}
+                </div>
+              </div>
+            )}
           </div>
         </section>
       </div>

@@ -1,4 +1,6 @@
+
 const ProductImage = ({ thumbnails, mainImage, onVariationChange }) => {
+  const fallbackImage = "/placeholder.jpg"; // Use your actual fallback image path here
   return (
     <div className="w-full flex flex-col md:flex-row justify-around md:h-auto">
       {/* Thumbnails */}
@@ -20,11 +22,11 @@ const ProductImage = ({ thumbnails, mainImage, onVariationChange }) => {
           </div>
         ))}
       </div>
-
+      {console.log(mainImage)}
       {/* Main Image */}
       <div className="w-full md:w-2xs h-[200px] md:h-[398px] mt-4 md:mt-0 rounded-xl bg-[#F8F9FB] flex items-center justify-center">
         <img 
-          src={mainImage} 
+          src={mainImage}
           alt="Main Product" 
           className="max-w-full max-h-full"
           onError={(e) => { e.target.src = ''; }} 

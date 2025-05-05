@@ -5,14 +5,14 @@ import { CartContext } from "../../../../context/CartContext";
 
 const ProductCard = ({ product,onRemove  }) => {
 
-  console.log(product, 'product')
+  // console.log(onRemove, 'product')
    const { 
     IncrementQuantity,
     DecrementQuantity,
     } = useContext(CartContext);
   return (
     <article className="bg-white p-3 sm:p-4 rounded-xl shadow-sm flex flex-col md:flex-row items-start gap-3 sm:gap-4">
-      {console.log(product)}
+      {/* {console.log(product)} */}
       <img
         src={`${import.meta.env.VITE_SERVER_URL}/assets/${product.image}`}
         alt={product.name}
