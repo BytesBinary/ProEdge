@@ -36,7 +36,7 @@ const WishCard = ({
               onClick={onAddToCart}
               className="bg-[#FCD700] text-black px-4 py-2 rounded-full text-sm inline-block whitespace-nowrap"
             >
-              Add to Cart
+              Add To Cart
             </button>
           </div>
         </div>

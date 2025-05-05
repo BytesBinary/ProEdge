@@ -1,79 +1,100 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, use } from "react";
 import { CartContext } from "../../context/CartContext";
 import Price from "./deliveryInfo/Price";
 import ShippingInfo from "./deliveryInfo/ShippingInfo";
 import DeliveryInfocard from "./deliveryInfo/DeliveryInfocard";
 import StockQuantity from "./deliveryInfo/StockQuantity";
 import InfoItem from "./deliveryInfo/InfoItem";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const DeliveryInfo = ({
   product,
+  productId,
+  variationId,
   imageId,
-  price,
+  variation_name,
+  offer_price,
   originalPrice,
   stock,
   sku,
 }) => {
-  const { cartItems, addToCart, removeFromCart } = useContext(CartContext);
-  const [quantity, setQuantity] = useState(1);
+  const {
+    cartItems,
+    addToCart,
+    isInWishlist,
+    addToWishlist,
+    removeFromWishlist,
+    quantity,
+    setQuantity,
+  } = useContext(CartContext);
+
   const [isInCart, setIsInCart] = useState(false);
-  const [cartQuantity, setCartQuantity] = useState(0);
+  const [cartItem, setCartItem] = useState(null);
 
-  // Check if product is in cart and get its quantity
+  const navigate=useNavigate();
+
+  const location = useLocation();
+
   useEffect(() => {
-    const cartItem = cartItems.find((item) => item.id === product.id);
-    setIsInCart(!!cartItem);
-    setCartQuantity(cartItem?.quantity || 0);
-  }, [cartItems, product.id]);
+    const item = cartItems.find((item) => item.variationId === variationId);
+    setIsInCart(!!item);
+    setCartItem(item);
+    if (item) {
+      setQuantity(item.quantity);
+    } else {
+      setQuantity(1);
+    }
+  }, [cartItems, variationId]);
 
-  // Ensure we have proper numeric values
   const numericPrice =
-    typeof price === "string"
-      ? parseFloat(price.replace(/[^0-9.]/g, ""))
-      : Number(price);
+  typeof offer_price === "string"
+    ? parseFloat(offer_price.replace(/[^0-9.]/g, ""))
+    : Number(offer_price);
 
   const numericOriginalPrice = originalPrice
-    ? typeof originalPrice === "string"
-      ? parseFloat(originalPrice.replace(/[^0-9.]/g, ""))
-      : Number(originalPrice)
-    : null;
+  ? typeof originalPrice === "string"
+    ? parseFloat(originalPrice.replace(/[^0-9.]/g, ""))
+    : Number(originalPrice)
+  : null;
 
   const handleAddToCart = () => {
     const itemToAdd = {
-      id: product.id,
+      productId,
+      variationId,
       title: product.title,
-      price: numericPrice,
-      regular_price: numericOriginalPrice,
-      quantity: quantity,
-      sku: sku,
+      variation_name,
+      offer_price: parseFloat(offer_price),
+      price: originalPrice ? parseFloat(originalPrice) : null,
+      quantity,
+      sku,
       image: imageId,
-      stock: stock,
+      stock,
     };
     addToCart(itemToAdd);
   };
 
-  const handleRemoveFromCart = () => {
-    removeFromCart({ id: product.id });
-  };
+  const infoItems = [
+    { label: "Ships from", value: "Controls Pro" },
+    { label: "SKU", value: sku },
+    { label: "Returns", value: "30-day refund/replacement" },
+    { label: "Payment", value: "Secure transaction" },
+  ];
 
-  // Update quantity if product is already in cart
   const handleQuantityChange = (newQuantity) => {
-    setQuantity(newQuantity);
+    const numQuantity = parseInt(newQuantity);
+    if (isNaN(numQuantity)) return;
+
+    setQuantity(numQuantity);
 
     if (isInCart) {
       const updatedItem = {
-        id: product.id,
-        title: product.title,
-        price: numericPrice,
-        regular_price: numericOriginalPrice,
-        quantity: newQuantity,
-        sku: sku,
-        image: imageId,
-        stock: stock,
+        ...cartItem,
+        quantity: numQuantity,
       };
       addToCart(updatedItem);
     }
   };
+
 
   // Button Component
   const Button = ({
@@ -98,35 +119,58 @@ const DeliveryInfo = ({
   // Prepare data for components
   const buttons = [
     {
-      text: isInCart ? "Remove from Cart" : "Add to Cart",
-      bgColor: isInCart ? "bg-red-500" : "bg-[#FCD700]",
-      hoverColor: isInCart ? "hover:bg-red-600" : "hover:bg-[#FCD700]/70",
-      textColor: isInCart ? "text-white" : "text-[#182B55]",
-      onClick: isInCart ? handleRemoveFromCart : handleAddToCart,
+      text: isInCart ? "View Cart" : stock > 0 ? "Add to Cart" : "Out of Stock",
+      bgColor: isInCart ? "bg-[#FCD700]" : stock > 0 ? "bg-[#FCD700]" : "bg-red-500",
+      hoverColor: isInCart ? "hover:bg-[#FCD700]/60" : stock > 0 ? "hover:bg-[#FCD700]" : "hover:bg-red-500",
+      textColor: isInCart ? "text-[#182B255]" : stock > 0 ? "text-[#182B55]" : "text-white",
+      onClick: isInCart ? () => navigate("/cart") : handleAddToCart,
       disabled: stock <= 0,
     },
     {
-      text: "Buy Now",
+      text: "Proceed To Checkout",
       bgColor: "bg-[#3F66BC]",
       hoverColor: "hover:bg-[#3F66BC]/80",
       textColor: "text-white",
-      disabled: stock <= 0,
+      onClick: cartItems.length > 0 ? () => navigate("/cart/checkout") : null,
     },
   ];
 
-  const infoItems = [
-    { label: "Ships from", value: "Controls Pro" },
-    { label: "SKU", value: sku },
-    { label: "Returns", value: "30-day refund/replacement" },
-    { label: "Payment", value: "Secure transaction" },
-  ];
+  const StockQuantity = ({ stockData }) => {
+    return (
+      <div>
+        <p
+          className={`${
+            stockData.status === "In Stock" ? "text-[#3F66BC]" : "text-red-500"
+          } font-medium`}
+        >
+          {stockData.status}
+        </p>
+        {stockData.status === "In Stock" && stockData.quantities.length > 0 && (
+          <select
+            className="mt-2 border rounded p-1 w-full"
+            value={stockData.selectedQuantity}
+            onChange={(e) =>
+              stockData.onQuantityChange(parseInt(e.target.value))
+            }
+            disabled={stockData.disabled}
+          >
+            {stockData.quantities.map((qty) => (
+              <option key={qty} value={qty}>
+                {qty}
+              </option>
+            ))}
+          </select>
+        )}
+      </div>
+    );
+  };
 
   const priceData = {
     dollar: "$",
-    whole: Math.floor(numericPrice * quantity),
-    cents: (numericPrice * quantity).toFixed(2).split(".")[1],
+    whole: Math.floor(numericPrice),
+    cents: (numericPrice).toFixed(2).split(".")[1],
     originalPrice: numericOriginalPrice
-      ? (numericOriginalPrice * quantity).toFixed(2)
+      ? (numericOriginalPrice).toFixed(2)
       : null,
   };
 
@@ -143,8 +187,8 @@ const DeliveryInfo = ({
 
   const stockData = {
     status: stock > 0 ? "In Stock" : "Out of Stock",
-    quantities: [...Array(Math.min(stock, 5))].map((_, i) => i + 1),
-    selectedQuantity: isInCart ? cartQuantity : quantity,
+    quantities: [...Array(Math.min(stock, 15))].map((_, i) => i + 1),
+    selectedQuantity: quantity,
     onQuantityChange: handleQuantityChange,
     disabled: stock <= 0,
   };
@@ -161,12 +205,12 @@ const DeliveryInfo = ({
     <DeliveryInfocard deliveryInfo={deliveryInfo} />
   
     {/* Stock and Quantity Selector */}
-    <StockQuantity stockData={stockData} />
+    {stock > 0 && <StockQuantity  stockData={stockData} /> }
   
     {/* Cart Quantity Indicator */}
     {isInCart && (
       <div className="text-center text-sm text-green-600">
-        {cartQuantity} in cart
+        {quantity} in cart
       </div>
     )}
   
@@ -184,7 +228,6 @@ const DeliveryInfo = ({
       ))}
     </div>
   </div>
-  
   );
 };
 

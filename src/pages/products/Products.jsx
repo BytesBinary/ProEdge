@@ -8,17 +8,20 @@ import { useProductContext } from "../../context/ProductContext";
 // import PriceCard from "../../components/product/PriceCard";
 import PageHeader from "../../components/common/utils/banner/SubPageHeader";
 import bgImage from "../../assets/images/cart.png";
-
+import { CartContext } from "../../context/CartContext";
 
 const Category = () => {
   const [showFilter, setShowFilter] = useState(false);
+  const { minPrice, maxPrice,isMadeUsa } = useProductContext();
+
+  const { products, loading } = useProductContext();
+  const { singleCategory } = useContext(CategoryContext);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
-  const { products, loading } = useProductContext();
-  const { singleCategory } = useContext(CategoryContext);
+  console.log(minPrice,maxPrice,"minPrice,maxPrice"); 
 
   // Function to generate a slug from a string
   const generateSlug = (str) => {
@@ -76,7 +79,7 @@ const Category = () => {
   });
 
   // Now filter products based on the selected category using the generated slugs
-  const filteredProducts = productsWithSlugs.filter((product) => {
+  const categoryfilteredProducts = productsWithSlugs.filter((product) => {
     // Extract product category details using the generated slugs
     const productChildSlug = product.product_category?.slug;
     const productSubSlug = product.product_category?.sub_category?.slug;
@@ -84,8 +87,10 @@ const Category = () => {
       product.product_category?.sub_category?.parent_category?.slug;
 
     // If no category is selected at all, show all products
-    if (!singleCategory?.toggle &&
-      !singleCategory?.sub_category?.some(sub => sub.toggle)) {
+    if (
+      !singleCategory?.toggle &&
+      !singleCategory?.sub_category?.some((sub) => sub.toggle)
+    ) {
       return true;
     }
 
@@ -131,48 +136,88 @@ const Category = () => {
     // Only include if child category matches
     return childMatch;
   });
-
-  const formattedProducts = filteredProducts.map((product) => {
-    const variation = product.variation?.[0] || {};
-    const features = variation.features || [];
-
-    // Build title: "Product Title (Feature1, Feature2) - VariationName"
-    const featureText = features.map((f) => f.feature_value).join(", ");
-    let title = product.title;
-    if (featureText) title += ` (${featureText})`;
-    if (variation.variation_name) title += ` - ${variation.variation_name}`;
-
-    // Get parent category name (fallback to empty string)
-    const categoryName =
-      product.product_category?.sub_category?.parent_category?.category_name ||
-      product.sub_category?.parent_category?.category_name ||
-      "";
-
-    return {
-      id: product.id,
-      image: variation.image || null,
-      title: title.trim(),
-      price: variation.regular_price || 0,
-      category_name: categoryName, // Parent category name
-    };
+  // formattedProducts
+  const formattedProducts = categoryfilteredProducts.flatMap((product) => {
+    // If no variations, return a single product with basic info
+    if (!product.variation || product.variation.length === 0) {
+      return {
+        id: product.id,
+        image: product.image,
+        title: product.title,
+        price: product.price || 0,
+        category_name:
+          product.product_category?.sub_category?.parent_category
+            ?.category_name || "",
+        variation: null,
+        made_in_usa: product.made_in_usa,
+      };
+    }
+  
+    // Map each variation to a separate product entry
+    return product.variation.map((variation) => {
+      const features = variation.features || [];
+      const featureText = features.map((f) => f.feature_value).join(", ");
+  
+      let title = product.title;
+      if (featureText) title += ` (${featureText})`;
+      if (variation.variation_name) title += ` - ${variation.variation_name}`;
+  
+      return {
+        id: product.id,
+        variationId: variation.id,
+        variation_name: variation.variation_name,
+        image: variation.image || product.image,
+        title: title.trim(),
+        stock: variation.stock || 0,
+        sku: variation.sku_code || "",
+        price:
+          variation.offer_price > 0
+            ? variation.offer_price
+            : variation.regular_price,
+        category_name:
+          product.product_category?.sub_category?.parent_category
+            ?.category_name || "",
+        variation: variation,
+        made_in_usa:  product.made_in_usa,  
+      };
+    });
   });
+
+
+  const priceFilteredProducts = formattedProducts.filter((product) => {
+    const productPrice = product.offer_price || product.price || 0;
+    const productMadeUsa = product?.made_in_usa===isMadeUsa;
+    
+    return (productPrice >= minPrice && productPrice <= maxPrice) || productMadeUsa;
+  });
+
 
   //Codes for pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
-  const totalItems = formattedProducts.length;
+  const itemsPerPage = 9;
+  const totalItems = priceFilteredProducts.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
-  
+
   // Calculate indexes for slicing
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  
+
   // Get current page's items
-  const currentItems = formattedProducts.slice(startIndex, endIndex);
+  const currentItems = priceFilteredProducts.slice(startIndex, endIndex);
+
+  //Check wishList Items
+  const { cartItems, wishlistItems } = useContext(CartContext);
+
+  const wishListItem = wishlistItems.length;
+  console.log(isMadeUsa, "isMadeUsa");  
 
   return (
     <>
-      <PageHeader title="Categories" bgImage={bgImage} breadcrumbs={[{ link: "/", label: "Home" }, { label: "Products" }]}/>
+      <PageHeader
+        title="Categories"
+        bgImage={bgImage}
+        breadcrumbs={[{ link: "/", label: "Home" }, { label: "Products" }]}
+      />
       <div className="w-full max-w-[1200px] mx-auto mt-3 md:mt-20 flex flex-col lg:flex-row justify-between items-start gap-10">
         {/* Desktop Filter Section */}
         <div className="hidden lg:block w-64">
@@ -211,7 +256,7 @@ const Category = () => {
                   </defs>
                 </svg>
                 <h2 className="text-[#182B55] font-medium text-xl leading-6">
-                  10
+                  {wishListItem}
                 </h2>
               </div>
 
@@ -319,12 +364,16 @@ const Category = () => {
           <div className="grid grid-cols-1 gap-6 mt-10 sm:grid-cols-2 md:grid-cols-3">
             {currentItems.map((product) => (
               <Card
-                key={product.id}
-                id={product.id}
+                key={product.variationId}
+                productId={product.id}
+                variationId={product.variationId}
+                variation_name={product.variation_name}
                 category={product.category_name}
                 title={product.title}
                 image={product.image?.id}
                 price={product.price}
+                stock={product.stock}
+                sku={product.sku}
                 variation={product.variation}
               />
             ))}
@@ -347,10 +396,7 @@ const Category = () => {
                 {singleCategory.category_name}
               </div>
             ) : (
-              <Filter
-                onClose={() => setShowFilter(false)}
-
-              />
+              <Filter onClose={() => setShowFilter(false)} />
             )}
           </div>
         )}

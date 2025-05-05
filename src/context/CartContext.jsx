@@ -1,5 +1,5 @@
 // src/contexts/CartContext.js
-import { createContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect, useCallback } from 'react';
 // import { useProductContext } from './ProductContext';
 
 export const CartContext = createContext({
@@ -17,6 +17,9 @@ export const CartContext = createContext({
 export function CartProvider({ children }) {
   const isBrowser = typeof window !== 'undefined';
   // const { products } = useProductContext(); 
+ const [quantity,setQuantity]=useState(1); // Default quantity for cart items
+
+ 
 
   // Cart functionality
   const [cartItems, setCartItems] = useState(() => {
@@ -38,14 +41,16 @@ export function CartProvider({ children }) {
 
   // Cart methods
   const addToCart = (item) => {
-    const isItemInCart = cartItems.find(cartItem => cartItem.id === item.id);
+    // console.log(item, 'item')
+    const isItemInCart = cartItems.find(cartItem => cartItem.variationId === item.variationId);
     if (!isItemInCart) {
-      setCartItems(prev => [...prev, { ...item }]);
+      setCartItems(prev => [...prev, { ...item,quantity }]);
     }
   };
 
   const removeFromCart = (item) => {
-    setCartItems(prev => prev.filter(cartItem => cartItem.id !== item.id));
+    setCartItems(prev => prev.filter(cartItem => cartItem.variationId !== item.variationId));
+    setQuantity(1); 
   };
 
   const clearCart = () => setCartItems([]);
@@ -53,24 +58,39 @@ export function CartProvider({ children }) {
   const getCartTotal = () => {
     return cartItems.reduce((total, item) => {
       const price = Number(item.offer_price || item.regular_price || item.price || 0);
-      return total + price;
+    return total + (price * (item.quantity || 1));
     }, 0);
   };
 
+  const IncrementQuantity = useCallback((variationId) => {
+    setCartItems(prev => prev.map(item => 
+      item.variationId === variationId 
+        ? {...item, quantity: item.quantity + 1} 
+        : item
+    ));
+  }, []);
+  
+  const DecrementQuantity = useCallback((variationId) => {
+    setCartItems(prev => prev.map(item => 
+      item.variationId === variationId && item.quantity > 1
+        ? {...item, quantity: item.quantity - 1} 
+        : item
+    ));
+  }, []);
   // Wishlist methods
   const addToWishlist = (item) => {
-    const isItemInWishlist = wishlistItems.find(wishlistItem => wishlistItem.id === item.id);
+    const isItemInWishlist = wishlistItems.find(wishlistItem => wishlistItem.variationId === item.variationId);
     if (!isItemInWishlist) {
       setWishlistItems(prev => [...prev, { ...item }]);
     }
   };
 
   const removeFromWishlist = (item) => {
-    setWishlistItems(prev => prev.filter(wishlistItem => wishlistItem.id !== item.id));
+    setWishlistItems(prev => prev.filter(wishlistItem => wishlistItem.variationId !== item.variationId));
   };
 
   const isInWishlist = (itemId) => {
-    return wishlistItems.some(item => item.id === itemId);
+    return wishlistItems.some(item => item.variationId === itemId);
   };
 
   // Sync with localStorage
@@ -91,6 +111,8 @@ export function CartProvider({ children }) {
       value={{
         cartItems,
         addToCart,
+        IncrementQuantity,
+        DecrementQuantity,
         removeFromCart,
         clearCart,
         getCartTotal,
@@ -98,6 +120,8 @@ export function CartProvider({ children }) {
         addToWishlist,
         removeFromWishlist,
         isInWishlist,
+        quantity,
+        setQuantity
       }}
     >
       {children}

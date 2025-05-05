@@ -4,7 +4,6 @@ import defaultImage from "../../assets/default.webp";
 
 const MostViewedSection = ({ title }) => {
   const { products } = useProductContext();
-  console.log(products, "Most Viewed Products");
 
   return (
     <section className="max-w-7xl w-full mx-auto px-4 py-10">
@@ -12,23 +11,27 @@ const MostViewedSection = ({ title }) => {
         {title}
       </h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {products.map((item, idx) => {
-          const variation = item.variation?.[0];
-          const imageId = variation?.image?.id || defaultImage; // Replace with actual fallback image path
-
+        {products.slice(-4).map((product) => {
+          // Get the first variation (or handle cases where variation might not exist)
+          const variation = product.variation?.[0] || {};
+          const imageId = variation?.image?.id || defaultImage;
+          
           return (
             <ProductCard
-              key={idx}
-              id={item.id}
+              key={`${product.id}-${variation.id || '0'}`}
+              productId={product.id}
+              variationId={variation.id}
+              variation_name={variation.variation_name}
+              stock={variation.stock}
+              sku={variation.sku_code}
               image={imageId}
               category={
-                item.product_category?.sub_category?.parent_category
-                  ?.category_name
+                product.product_category?.sub_category?.parent_category?.category_name || 
+                product.category_name ||
+                ""
               }
-              title={item.title}
-              price={
-                variation?.offer_price || variation?.regular_price || "N/A"
-              }
+              title={`${product.title}${variation.variation_name ? ` - ${variation.variation_name}` : ''}`}
+              price={variation.offer_price > 0 ? variation.offer_price : variation.regular_price}
             />
           );
         })}

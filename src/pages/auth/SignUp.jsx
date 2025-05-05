@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
+import { Link, useNavigate } from 'react-router-dom';
 import Button from '../../components/common/utils/button/Button';
 import TextInput from '../../components/common/form/TextInput';
 import AuthHeader from '../../components/auth/AuthHeader';
 import axios from 'axios';
 
 const SignUp = () => {
-  const navigate = useNavigate(); // Initialize navigate function
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -42,55 +42,62 @@ const SignUp = () => {
   };
 
   const SIGN_UP_MUTATION = `
-    mutation CreateCustomer($data: create_customer_input!) {
-      create_customer_item(data: $data) {
-        id
-        first_name
-        last_name
-        email
-      }
-    }
-  `;
+  mutation RegisterUser(
+    $email: String!
+    $password: String!
+    $first_name: String
+    $last_name: String
+  ) {
+    users_register(
+      email: $email
+      password: $password
+      first_name: $first_name
+      last_name: $last_name
+    )
+  }
+`;
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    if (!validate()) return;
+  if (!validate()) return;
 
-    setLoading(true);
+  setLoading(true);
 
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_SERVER_URL}/graphql`,
-        {
-          query: SIGN_UP_MUTATION,
-          variables: {
-            data: {
-              first_name: formData.firstName,
-              last_name: formData.lastName,
-              email: formData.email,
-              password: formData.password,
-            },
-          },
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_SERVER_URL}/graphql/system`,
+      {
+        query: SIGN_UP_MUTATION,
+        variables: {
+          email: formData.email,
+          password: formData.password,
+          first_name: formData.firstName,
+          last_name: formData.lastName,
         },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-
-      if (response.data.errors) {
-        setErrors({ submit: 'Sign up failed. Please try again later.' });
-      } else {
-        navigate('/auth/signin');
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
       }
-    } catch (error) {
-      setErrors({ submit: 'Sign up failed. Please try again later.' });
-    } finally {
-      setLoading(false);
+    );
+
+    if (response.data.errors) {
+      setErrors({ submit: response.data.errors[0].message });
+    } else {
+      navigate('/auth/signin');
     }
-  };
+  } catch (error) {
+    console.error('Signup error:', error);
+    setErrors({ 
+      submit: error.response?.data?.errors?.[0]?.message || 
+      'Sign up failed. Please try again later.' 
+    });
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <main className="flex items-center justify-center min-h-screen bg-white">

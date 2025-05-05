@@ -12,6 +12,8 @@ const ALL_PRODUCTS_QUERY = `
       id
       title
       slug
+      made_in_usa
+
       product_category {
         id
         child_category_name
@@ -51,6 +53,8 @@ const SINGLE_PRODUCT_QUERY = `
       id
       title
       slug
+      made_in_usa
+
       product_category {
         id
         child_category_name
@@ -75,7 +79,7 @@ const SINGLE_PRODUCT_QUERY = `
         product_info
         sku_code
         rating
-        total_ratings
+        total_ratings        
         image {
           id
         }
@@ -85,8 +89,12 @@ const SINGLE_PRODUCT_QUERY = `
 `;
 
 export const ProductProvider = ({ children }) => {
+  let maxRangeLimit = 100000;
   const [products, setProducts] = useState([]);
   const [currentProduct, setCurrentProduct] = useState(null);
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(maxRangeLimit);
+  const [isMadeUsa, setIsmadeUsa] = useState(false);
   const [loading, setLoading] = useState(true);
   const [productLoading, setProductLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -124,7 +132,7 @@ export const ProductProvider = ({ children }) => {
 
   const fetchProductById = async (id) => {
     // First try to find in local products
-    const localProduct = products.find(product => product.id === id);
+    const localProduct = products.find((product) => product.id === id);
     if (localProduct) {
       setCurrentProduct(localProduct);
       return localProduct;
@@ -168,6 +176,13 @@ export const ProductProvider = ({ children }) => {
     <ProductContext.Provider
       value={{
         products,
+        minPrice,
+        setMinPrice,
+        maxPrice,
+        setMaxPrice,
+        maxRangeLimit,
+        isMadeUsa,
+        setIsmadeUsa,
         loading,
         error,
         currentProduct,

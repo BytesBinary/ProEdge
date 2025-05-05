@@ -1,12 +1,18 @@
-import React from "react";
+import React, { useContext } from "react";
 import plus from "../../../../assets/icons/plus.svg"
 import minus from "../../../../assets/icons/minus.svg"
-import productImage from '../../../../assets/images/products/motor.png'
+import { CartContext } from "../../../../context/CartContext";
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product,onRemove  }) => {
+
+  // console.log(onRemove, 'product')
+   const { 
+    IncrementQuantity,
+    DecrementQuantity,
+    } = useContext(CartContext);
   return (
     <article className="bg-white p-3 sm:p-4 rounded-xl shadow-sm flex flex-col md:flex-row items-start gap-3 sm:gap-4">
-      {console.log(product)}
+      {/* {console.log(product)} */}
       <img
         src={`${import.meta.env.VITE_SERVER_URL}/assets/${product.image}`}
         alt={product.name}
@@ -16,17 +22,17 @@ const ProductCard = ({ product }) => {
       <div className="details flex-1 w-full">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <h2 className="text-[#3F66BC] font-medium text-sm sm:text-base">
-            {product.title}
+            {product.variation_name}
           </h2>
 
           <div className="flex items-center gap-1 sm:gap-2 order-last sm:order-none">
-            <button className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-[#F8F9FB] rounded-md text-lg">
+            <button className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-[#F8F9FB] rounded-md text-lg" onClick={()=>{DecrementQuantity(product.variationId)}}>
               <img src={minus} alt="Minus Icon" />
             </button>
-            <span className="bg-[#3F66BC] text-white w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center rounded-md text-sm sm:text-base">
+            <span  className="bg-[#3F66BC] text-white w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center rounded-md text-sm sm:text-base">
               {product.quantity}
             </span>
-            <button className="flex justify-center items-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-[#F8F9FB] rounded-md text-lg">
+            <button onClick={()=>{IncrementQuantity(product.variationId)}} className="flex justify-center items-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-[#F8F9FB] rounded-md text-lg">
               <img src={plus} alt="Plus Icon" />
             </button>
           </div>
@@ -51,7 +57,7 @@ const ProductCard = ({ product }) => {
           </div>
 
           <nav className="flex gap-3 text-xs sm:text-sm">
-            <button className="text-[#3F66BC] hover:underline">Remove</button>
+            <button onClick={onRemove}className="text-[#3F66BC] hover:underline">Remove</button>
             <div className="mx-3 border-l-2 border-[#ECF0F9]"></div>
             <button className="text-[#3F66BC] hover:underline">Save For Later</button>
           </nav>
