@@ -120,7 +120,9 @@ const Product = () => {
             product={singleProduct}
             productId={singleProduct.id}
             variationId={singleVariation.id}
-            imageId={singleVariation.image.id}
+            imageId={singleVariation.image?.id
+              ? singleVariation.image.id
+              : singleVariation.image || ""}
             variation_name={singleVariation.variation_name}
             offer_price={singleVariation.offer_price}
             originalPrice={singleVariation.regular_price}

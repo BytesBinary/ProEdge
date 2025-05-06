@@ -4,7 +4,7 @@ const ProductImage = ({ thumbnails, mainImage, onVariationChange }) => {
   return (
     <div className="w-full flex flex-col md:flex-row justify-around md:h-auto">
       {/* Thumbnails */}
-      <div className="flex md:flex-col items-center md:items-start justify-center gap-3 md:gap-0 overflow-x-auto md:overflow-y-auto">
+      <div className="flex md:flex-col items-center max-h-[400px] md:items-start justify-center gap-3 md:gap-0 overflow-x-auto md:overflow-y-auto">
         {thumbnails.map((thumb, index) => (
           <div
             onClick={() => onVariationChange(thumb.option)} 

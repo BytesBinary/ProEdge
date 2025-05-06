@@ -14,7 +14,7 @@ const ProductVariation = ({
   selectedVariationId,
 }) => {
   return (
-    <div className="w-full max-w-lg h-auto flex flex-col justify-between items-start lg:items-start gap-6 lg:gap-0 p-10">
+    <div className="w-full max-w-2xl h-auto flex flex-col justify-between items-start lg:items-start gap-6 lg:gap-0 p-10">
       {/* Product Details */}
       <div className="text-lg leading-1 md:leading-7 text-[#3F66BC] font-medium flex flex-col justify-between gap-1">
         <h1 className="text-xl lg:text-2xl leading-7 lg:leading-9 text-[#182B55]">
@@ -84,7 +84,7 @@ const ProductVariation = ({
 
       {/* Size Options */}
       <div className="w-full h-auto lg:h-36 flex flex-col justify-between gap-4 lg:gap-0 pr-3 lg:pr-0">
-        <div className="text-lg lg:text-xl leading-8">
+        <div className="text-md lg:text-lg mb-3 leading-8">
           <span className="text-[#5D6576]">{variationName}:</span>
           <span className="text-[#3F66BC] font-semibold">
             {" "}
@@ -94,7 +94,7 @@ const ProductVariation = ({
 
         {/* <div className="grid grid-cols-2 lg:grid-cols-4 mx-auto gap-4 md:gap-15 max-w-2xl"> */}
         {priceOptions.length > 0 && (
-          <div className="flex justify-start items-start flex-wrap gap-4 max-w-2xl">
+          <div class="flex justify-start items-start flex-wrap gap-4 max-w-2xl max-h-[300px] md:min-h-[300px] lg:min-h-[200px] overflow-y-auto z-10">
             {priceOptions.map((option, index) => (
               <VariationCard
                 key={option.id} // Use option.id instead of index for better key

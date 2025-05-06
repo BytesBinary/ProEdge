@@ -30,7 +30,8 @@ const ALL_PRODUCTS_QUERY = `
         variation_name
         variation_value
         features
-	regular_price
+	      regular_price
+        offer_price
         stock
         product_details
         product_info
@@ -40,6 +41,8 @@ const ALL_PRODUCTS_QUERY = `
         image {
           id
         }
+        made_in
+        shipping_days
       }
     }
   }
@@ -69,6 +72,8 @@ const SINGLE_PRODUCT_QUERY = `
         variation_name
         variation_value 
         features
+        regular_price
+        offer_price
         stock
         product_details
         product_info
@@ -78,6 +83,8 @@ const SINGLE_PRODUCT_QUERY = `
         image {
           id
         }
+        made_in
+        shipping_days
       }
     }
   }
@@ -111,11 +118,17 @@ export const ProductProvider = ({ children }) => {
           headers: { "Content-Type": "application/json" },
         }
       );
-
+  
       if (response.data.errors) {
         throw new Error(response.data.errors[0].message);
       }
-      setProducts(response.data.data.product || []);
+  
+      // Filter out products without variations
+      const filteredProducts = (response.data.data.product || []).filter(
+        (product) => product.variation && product.variation.length > 0
+      );
+  
+      setProducts(filteredProducts);
     } catch (error) {
       console.error("GraphQL fetch error:", error);
       setError(error.message);

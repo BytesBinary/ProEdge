@@ -329,7 +329,7 @@ const Category = () => {
             <div className="w-full flex items-center justify-around">
               {/* Showing Items */}
               <h1 className="text-[#182B55] font-medium text-md">
-                Showing 23 items
+                Showing {products.length} items
               </h1>
 
               {/* Heart Icon with Count */}
