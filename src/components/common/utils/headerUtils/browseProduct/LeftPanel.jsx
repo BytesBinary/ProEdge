@@ -1,11 +1,16 @@
 import React, { useContext } from "react";
 import CategoryItem from "./CategoryItem";
 import { CategoryContext } from "../../../../../context/CategoryContext";
+import { PulseLoader } from "react-spinners";
 
 const LeftPanel = ({ onCategoryClick, selectedCategory }) => {
   const { categories, loading, error } = useContext(CategoryContext);
 
-  if (loading) return <p>Loading categories...</p>;
+  if (loading) return (
+    <div className="fixed inset-0 flex items-center justify-center bg-white z-40">
+      <PulseLoader color="#3b82f6" size={10} />
+      <span className="text-blue-600 ml-2">Loading categories...</span>
+    </div>)
   if (error) return <p>Error: {error}</p>;
 
   return (
@@ -25,6 +30,6 @@ const LeftPanel = ({ onCategoryClick, selectedCategory }) => {
       </nav>
     </div>
   );
-};  
+};
 
 export default LeftPanel;

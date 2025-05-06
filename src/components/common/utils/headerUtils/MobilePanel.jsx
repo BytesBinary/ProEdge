@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { CategoryContext } from '../../../../context/CategoryContext';
 import RightArrowIcon from './browseProduct/icons/RightArrowIcon';
 import { formatCategoryName } from '../../../../helper/slugifier/slugify';
+import { PulseLoader } from 'react-spinners';
 
 const MobilePanel = ({ isOpen, setIsOpen, selectedCategory, setSelectedCategory }) => {
   const { categories, loading, error } = useContext(CategoryContext);
@@ -41,15 +42,19 @@ const MobilePanel = ({ isOpen, setIsOpen, selectedCategory, setSelectedCategory 
     };
   }, [isOpen]);
 
-  if (loading) return <p>Loading categories...</p>;
+  if (loading) return (
+    <div className="fixed inset-0 flex items-center justify-center bg-white z-40">
+      <PulseLoader color="#3b82f6" size={10} />
+      <span className="text-blue-600 ml-2">Loading categories...</span>
+    </div>
+  )
   if (error) return <p>Error: {error}</p>;
 
   return (
     <div
       ref={panelRef}
-      className={`fixed inset-0 bg-white z-40 transform transition-transform duration-300 ease-in-out ${
-        isOpen ? 'translate-x-0' : 'translate-x-full'
-      }`}
+      className={`fixed inset-0 bg-white z-40 transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
       role="dialog"
       aria-modal="true"
       aria-label="Product categories"
@@ -72,7 +77,7 @@ const MobilePanel = ({ isOpen, setIsOpen, selectedCategory, setSelectedCategory 
         {/* Content */}
         <div className="flex flex-1 overflow-hidden">
           {/* Sidebar */}
-          <nav 
+          <nav
             aria-label="Main categories"
             className="w-1/4 border-r border-gray-200 overflow-y-auto space-y-2 bg-gray-50"
           >
@@ -81,11 +86,10 @@ const MobilePanel = ({ isOpen, setIsOpen, selectedCategory, setSelectedCategory 
                 ref={index === 0 ? firstCategoryRef : null}
                 key={category.id}
                 onClick={() => setSelectedCategory(category)}
-                className={`w-full flex flex-col items-center gap-2 p-3 transition-all ${
-                  selectedCategory?.id === category.id
+                className={`w-full flex flex-col items-center gap-2 p-3 transition-all ${selectedCategory?.id === category.id
                     ? 'bg-blue-900 text-white shadow-md'
                     : 'bg-white hover:bg-gray-100 text-gray-700'
-                } focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                  } focus:outline-none focus:ring-2 focus:ring-blue-500`}
                 aria-current={selectedCategory?.id === category.id ? 'true' : 'false'}
               >
                 <img
