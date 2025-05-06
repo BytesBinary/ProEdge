@@ -81,12 +81,9 @@ export function CategoryProvider({ children }) {
         const stockMap = {};
         for (const product of allProducts) {
           const childId = product.product_category?.id;
-          const stock = (product.variation || []).reduce(
-            (sum, v) => sum + (v.stock || 0),
-            0
-          );
+          const totalVariations = (product.variation || []).length;
           if (childId) {
-            stockMap[childId] = (stockMap[childId] || 0) + stock;
+            stockMap[childId] = (stockMap[childId] || 0) + totalVariations;
           }
         }
 
