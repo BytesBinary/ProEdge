@@ -87,6 +87,7 @@ const Product = () => {
     ? `${import.meta.env.VITE_SERVER_URL}/assets/${singleVariation.image.id}`
     : singleVariation.image || "";
 
+    
   return (
     <>
       <PageHeader
@@ -94,8 +95,8 @@ const Product = () => {
         bgImage={bgImage}
         breadcrumbs={breadcrumbs}
       />
-      <div className="flex flex-col items-center justify-center w-full mx-auto">
-        <section className="my-10 max-w-7xl w-full mx-auto flex flex-col lg:flex-row gap-6 items-center lg:items-start justify-center md:justify-evenly">
+      <div className="max-w-7xl w-full mx-auto mt-16">
+        <section className="w-full mx-auto flex flex-col lg:flex-row gap-6 items-center lg:items-start justify-center md:justify-evenly">
           <ProductImage
             thumbnails={thumbnails}
             mainImage={mainImage}
@@ -167,12 +168,13 @@ const Product = () => {
               <div className="space-y-4">
                 <div className="bg-gray-50 rounded-lg p-4">
                   {singleVariation.product_details}
+                  {console.log(singleVariation.product_details)}
                 </div>
               </div>
             )}
             {activeTab === "Info" && (
               <div className="space-y-6">
-                <div className="bg-gray-50 rounded-lg p-4">
+                <div className="bg-gray-50 rounded-lg p-4 text-justify">
                   {singleVariation.product_info}
                 </div>
               </div>
