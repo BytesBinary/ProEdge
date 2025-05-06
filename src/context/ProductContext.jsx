@@ -12,7 +12,6 @@ const ALL_PRODUCTS_QUERY = `
       id
       title
       slug
-      made_in_usa
 
       product_category {
         id
@@ -31,8 +30,7 @@ const ALL_PRODUCTS_QUERY = `
         variation_name
         variation_value
         features
-        regular_price
-        offer_price
+	regular_price
         stock
         product_details
         product_info
@@ -53,7 +51,6 @@ const SINGLE_PRODUCT_QUERY = `
       id
       title
       slug
-      made_in_usa
 
       product_category {
         id
@@ -72,8 +69,6 @@ const SINGLE_PRODUCT_QUERY = `
         variation_name
         variation_value 
         features
-        regular_price
-        offer_price
         stock
         product_details
         product_info
