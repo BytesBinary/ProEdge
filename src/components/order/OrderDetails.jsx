@@ -6,17 +6,135 @@ import {
   PhoneIcon,
   MapPinIcon,
   CreditCardIcon,
-  ArrowPathIcon,
   PrinterIcon,
+  NoSymbolIcon,
   XMarkIcon,
+  ClockIcon,
+  ArrowPathIcon,
+  PauseCircleIcon,
+  CheckCircleIcon,
+  XCircleIcon,
+  ArrowUturnLeftIcon,
 } from "@heroicons/react/24/outline";
+import { useOrderContext } from "../../context/OrderContext";
 import jsPDF from "jspdf";
 import { useEffect, useRef } from "react";
 import { BiDownload } from "react-icons/bi";
+import { useLocation, useNavigate } from "react-router-dom";
+import { GiConsoleController } from "react-icons/gi";
 
-const OrderDetailsModal = ({ isOrderDetailsPage,order, onClose }) => {
+const OrderDetailsModal = ({ isOrderDetailsPage, order, onClose }) => {
+  const StatusBadge = ({ status }) => {
+    const statusConfig = {
+      pending: {
+        icon: ClockIcon,
+        bgColor: "bg-yellow-100",
+        textColor: "text-yellow-800",
+      },
+      failed: {
+        icon: XCircleIcon,
+        bgColor: "bg-red-100",
+        textColor: "text-red-800",
+      },
+      processing: {
+        icon: ArrowPathIcon,
+        bgColor: "bg-blue-100",
+        textColor: "text-blue-800",
+      },
+      "on-hold": {
+        icon: PauseCircleIcon,
+        bgColor: "bg-gray-100",
+        textColor: "text-gray-800",
+      },
+      completed: {
+        icon: CheckCircleIcon,
+        bgColor: "bg-green-100",
+        textColor: "text-green-800",
+      },
+      cancelled: {
+        icon: NoSymbolIcon,
+        bgColor: "bg-red-100",
+        textColor: "text-red-800",
+      },
+      refunded: {
+        icon: ArrowUturnLeftIcon,
+        bgColor: "bg-purple-100",
+        textColor: "text-purple-800",
+      },
+      default: {
+        icon: ArrowPathIcon,
+        bgColor: "bg-gray-100",
+        textColor: "text-gray-800",
+      },
+    };
+
+    const {
+      icon: Icon,
+      bgColor,
+      textColor,
+    } = statusConfig[status.toLowerCase()] || statusConfig.default;
+
+    return (
+      <span
+        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${bgColor} ${textColor}`}
+      >
+        <Icon className="w-4 h-4 mr-1" />
+        {status.charAt(0).toUpperCase() + status.slice(1).toLowerCase()}
+      </span>
+    );
+  };
+  console.log(console.log(order, "order"));
+
+  const currentPath = location.pathname;
+
+  const { updateOrder } = useOrderContext();
+
+  const handleJob = async () => {
+    if (!order) {
+      alert("Order not found");
+      return;
+    }
+  
+    if (currentPath === "/return-order") {
+      if (order.order_status === "on-hold") {
+        alert("Order is already Returned");
+        return;
+      }
+  
+      if (order.order_status === "completed") {
+        alert("Order is already Completed. You cannot return it.");
+        return;
+      }
+  
+      try {
+        await updateOrder(order.id, { order_status: "on-hold" });
+        alert("Order is now on hold.");
+      } catch (error) {
+        console.error("Error updating order:", error);
+        alert("Failed to update order. Please try again.");
+      }
+  
+    } else if (currentPath === "/modify-order") {
+      const confirmCancel = confirm("Are you sure you want to cancel this order?");
+      if (!confirmCancel) return;
+  
+      try {
+        await updateOrder(order.id, { order_status: "cancelled" });
+        alert("Order has been successfully cancelled.");
+      } catch (error) {
+        console.error("Error cancelling order:", error);
+        alert("Failed to cancel the order. Please try again.");
+      }
+  
+    } else {
+      console.warn("Unknown path:", currentPath);
+      alert("Unsupported operation.");
+    }
+  };
+  
+  
+
   const printRef = useRef(null);
-
   if (!order) return null;
 
   const totalAmount =
@@ -41,161 +159,177 @@ const OrderDetailsModal = ({ isOrderDetailsPage,order, onClose }) => {
       : "N/A",
   };
 
-    const handleDownload = () => {
-      const doc = new jsPDF();
-      
-      // Color scheme from your Tailwind design
-      const bgColor = '#f9fafb'; // bg-gray-50
-      const textColor = '#111827'; // text-gray-900
-      const mutedTextColor = '#4b5563'; // text-gray-600
-      const borderColor = '#e5e7eb'; // border-gray-200
-      const primaryColor = '#374151'; // Matching your modal's heading color
-      
-      // Page setup
-      const margin = 15;
-      let yPos = margin;
-      
-      // Header with border
-      doc.setFontSize(20);
-      doc.setTextColor(textColor);
-      doc.setFont('helvetica', 'bold');
-      doc.text(`Order Details - #${order.id}`, margin, yPos);
-      doc.setFontSize(12);
-      doc.setTextColor(mutedTextColor);
-      doc.text(`Order ID: ${order.id}`, margin, yPos + 8);
-      
-      // Add divider line
-      doc.setDrawColor(borderColor);
-      doc.line(margin, yPos + 15, 200 - margin, yPos + 15);
-      
-      yPos += 25;
-      
-      // Two-column layout
-      const colWidth = 85;
-      
-      // Customer Information
-      doc.setFillColor(bgColor);
-      doc.rect(margin, yPos, colWidth, 60, 'F');
-      doc.rect(margin, yPos, colWidth, 60, 'S'); // border
-      
-      doc.setFontSize(14);
-      doc.setTextColor(textColor);
-      doc.text('Customer Information', margin + 5, yPos + 10);
-      
-      doc.setFontSize(10);
-      doc.setTextColor(mutedTextColor);
-      let textY = yPos + 18;
-      
-      const customerDetails = [
-        { label: 'Company:', value: order.company_name || 'N/A' },
-        { label: 'Email:', value: order.email || 'N/A' },
-        { label: 'Phone:', value: order.phone_number || 'N/A' },
-        { label: 'Address:', value: order.street_address || 'N/A' },
-        { value: `${order.city}, ${order.state} - ${order.zip_code}` }
-      ];
-      
-      customerDetails.forEach(detail => {
-        if(detail.label) {
-          doc.text(`${detail.label} ${detail.value}`, margin + 5, textY);
-        } else {
-          doc.text(detail.value, margin + 5, textY);
-        }
-        textY += 7;
-      });
-      
-      // Billing Information
-      const billingX = margin + colWidth + 10;
-      doc.setFillColor(bgColor);
-      doc.rect(billingX, yPos, colWidth, 60, 'F');
-      doc.rect(billingX, yPos, colWidth, 60, 'S'); // border
-      
-      doc.setFontSize(14);
-      doc.setTextColor(textColor);
-      doc.text('Billing Information', billingX + 5, yPos + 10);
-      
-      doc.setFontSize(10);
-      doc.setTextColor(mutedTextColor);
-      textY = yPos + 18;
-      
-      const billingDetails = [
-        { label: 'Name:', value: billing.name || 'N/A' },
-        ...(billing.company ? [{ label: 'Company:', value: billing.company }] : []),
-        { label: 'Email:', value: billing.email || 'N/A' },
-        { label: 'Phone:', value: billing.phone || 'N/A' },
-        { label: 'Address:', value: billing.address || 'N/A' }
-      ];
-      
-      billingDetails.forEach(detail => {
-        doc.text(`${detail.label} ${detail.value}`, billingX + 5, textY);
-        textY += 7;
-      });
-      
-      yPos += 70;
-      
-      // Order Summary (full width)
-      doc.setFillColor(bgColor);
-      doc.rect(margin, yPos, 180, 45, 'F');
-      doc.rect(margin, yPos, 180, 45, 'S'); // border
-      
-      doc.setFontSize(14);
-      doc.setTextColor(textColor);
-      doc.text('Order Summary', margin + 5, yPos + 10);
-      
-      // Payment Details (left column)
-      doc.setFontSize(10);
-      doc.setTextColor(mutedTextColor);
-      textY = yPos + 18;
-      
-      const paymentDetails = [
-        { label: 'Payment Method:', value: order.payment_method || 'N/A' },
-        { label: 'Delivery Method:', value: order.delivery_method || 'N/A' },
-        { label: 'Order Date:', 
-          value: new Date(order.created_at || order.date).toLocaleDateString() }
-      ];
-      
-      paymentDetails.forEach(detail => {
+  const handleDownload = () => {
+    const doc = new jsPDF();
+
+    // Color scheme from your Tailwind design
+    const bgColor = "#f9fafb"; // bg-gray-50
+    const textColor = "#111827"; // text-gray-900
+    const mutedTextColor = "#4b5563"; // text-gray-600
+    const borderColor = "#e5e7eb"; // border-gray-200
+    const primaryColor = "#374151"; // Matching your modal's heading color
+
+    // Page setup
+    const margin = 15;
+    let yPos = margin;
+
+    // Header with border
+    doc.setFontSize(20);
+    doc.setTextColor(textColor);
+    doc.setFont("helvetica", "bold");
+    doc.text(`Order Details - #${order.id}`, margin, yPos);
+    doc.setFontSize(12);
+    doc.setTextColor(mutedTextColor);
+    doc.text(`Order ID: ${order.id}`, margin, yPos + 8);
+
+    // Add divider line
+    doc.setDrawColor(borderColor);
+    doc.line(margin, yPos + 15, 200 - margin, yPos + 15);
+
+    yPos += 25;
+
+    // Two-column layout
+    const colWidth = 85;
+
+    // Customer Information
+    doc.setFillColor(bgColor);
+    doc.rect(margin, yPos, colWidth, 60, "F");
+    doc.rect(margin, yPos, colWidth, 60, "S"); // border
+
+    doc.setFontSize(14);
+    doc.setTextColor(textColor);
+    doc.text("Customer Information", margin + 5, yPos + 10);
+
+    doc.setFontSize(10);
+    doc.setTextColor(mutedTextColor);
+    let textY = yPos + 18;
+
+    const customerDetails = [
+      { label: "Company:", value: order.company_name || "N/A" },
+      { label: "Email:", value: order.email || "N/A" },
+      { label: "Phone:", value: order.phone_number || "N/A" },
+      { label: "Address:", value: order.street_address || "N/A" },
+      { value: `${order.city}, ${order.state} - ${order.zip_code}` },
+    ];
+
+    customerDetails.forEach((detail) => {
+      if (detail.label) {
         doc.text(`${detail.label} ${detail.value}`, margin + 5, textY);
-        textY += 7;
-      });
-      
-      // Amount Details (right column)
-      const amountX = margin + 100;
-      textY = yPos + 18;
-      
-      const amountDetails = [
-        { label: 'Subtotal:', value: order.subtotal?.toFixed(2) || "0.00" },
-        { label: 'Shipping:', value: order.shipping_charge?.toFixed(2) || "0.00" },
-        { label: 'Tax:', value: order.tax?.toFixed(2) || "0.00" }
-      ];
-      
-      amountDetails.forEach(detail => {
-        doc.text(detail.label, amountX, textY);
-        doc.text(`$${detail.value}`, 200 - margin - 5, textY, { align: 'right' });
-        textY += 7;
-      });
-      
-      // Total amount
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor(textColor);
-      doc.text('Total:', amountX, yPos + 39);
-      doc.text(`$${totalAmount.toFixed(2)}`, 200 - margin - 5, yPos + 39, { align: 'right' });
-      
-      // Add total divider line
-      doc.setDrawColor(borderColor);
-      doc.line(amountX, yPos + 35, 200 - margin, yPos + 35);
-      
-      // Footer
-      doc.setFontSize(10);
-      doc.setTextColor(mutedTextColor);
-      doc.text('Thank you for your business!', 105, 280, { align: 'center' });
-      doc.text('If you have any questions, please contact our support team.', 105, 285, { align: 'center' });
-      
-      doc.save(`Invoice_Order_${order.id}.pdf`);
-    };
+      } else {
+        doc.text(detail.value, margin + 5, textY);
+      }
+      textY += 7;
+    });
+
+    // Billing Information
+    const billingX = margin + colWidth + 10;
+    doc.setFillColor(bgColor);
+    doc.rect(billingX, yPos, colWidth, 60, "F");
+    doc.rect(billingX, yPos, colWidth, 60, "S"); // border
+
+    doc.setFontSize(14);
+    doc.setTextColor(textColor);
+    doc.text("Billing Information", billingX + 5, yPos + 10);
+
+    doc.setFontSize(10);
+    doc.setTextColor(mutedTextColor);
+    textY = yPos + 18;
+
+    const billingDetails = [
+      { label: "Name:", value: billing.name || "N/A" },
+      ...(billing.company
+        ? [{ label: "Company:", value: billing.company }]
+        : []),
+      { label: "Email:", value: billing.email || "N/A" },
+      { label: "Phone:", value: billing.phone || "N/A" },
+      { label: "Address:", value: billing.address || "N/A" },
+    ];
+
+    billingDetails.forEach((detail) => {
+      doc.text(`${detail.label} ${detail.value}`, billingX + 5, textY);
+      textY += 7;
+    });
+
+    yPos += 70;
+
+    // Order Summary (full width)
+    doc.setFillColor(bgColor);
+    doc.rect(margin, yPos, 180, 45, "F");
+    doc.rect(margin, yPos, 180, 45, "S"); // border
+
+    doc.setFontSize(14);
+    doc.setTextColor(textColor);
+    doc.text("Order Summary", margin + 5, yPos + 10);
+
+    // Payment Details (left column)
+    doc.setFontSize(10);
+    doc.setTextColor(mutedTextColor);
+    textY = yPos + 18;
+
+    const paymentDetails = [
+      { label: "Payment Method:", value: order.payment_method || "N/A" },
+      { label: "Delivery Method:", value: order.delivery_method || "N/A" },
+      {
+        label: "Order Date:",
+        value: new Date(order.created_at || order.date).toLocaleDateString(),
+      },
+    ];
+
+    paymentDetails.forEach((detail) => {
+      doc.text(`${detail.label} ${detail.value}`, margin + 5, textY);
+      textY += 7;
+    });
+
+    // Amount Details (right column)
+    const amountX = margin + 100;
+    textY = yPos + 18;
+
+    const amountDetails = [
+      { label: "Subtotal:", value: order.subtotal?.toFixed(2) || "0.00" },
+      {
+        label: "Shipping:",
+        value: order.shipping_charge?.toFixed(2) || "0.00",
+      },
+      { label: "Tax:", value: order.tax?.toFixed(2) || "0.00" },
+    ];
+
+    amountDetails.forEach((detail) => {
+      doc.text(detail.label, amountX, textY);
+      doc.text(`$${detail.value}`, 200 - margin - 5, textY, { align: "right" });
+      textY += 7;
+    });
+
+    // Total amount
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(textColor);
+    doc.text("Total:", amountX, yPos + 39);
+    doc.text(`$${totalAmount.toFixed(2)}`, 200 - margin - 5, yPos + 39, {
+      align: "right",
+    });
+
+    // Add total divider line
+    doc.setDrawColor(borderColor);
+    doc.line(amountX, yPos + 35, 200 - margin, yPos + 35);
+
+    // Footer
+    doc.setFontSize(10);
+    doc.setTextColor(mutedTextColor);
+    doc.text("Thank you for your business!", 105, 280, { align: "center" });
+    doc.text(
+      "If you have any questions, please contact our support team.",
+      105,
+      285,
+      { align: "center" }
+    );
+
+    doc.save(`Invoice_Order_${order.id}.pdf`);
+  };
 
   return (
     <div
-      className={` z-50 inset-0 overflow-y-auto  bg-opacity-50 ${isOrderDetailsPage?"w-full h-screen":"fixed bg-black/60"}`}
+      className={`z-50 inset-0 overflow-y-auto  bg-opacity-50 ${
+        isOrderDetailsPage ? "w-full h-screen" : "fixed bg-black/60"
+      }`}
       onClick={onClose}
     >
       <div className="flex items-center justify-center min-h-screen px-4 text-center sm:block sm:p-0">
@@ -209,20 +343,29 @@ const OrderDetailsModal = ({ isOrderDetailsPage,order, onClose }) => {
           <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
             <div className="sm:flex sm:items-start">
               <div className="w-full">
-                <div className="flex justify-between items-center border-b pb-4">
+                <div className="flex justify-between items-center flex-wrap gap-y-4 border-b pb-4">
                   <h3 className="text-lg leading-6 font-medium text-gray-900">
                     Order Details - #{order.id}
                     <div className="mt-1 text-sm text-gray-600">
                       Order Id - {order.id}
                     </div>
                   </h3>
-
-                  <button
-                    onClick={onClose}
-                    className="text-gray-400 hover:text-gray-500"
-                  >
-                    <XMarkIcon className="h-6 w-6" />
-                  </button>
+                  <div className="flex justify-between items-center gap-2">
+                    {(currentPath == "/return-order" || currentPath == "/modify-order" )&& (
+                      <button
+                        className={`px-4 py-1 ${currentPath == "/return-order" ? "bg-red-500" : "bg-blue-500"} text-white rounded-2xl`}
+                        onClick={handleJob}
+                      >
+                        {currentPath == "/return-order" ? "Return Order" : "Cancel Order"}
+                      </button>
+                    )}
+                    <button
+                      onClick={onClose}
+                      className="text-gray-400 hover:text-gray-500"
+                    >
+                      <XMarkIcon className="h-6 w-6" />
+                    </button>
+                  </div>
                 </div>
 
                 <div
@@ -320,6 +463,12 @@ const OrderDetailsModal = ({ isOrderDetailsPage,order, onClose }) => {
                               {new Date(
                                 order.created_at || order.date
                               ).toLocaleDateString()}
+                            </span>
+                          </p>
+                          <p className="flex justify-between">
+                            <span className="text-gray-600">Order Status:</span>
+                            <span className="font-medium">
+                              <StatusBadge status={order.order_status} />
                             </span>
                           </p>
                         </div>

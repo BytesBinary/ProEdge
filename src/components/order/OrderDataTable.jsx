@@ -1,7 +1,7 @@
 import { CheckBadgeIcon, ClockIcon, XCircleIcon, ArrowPathIcon } from "@heroicons/react/24/outline";
 import { useState, useMemo } from "react";
 import { useOrderContext } from "../../context/OrderContext";
-import { EyeIcon, ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+import { EyeIcon, ChevronLeftIcon, ChevronRightIcon, CheckCircleIcon, PauseCircleIcon, NoSymbolIcon, ArrowUturnLeftIcon } from "@heroicons/react/24/outline";
 // import StatusBadge from "./StatusBadge";
 
 const OrderDataTable = ({ onViewDetails }) => {
@@ -19,26 +19,46 @@ const OrderDataTable = ({ onViewDetails }) => {
 
   const StatusBadge = ({ status }) => {
     const statusConfig = {
-      completed: {
-        icon: CheckBadgeIcon,
-        bgColor: "bg-green-100",
-        textColor: "text-green-800"
-      },
-      processing: {
+      pending: {
         icon: ClockIcon,
-        bgColor: "bg-blue-100",
-        textColor: "text-blue-800"
+        bgColor: "bg-yellow-100",
+        textColor: "text-yellow-800",
       },
-      cancelled: {
+      failed: {
         icon: XCircleIcon,
         bgColor: "bg-red-100",
-        textColor: "text-red-800"
+        textColor: "text-red-800",
+      },
+      processing: {
+        icon: ArrowPathIcon,
+        bgColor: "bg-blue-100",
+        textColor: "text-blue-800",
+      },
+      "on-hold": {
+        icon: PauseCircleIcon,
+        bgColor: "bg-gray-100",
+        textColor: "text-gray-800",
+      },
+      completed: {
+        icon: CheckCircleIcon,
+        bgColor: "bg-green-100",
+        textColor: "text-green-800",
+      },
+      cancelled: {
+        icon: NoSymbolIcon,
+        bgColor: "bg-red-100",
+        textColor: "text-red-800",
+      },
+      refunded: {
+        icon: ArrowUturnLeftIcon,
+        bgColor: "bg-purple-100",
+        textColor: "text-purple-800",
       },
       default: {
         icon: ArrowPathIcon,
         bgColor: "bg-gray-100",
-        textColor: "text-gray-800"
-      }
+        textColor: "text-gray-800",
+      },
     };
   
     const { icon: Icon, bgColor, textColor } = statusConfig[status.toLowerCase()] || statusConfig.default;

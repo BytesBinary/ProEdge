@@ -12,7 +12,6 @@ const OrderSummaryCard = ({ cart }) => {
 
   const navigate = useNavigate();
   const location = useLocation();
-  console.log(location.pathname);
 
   useEffect(() => {
     if (location.pathname === "/cart/checkout") {
