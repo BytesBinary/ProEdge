@@ -8,7 +8,11 @@ const CategoryItem = ({ id, image, label, alt, category_name }) => {
 
   return (
     <div className="flex flex-col items-center group min-w-[140px]">
-      <div className="relative w-24 h-24 md:w-32 md:h-32 lg:w-36 lg:h-36 rounded-full bg-white p-2 mb-3">
+      <div className="relative w-24 h-24 md:w-32 md:h-32 lg:w-36 lg:h-36 rounded-full bg-white p-2 mb-3"
+        onClick={() =>
+          navigate(`/products?parent_category=${formatCategoryName(category_name + " " + id)}`)
+        }
+      >
         <img
           src={`${import.meta.env.VITE_SERVER_URL}/assets/${image}`}
           alt={alt}

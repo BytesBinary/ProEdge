@@ -47,7 +47,6 @@ const ProductCard = ({ productId,variationId,variation_name, stock,made_in,sku,i
     }
   };
 
-console.log(isWishlisted, "wishlisted");   
   return (
     <div
       onClick={handleClick}

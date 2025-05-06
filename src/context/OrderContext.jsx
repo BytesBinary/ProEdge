@@ -10,6 +10,7 @@ const ALL_ORDERS_QUERY = `
   query {
     order {
       id
+      order_id
       name
       company_name
       phone_number
@@ -42,6 +43,7 @@ const SINGLE_ORDER_QUERY = `
   query GetOrderById($id: ID!) {
     order_by_id(id: $id) {
       id
+      order_id  
       name
       company_name
       phone_number
@@ -73,6 +75,7 @@ const UPDATE_ORDER_MUTATION = `
   mutation UpdateOrder($id: ID!, $data: update_order_input!) {
     update_order_item(id: $id, data: $data) {
       id
+      order_id  
       name
       company_name
       phone_number
@@ -106,6 +109,7 @@ const CREATE_ORDER_MUTATION = `
   mutation CreateOrder($data: create_order_input!) {
     create_order_item(data: $data) {
       id
+      order_id  
       name
       company_name
       phone_number
