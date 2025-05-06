@@ -43,6 +43,7 @@ const ALL_PRODUCTS_QUERY = `
         }
         made_in
         shipping_days
+        date_created  
       }
     }
   }
@@ -54,6 +55,7 @@ const SINGLE_PRODUCT_QUERY = `
       id
       title
       slug
+      
 
       product_category {
         id
@@ -85,6 +87,7 @@ const SINGLE_PRODUCT_QUERY = `
         }
         made_in
         shipping_days
+        date_created
       }
     }
   }

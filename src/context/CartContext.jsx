@@ -90,6 +90,7 @@ export function CartProvider({ children }) {
   };
 
   const isInWishlist = (itemId) => {
+    console.log(itemId, 'itemId')
     return wishlistItems.some(item => item.variationId === itemId);
   };
 

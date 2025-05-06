@@ -3,7 +3,7 @@ import { FiDollarSign } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { CartContext } from "../../../../context/CartContext";
 
-const ProductCard = ({ productId,variationId,variation_name, stock,sku,image, category, title, price }) => {
+const ProductCard = ({ productId,variationId,variation_name, stock,made_in,sku,image, category, title, price,length }) => {
   const {
     addToCart,
     isInWishlist,
@@ -14,7 +14,7 @@ const ProductCard = ({ productId,variationId,variation_name, stock,sku,image, ca
   const navigate = useNavigate();
   
   const isInCart = cartItems.some(item => item.variationId === variationId);
-  const isWishlisted = isInWishlist(productId );
+  const isWishlisted = isInWishlist(variationId );
 
   const handleClick = () => {
     const slug = title
@@ -47,6 +47,7 @@ const ProductCard = ({ productId,variationId,variation_name, stock,sku,image, ca
     }
   };
 
+console.log(isWishlisted, "wishlisted");   
   return (
     <div
       onClick={handleClick}
@@ -88,6 +89,7 @@ const ProductCard = ({ productId,variationId,variation_name, stock,sku,image, ca
             <h2 className="text-[14px] text-[#3F66BC] font-medium leading-10">
               {category}
             </h2>
+          
             <h1 className="text-[#182B55] text-lg font-medium leading-[30px]">
               {variation_name}
             </h1>

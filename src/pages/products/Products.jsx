@@ -12,7 +12,10 @@ import { CartContext } from "../../context/CartContext";
 
 const Category = () => {
   const [showFilter, setShowFilter] = useState(false);
-  const { minPrice, maxPrice,isMadeUsa } = useProductContext();
+  const [sortOption, setSortOption] = useState("Relevance");
+
+  const { wishlistItems } = useContext(CartContext);
+  const { minPrice, maxPrice, isMadeUsa } = useProductContext();
 
   const { products, loading } = useProductContext();
   const { singleCategory } = useContext(CategoryContext);
@@ -21,7 +24,7 @@ const Category = () => {
     setCurrentPage(page);
   };
 
-  console.log(minPrice,maxPrice,"minPrice,maxPrice"); 
+  console.log(minPrice, maxPrice, "minPrice,maxPrice");
 
   // Function to generate a slug from a string
   const generateSlug = (str) => {
@@ -144,24 +147,23 @@ const Category = () => {
         id: product.id,
         image: product.image,
         title: product.title,
-        price: product.price || 0,
+        price: product.offer_price || 0,
         category_name:
           product.product_category?.sub_category?.parent_category
             ?.category_name || "",
         variation: null,
-        made_in_usa: product.made_in_usa,
       };
     }
-  
+
     // Map each variation to a separate product entry
     return product.variation.map((variation) => {
       const features = variation.features || [];
       const featureText = features.map((f) => f.feature_value).join(", ");
-  
+
       let title = product.title;
       if (featureText) title += ` (${featureText})`;
       if (variation.variation_name) title += ` - ${variation.variation_name}`;
-  
+
       return {
         id: product.id,
         variationId: variation.id,
@@ -178,19 +180,25 @@ const Category = () => {
           product.product_category?.sub_category?.parent_category
             ?.category_name || "",
         variation: variation,
-        made_in_usa:  product.made_in_usa,  
+        made_in: variation.made_in,
       };
     });
   });
 
+  console.log(formattedProducts, "formattedProducts");
 
   const priceFilteredProducts = formattedProducts.filter((product) => {
     const productPrice = product.offer_price || product.price || 0;
-    const productMadeUsa = product?.made_in_usa===isMadeUsa;
-    
-    return (productPrice >= minPrice && productPrice <= maxPrice) || productMadeUsa;
-  });
+    const madeInUsa = (product?.made_in || "").toLowerCase().includes("usa");
 
+    if (isMadeUsa) {
+      // Only include products NOT made in USA, ignore price
+      return !madeInUsa;
+    }
+
+    // If checkbox is unchecked, apply price filter
+    return productPrice >= minPrice && productPrice <= maxPrice;
+  });
 
   //Codes for pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -201,16 +209,13 @@ const Category = () => {
   // Calculate indexes for slicing
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-
-  // Get current page's items
-  const currentItems = priceFilteredProducts.slice(startIndex, endIndex);
+  let currentItems = priceFilteredProducts.slice(startIndex, endIndex);
 
   //Check wishList Items
-  const { cartItems, wishlistItems } = useContext(CartContext);
 
-  const wishListItem = wishlistItems.length;
-  console.log(isMadeUsa, "isMadeUsa");  
-
+  if (sortOption === "Newest") {
+    currentItems = [...currentItems].reverse();
+  }
   return (
     <>
       <PageHeader
@@ -230,7 +235,7 @@ const Category = () => {
           <div className="hidden lg:flex items-center justify-between mb-6">
             {/* Showing Items */}
             <h1 className="text-[#182B55] font-medium text-lg">
-              Showing {currentItems.length} items
+              Showing {categoryfilteredProducts.length} items
             </h1>
 
             <div className="flex items-center gap-4">
@@ -256,18 +261,23 @@ const Category = () => {
                   </defs>
                 </svg>
                 <h2 className="text-[#182B55] font-medium text-xl leading-6">
-                  {wishListItem}
+                  {wishlistItems.length}
                 </h2>
               </div>
 
               {/* Relevance Dropdown */}
               <div className="relative flex-1 max-w-[200px]">
-                <select className="w-full appearance-none bg-[#F8F9FB] border border-[#F8F9FB] rounded-[42px] px-6 py-3 pr-8 text-md leading-4 font-medium text-[#182B55] focus:outline-none">
+                <select
+                  value={sortOption}
+                  onChange={(e) => setSortOption(e.target.value)}
+                  className="w-full appearance-none bg-[#F8F9FB] border border-[#F8F9FB] rounded-[42px] px-6 py-3 pr-8 text-md leading-4 font-medium text-[#182B55] focus:outline-none"
+                >
                   <option>Relevance</option>
                   <option>Newest</option>
                   <option>Oldest</option>
                   <option>Most Popular</option>
                 </select>
+
                 <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
                   <svg
                     className="w-4 h-4 text-blue-900"
@@ -301,12 +311,17 @@ const Category = () => {
 
               {/* Relevance Dropdown */}
               <div className="relative flex-1 max-w-[200px]">
-                <select className="w-full appearance-none bg-[#F8F9FB] border border-[#F8F9FB] rounded-[42px] px-6 py-3 pr-8 text-md leading-4 font-medium text-[#182B55] focus:outline-none">
+                <select
+                  value={sortOption}
+                  onChange={(e) => setSortOption(e.target.value)}
+                  className="w-full appearance-none bg-[#F8F9FB] border border-[#F8F9FB] rounded-[42px] px-6 py-3 pr-8 text-md leading-4 font-medium text-[#182B55] focus:outline-none"
+                >
                   <option>Relevance</option>
                   <option>Newest</option>
                   <option>Oldest</option>
                   <option>Most Popular</option>
                 </select>
+
                 <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
                   <svg
                     className="w-4 h-4 text-blue-900"
@@ -329,7 +344,7 @@ const Category = () => {
             <div className="w-full flex items-center justify-around">
               {/* Showing Items */}
               <h1 className="text-[#182B55] font-medium text-md">
-                Showing {products.length} items
+                Showing {priceFilteredProducts.length} items
               </h1>
 
               {/* Heart Icon with Count */}
@@ -354,7 +369,7 @@ const Category = () => {
                   </defs>
                 </svg>
                 <h2 className="text-[#182B55] font-medium text-md leading-6">
-                  10
+                  {wishlistItems.length}
                 </h2>
               </div>
             </div>
@@ -373,8 +388,10 @@ const Category = () => {
                 image={product.image?.id}
                 price={product.price}
                 stock={product.stock}
+                made_in={product.made_in}
                 sku={product.sku}
                 variation={product.variation}
+                length={currentItems.length}
               />
             ))}
           </div>
@@ -389,15 +406,10 @@ const Category = () => {
 
         {showFilter && (
           <div className="fixed lg:hidden left-0 top-0 h-screen w-full z-50 transform transition-transform duration-300 ease-in-out bg-white/5 shadow-sm backdrop-blur-xs">
-            {!singleCategory ? (
-              <div className="p-4 text-center">Loading categories...</div>
-            ) : singleCategory.id === "error" ? (
               <div className="p-4 text-red-500">
-                {singleCategory.category_name}
+                {singleCategory?.category_name}
               </div>
-            ) : (
               <Filter onClose={() => setShowFilter(false)} />
-            )}
           </div>
         )}
       </div>

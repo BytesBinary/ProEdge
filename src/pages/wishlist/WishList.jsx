@@ -1,16 +1,13 @@
 import React, { useContext } from "react";
-import SubPageHeader from '../../components/common/utils/banner/SubPageHeader.jsx'
+import SubPageHeader from "../../components/common/utils/banner/SubPageHeader.jsx";
 import bgImage from "../../assets/images/cart.png";
 import WishCard from "../../components/wishlist/WishCard.jsx";
 import MostViewedSection from "../../components/home/MostViewed.jsx";
 import { CartContext } from "../../context/CartContext.jsx";
 
 const WishList = () => {
-  const { 
-      wishlistItems,  
-      removeFromWishlist,
-      addToCart
-    } = useContext(CartContext);
+  const { wishlistItems, removeFromWishlist, addToCart } =
+    useContext(CartContext);
 
   return (
     <>
@@ -18,10 +15,7 @@ const WishList = () => {
         title="My Wish List"
         currentPage="wish-list"
         bgImage={bgImage}
-        breadcrumbs={[
-          { label: "Home", link: "/" },
-          { label: "Wish List" },
-        ]}
+        breadcrumbs={[{ label: "Home", link: "/" }, { label: "Wish List" }]}
       />
       <section className="my-10 max-w-7xl w-full mx-auto px-2 md:px-12 lg:px-20">
         <h1 className="text-3xl text-[#182B55] font-bold">
@@ -39,7 +33,10 @@ const WishList = () => {
                 title={item.title}
                 priceDollars={dollars}
                 priceCents={`.${cents}`}
-                onAddToCart={() => addToCart(item)}
+                onAddToCart={() => {
+                  addToCart(item);
+                  removeFromWishlist(item);
+                }}
                 inStock={item.stock}
                 sku={`SKU-${item.sku}`}
                 shippingInfo="Free Shipping"

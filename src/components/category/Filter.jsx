@@ -26,8 +26,8 @@ const ToggleSection = ({ title, children, isOpen, setIsOpen }) => (
 );
 
 // Reusable Checkbox with proper state management
-const Checkbox = ({ id, label }) => {
-  const {isMadeUsa,setIsmadeUsa} = useProductContext();
+const Checkbox = ({ id, label,toggle,onChange }) => {
+
 
   return (
     <div className="flex items-center gap-2">
@@ -35,8 +35,31 @@ const Checkbox = ({ id, label }) => {
         type="checkbox"
         id={id}
         className="peer form-checkbox text-[#3F66BC]"
-        checked={isMadeUsa}  
-        onChange={()=>{setIsmadeUsa(!isMadeUsa)}}   
+        checked={toggle}  
+        onChange={onChange}
+      />
+      <label
+        htmlFor={id}
+        className="cursor-pointer peer-checked:text-[#3F66BC] text-[16px] leading-6 text-[#182B55] font-medium transition-colors"
+      >
+        {label}
+      </label>
+    </div>
+  );
+};
+const CheckboxUsa = ({ id, label, }) => {
+  const {isMadeUsa,setIsmadeUsa} = useProductContext();
+
+  console.log(onchange,"onchange");
+
+  return (
+    <div className="flex items-center gap-2">
+      <input
+        type="checkbox"
+        id={id}
+        className="peer form-checkbox text-[#3F66BC]"
+        checked={isMadeUsa  }  
+        onChange={()=>{setIsmadeUsa(!isMadeUsa)}} 
       />
       <label
         htmlFor={id}
@@ -436,7 +459,7 @@ const Filter = ({ onClose }) => {
 
       {/* Made in USA Filter */}
       <ToggleSection title="Made in the USA" isOpen={isMadeInUSAOpen} setIsOpen={setIsMadeInUSAOpen}>
-        <Checkbox id="usa" label="NO (64)" />
+        <CheckboxUsa id="usa" label="NO " />
       </ToggleSection>
 
       {/* Item Type Filter */}
