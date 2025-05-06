@@ -1,5 +1,6 @@
 import React from "react";
 import logo from "../../../assets/ProEdgeLogo.png";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   const infoLinks = ["Products", "Videos", "Tech help", "Contact Us"];
@@ -38,10 +39,10 @@ const Footer = () => {
 
         <div className="w-[135px] h-40 md:h-48 flex flex-col justify-center text-white text-sm md:text-[16px] leading-4 md:leading-6">
           <h1 className="font-medium text-xl md:text-2xl leading-[30px]">Information</h1>
-          <ul className=" mt-1">
+          <ul className="mt-1">
             {infoLinks.map((link, index) => (
               <li key={index} className="py-2">
-                <a href="#">{link}</a>
+                <Link to={'/'+link.toLowerCase().replace(' ','-')}>{link}</Link>
               </li>
             ))}
           </ul>
