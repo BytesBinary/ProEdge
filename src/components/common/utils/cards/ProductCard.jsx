@@ -50,7 +50,7 @@ const ProductCard = ({ productId,variationId,variation_name, stock,sku,image, ca
   return (
     <div
       onClick={handleClick}
-      className="max-w-lg border-2 border-[#F8F9FB] shadow-xs px-4 pt-4 pb-6 bg-[#FFFFFF] cursor-pointer rounded-xl"
+      className="max-w-lg rounded-xl border-2 border-[#F8F9FB] px-4 pt-4 pb-6 bg-[#FFFFFF] cursor-pointer"
     >
       <div className="rounded-xl w-full h-[417px] mb-5 bg-[#FFFFFF]">
         <div className="bg-[#F8F9FB] flex justify-center items-center relative rounded-xl w-full overflow-hidden">

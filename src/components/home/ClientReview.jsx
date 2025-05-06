@@ -86,25 +86,19 @@ const ClientReview = ({
 
         <div className="w-full lg:w-[70%]">
           <Swiper
+            slidesPerView={2}
             spaceBetween={20}
             loop={true}
             speed={700}
             autoplay={{
-              delay: 2000,
+              delay: 3500,
               disableOnInteraction: false,
-              pauseOnMouseEnter: false,
-              stopOnLastSlide: false
             }}
             pagination={{
               clickable: true,
               el: ".review-pagination",
               bulletClass: "review-bullet",
               bulletActiveClass: "review-bullet-active"
-            }}
-            breakpoints={{
-              0: { slidesPerView: 1 },
-              768: { slidesPerView: 2 },
-              1024: { slidesPerView: 2 },
             }}
             modules={[Pagination, Autoplay]}
           >
