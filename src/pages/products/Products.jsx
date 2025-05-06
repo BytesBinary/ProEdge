@@ -31,9 +31,10 @@ const Category = () => {
     if (!str) return "";
     return str
       .toLowerCase()
-      .replace(/[^\w\s-]/g, "") // Remove non-word characters
-      .replace(/\s+/g, "-") // Replace spaces with hyphens
-      .replace(/--+/g, "-"); // Replace multiple hyphens with single
+      .replace(/[^\w\s-]/g, "")    
+      .trim()                     
+      .replace(/\s+/g, "-")      
+      .replace(/-+/g, "-");      
   };
 
   // Add slug to each product based on its category hierarchy
@@ -98,8 +99,10 @@ const Category = () => {
     }
 
     // Check if parent matches (if parent is toggled in singleCategory)
+    console.log(singleCategory.slug,productParentSlug, "singleCategory.slug");  
     const parentMatch =
       singleCategory?.toggle && singleCategory.slug === productParentSlug;
+      console.log(parentMatch, "parentMatch");  
 
     // If parent doesn't match, exclude the product
     if (singleCategory?.toggle && !parentMatch) return false;
@@ -185,7 +188,6 @@ const Category = () => {
     });
   });
 
-  console.log(formattedProducts, "formattedProducts");
 
   const priceFilteredProducts = formattedProducts.filter((product) => {
     const productPrice = product.offer_price || product.price || 0;
@@ -235,7 +237,7 @@ const Category = () => {
           <div className="hidden lg:flex items-center justify-between mb-6">
             {/* Showing Items */}
             <h1 className="text-[#182B55] font-medium text-lg">
-              Showing {categoryfilteredProducts.length} items
+              Showing {totalItems} items
             </h1>
 
             <div className="flex items-center gap-4">
@@ -344,7 +346,7 @@ const Category = () => {
             <div className="w-full flex items-center justify-around">
               {/* Showing Items */}
               <h1 className="text-[#182B55] font-medium text-md">
-                Showing {priceFilteredProducts.length} items
+                Showing {totalItems} items
               </h1>
 
               {/* Heart Icon with Count */}
@@ -406,10 +408,10 @@ const Category = () => {
 
         {showFilter && (
           <div className="fixed lg:hidden left-0 top-0 h-screen w-full z-50 transform transition-transform duration-300 ease-in-out bg-white/5 shadow-sm backdrop-blur-xs">
-              <div className="p-4 text-red-500">
-                {singleCategory?.category_name}
-              </div>
-              <Filter onClose={() => setShowFilter(false)} />
+            <div className="p-4 text-red-500">
+              {singleCategory?.category_name}
+            </div>
+            <Filter onClose={() => setShowFilter(false)} />
           </div>
         )}
       </div>
