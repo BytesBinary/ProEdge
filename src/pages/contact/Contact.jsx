@@ -24,9 +24,9 @@ const Contact = () => {
         breadcrumbs={breadcrumbs}
       />
 
-      <section className="w-full max-w-[1200px] mx-auto mt-3 md:mt-20 flex flex-col lg:flex-row justify-center items-start gap-10">
+      <section className="w-full max-w-[1200px] mx-auto mt-3 md:mt-20 flex flex-col lg:flex-row justify-center items-center lg:items-start gap-10">
         {/* Contact Information Section */}
-        <div className="w-full max-w-md h-[549px] bg-[#3F66BC] py-8 px-6 rounded-[16px] flex flex-col justify-between text-white">
+        <div className="w-full max-w-md h-[549px] bg-[#3F66BC] py-8 px-6 rounded-[16px] mx-auto flex flex-col justify-between text-white">
           <div className="flex flex-col gap-[16px]">
             <h1 className="font-semibold text-[32px] leading-10">
               Contact Information
@@ -55,12 +55,12 @@ const Contact = () => {
         </div>
 
         {/* Contact Form Section */}
-        <div className="w-full max-w-3xl h-[630px] relative">
-          <h1 className="font-semibold text-4xl leading-12">Get In Touch</h1>
+        <div className="w-full max-w-3xl h-[630px] relative mx-auto">
+          <h1 className="font-semibold text-4xl leading-12 text-center md:text-left">Get In Touch</h1>
 
-          <div className="flex flex-col gap-[16px] mt-8">
+          <div className="flex flex-col items-center lg:items-start gap-[16px] mt-8">
             {/* First row of fields */}
-            <div className="flex flex-col md:flex-row justify-between gap-6">
+            <div className="flex flex-col md:w-full md:flex-row justify-between gap-6">
               {formFields.slice(0, 2).map((field, index) => (
                 <InputField
                   key={index}
@@ -74,7 +74,7 @@ const Contact = () => {
             </div>
 
             {/* Second row of fields */}
-            <div className="flex flex-col md:flex-row justify-between gap-6">
+            <div className="flex flex-col md:w-full md:flex-row justify-between gap-6">
               {formFields.slice(2, 4).map((field, index) => (
                 <InputField
                   key={index}
@@ -103,9 +103,10 @@ const Contact = () => {
               id="category"
               name="category"
               options={categoryOptions}
+              fullWidth={false}
             />
-
-            <TextareaField id="details" name="details" placeholder="Details*" />
+            
+            <TextareaField id="details" name="details" placeholder="Details*" fullWidth={false} />
 
             <Button className="md:absolute right-0 bottom-0">Submit Now</Button>
           </div>
