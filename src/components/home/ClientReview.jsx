@@ -5,17 +5,17 @@ import "swiper/css";
 import "swiper/css/pagination";
 
 const ReviewCard = ({ name, role, image, title, review, stars = "⭐⭐⭐⭐⭐" }) => (
-  <div className="w-full h-[266px] rounded-[20px] border-2 border-[#F8F9FB] flex flex-col justify-between items-start py-6 px-4 mb-6 md:mb-0">
+  <div className="w-full h-[266px] rounded-[20px] border-2 border-[#F8F9FB] flex flex-col justify-between items-start gap-4 py-6 px-4 mb-6 md:mb-0">
     <div>
       <span>{stars}</span>
-      <p className="text-xl leading-6 text-[#182B55] font-medium mb-3 mt-1.5">{title}</p>
-      <p className="text-[16px] text-[#5D6576] leading-[26px]">"{review}"</p>
+      <p className="text-md md:text-xl leading-4 md:leading-6 text-[#182B55] font-medium mb-3 mt-1.5">{title}</p>
+      <p className="text-sm md:text-[16px] text-[#5D6576] leading-5 md:leading-[26px]">"{review}"</p>
     </div>
     <div className="flex gap-4 items-center">
-      <img src={image} alt={name} className="w-12 h-12 rounded-full" />
+      <img src={image} alt={name} className="w-8 md:w-12 h-8 md:h-12 rounded-full" />
       <div>
-        <h3 className="text-[#182B55] text-[16px] font-medium">{name}</h3>
-        <h5 className="text-[14px] text-[#4A5A7E] leading-4">{role}</h5>
+        <h3 className="text-[#182B55] text-sm md:text-[16px] font-medium">{name}</h3>
+        <h5 className="text-sm md:text-[14px] text-[#4A5A7E] leading-4">{role}</h5>
       </div>
     </div>
   </div>
