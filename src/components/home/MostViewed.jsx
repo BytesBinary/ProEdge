@@ -11,7 +11,7 @@ const MostViewedSection = ({ title }) => {
         {title}
       </h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {products.slice(-4).map((product) => {
+        {products.slice(-8).map((product) => {
           // Get the first variation (or handle cases where variation might not exist)
           const variation = product.variation?.[0] || {};
           const imageId = variation?.image?.id || defaultImage;
