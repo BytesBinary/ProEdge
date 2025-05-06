@@ -405,12 +405,13 @@ const Category = () => {
         </div>
 
         {showFilter && (
-          <div className="fixed lg:hidden left-0 top-0 h-screen w-full z-50 transform transition-transform duration-300 ease-in-out bg-white/5 shadow-sm backdrop-blur-xs">
-              <div className="p-4 text-red-500">
-                {singleCategory?.category_name}
-              </div>
-              <Filter onClose={() => setShowFilter(false)} />
+
+          <div className="lg:hidden fixed bg-white/5 shadow-sm backdrop-blur-xs left-0 top-0 h-screen w-full z-50">
+
+            <div className="absolute left-0 top-0 h-screen w-full z-[-1] transform transition-transform duration-300 ease-in-out bg-white/5" onClick={() => { setShowFilter(false) }}></div>
+            <Filter onClose={() => setShowFilter(false)} />
           </div>
+
         )}
       </div>
     </>
