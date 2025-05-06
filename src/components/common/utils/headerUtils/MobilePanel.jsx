@@ -134,8 +134,8 @@ const MobilePanel = ({ isOpen, setIsOpen, selectedCategory, setSelectedCategory 
                             <Link
                               ref={subIndex === 0 && childIndex === 0 ? firstSubcategoryRef : null}
                               to={`/products?parent_category=${formatCategoryName(
-                                selectedCategory.category_name
-                              )}-${selectedCategory.id}`}
+                                child.title
+                              )}-${child.id}`}
                               onClick={closePanel}
                               className="flex justify-between items-center text-sm py-2 px-3 rounded-md hover:bg-gray-100 transition text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-gray-100"
                             >
