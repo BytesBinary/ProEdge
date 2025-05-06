@@ -3,6 +3,7 @@ import OrderDetailsModal from "../../components/order/OrderDetails";
 import { useOrderContext } from "../../context/OrderContext";
 import { useParams } from "react-router-dom";
 import { CartContext } from "../../context/CartContext";
+import { PulseLoader } from "react-spinners";
 
 const OrderDetailsPage = () => {
   const [singleOrderData, setSingleOrderData] = useState(null);
@@ -41,7 +42,10 @@ const OrderDetailsPage = () => {
   console.log(singleOrderData, "singleOrderData");
 
   if (loading) {
-    return <p> loading</p>;
+    <div className="fixed inset-0 flex items-center justify-center bg-white z-40">
+      <PulseLoader color="#3b82f6" size={10} />
+      <span className="text-blue-600 ml-2">Loading ...</span>
+    </div>
   }
 
   if (error) {

@@ -8,6 +8,7 @@ import PDS from "../../components/common/utils/ProductDetails/PDS";
 import ProductSpecList from "../../components/product/ProductSpecList";
 import PageHeader from "../../components/common/utils/banner/SubPageHeader";
 import bgImage from "../../assets/images/productDetails/bg.jpeg";
+import { PulseLoader } from "react-spinners";
 
 const Product = () => {
   const [singleProduct, setSingleProduct] = useState(null);
@@ -67,7 +68,12 @@ const Product = () => {
   };
 
   if (!singleProduct || !singleVariation) {
-    return <div>Loading product...</div>;
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-white z-40">
+        <PulseLoader color="#3b82f6" size={10} />
+        <span className="text-blue-600 ml-2">Loading product...</span>
+      </div>
+    )
   }
   const breadcrumbs = [
     { label: "Home", link: "/" },
@@ -87,7 +93,7 @@ const Product = () => {
     ? `${import.meta.env.VITE_SERVER_URL}/assets/${singleVariation.image.id}`
     : singleVariation.image || "";
 
-    
+
   return (
     <>
       <PageHeader
