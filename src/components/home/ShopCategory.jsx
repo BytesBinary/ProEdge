@@ -41,7 +41,7 @@ const ShopCategorySection = () => {
 
       <div className="bg-[#3F66BC] py-16 md:py-28 relative">
         <div className="w-full max-w-7xl md:absolute md:bottom-20 md:left-1/2 md:-translate-x-1/2 px-6">
-          <div className="flex gap-6 overflow-x-auto py-2 custom-scrollbar-hide">
+          <div className="grid grid-cols-2 gap-3 md:flex md:gap-6 md:overflow-x-auto py-2 custom-scrollbar-hide">
             {categories.map((category) => (
               <CategoryItem
                 key={category.id}
