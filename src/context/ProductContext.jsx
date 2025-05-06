@@ -94,7 +94,7 @@ const SINGLE_PRODUCT_QUERY = `
 `;
 
 export const ProductProvider = ({ children }) => {
-  let maxRangeLimit = 100000;
+  let maxRangeLimit = 5000;
   const [products, setProducts] = useState([]);
   const [currentProduct, setCurrentProduct] = useState(null);
   const [minPrice, setMinPrice] = useState(0);

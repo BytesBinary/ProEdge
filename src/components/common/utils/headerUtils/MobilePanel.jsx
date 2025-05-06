@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { CategoryContext } from '../../../../context/CategoryContext';
 import RightArrowIcon from './browseProduct/icons/RightArrowIcon';
+import { formatCategoryName } from '../../../../helper/slugifier/slugify';
 
 const MobilePanel = ({ isOpen, setIsOpen, selectedCategory, setSelectedCategory }) => {
   const { categories, loading, error } = useContext(CategoryContext);
@@ -110,7 +111,7 @@ const MobilePanel = ({ isOpen, setIsOpen, selectedCategory, setSelectedCategory 
                     {selectedCategory.category_name}
                   </h3>
                   <Link
-                    to={`/products?parent_category=${encodeURIComponent(
+                    to={`/products?parent_category=${formatCategoryName(
                       selectedCategory.category_name
                     )}-${selectedCategory.id}`}
                     className="text-sm text-blue-600 hover:text-blue-800 hover:underline focus:outline-none px-2 py-1 rounded"
@@ -132,9 +133,9 @@ const MobilePanel = ({ isOpen, setIsOpen, selectedCategory, setSelectedCategory 
                           <li key={child.id}>
                             <Link
                               ref={subIndex === 0 && childIndex === 0 ? firstSubcategoryRef : null}
-                              to={`/products?child_category=${encodeURIComponent(
-                                child.child_category_name
-                              )}-${child.id}`}
+                              to={`/products?parent_category=${formatCategoryName(
+                                selectedCategory.category_name
+                              )}-${selectedCategory.id}`}
                               onClick={closePanel}
                               className="flex justify-between items-center text-sm py-2 px-3 rounded-md hover:bg-gray-100 transition text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-gray-100"
                             >
