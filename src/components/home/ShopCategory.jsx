@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import { CategoryContext } from "../../context/CategoryContext";
 import { useNavigate } from "react-router-dom";
-import { Scrollbar } from "react-scrollbars-custom";
 import { formatCategoryName } from "../../helper/slugifier/slugify";
 
 const CategoryItem = ({ id, image, label, alt, category_name }) => {
@@ -42,43 +41,33 @@ const ShopCategorySection = () => {
 
       <div className="bg-[#3F66BC] py-16 md:py-28 relative">
         <div className="w-full max-w-7xl md:absolute md:bottom-20 md:left-1/2 md:-translate-x-1/2 px-6">
-          <Scrollbar
-            style={{ width: "100%", height: "200px" }} // Set a fixed height for the scrollbar
-            noScrollY
-            trackXProps={{
-              renderer: ({ elementRef, ...restProps }) => (
-                <div
-                  {...restProps}
-                  ref={elementRef}
-                  className="h-2 mt-2 bg-gray-300 rounded-full"
-                />
-              )
-            }}
-            thumbXProps={{
-              renderer: ({ elementRef, ...restProps }) => (
-                <div
-                  {...restProps}
-                  ref={elementRef}
-                  className="bg-[#182B55] rounded-full"
-                />
-              )
-            }}
-          >
-            <div className="flex gap-6 py-2">
-              {categories.map((category) => (
-                <CategoryItem
-                  key={category.id}
-                  id={category.id}
-                  image={category.image.id}
-                  label={category.category_name}
-                  alt={category.category_name}
-                  category_name={category.category_name}
-                />
-              ))}
-            </div>
-          </Scrollbar>
+          <div className="flex gap-6 overflow-x-auto py-2 custom-scrollbar-hide">
+            {categories.map((category) => (
+              <CategoryItem
+                key={category.id}
+                id={category.id}
+                image={category.image.id}
+                label={category.category_name}
+                alt={category.category_name}
+                category_name={category.category_name}
+              />
+            ))}
+          </div>
         </div>
       </div>
+
+      {/* Custom CSS */}
+      <style>
+        {`
+          .custom-scrollbar-hide::-webkit-scrollbar {
+            display: none;
+          }
+          .custom-scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+          }
+        `}
+      </style>
     </section>
   );
 };
