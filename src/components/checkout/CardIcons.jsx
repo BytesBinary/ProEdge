@@ -1,12 +1,12 @@
 import React from 'react'
+import visa from '../../assets/bankIcon/visa.svg'
+import mastercard from '../../assets/bankIcon/mastercard.svg'
 
 const CardIcons = () => {
   return (
     <div className="flex justify-start items-center gap-6 my-6">
-        <img src="./src/assets/bankIcon/visa.svg" alt="Visa Card Icon" />
-        <img src="./src/assets/bankIcon/mastercard.svg" alt="MasterCard Icon" />
-        <img src="./src/assets/bankIcon/amex.svg" alt="American Express Icon" />
-        <img src="./src/assets/bankIcon/discover.svg" alt="Discover Card Icon" />
+        <img src={visa} alt="Visa Card Icon" />
+        <img src={mastercard} alt="MasterCard Icon" />
     </div>
   )
 }
