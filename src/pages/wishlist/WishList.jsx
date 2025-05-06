@@ -39,7 +39,10 @@ const WishList = () => {
                 title={item.title}
                 priceDollars={dollars}
                 priceCents={`.${cents}`}
-                onAddToCart={() => addToCart(item)}
+                onAddToCart={() => {
+                  addToCart(item)
+                  removeFromWishlist(item)
+                }}
                 inStock={item.stock}
                 sku={`SKU-${item.sku}`}
                 shippingInfo="Free Shipping"

@@ -14,8 +14,8 @@ const ProductCard = ({ productId,variationId,variation_name, stock,sku,image, ca
   const navigate = useNavigate();
   
   const isInCart = cartItems.some(item => item.variationId === variationId);
-  const isWishlisted = isInWishlist(productId );
-
+  const isWishlisted = isInWishlist(productId, variationId);
+  
   const handleClick = () => {
     const slug = title
       .toLowerCase()

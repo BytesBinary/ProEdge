@@ -4,22 +4,22 @@ import { createContext, useState, useEffect, useCallback } from 'react';
 
 export const CartContext = createContext({
   cartItems: [],
-  addToCart: () => {},
-  removeFromCart: () => {},
-  clearCart: () => {},
+  addToCart: () => { },
+  removeFromCart: () => { },
+  clearCart: () => { },
   getCartTotal: () => 0,
   wishlistItems: [],
-  addToWishlist: () => {},
-  removeFromWishlist: () => {},
+  addToWishlist: () => { },
+  removeFromWishlist: () => { },
   isInWishlist: () => false,
 });
 
 export function CartProvider({ children }) {
   const isBrowser = typeof window !== 'undefined';
   // const { products } = useProductContext(); 
- const [quantity,setQuantity]=useState(1); // Default quantity for cart items
+  const [quantity, setQuantity] = useState(1); // Default quantity for cart items
 
- 
+
 
   // Cart functionality
   const [cartItems, setCartItems] = useState(() => {
@@ -44,13 +44,13 @@ export function CartProvider({ children }) {
     // console.log(item, 'item')
     const isItemInCart = cartItems.find(cartItem => cartItem.variationId === item.variationId);
     if (!isItemInCart) {
-      setCartItems(prev => [...prev, { ...item,quantity }]);
+      setCartItems(prev => [...prev, { ...item, quantity }]);
     }
   };
 
   const removeFromCart = (item) => {
     setCartItems(prev => prev.filter(cartItem => cartItem.variationId !== item.variationId));
-    setQuantity(1); 
+    setQuantity(1);
   };
 
   const clearCart = () => setCartItems([]);
@@ -58,22 +58,22 @@ export function CartProvider({ children }) {
   const getCartTotal = () => {
     return cartItems.reduce((total, item) => {
       const price = Number(item.offer_price || item.regular_price || item.price || 0);
-    return total + (price * (item.quantity || 1));
+      return total + (price * (item.quantity || 1));
     }, 0);
   };
 
   const IncrementQuantity = useCallback((variationId) => {
-    setCartItems(prev => prev.map(item => 
-      item.variationId === variationId 
-        ? {...item, quantity: item.quantity + 1} 
+    setCartItems(prev => prev.map(item =>
+      item.variationId === variationId
+        ? { ...item, quantity: item.quantity + 1 }
         : item
     ));
   }, []);
-  
+
   const DecrementQuantity = useCallback((variationId) => {
-    setCartItems(prev => prev.map(item => 
+    setCartItems(prev => prev.map(item =>
       item.variationId === variationId && item.quantity > 1
-        ? {...item, quantity: item.quantity - 1} 
+        ? { ...item, quantity: item.quantity - 1 }
         : item
     ));
   }, []);
@@ -89,10 +89,12 @@ export function CartProvider({ children }) {
     setWishlistItems(prev => prev.filter(wishlistItem => wishlistItem.variationId !== item.variationId));
   };
 
-  const isInWishlist = (itemId) => {
-    return wishlistItems.some(item => item.variationId === itemId);
+  // In your CartContext
+  const isInWishlist = (productId, variationId) => {
+    return wishlistItems.some(
+      (item) => item.productId === productId && item.variationId === variationId
+    );
   };
-
   // Sync with localStorage
   useEffect(() => {
     if (isBrowser) {
