@@ -107,7 +107,6 @@ const SignIn = () => {
             hoverColor="hover:bg-[#2E4A8E]"
             textColor="text-white"
             label={loading ? 'Signing in...' : 'Sign In'}
-            disabled={loading}
           />
 
           <div className="text-center mt-8">

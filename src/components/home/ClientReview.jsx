@@ -85,30 +85,34 @@ const ClientReview = ({
         </div>
 
         <div className="w-full lg:w-[70%]">
-          <Swiper
-            slidesPerView={2}
-            spaceBetween={20}
-            loop={true}
-            speed={700}
-            autoplay={{
-              delay: 3500,
-              disableOnInteraction: false,
-            }}
-            pagination={{
-              clickable: true,
-              el: ".review-pagination",
-              bulletClass: "review-bullet",
-              bulletActiveClass: "review-bullet-active"
-            }}
-            modules={[Pagination, Autoplay]}
-          >
-            {reviews.map((review, index) => (
-              <SwiperSlide key={index}>
-                <ReviewCard {...review} />
-              </SwiperSlide>
-            ))}
-          </Swiper>
-          <div className="review-pagination flex justify-center mt-4 gap-2"></div>
+        {reviews.length > 0 && (
+          <>
+            <Swiper
+              slidesPerView={2}
+              spaceBetween={20}
+              loop={true}
+              speed={700}
+              autoplay={{
+                delay: 3500,
+                disableOnInteraction: false,
+              }}
+              pagination={{
+                clickable: true,
+                el: ".review-pagination",
+                bulletClass: "review-bullet",
+                bulletActiveClass: "review-bullet-active"
+              }}
+              modules={[Pagination, Autoplay]}
+            >
+              {reviews.map((review, index) => (
+                <SwiperSlide key={index}>
+                  <ReviewCard {...review} />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+            <div className="review-pagination flex justify-center mt-4 gap-2"></div>
+          </>
+        )}
         </div>
       </div>
 
