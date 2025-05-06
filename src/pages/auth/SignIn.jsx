@@ -16,7 +16,8 @@ const SignIn = () => {
   });
 
   const [errors, setErrors] = useState({});
-  const {login,loading}=useAuth();
+  const [cerror, setCerror] = useState();
+  const { login, loading } = useAuth();
 
 
 
@@ -40,10 +41,12 @@ const SignIn = () => {
     e.preventDefault();
     if (!validate()) return;
 
-    setErrors({});
-
     e.preventDefault();
-    const result = await login(formData.email, formData.password);  
+
+    const result = await login(formData.email, formData.password);
+
+    setCerror(result.message);
+
     if (result.success) {
       navigate('/');
     } else {
@@ -97,9 +100,10 @@ const SignIn = () => {
             </Link>
           </div>
 
-          {errors.submit && (
-            <div className="text-red-600 text-center">{errors.submit}</div>
-          )}
+          {cerror ? (
+            <div className="text-red-600 text-center">Wrong Email Or Password</div>
+          ) :
+            <div className="text-red-600 text-center">{errors.message}</div>}
 
           <Button
             type="submit"
@@ -107,7 +111,6 @@ const SignIn = () => {
             hoverColor="hover:bg-[#2E4A8E]"
             textColor="text-white"
             label={loading ? 'Signing in...' : 'Sign In'}
-            disabled={loading}
           />
 
           <div className="text-center mt-8">

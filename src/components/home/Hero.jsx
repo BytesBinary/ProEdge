@@ -66,19 +66,19 @@ const Hero = () => {
               </picture>
 
               <div className={`absolute inset-0 ${slide.bgColor}`}>
-                <div className="max-w-7xl w-full mx-auto flex flex-col justify-center items-start h-full px-4 sm:px-6 md:px-8 py-10">
+                <div className="max-w-7xl w-full mx-auto flex flex-col justify-center items-start h-full px-4 md:px-8 py-10">
                   <header>
                     <h1 id="hero-heading"
-                        className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold max-w-[95%] sm:max-w-[80%] md:max-w-[495px] leading-tight">
+                        className="text-white text-md md:text-4xl font-bold max-w-[95%] sm:max-w-[80%] md:max-w-[495px]">
                       {slide.title}
                     </h1>
-                    <p className="text-white mt-4 text-lg sm:text-xl max-w-[80%]">
+                    <p className="text-white mt-4 text-sm md:text-xl max-w-[80%]">
                       {slide.text}
                     </p>
                   </header>
-                  <a href="/shop" className="mt-6">
+                  <a href="/shop" className="mt-2 md:mt-4">
                     <button
-                      className="bg-[#3F66BC] text-white px-5 py-3 sm:px-6 sm:py-4 rounded-full hover:bg-[#182B55] transition-colors text-base sm:text-lg font-medium shadow-lg">
+                      className="bg-[#3F66BC] text-white px-4 py-2 sm:px-6 sm:py-4 rounded-full hover:bg-[#182B55] transition-colors text-sm md:text-lg font-medium shadow-lg">
                       {slide.buttonText}
                     </button>
                   </a>
