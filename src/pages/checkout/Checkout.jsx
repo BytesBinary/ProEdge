@@ -20,7 +20,7 @@ const Checkout = () => {
   const { user } = useAuth(); 
   const navigate = useNavigate();
   const { cartItems, getCartTotal,removeFromCart, clearCart } = useContext(CartContext);
-  const {createOrder}=useOrderContext();
+  const {createOrder,updateOrder}=useOrderContext();
   const [paymentDetails, setPaymentDetails] = useState({
     cardNumber: "",
     cardName: "",
@@ -217,13 +217,16 @@ useEffect(() => {
       };
   
       const response = await createOrder(finalOrderData);
-
-      console.log("Order response:", response.id);
+      const resUpdateOrder = await updateOrder(response.id, {
+        order_id: `${user?.id?.toString().substring(0, 6)}${response.id}`,
+        customer_id: user ? user.id : null
+      });
+      console.log("update Order response:", resUpdateOrder);
   
       // Save to localStorage before navigation
       localStorage.setItem('currentOrder', JSON.stringify(finalOrderData));
       
-      await navigate(`/order-details/${response.id}`);  
+      await navigate(`/order-details/${resUpdateOrder.order_id}`);  
 
     } catch (err) {
       console.error("Order submission error:", err);

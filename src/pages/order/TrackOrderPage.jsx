@@ -30,7 +30,7 @@ const TrackOrderPage = () => {
   const [showDetails, setShowDetails] = useState(false);
 
   const handleTrackOrder = () => {
-    const order = orders.find((o) => o.id === trackingId.trim());
+    const order = orders.find((o) => o.order_id === trackingId.trim());
     if (order) {
       setSelectedOrder(order);
       setShowDetails(true);
@@ -54,6 +54,7 @@ const TrackOrderPage = () => {
     };
     setInfo(content);
   }, [pathname]);
+  console.log(orders, "ordeamadeerrs");
   return (
     <>
       <PageHeader

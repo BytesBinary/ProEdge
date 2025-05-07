@@ -38,7 +38,7 @@ const OrderDetailsPage = () => {
     if (params.orderid) {
       fetchOrderDetails();
     }
-  }, [params.orderid, fetchOrderById]);
+  }, []);
   console.log(singleOrderData, "singleOrderData");
 
   if (loading) {

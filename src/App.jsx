@@ -25,6 +25,7 @@ import TrackOrderPage from "./pages/order/TrackOrderPage";
 import { AuthProvider } from "./context/AuthContext";
 import { OrderProvider } from "./context/OrderContext";
 import OrderDetailsPage from "./pages/order/OrderDetailsPage";
+import PrivateRoute from "./components/privaterroute/PrivateRoute"; 
 
 const router = createBrowserRouter([
   {
@@ -40,11 +41,22 @@ const router = createBrowserRouter([
       { path: "cart", Component: CartPage },
       { path: "cart/checkout", Component: Checkout },
       { path: "wish-list", Component: WishList },
-      { path: "order-history", Component: OrderTable },
-      { path: "order-details/:orderid", Component: OrderDetailsPage },
-      { path: "track-order", Component: TrackOrderPage },
-      { path: "return-order", Component: TrackOrderPage },
-      { path: "modify-order", Component: TrackOrderPage },
+      // { path: "order-history", Component: OrderTable },
+      // { path: "order-details/:orderid", Component: OrderDetailsPage },
+      // { path: "track-order", Component: TrackOrderPage },
+      // { path: "return-order", Component: TrackOrderPage },
+      // { path: "modify-order", Component: TrackOrderPage },
+       // 🔐 Protected Routes wrapped in PrivateRoute
+       {
+        Component: PrivateRoute,
+        children: [
+          { path: "order-history", Component: OrderTable },
+          { path: "order-details/:orderid", Component: OrderDetailsPage },
+          { path: "track-order", Component: TrackOrderPage },
+          { path: "return-order", Component: TrackOrderPage },
+          { path: "modify-order", Component: TrackOrderPage },
+        ],
+      },
     ],
   },
   {

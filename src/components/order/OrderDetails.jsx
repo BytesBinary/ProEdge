@@ -19,7 +19,7 @@ import {
 import { useOrderContext } from "../../context/OrderContext";
 import jsPDF from "jspdf";
 import { useEffect, useRef } from "react";
-import { BiDownload } from "react-icons/bi";
+import { BiCopy, BiDownload } from "react-icons/bi";
 import { useLocation, useNavigate } from "react-router-dom";
 import { GiConsoleController } from "react-icons/gi";
 
@@ -94,18 +94,18 @@ const OrderDetailsModal = ({ isOrderDetailsPage, order, onClose }) => {
       alert("Order not found");
       return;
     }
-  
+
     if (currentPath === "/return-order") {
       if (order.order_status === "on-hold") {
         alert("Order is already Returned");
         return;
       }
-  
+
       if (order.order_status === "completed") {
         alert("Order is already Completed. You cannot return it.");
         return;
       }
-  
+
       try {
         await updateOrder(order.id, { order_status: "on-hold" });
         alert("Order is now on hold.");
@@ -113,11 +113,12 @@ const OrderDetailsModal = ({ isOrderDetailsPage, order, onClose }) => {
         console.error("Error updating order:", error);
         alert("Failed to update order. Please try again.");
       }
-  
     } else if (currentPath === "/modify-order") {
-      const confirmCancel = confirm("Are you sure you want to cancel this order?");
+      const confirmCancel = confirm(
+        "Are you sure you want to cancel this order?"
+      );
       if (!confirmCancel) return;
-  
+
       try {
         await updateOrder(order.id, { order_status: "cancelled" });
         alert("Order has been successfully cancelled.");
@@ -125,14 +126,11 @@ const OrderDetailsModal = ({ isOrderDetailsPage, order, onClose }) => {
         console.error("Error cancelling order:", error);
         alert("Failed to cancel the order. Please try again.");
       }
-  
     } else {
       console.warn("Unknown path:", currentPath);
       alert("Unsupported operation.");
     }
   };
-  
-  
 
   const printRef = useRef(null);
   if (!order) return null;
@@ -177,10 +175,7 @@ const OrderDetailsModal = ({ isOrderDetailsPage, order, onClose }) => {
     doc.setFontSize(20);
     doc.setTextColor(textColor);
     doc.setFont("helvetica", "bold");
-    doc.text(`Order Details - #${order.id}`, margin, yPos);
-    doc.setFontSize(12);
-    doc.setTextColor(mutedTextColor);
-    doc.text(`Order ID: ${order.id}`, margin, yPos + 8);
+    doc.text(`Order Details - ${order.order_id}`, margin, yPos);
 
     // Add divider line
     doc.setDrawColor(borderColor);
@@ -345,18 +340,34 @@ const OrderDetailsModal = ({ isOrderDetailsPage, order, onClose }) => {
               <div className="w-full">
                 <div className="flex justify-between items-center flex-wrap gap-y-4 border-b pb-4">
                   <h3 className="text-lg leading-6 font-medium text-gray-900">
-                    Order Details - #{order.id}
-                    <div className="mt-1 text-sm text-gray-600">
-                      Order Id - {order.id}
-                    </div>
+                    Order Details -
+                    <span
+                      className="cursor-pointer text-blue-500 hover:underline flex gap-x-2"
+                      title="Click to copy Order ID"
+                    >
+                      {order.order_id}
+                      <BiCopy
+                        onClick={() => {
+                          alert("Order ID copied to clipboard");
+                          navigator.clipboard.writeText(order.order_id);
+                        }}
+                      />
+                    </span>
                   </h3>
                   <div className="flex justify-between items-center gap-2">
-                    {(currentPath == "/return-order" || currentPath == "/modify-order" )&& (
+                    {(currentPath == "/return-order" ||
+                      currentPath == "/modify-order") && (
                       <button
-                        className={`px-4 py-1 ${currentPath == "/return-order" ? "bg-red-500" : "bg-blue-500"} text-white rounded-2xl`}
+                        className={`px-4 py-1 ${
+                          currentPath == "/return-order"
+                            ? "bg-red-500"
+                            : "bg-blue-500"
+                        } text-white rounded-2xl`}
                         onClick={handleJob}
                       >
-                        {currentPath == "/return-order" ? "Return Order" : "Cancel Order"}
+                        {currentPath == "/return-order"
+                          ? "Return Order"
+                          : "Cancel Order"}
                       </button>
                     )}
                     <button

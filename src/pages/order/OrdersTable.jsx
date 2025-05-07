@@ -24,7 +24,7 @@ const OrderTablePage = () => {
   };
 
   const handleTrackOrder = () => {
-    const order = orders.find((o) => o.id === trackingId.trim());
+    const order = orders.find((o) => o.order_id === trackingId.trim());
     if (order) {
       setSelectedOrder(order);
       setShowTrackModal(false);
@@ -42,7 +42,7 @@ const OrderTablePage = () => {
       alert("Order ID not found");
     }
   };
-
+console.log(orders, "orders");  
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <div className="mb-8 flex justify-between items-center">

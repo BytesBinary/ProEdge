@@ -1,49 +1,51 @@
 // src/contexts/OrderContext.js
-import { createContext, useContext, useEffect, useState } from 'react';
-import axios from 'axios';
+import { createContext, useContext, useEffect, useState } from "react";
+import axios from "axios";
 
 const OrderContext = createContext();
 
 export const useOrderContext = () => useContext(OrderContext);
 
-const ALL_ORDERS_QUERY = `
-  query {
-    order {
-      id
-      order_id
-      name
-      company_name
-      phone_number
-      email
-      street_address
-      address_two
-      city
-      state
-      delivery_method
-      zip_code
-      shipping_charge
-      subtotal
-      tax
-      order_status
-      payment_method
-      billing_name
-      billing_company_name
-      billing_phone_number
-      billing_email
-      billing_street_address
-      billing_address_two
-      billing_city
-      billing_state
-      billing_zip_code
-    }
+const GET_ORDER_QUERY = `
+ query GetOrdersByCustomer($customer_id: String) {
+  order(filter: { customer_id: { _eq: $customer_id } }) {
+    id
+    order_id  
+    customer_id
+    name
+    company_name
+    phone_number
+    email
+    street_address
+    address_two
+    city
+    state
+    delivery_method
+    zip_code
+    shipping_charge
+    subtotal
+    tax
+    order_status
+    payment_method
+    billing_name
+    billing_company_name
+    billing_phone_number
+    billing_email
+    billing_street_address
+    billing_address_two
+    billing_city
+    billing_state
+    billing_zip_code
   }
-`;
+}
 
+`;
 const SINGLE_ORDER_QUERY = `
   query GetOrderById($id: ID!) {
     order_by_id(id: $id) {
       id
       order_id  
+      customer_id
       name
       company_name
       phone_number
@@ -104,12 +106,12 @@ const UPDATE_ORDER_MUTATION = `
   }
 `;
 
-
 const CREATE_ORDER_MUTATION = `
   mutation CreateOrder($data: create_order_input!) {
     create_order_item(data: $data) {
       id
-      order_id  
+      order_id 
+      customer_id  
       name
       company_name
       phone_number
@@ -146,7 +148,6 @@ const DELETE_ORDER_MUTATION = `
   }
 `;
 
-
 export const OrderProvider = ({ children }) => {
   const [orders, setOrders] = useState([]);
   const [currentOrder, setCurrentOrder] = useState(null);
@@ -155,6 +156,8 @@ export const OrderProvider = ({ children }) => {
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState(null);
 
+  const user = JSON.parse(localStorage.getItem("user"));
+
   useEffect(() => {
     fetchOrders();
   }, []);
@@ -162,23 +165,31 @@ export const OrderProvider = ({ children }) => {
   const fetchOrders = async () => {
     setLoading(true);
     setError(null);
+
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_SERVER_URL}/graphql`,
         {
-          query: ALL_ORDERS_QUERY,
+          query: GET_ORDER_QUERY,
+          variables: {
+            customer_id: user?.id ,
+          },
         },
         {
-          headers: { 'Content-Type': 'application/json' },
+          headers: { "Content-Type": "application/json" },
         }
       );
-        // console.log(response.data.data.order,'fetched orders')
+      
       if (response.data.errors) {
         throw new Error(response.data.errors[0].message);
       }
+
+      console.log(response.data.data.order, "response data");
+
+      // adjust depending on response shape
       setOrders(response.data.data.order || []);
     } catch (error) {
-      console.error('GraphQL fetch error:', error);
+      console.error("GraphQL fetch error:", error);
       setError(error.message);
       setOrders([]);
     } finally {
@@ -186,8 +197,16 @@ export const OrderProvider = ({ children }) => {
     }
   };
 
-  const fetchOrderById = async (id) => {
-    const localOrder = orders.find(order => order.id === id);
+  const fetchOrderById = async (orderid) => {
+    console.log(orderid, "orderid");
+    if (orderid.length < 6) {
+      return null;
+    }
+
+    const id = orderid.slice(-1);
+    console.log(id, "last digit");
+
+    const localOrder = orders.find((order) => order.id === id);
     if (localOrder) {
       setCurrentOrder(localOrder);
       return localOrder;
@@ -203,7 +222,7 @@ export const OrderProvider = ({ children }) => {
           variables: { id },
         },
         {
-          headers: { 'Content-Type': 'application/json' },
+          headers: { "Content-Type": "application/json" },
         }
       );
 
@@ -216,9 +235,9 @@ export const OrderProvider = ({ children }) => {
         setCurrentOrder(order);
         return order;
       }
-      throw new Error('Order not found');
+      throw new Error("Order not found");
     } catch (error) {
-      console.error('GraphQL fetch error:', error);
+      console.error("GraphQL fetch error:", error);
       setError(error.message);
       return null;
     } finally {
@@ -227,45 +246,42 @@ export const OrderProvider = ({ children }) => {
   };
 
   const createOrder = async (orderData) => {
-    setCreating(true);  
-    setError(null);    
-  
+    setCreating(true);
+    setError(null);
+
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_SERVER_URL}/graphql`,
         {
           query: CREATE_ORDER_MUTATION,
-          variables: { data: orderData },  
+          variables: { data: orderData },
         },
         {
-          headers: { 'Content-Type': 'application/json' },
+          headers: { "Content-Type": "application/json" },
         }
       );
-  
-      // console.log(response.data, 'response'); 
-    
-      if (response.data.errors) {
-        throw new Error(response.data.errors[0].message);  
-      }
-  
+
+      // console.log(response.data, 'response');
+
+     
       const newOrder = response.data.data.create_order_item;
-      setOrders((prev) => [...prev, newOrder]);  
-  
+      setOrders((prev) => [...prev, newOrder]);
+
       return newOrder;
     } catch (error) {
-      console.error('GraphQL mutation error:', error);
-      setError(error.message);  
+      console.error("GraphQL mutation error:", error);
+      setError(error.message);
       return null;
     } finally {
-      setCreating(false); 
+      setCreating(false);
     }
   };
-  
+
   //update order
   const updateOrder = async (orderId, updatedFields) => {
     setCreating(true);
     setError(null);
-  
+
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_SERVER_URL}/graphql`,
@@ -277,40 +293,40 @@ export const OrderProvider = ({ children }) => {
           },
         },
         {
-          headers: { 'Content-Type': 'application/json' },
+          headers: { "Content-Type": "application/json" },
         }
       );
-  
+
       // console.log(response.data, 'update response');
-  
+
       // Handle errors if they exist
       if (response.data.errors) {
         throw new Error(response.data.errors[0].message);
       }
-  
+
       // If successful, update the state
       const updatedOrder = response.data.data.update_order_item;
-  
+
       setOrders((prevOrders) =>
         prevOrders.map((order) =>
           order.id === updatedOrder.id ? updatedOrder : order
         )
       );
-  
+
       return updatedOrder;
     } catch (error) {
-      console.error('GraphQL update error:', error);
+      console.error("GraphQL update error:", error);
       setError(error.message);
       return null;
     } finally {
       setCreating(false);
     }
   };
-  
+
   const deleteOrder = async (orderId) => {
     setCreating(true);
     setError(null);
-  
+
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_SERVER_URL}/graphql`,
@@ -321,39 +337,39 @@ export const OrderProvider = ({ children }) => {
           },
         },
         {
-          headers: { 'Content-Type': 'application/json' },
+          headers: { "Content-Type": "application/json" },
         }
       );
-  
+
       // console.log(response.data, 'delete response');
-  
+
       if (response.data.errors) {
         throw new Error(response.data.errors[0].message);
       }
-  
+
       const deleted = response.data.data.delete_order_item;
-      setOrders(prev => prev.filter(order => order.id !== deleted.id)); 
-  
+      setOrders((prev) => prev.filter((order) => order.id !== deleted.id));
+
       return deleted;
     } catch (error) {
-      console.error('GraphQL delete error:', error);
+      console.error("GraphQL delete error:", error);
       setError(error.message);
       return null;
     } finally {
       setCreating(false);
     }
   };
-  
 
   return (
     <OrderContext.Provider
       value={{
-        orders,
         loading,
         error,
         currentOrder,
         orderLoading,
+        orders,
         creating,
+        fetchOrders,
         fetchOrderById,
         createOrder,
         updateOrder,
