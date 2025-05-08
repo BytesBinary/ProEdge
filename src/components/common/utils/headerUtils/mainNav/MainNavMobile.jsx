@@ -23,7 +23,6 @@ const MobileNav = ({actionIcons}) => {
   // Auth links data
   const authLinks = [
     { to: "/auth/signin", text: "Sign In" },
-    { to: "/auth/signup", text: "Sign Up" },
   ];
 
 

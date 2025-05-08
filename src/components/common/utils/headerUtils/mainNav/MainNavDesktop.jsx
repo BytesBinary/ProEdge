@@ -4,7 +4,6 @@ import find from "../../../../../assets/icons/search.svg"; // Updated import
 
 const authLinks = [
   { path: "/auth/signin", label: "Sign In" },
-  { path: "/auth/signup", label: "Sign Up" },
 ];
 
 const DesktopNav = ({actionIcons}) => {
