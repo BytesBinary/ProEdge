@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { href, Link } from "react-router-dom";
 const FeatureCard = ({ title, imageSrc, alt, href = "#" }) => (
   <Link
     to={href}
@@ -27,16 +27,19 @@ const FeatureHighlights = () => {
       title: "Get Technical Support",
       imageSrc: "../../src/assets/images/Card1.png",
       alt: "Technician assisting customer through video call",
+      href: "/tech-help",
     },
     {
       title: "Best Sellers",
       imageSrc: "../../src/assets/images/Card2.png",
       alt: "Bestselling products displayed on a modern shelf",
+      href: "#",
     },
     {
       title: "Top Products",
       imageSrc: "../../src/assets/images/Card3.png",
       alt: "Top-rated electronics and gadgets collection",
+      href: "#",
     },
   ];
 
