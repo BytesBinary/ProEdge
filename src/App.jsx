@@ -26,6 +26,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { OrderProvider } from "./context/OrderContext";
 import OrderDetailsPage from "./pages/order/OrderDetailsPage";
 import PrivateRoute from "./components/privaterroute/PrivateRoute"; 
+import FAQPage from "./pages/FAQ/FAQPage";
 
 const router = createBrowserRouter([
   {
@@ -41,6 +42,7 @@ const router = createBrowserRouter([
       { path: "cart", Component: CartPage },
       { path: "cart/checkout", Component: Checkout },
       { path: "wish-list", Component: WishList },
+      { path: "faq-page", Component: FAQPage},
       // { path: "order-history", Component: OrderTable },
       // { path: "order-details/:orderid", Component: OrderDetailsPage },
       // { path: "track-order", Component: TrackOrderPage },
