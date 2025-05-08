@@ -50,7 +50,7 @@ const ShopCategorySection = () => {
 
       <div className="bg-[#3F66BC] py-16 md:py-28 relative">
         <div className="w-full max-w-7xl md:absolute md:bottom-20 md:left-1/2 md:-translate-x-1/2 px-6">
-          {categories.length > 7 ? (
+          {categories.length > 6 ? (
             <Swiper
               slidesPerView={2}
               spaceBetween={24}
