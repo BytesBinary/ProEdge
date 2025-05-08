@@ -8,12 +8,15 @@ import SubPageHeader from "../../components/common/utils/banner/SubPageHeader";
 import bgImage from "../../assets/images/cart.png";
 import categoryOptions from "../../data/contactus/CategoryOption";
 import breadcrumbs from "../../data/contactus/Breadcrumbs";
-import socialLinks from "../../data/contactus/SocialLinks";
 import formFields from "../../data/contactus/FormFields";
 import contactInfoItems from "../../data/contactus/ContactInfoItems";
 import Map from "../../components/contactus/Map";
 import Button from "../../components/contactus/Button";
 import axios from "axios";
+import insta from "../../assets/images/contact/insta.png";
+import fb from "../../assets/images/contact/fb.png";
+import ln from "../../assets/images/contact/in.png";
+import twit from "../../assets/images/contact/twit.png";
 import { useEffect, useState } from "react";
 
 const Contact = () => {
@@ -32,13 +35,17 @@ const Contact = () => {
       email
       location_title
       location_url
+      facebook
+      instagram
+      linkedin
+      thread
     }
   }
   `;
   const fetchFooter = async () => {
     setLoading(true);
     setError(null);
-    try{
+    try {
       const response = await axios.post(
         `${import.meta.env.VITE_SERVER_URL}/graphql`,
         {
@@ -56,8 +63,7 @@ const Contact = () => {
       console.error("GraphQL fetch error:", error);
       setError(error.message);
       setLoading(false);
-    }
-    finally{
+    } finally {
       setLoading(false);
     }
   };
@@ -66,8 +72,18 @@ const Contact = () => {
     fetchFooter();
   }, []);
 
-
-
+  console.table([
+    footer.instagram,
+    footer.facebook,
+    footer.linkedin,
+    footer.thread,
+  ]);
+  const socialLinks = [
+    { icon: insta, to: footer.instagram },
+    { icon: fb, to: footer.facebook },
+    { icon: ln, to: footer.linkedin },
+    { icon: twit, to: footer.thread },
+  ];
   return (
     <>
       <SubPageHeader
@@ -99,16 +115,23 @@ const Contact = () => {
             ))}
 
             <div className="flex gap-[24px]">
-              {socialLinks.map((social, index) => (
-                <SocialIcon key={index} icon={social.icon} href={social.href} />
-              ))}
+              {socialLinks
+                .filter((link) => link.to) 
+                .map((social, index) => (
+                  <>
+                  {console.log(social.to, "social.icon")}
+                  <SocialIcon key={index} icon={social.icon} url={social.to} />
+                  </>
+                ))}
             </div>
           </div>
         </div>
 
         {/* Contact Form Section */}
         <div className="w-full max-w-3xl h-[630px] relative mx-auto">
-          <h1 className="font-semibold text-4xl leading-12 text-center md:text-left">Get In Touch</h1>
+          <h1 className="font-semibold text-4xl leading-12 text-center md:text-left">
+            Get In Touch
+          </h1>
 
           <div className="flex flex-col items-center lg:items-start gap-[16px] mt-8">
             {/* First row of fields */}
@@ -157,15 +180,20 @@ const Contact = () => {
               options={categoryOptions}
               fullWidth={false}
             />
-            
-            <TextareaField id="details" name="details" placeholder="Details*" fullWidth={false} />
+
+            <TextareaField
+              id="details"
+              name="details"
+              placeholder="Details*"
+              fullWidth={false}
+            />
 
             <Button className="md:absolute right-0 bottom-0">Submit Now</Button>
           </div>
         </div>
       </section>
-            {/* {console.log(fo)} */}
-      <Map locationUrl={footer?.location_url}/>
+      {/* {console.log(fo)} */}
+      <Map locationUrl={footer?.location_url} />
     </>
   );
 };
