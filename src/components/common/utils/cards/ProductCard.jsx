@@ -50,7 +50,7 @@ const ProductCard = ({ productId,variationId,variation_name, stock,made_in,sku,i
   return (
     <div
       onClick={handleClick}
-      className="max-w-lg rounded-xl border-2 border-[#F8F9FB] px-4 pt-4 pb-6 bg-[#FFFFFF] cursor-pointer"
+      className="max-w-lg rounded-xl border-2 border-[#F8F9FB] px-4 pt-4 pb-6 bg-[#FFFFFF] drop-shadow-[#E1E1E140] drop-shadow-2xl hover:drop-shadow-lg transition "
     >
       <div className="rounded-xl w-full h-[417px] mb-5 bg-[#FFFFFF]">
         <div className="bg-[#F8F9FB] flex justify-center items-center relative rounded-xl w-full overflow-hidden">
@@ -62,7 +62,7 @@ const ProductCard = ({ productId,variationId,variation_name, stock,made_in,sku,i
 
           <div 
             onClick={handleWishlistClick}
-            className={`group   rounded-full w-9 h-9 flex items-center justify-center absolute top-2 right-2 transition duration-300 cursor-pointer ${
+            className={`group   rounded-full w-9 h-9 flex items-center hover:bg-amber-50 justify-center absolute top-2 right-2 transition duration-300 cursor-pointer ${
               isWishlisted ? "bg-[#EE2738]" : "bg-[#FFFFFF]"
             }`}
           >
@@ -89,7 +89,7 @@ const ProductCard = ({ productId,variationId,variation_name, stock,made_in,sku,i
               {category}
             </h2>
           
-            <h1 className="text-[#182B55] text-lg font-medium leading-[30px]">
+            <h1 className="text-[#182B55] text-lg font-medium leading-[30px] cursor-pointer">
               {variation_name}
             </h1>
           </div>

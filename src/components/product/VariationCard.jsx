@@ -10,7 +10,7 @@ const VariationCard = ({
   return (
     <div
       className={`w-32 h-24 ${isSelected ? "bg-[#3F66BC]" : "bg-[#F8F9FB]"
-        } hover:bg-[#3F66BC] p-3 cursor-pointer rounded-lg border ${isSelected ? "border-[#F8F9FB]" : "border-[#F8F9FB]"
+        } hover:bg-[#3F66BC] p-3 cursor-pointer shadow-sm rounded-lg border ${isSelected ? "border-[#F8F9FB]" : "border-[#F8F9FB]"
         } hover:border-[#F8F9FB] group transition-all duration-300`}
       onClick={onClick}
     >

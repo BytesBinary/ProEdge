@@ -5,7 +5,7 @@ import "swiper/css";
 import "swiper/css/pagination";
 
 const ReviewCard = ({ name, role, image, title, review, stars = "⭐⭐⭐⭐⭐" }) => (
-  <div className="w-full h-[266px] rounded-[20px] border-2 border-[#F8F9FB] flex flex-col justify-between items-start gap-4 py-6 px-4 mb-6 md:mb-0">
+  <div className="w-full h-[266px] rounded-[20px] border-2 border-[#F8F9FB] shadow-sm hover:shadow-md flex flex-col justify-between items-start gap-4 py-6 px-4 mb-6 md:mb-0">
     <div>
       <span>{stars}</span>
       <p className="text-md md:text-xl leading-4 md:leading-6 text-[#182B55] font-medium mb-3 mt-1.5">{title}</p>

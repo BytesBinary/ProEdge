@@ -13,7 +13,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="w-full h-auto md:h-96 bg-[#182B55] flex flex-col items-center justify-evenly py-8 px-4">
+    <footer className="w-full h-auto bg-[#182B55] flex flex-col items-center justify-evenly py-8 px-4">
       <div className="flex flex-col lg:flex-row flex-wrap gap-4 md:gap-8 items-start justify-between w-full max-w-[1200px]">
 
         <div className="w-[292px] h-40 md:h-[214px] flex flex-col justify-evenly">

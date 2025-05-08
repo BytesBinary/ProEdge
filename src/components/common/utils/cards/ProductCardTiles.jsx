@@ -26,13 +26,13 @@ const ProductCard = ({ product,onRemove  }) => {
           </h2>
 
           <div className="flex items-center gap-1 sm:gap-2 order-last sm:order-none">
-            <button className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-[#F8F9FB] rounded-md text-lg" onClick={()=>{DecrementQuantity(product.variationId)}}>
+            <button className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-[#F8F9FB] rounded-md text-lg cursor-pointer hover:bg-gray-200" onClick={()=>{DecrementQuantity(product.variationId)}}>
               <img src={minus} alt="Minus Icon" />
             </button>
             <span  className="bg-[#3F66BC] text-white w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center rounded-md text-sm sm:text-base">
               {product.quantity}
             </span>
-            <button onClick={()=>{IncrementQuantity(product.variationId)}} className="flex justify-center items-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-[#F8F9FB] rounded-md text-lg">
+            <button onClick={()=>{IncrementQuantity(product.variationId)}} className="flex justify-center items-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-[#F8F9FB] rounded-md text-lg cursor-pointer hover:bg-gray-200">
               <img src={plus} alt="Plus Icon" />
             </button>
           </div>
@@ -57,9 +57,9 @@ const ProductCard = ({ product,onRemove  }) => {
           </div>
 
           <nav className="flex gap-3 text-xs sm:text-sm">
-            <button onClick={onRemove}className="text-[#3F66BC] hover:underline">Remove</button>
+            <button onClick={onRemove}className="text-[#3F66BC] hover:underline cursor-pointer">Remove</button>
             <div className="mx-3 border-l-2 border-[#ECF0F9]"></div>
-            <button className="text-[#3F66BC] hover:underline">Save For Later</button>
+            <button className="text-[#3F66BC] hover:underline cursor-pointer">Save For Later</button>
           </nav>
         </div>
       </div>

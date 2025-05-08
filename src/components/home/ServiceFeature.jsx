@@ -1,7 +1,7 @@
 import React from "react";
 
 const FeatureBox = ({ icon, title, description, alt }) => (
-  <div className="flex items-center gap-4 bg-white rounded-xl shadow-sm p-8">
+  <div className="flex items-center gap-4 bg-white rounded-xl shadow-sm hover:shadow-md p-8">
     <div className="bg-blue-100 rounded-full p-4">
       <img src={icon} alt={alt} className="w-10 h-10" />
     </div>

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 const FeatureCard = ({ title, imageSrc, alt, href = "#" }) => (
   <Link
     to={href}
-    className="group relative block rounded-lg overflow-hidden shadow-md focus:outline-none focus:ring-4 focus:ring-primary-300 focus:ring-opacity-50 h-54"
+    className="group relative block rounded-lg overflow-hidden hover:shadow-md focus:outline-none focus:ring-4 focus:ring-primary-300 focus:ring-opacity-50 h-54"
     role="article"
     aria-labelledby={title.replace(/\s+/g, "-").toLowerCase()}
   >

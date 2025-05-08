@@ -74,7 +74,7 @@ const TechHelp = () => {
         <h1 className="text-[#182B55] text-3xl md:text-5xl leading-tight font-semibold text-center">
           What would you like to do?
         </h1>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 ">
           {whatToDo.map((item, index) => (
             <Icon key={index} imageSrc={item.image} title={item.title} link={item.link} />
           ))}
