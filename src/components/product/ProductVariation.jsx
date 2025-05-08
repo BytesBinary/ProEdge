@@ -81,7 +81,7 @@ const ProductVariation = ({
         </div>
 
         {priceOptions.length > 0 && (
-          <div class="flex justify-start items-start flex-wrap gap-4 max-w-2xl max-h-[300px] md:min-h-[300px] lg:min-h-[200px] overflow-y-auto z-10">
+          <div className="flex justify-start items-start flex-wrap gap-4 max-w-2xl max-h-[300px] md:min-h-[300px] lg:min-h-[200px] overflow-y-auto z-10">
             {priceOptions.map((option, index) => (
               <VariationCard
                 key={option.id} // Use option.id instead of index for better key
