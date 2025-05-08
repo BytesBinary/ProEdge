@@ -1,5 +1,4 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import ContactInfoItem from "../../components/contactus/ContactInfoItem";
 import SocialIcon from "../../components/contactus/SocialIcon";
 import InputField from "../../components/contactus/InputField";
@@ -14,8 +13,61 @@ import formFields from "../../data/contactus/FormFields";
 import contactInfoItems from "../../data/contactus/ContactInfoItems";
 import Map from "../../components/contactus/Map";
 import Button from "../../components/contactus/Button";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 const Contact = () => {
+  const [footer, setFooter] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const ALL_FOOTER_QUERY = `
+  query{
+    Footer{
+      id
+      footer_title
+      contact_number
+      fax
+      phone_no
+      email
+      location_title
+      location_url
+    }
+  }
+  `;
+  const fetchFooter = async () => {
+    setLoading(true);
+    setError(null);
+    try{
+      const response = await axios.post(
+        `${import.meta.env.VITE_SERVER_URL}/graphql`,
+        {
+          query: ALL_FOOTER_QUERY,
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      if (response.data.errors) {
+        throw new Error(response.data.errors[0].message);
+      }
+      setFooter(response.data.data.Footer || []);
+    } catch (error) {
+      console.error("GraphQL fetch error:", error);
+      setError(error.message);
+      setLoading(false);
+    }
+    finally{
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchFooter();
+  }, []);
+
+
+
   return (
     <>
       <SubPageHeader
@@ -112,8 +164,8 @@ const Contact = () => {
           </div>
         </div>
       </section>
-
-      <Map />
+            {/* {console.log(fo)} */}
+      <Map locationUrl={footer?.location_url}/>
     </>
   );
 };

@@ -17,6 +17,7 @@ import FAQ from "../../components/TechHelp/FAQ";
 import PolicyIcon from "../../components/TechHelp/PolicyIcon";
 
 const TechHelp = () => {
+ 
   const whatToDo = [
     { image: pick, title: "Track an order", link: "/track-order" },
     { image: returning, title: "Start a return", link: "/return-order" },
