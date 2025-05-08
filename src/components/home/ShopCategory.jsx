@@ -3,6 +3,11 @@ import { CategoryContext } from "../../context/CategoryContext";
 import { useNavigate } from "react-router-dom";
 import { formatCategoryName } from "../../helper/slugifier/slugify";
 
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, Pagination } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/pagination';
+
 const CategoryItem = ({ id, image, label, alt, category_name }) => {
   const navigate = useNavigate();
 
@@ -45,22 +50,57 @@ const ShopCategorySection = () => {
 
       <div className="bg-[#3F66BC] py-16 md:py-28 relative">
         <div className="w-full max-w-7xl md:absolute md:bottom-20 md:left-1/2 md:-translate-x-1/2 px-6">
-          <div className="grid grid-cols-2 gap-3 md:flex md:gap-6 md:overflow-x-auto py-2 custom-scrollbar-hide">
-            {categories.map((category) => (
-              <CategoryItem
-                key={category.id}
-                id={category.id}
-                image={category.image.id}
-                label={category.category_name}
-                alt={category.category_name}
-                category_name={category.category_name}
-              />
-            ))}
-          </div>
+          {categories.length > 7 ? (
+            <Swiper
+              slidesPerView={2}
+              spaceBetween={24}
+              loop={true}
+              autoplay={{
+                delay: 3000,
+                disableOnInteraction: false,
+              }}
+              pagination={{
+                clickable: true,
+                el: '.desktop-pagination',
+              }}
+              breakpoints={{
+                640: { slidesPerView: 3 },
+                768: { slidesPerView: 4 },
+                1024: { slidesPerView: 5 },
+                1280: { slidesPerView: 6 },
+              }}
+              modules={[Autoplay, Pagination]}
+              className="w-full"
+            >
+              {categories.map((category) => (
+                <SwiperSlide key={category.id}>
+                  <CategoryItem
+                    id={category.id}
+                    image={category.image.id}
+                    label={category.category_name}
+                    alt={category.category_name}
+                    category_name={category.category_name}
+                  />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          ) : (
+            <div className="grid grid-cols-2 gap-3 md:flex md:gap-6 md:overflow-x-auto py-2 custom-scrollbar-hide">
+              {categories.map((category) => (
+                <CategoryItem
+                  key={category.id}
+                  id={category.id}
+                  image={category.image.id}
+                  label={category.category_name}
+                  alt={category.category_name}
+                  category_name={category.category_name}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Custom CSS */}
       <style>
         {`
           .custom-scrollbar-hide::-webkit-scrollbar {
@@ -75,5 +115,6 @@ const ShopCategorySection = () => {
     </section>
   );
 };
+
 
 export default ShopCategorySection;
