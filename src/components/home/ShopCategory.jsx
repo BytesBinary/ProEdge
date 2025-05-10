@@ -50,7 +50,7 @@ const ShopCategorySection = () => {
 
       <div className="bg-[#3F66BC] py-16 md:py-28 relative">
         <div className="w-full max-w-7xl md:absolute md:bottom-20 md:left-1/2 md:-translate-x-1/2 px-6">
-          {categories.length > 6 ? (
+          {categories.length > 8 ? (
             <>
               <Swiper
                 slidesPerView={2}
@@ -62,7 +62,7 @@ const ShopCategorySection = () => {
                 }}
                 pagination={{
                   clickable: true,
-                  el: '.desktop-pagination',
+                  el: '.shop-cat-desktop-pagination',
                 }}
                 breakpoints={{
                   640: { slidesPerView: 3 },
@@ -87,10 +87,10 @@ const ShopCategorySection = () => {
               </Swiper>
 
               {/* Pagination Bullets */}
-              <div className="desktop-pagination mt-8 flex justify-center space-x-2" />
+              <div className=".shop-cat-desktop-pagination mt-8 flex justify-center space-x-2" />
             </>
           ) : (
-            <div className="grid grid-cols-2 gap-3 md:flex md:gap-6 md:overflow-x-auto py-2 custom-scrollbar-hide">
+            <div className="grid grid-cols-2 gap-3 md:flex md:gap-6 md:overflow-hidden py-2 custom-scrollbar-hide">
               {categories.map((category) => (
                 <CategoryItem
                   key={category.id}
@@ -107,8 +107,8 @@ const ShopCategorySection = () => {
       </div>
 
       <style jsx>{`
-        :global(.desktop-pagination .swiper-pagination-bullet),
-        :global(.mobile-pagination .swiper-pagination-bullet) {
+        :global(.shop-cat-desktop-pagination .swiper-pagination-bullet),
+        :global(.shop-mobile-pagination .swiper-pagination-bullet) {
           width: 10px;
           height: 10px;
           background: rgba(24, 43, 85, 0.3);
@@ -117,8 +117,8 @@ const ShopCategorySection = () => {
           opacity: 1;
         }
         
-        :global(.desktop-pagination .swiper-pagination-bullet-active),
-        :global(.mobile-pagination .swiper-pagination-bullet-active) {
+        :global(.shop-cat-desktop-pagination .swiper-pagination-bullet-active),
+        :global(.shop-mobile-pagination .swiper-pagination-bullet-active) {
           background: #182B55;
           width: 24px;
         }

@@ -40,6 +40,7 @@ const MostViewedSection = ({ title }) => {
       {/* Desktop View (hidden on mobile) */}
       <div className="hidden sm:block relative">
         {displayedProducts.length > 0 && (
+          <>
           <Swiper
             slidesPerView={1}
             spaceBetween={24}
@@ -50,7 +51,7 @@ const MostViewedSection = ({ title }) => {
             }}
             pagination={{
               clickable: true,
-              el: '.desktop-pagination',
+              el: '.mst-desktop-pagination',
             }}
             modules={[Autoplay, Pagination]}
             className="w-full"
@@ -65,9 +66,10 @@ const MostViewedSection = ({ title }) => {
               </SwiperSlide>
             ))}
           </Swiper>
+          <div className="mst-desktop-pagination flex justify-center mt-6 gap-2"></div>
+          </>
         )}
         {/* Desktop Pagination */}
-        <div className="desktop-pagination flex justify-center mt-6 gap-2" />
       </div>
 
       {/* Mobile View (hidden on desktop) */}
@@ -82,7 +84,7 @@ const MostViewedSection = ({ title }) => {
           }}
           pagination={{
             clickable: true,
-            el: '.mobile-pagination',
+            el: '.mst-mobile-pagination',
           }}
           modules={[Autoplay, Pagination]}
           className="w-full"
@@ -100,13 +102,13 @@ const MostViewedSection = ({ title }) => {
           ))}
         </Swiper>
         {/* Mobile Pagination */}
-        <div className="mobile-pagination flex justify-center mt-4 gap-1.5" />
+        <div className="mst-mobile-pagination flex justify-center mt-4 gap-1.5" />
       </div>
 
       {/* Custom Pagination Styles */}
       <style jsx>{`
-        :global(.desktop-pagination .swiper-pagination-bullet),
-        :global(.mobile-pagination .swiper-pagination-bullet) {
+        :global(.mst-desktop-pagination .swiper-pagination-bullet),
+        :global(.mst-mobile-pagination .swiper-pagination-bullet) {
           width: 10px;
           height: 10px;
           background: rgba(24, 43, 85, 0.3);
@@ -115,18 +117,18 @@ const MostViewedSection = ({ title }) => {
           opacity: 1;
         }
         
-        :global(.desktop-pagination .swiper-pagination-bullet-active),
-        :global(.mobile-pagination .swiper-pagination-bullet-active) {
+        :global(.mst-desktop-pagination .swiper-pagination-bullet-active),
+        :global(.mst-mobile-pagination .swiper-pagination-bullet-active) {
           background: #182B55;
           width: 24px;
         }
         
-        :global(.mobile-pagination .swiper-pagination-bullet) {
+        :global(.mst-mobile-pagination .swiper-pagination-bullet) {
           width: 8px;
           height: 8px;
         }
         
-        :global(.mobile-pagination .swiper-pagination-bullet-active) {
+        :global(.mst-mobile-pagination .swiper-pagination-bullet-active) {
           width: 16px;
         }
       `}</style>
