@@ -34,7 +34,7 @@ const WishCard = ({
             </span>
             <button
               onClick={onAddToCart}
-              className="bg-[#FCD700] text-black px-4 py-2 rounded-full text-sm inline-block whitespace-nowrap"
+              className="bg-[#FCD700] text-black px-4 py-2 rounded-full text-sm inline-block whitespace-nowrap hover:bg-[#FCD700]/80 cursor-pointer"
             >
               Add To Cart
             </button>
@@ -56,7 +56,7 @@ const WishCard = ({
           </div>
           <button
             onClick={onRemove}
-            className="text-[#3F66BC] hover:underline text-sm md:text-lg"
+            className="text-[#3F66BC] hover:underline text-sm md:text-lg cursor-pointer"
           >
             Remove
           </button>

@@ -51,7 +51,7 @@ const OrderSummaryCard = ({ cart }) => {
           <div className="flex flex-col gap-3">
             <button
               onClick={() => navigate("/cart/checkout")}
-              className="w-full bg-[#3F66BC] text-white py-2 rounded-full hover:bg-[#3457a4] transition-colors duration-200"
+              className="w-full bg-[#3F66BC] text-white py-2 rounded-full hover:bg-[#3457a4] transition-colors duration-200 cursor-pointer"
             >
               Proceed to Checkout
             </button>
@@ -64,9 +64,6 @@ const OrderSummaryCard = ({ cart }) => {
             </button>
           </div>
         )}
-        <p className="text-xs text-center text-[#182B55] mt-2">
-          Free Shipping on Orders Over $500.
-        </p>
       </div>
     </div>
   );
