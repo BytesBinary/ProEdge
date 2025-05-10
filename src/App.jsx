@@ -19,13 +19,15 @@ import WishList from "./pages/wishlist/WishList";
 //context provider
 import { ProductProvider } from "./context/ProductContext";
 import { CartProvider } from "./context/CartContext";
-import {  CategoryProvider } from "./context/CategoryContext";
+import { CategoryProvider } from "./context/CategoryContext";
 import OrderTable from "./pages/order/OrdersTable";
 import TrackOrderPage from "./pages/order/TrackOrderPage";
 import { AuthProvider } from "./context/AuthContext";
 import { OrderProvider } from "./context/OrderContext";
 import OrderDetailsPage from "./pages/order/OrderDetailsPage";
-import PrivateRoute from "./components/privaterroute/PrivateRoute"; 
+import PrivateRoute from "./components/privaterroute/PrivateRoute";
+import { FaqProvider } from "./context/FaqContext";
+import FAQPage from "./pages/FAQ/FAQPage";
 
 const router = createBrowserRouter([
   {
@@ -41,13 +43,14 @@ const router = createBrowserRouter([
       { path: "cart", Component: CartPage },
       { path: "cart/checkout", Component: Checkout },
       { path: "wish-list", Component: WishList },
+      { path: "/faq/:section-title/:title?", Component: FAQPage },
       // { path: "order-history", Component: OrderTable },
       // { path: "order-details/:orderid", Component: OrderDetailsPage },
       // { path: "track-order", Component: TrackOrderPage },
       // { path: "return-order", Component: TrackOrderPage },
       // { path: "modify-order", Component: TrackOrderPage },
-       // 🔐 Protected Routes wrapped in PrivateRoute
-       {
+      // 🔐 Protected Routes wrapped in PrivateRoute
+      {
         Component: PrivateRoute,
         children: [
           { path: "order-history", Component: OrderTable },
@@ -73,16 +76,18 @@ const router = createBrowserRouter([
 function App() {
   return (
     <AuthProvider>
-    <CategoryProvider>
-      <ProductProvider>
-        <CartProvider>
-          <OrderProvider>
-            <RouterProvider router={router} />
-          </OrderProvider>
-        </CartProvider>
-      </ProductProvider>
-    </CategoryProvider>
-  </AuthProvider>
+      <CategoryProvider>
+        <ProductProvider>
+          <CartProvider>
+            <OrderProvider>
+              <FaqProvider>
+                <RouterProvider router={router} />
+              </FaqProvider>
+            </OrderProvider>
+          </CartProvider>
+        </ProductProvider>
+      </CategoryProvider>
+    </AuthProvider>
   );
 }
 

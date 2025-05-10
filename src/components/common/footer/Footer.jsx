@@ -1,15 +1,67 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import logo from "../../../assets/ProEdgeLogo.png";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 const Footer = () => {
+
+  const [footer, setFooter] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const ALL_FOOTER_QUERY = `
+  query{
+    Footer{
+      id
+      footer_title
+      contact_number
+      fax
+      phone_no
+      email
+      location_title
+      location_url
+    }
+  }
+  `;
+  const fetchFooter = async () => {
+    setLoading(true);
+    setError(null);
+    try{
+      const response = await axios.post(
+        `${import.meta.env.VITE_SERVER_URL}/graphql`,
+        {
+          query: ALL_FOOTER_QUERY,
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      if (response.data.errors) {
+        throw new Error(response.data.errors[0].message);
+      }
+      setFooter(response.data.data.Footer || []);
+    } catch (error) {
+      console.error("GraphQL fetch error:", error);
+      setError(error.message);
+      setLoading(false);
+    }
+    finally{
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchFooter();
+  }, []);
+
+
   const infoLinks = ["Products", "Videos", "Tech help", "Contact Us"];
 
   const contactInfo = [
-    { label: "Text", value: "678-986-0346", href: "tel:6789860346" },
-    { label: "Phone", value: "(236) 461-2622", href: "tel:2364612622" },
-    { label: "Fax", value: "(236) 461-2622", href: "fax:2364612622" },
-    { label: "Email", value: "info@divihardware.com", href: "mailto:info@divihardware.com" },
+    { label: "Text", value: footer?.phone_no, href: `sms:${footer?.phone_no}` },
+    { label: "Phone", value: footer?.phone_no, href: `tel:${footer?.phone_no}` }, 
+    { label: "Fax", value: footer?.fax, href: `fax:${footer?.fax}` },
+    { label: "Email", value: footer?.email, href: `mailto:${footer?.email}` },
   ];
 
   return (
@@ -22,7 +74,7 @@ const Footer = () => {
           </div>
           <div>
             <p className="text-white text-sm md:text-[16px] leading-4 md:leading-7">
-              Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+              {footer?.footer_title}
             </p>
           </div>
           <div className="relative">
@@ -61,7 +113,7 @@ const Footer = () => {
         <div className="w-[292px] h-40 md:h-48 flex flex-col justify-between items-start text-white text-sm md:text-[16px] leading-3 md:leading-6">
           <h1 className="text-xl md:text-2xl font-medium leading-[30px]">Warehouse Location</h1>
           <h3 className="font-semibold">Location</h3>
-          <p>1234 Divi St. San Francisco, CA 93145</p>
+          <p>{footer?.location_title}</p>
           <h3 className="font-semibold">Open</h3>
           <p>Mon-Fri 8:00am-5:00pm (est)</p>
         </div>
