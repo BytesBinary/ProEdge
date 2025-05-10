@@ -1,11 +1,11 @@
-import React, { useContext, useState, useEffect, use } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import { CartContext } from "../../context/CartContext";
 import Price from "./deliveryInfo/Price";
 import ShippingInfo from "./deliveryInfo/ShippingInfo";
 import DeliveryInfocard from "./deliveryInfo/DeliveryInfocard";
-import StockQuantity from "./deliveryInfo/StockQuantity";
 import InfoItem from "./deliveryInfo/InfoItem";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useOrderContext } from "../../context/OrderContext";
 
 const DeliveryInfo = ({
   product,
@@ -18,22 +18,30 @@ const DeliveryInfo = ({
   stock,
   sku,
 }) => {
-  const {
-    cartItems,
-    addToCart,
-    isInWishlist,
-    addToWishlist,
-    removeFromWishlist,
-    quantity,
-    setQuantity,
-  } = useContext(CartContext);
+  const { cartItems, addToCart, quantity, setQuantity } =
+    useContext(CartContext);
+
+  const { fetchSettingsGraphQL } = useOrderContext();
 
   const [isInCart, setIsInCart] = useState(false);
   const [cartItem, setCartItem] = useState(null);
+  const [deliverLocationData, setDeliverLocationData] = useState(null);
 
-  const navigate=useNavigate();
-
+  const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    const fetchDeliveryData = async () => {
+      try {
+        const data = await fetchSettingsGraphQL();
+        setDeliverLocationData(data);
+      } catch (error) {
+        console.error("Error fetching delivery location data:", error);
+      }
+    };
+
+    fetchDeliveryData();
+  }, [fetchSettingsGraphQL]);
 
   useEffect(() => {
     const item = cartItems.find((item) => item.variationId === variationId);
@@ -44,18 +52,18 @@ const DeliveryInfo = ({
     } else {
       setQuantity(1);
     }
-  }, [cartItems, variationId]);
+  }, [cartItems, variationId, setQuantity]);
 
   const numericPrice =
-  typeof offer_price === "string"
-    ? parseFloat(offer_price.replace(/[^0-9.]/g, ""))
-    : Number(offer_price);
+    typeof offer_price === "string"
+      ? parseFloat(offer_price.replace(/[^0-9.]/g, ""))
+      : Number(offer_price);
 
   const numericOriginalPrice = originalPrice
-  ? typeof originalPrice === "string"
-    ? parseFloat(originalPrice.replace(/[^0-9.]/g, ""))
-    : Number(originalPrice)
-  : null;
+    ? typeof originalPrice === "string"
+      ? parseFloat(originalPrice.replace(/[^0-9.]/g, ""))
+      : Number(originalPrice)
+    : null;
 
   const handleAddToCart = () => {
     const itemToAdd = {
@@ -63,8 +71,8 @@ const DeliveryInfo = ({
       variationId,
       title: product.title,
       variation_name,
-      offer_price: parseFloat(offer_price),
-      price: originalPrice ? parseFloat(originalPrice) : null,
+      offer_price: numericPrice,
+      price: numericOriginalPrice,
       quantity,
       sku,
       image: imageId,
@@ -86,7 +94,7 @@ const DeliveryInfo = ({
 
     setQuantity(numQuantity);
 
-    if (isInCart) {
+    if (isInCart && cartItem) {
       const updatedItem = {
         ...cartItem,
         quantity: numQuantity,
@@ -94,7 +102,6 @@ const DeliveryInfo = ({
       addToCart(updatedItem);
     }
   };
-
 
   // Button Component
   const Button = ({
@@ -116,6 +123,118 @@ const DeliveryInfo = ({
     );
   };
 
+  const StockQuantity = ({ stockData }) => {
+    const [inputValue, setInputValue] = useState(stockData.selectedQuantity.toString());
+    const [showDropdown, setShowDropdown] = useState(false);
+    const dropdownRef = useRef(null);
+    const inputRef = useRef(null);
+  
+    // Close dropdown when clicking outside
+    useEffect(() => {
+      const handleClickOutside = (event) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+          setShowDropdown(false);
+        }
+      };
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+  
+    // Handle input change
+    const handleInputChange = (e) => {
+      const value = e.target.value;
+      setInputValue(value);
+      const numValue = parseInt(value);
+      if (!isNaN(numValue)) {
+        stockData.onQuantityChange(Math.max(1, numValue)); // Ensure at least 1
+      }
+    };
+  
+    // Handle quantity selection from dropdown
+    const handleSelectQuantity = (qty) => {
+      setInputValue(qty.toString());
+      stockData.onQuantityChange(qty);
+      setShowDropdown(false);
+      inputRef.current?.focus();
+    };
+  
+    // Validate on blur
+    const handleInputBlur = () => {
+      const numValue = parseInt(inputValue);
+      if (isNaN(numValue) || numValue <= 0) {
+        const fallback = stockData.quantities[0] || 1;
+        setInputValue(fallback.toString());
+        stockData.onQuantityChange(fallback);
+      }
+    };
+  
+    return (
+      <div className="space-y-3 relative">
+        <p className={`${stockData.status === "In Stock" ? "text-blue-600" : "text-red-600"} font-medium text-sm`}>
+          {stockData.status}
+        </p>
+  
+        {stockData.status === "In Stock" && stockData.quantities.length > 0 && (
+          <div className="relative">
+            <div className="relative">
+              <input
+                ref={inputRef}
+                type="number"
+                min="1"
+                value={inputValue}
+                onChange={handleInputChange}
+                onBlur={handleInputBlur}
+                onFocus={() => setShowDropdown(true)}
+                className="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm transition-all pr-10"
+                placeholder="Enter quantity"
+                disabled={stockData.disabled}
+              />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-0 flex items-center pr-3 focus:outline-none"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setShowDropdown(!showDropdown);
+                  inputRef.current?.focus();
+                }}
+                disabled={stockData.disabled}
+              >
+                <svg 
+                  className={`w-4 h-4 text-gray-400 transition-transform ${showDropdown ? 'rotate-180' : ''} ${stockData.disabled ? 'opacity-50' : ''}`}
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+            </div>
+            
+            {showDropdown && (
+              <div 
+                ref={dropdownRef}
+                className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto"
+              >
+                {stockData.quantities.map((qty) => (
+                  <button
+                    key={qty}
+                    type="button"
+                    className={`w-full text-left px-4 py-2 text-sm hover:bg-blue-50 cursor-pointer ${
+                      parseInt(inputValue) === qty ? 'bg-blue-100' : ''
+                    }`}
+                    onClick={() => handleSelectQuantity(qty)}
+                  >
+                    {qty}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  };
+  
   // Prepare data for components
   const buttons = [
     {
@@ -131,101 +250,61 @@ const DeliveryInfo = ({
       bgColor: "bg-[#3F66BC]",
       hoverColor: "hover:bg-[#3F66BC]/80",
       textColor: "text-white",
-      onClick: cartItems.length > 0 ? () => navigate("/cart/checkout") : null,
-
+      onClick: cartItems.length > 0 ? () => navigate("/cart/checkout") : disabled,
+      onClick: () => navigate("/cart/checkout"),
+      disabled: !isInCart,
     },
   ];
-
-  const StockQuantity = ({ stockData }) => {
-    return (
-      <div>
-        <p
-          className={`${
-            stockData.status === "In Stock" ? "text-[#3F66BC]" : "text-red-500"
-          } font-medium`}
-        >
-          {stockData.status}
-        </p>
-        {stockData.status === "In Stock" && stockData.quantities.length > 0 && (
-          <select
-            className="mt-2 border rounded p-1 w-full"
-            value={stockData.selectedQuantity}
-            onChange={(e) =>
-              stockData.onQuantityChange(parseInt(e.target.value))
-            }
-            disabled={stockData.disabled}
-          >
-            {stockData.quantities.map((qty) => (
-              <option key={qty} value={qty}>
-                {qty}
-              </option>
-            ))}
-          </select>
-        )}
-      </div>
-    );
-  };
 
   const priceData = {
     dollar: "$",
     whole: Math.floor(numericPrice),
-    cents: (numericPrice).toFixed(2).split(".")[1],
+    cents: numericPrice.toFixed(2).split(".")[1],
     originalPrice: numericOriginalPrice
-      ? (numericOriginalPrice).toFixed(2)
+      ? numericOriginalPrice.toFixed(2)
       : null,
   };
 
-  const shippingInfo = {
-    title: "Get Fast,",
-    description: "Free Shipping on Orders Over $500.",
-  };
+  // const shippingInfo = {
+  //   title: "Get Fast,",
+  //   description: "Free Shipping on Orders Over $500.",
+  // };
 
-  const deliveryInfo = {
-    title: "Delivery",
-    date: "Thursday, April 3",
-    location: "Deliver to New York 10001",
-  };
-
-  const stockData = {
-    status: stock > 0 ? "In Stock" : "Out of Stock",
-    quantities: [...Array(Math.min(stock, 15))].map((_, i) => i + 1),
-    selectedQuantity: quantity,
-    onQuantityChange: handleQuantityChange,
-    disabled: stock <= 0,
-  };
+  
 
   return (
     <div className="max-w-xs w-full rounded-xl border-2 border-[#ECF0F9] bg-[#F8F9FB] p-4 space-y-4">
-    {/* Price Section */}
-    <Price priceData={priceData} />
-  
-    {/* Delivery Information */}
-    <DeliveryInfocard deliveryInfo={deliveryInfo} />
-  
-    {/* Stock and Quantity Selector */}
-    {stock > 0 && <StockQuantity  stockData={stockData} /> }
-  
-    {/* Cart Quantity Indicator */}
-    {isInCart && (
-      <div className="text-center text-sm text-green-600">
-        {quantity} in cart
+      <Price priceData={priceData} />
+      {/* <ShippingInfo shippingInfo={shippingInfo} /> */}
+      <DeliveryInfocard  />
+      <StockQuantity
+        stockData={{
+          status: stock > 0 ? "In Stock" : "Out of Stock",
+          quantities: [1, 2, 3, 4, 5, 10, 15],
+          selectedQuantity: quantity,
+          onQuantityChange: handleQuantityChange,
+          disabled: stock <= 0,
+        }}
+      />
+
+      {isInCart && (
+        <div className="text-center text-sm text-green-600">
+          {quantity} in cart
+        </div>
+      )}
+
+      <div className="space-y-2">
+        {buttons.map((button, index) => (
+          <Button key={index} {...button} />
+        ))}
       </div>
-    )}
-  
-    {/* Action Buttons */}
-    <div className="space-y-2">
-      {buttons.map((button, index) => (
-        <Button key={index} {...button} />
-      ))}
+
+      <div className="text-xs text-[#5D6576] space-y-1">
+        {infoItems.map((item, index) => (
+          <InfoItem key={index} label={item.label} value={item.value} />
+        ))}
+      </div>
     </div>
-  
-    {/* Additional Info Items */}
-    <div className="text-xs text-[#5D6576] space-y-1">
-      {infoItems.map((item, index) => (
-        <InfoItem key={index} label={item.label} value={item.value} />
-      ))}
-    </div>
-  </div>
   );
 };
 

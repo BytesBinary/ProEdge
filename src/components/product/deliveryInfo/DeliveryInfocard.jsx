@@ -1,11 +1,137 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useOrderContext } from "../../../context/OrderContext";
 
 const DeliveryInfocard = ({ deliveryInfo }) => {
+  const [deliveryData, setDeliveryData] = useState(null);
+  const { fetchSettingsGraphQL } = useOrderContext();
+const [nearestLocation, setNearestLocation] = useState("Calculating...");
+
+useEffect(() => {
+  getNearestLocation().then(setNearestLocation);
+}, [deliveryData]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchSettingsGraphQL();
+        setDeliveryData(data);
+      } catch (error) {
+        console.error("Error fetching delivery data:", error);
+      }
+    };
+    fetchData();
+  }, [fetchSettingsGraphQL]);
+
+  // Calculate estimated delivery date
+  const getDeliveryDate = () => {
+    if (!deliveryData?.Shipping_days) return "";
+    
+    const shippingDays = parseInt(deliveryData.Shipping_days);
+    const deliveryDate = new Date();
+    deliveryDate.setDate(deliveryDate.getDate() + shippingDays);
+    
+    return deliveryDate.toLocaleDateString('en-US', {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
+  const getNearestLocation = async () => {
+    if (!deliveryData?.delivery_address?.geometries?.length) {
+      return "Loading locations...";
+    }
+  
+    try {
+      // 1. Get user's current location
+      const userPosition = await new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject, {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 0
+        });
+      });
+  
+      const userCoords = {
+        lat: userPosition.coords.latitude,
+        lng: userPosition.coords.longitude
+      };
+  
+      // 2. Find nearest delivery location
+      const locationsWithDistance = await Promise.all(
+        deliveryData.delivery_address.geometries.map(async (point) => {
+          const [lng, lat] = point.coordinates;
+          const distance = calculateDistance(userCoords.lat, userCoords.lng, lat, lng);
+          
+          // 3. Reverse geocode each delivery point
+          const address = await reverseGeocode(lat, lng);
+          
+          return {
+            coordinates: point.coordinates,
+            distance,
+            address: address || `Location (${lat.toFixed(4)}, ${lng.toFixed(4)})`
+          };
+        })
+      );
+  
+      // 4. Sort by distance and return nearest
+      locationsWithDistance.sort((a, b) => a.distance - b.distance);
+      return locationsWithDistance[0].address;
+  
+    } catch (error) {
+      console.error("Location error:", error);
+      // Fallback: Return first location's coordinates if geolocation fails
+      const [lng, lat] = deliveryData.delivery_address.geometries[0].coordinates;
+      return `Approximate location: ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+    }
+  };
+  
+  // Reverse geocoding using Nominatim
+  async function reverseGeocode(lat, lng) {
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
+      );
+      const data = await response.json();
+      
+      if (data.address) {
+        // Format address based on available components
+        const { city, town, village, county, state, country } = data.address;
+        return [city || town || village || county, state, country]
+          .filter(Boolean)
+          .join(", ");
+      }
+      return null;
+    } catch (error) {
+      console.error("Geocoding error:", error);
+      return null;
+    }
+  }
+  
+  // Haversine distance calculation
+  function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Earth radius in km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(lat1 * Math.PI / 180) * 
+      Math.cos(lat2 * Math.PI / 180) * 
+      Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+  }
+  if (!deliveryData) {
+    return <div>Loading delivery information...</div>;
+  }
+
   return (
     <div className="flex flex-col h-[44px] justify-between">
       <h1 className="text-sm leading-[18px] text-[#182B55]">
-        {deliveryInfo.title ?? ""}{" "}
-        <span className="font-medium text-[#000000]">{deliveryInfo.date}</span>
+         Delivery:{" "}
+        <span className="font-medium text-[#000000]">
+          {getDeliveryDate()}
+        </span>
       </h1>
       <div className="flex items-center">
         <svg
@@ -32,7 +158,7 @@ const DeliveryInfocard = ({ deliveryInfo }) => {
           </defs>
         </svg>
         <p className="ml-1 text-[#3F66BC] text-[10px] leading-[18px] font-medium">
-          {deliveryInfo.location}
+        Deliver to  {nearestLocation}
         </p>
       </div>
     </div>

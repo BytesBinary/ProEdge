@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState,useRef } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import { CategoryContext } from "../../context/CategoryContext";
 import { formatCategoryName } from "../../helper/slugifier/slugify";
 import { useLocation } from "react-router-dom";
@@ -13,29 +13,38 @@ const ToggleSection = ({ title, children, isOpen, setIsOpen }) => (
     >
       <h2 className="text-lg font-medium text-[#182B55] leading-6">{title}</h2>
       <svg
-        className={`w-4 h-4 transform transition-transform ${isOpen ? "rotate-180" : ""}`}
+        className={`w-4 h-4 transform transition-transform ${
+          isOpen ? "rotate-180" : ""
+        }`}
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
       >
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          d="M19 9l-7 7-7-7"
+        />
       </svg>
     </div>
-    {isOpen && <div className="space-y-4 pt-3 border-t-2 border-[#ECF0F9]">{children}</div>}
+    {isOpen && (
+      <div className="space-y-4 pt-3 border-t-2 border-[#ECF0F9]">
+        {children}
+      </div>
+    )}
   </div>
 );
 
 // Reusable Checkbox with proper state management
-const Checkbox = ({ id, label,toggle,onChange }) => {
-
-
+const Checkbox = ({ id, label, checked, onChange }) => {
   return (
     <div className="flex items-center gap-2">
       <input
         type="checkbox"
         id={id}
         className="peer form-checkbox text-[#3F66BC]"
-        checked={toggle}  
+        checked={checked}
         onChange={onChange}
       />
       <label
@@ -47,10 +56,9 @@ const Checkbox = ({ id, label,toggle,onChange }) => {
     </div>
   );
 };
-const CheckboxUsa = ({ id, label, }) => {
-  const {isMadeUsa,setIsmadeUsa} = useProductContext();
 
-  console.log(onchange,"onchange");
+const CheckboxUsa = ({ id, label }) => {
+  const { isMadeUsa, setIsMadeUsa } = useProductContext();
 
   return (
     <div className="flex items-center gap-2">
@@ -58,8 +66,8 @@ const CheckboxUsa = ({ id, label, }) => {
         type="checkbox"
         id={id}
         className="peer form-checkbox text-[#3F66BC]"
-        checked={isMadeUsa  }  
-        onChange={()=>{setIsmadeUsa(!isMadeUsa)}} 
+        checked={isMadeUsa}
+        onChange={() => setIsMadeUsa(!isMadeUsa)}
       />
       <label
         htmlFor={id}
@@ -70,24 +78,26 @@ const CheckboxUsa = ({ id, label, }) => {
     </div>
   );
 };
-const PriceRange = ({ isOpen, setIsOpen,  }) => {
- 
+
+const PriceRange = ({ isOpen, setIsOpen }) => {
   const [activeThumb, setActiveThumb] = useState(null);
   const containerRef = useRef(null);
   const minThumbRef = useRef(null);
   const maxThumbRef = useRef(null);
 
-  const {minPrice, setMinPrice, maxPrice, setMaxPrice, maxRangeLimit} = useProductContext();
+  const { minPrice, setMinPrice, maxPrice, setMaxPrice, maxRangeLimit } =
+    useProductContext();
 
   useEffect(() => {
     setMaxPrice(maxRangeLimit);
-  }, [maxRangeLimit]);
+  }, [maxRangeLimit, setMaxPrice]);
 
   const handleMouseDown = (thumb) => {
     setActiveThumb(thumb);
   };
 
   const calculateValue = (clientX) => {
+    if (!containerRef.current) return 0;
     const rect = containerRef.current.getBoundingClientRect();
     const x = clientX - rect.left;
     let percentage = (x / rect.width) * 100;
@@ -97,10 +107,10 @@ const PriceRange = ({ isOpen, setIsOpen,  }) => {
 
   const handleMouseMove = (e) => {
     if (!activeThumb || !containerRef.current) return;
-    
+
     const newValue = calculateValue(e.clientX);
-    
-    if (activeThumb === 'min') {
+
+    if (activeThumb === "min") {
       const clampedValue = Math.min(newValue, maxPrice - 1);
       setMinPrice(clampedValue);
     } else {
@@ -114,15 +124,19 @@ const PriceRange = ({ isOpen, setIsOpen,  }) => {
   };
 
   const handleTouchMove = (e) => {
-    handleMouseMove(e.touches[0]);
+    if (e.touches.length > 0) {
+      handleMouseMove(e.touches[0]);
+    }
   };
 
-  const handleMinChange = (value) => {
+  const handleMinChange = (e) => {
+    const value = Number(e.target.value);
     const newValue = Math.min(Math.max(0, value), maxPrice - 1);
     setMinPrice(newValue);
   };
 
-  const handleMaxChange = (value) => {
+  const handleMaxChange = (e) => {
+    const value = Number(e.target.value);
     const newValue = Math.max(Math.min(maxRangeLimit, value), minPrice + 1);
     setMaxPrice(newValue);
   };
@@ -132,18 +146,39 @@ const PriceRange = ({ isOpen, setIsOpen,  }) => {
 
   return (
     <div className="p-4 w-64 bg-[#F8F9FB] border-[1.5px] border-[#ECF0F9] rounded-[8px]">
-      {/* Header remains the same */}
+      <div
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center justify-between cursor-pointer select-none"
+      >
+        <h2 className="text-lg font-medium text-[#182B55] leading-6">Price Range</h2>
+        <svg
+          className={`w-4 h-4 transform transition-transform ${
+            isOpen ? "rotate-180" : ""
+          }`}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M19 9l-7 7-7-7"
+          />
+        </svg>
+      </div>
 
       {isOpen && (
         <div className="mt-4 space-y-4">
-          {/* Input fields */}
           <div className="flex gap-2">
             <div className="flex-1">
-              <label className="block text-sm text-[#182B55] font-medium mb-1">Min Price</label>
+              <label className="block text-sm text-[#182B55] font-medium mb-1">
+                Min Price
+              </label>
               <input
                 type="number"
                 value={minPrice}
-                onChange={(e) => handleMinChange(Number(e.target.value))}
+                onChange={handleMinChange}
                 className="w-full px-3 py-2 border border-[#ECF0F9] rounded-md text-[#5D6576]"
                 min={0}
                 max={maxPrice - 1}
@@ -151,11 +186,13 @@ const PriceRange = ({ isOpen, setIsOpen,  }) => {
             </div>
             <div className="flex items-end text-[#3F66BC]">–</div>
             <div className="flex-1">
-              <label className="block text-sm text-[#182B55] font-medium mb-1">Max Price</label>
+              <label className="block text-sm text-[#182B55] font-medium mb-1">
+                Max Price
+              </label>
               <input
                 type="number"
                 value={maxPrice}
-                onChange={(e) => handleMaxChange(Number(e.target.value))}
+                onChange={handleMaxChange}
                 className="w-full px-3 py-2 border border-[#ECF0F9] rounded-md text-[#5D6576]"
                 min={minPrice + 1}
                 max={maxRangeLimit}
@@ -163,8 +200,7 @@ const PriceRange = ({ isOpen, setIsOpen,  }) => {
             </div>
           </div>
 
-          {/* Slider container */}
-          <div 
+          <div
             className="relative h-10"
             ref={containerRef}
             onMouseMove={handleMouseMove}
@@ -173,10 +209,8 @@ const PriceRange = ({ isOpen, setIsOpen,  }) => {
             onTouchMove={handleTouchMove}
             onTouchEnd={handleMouseUp}
           >
-            {/* Track */}
             <div className="absolute top-1/2 left-0 right-0 h-1 bg-[#ECF0F9] rounded-full -translate-y-1/2" />
 
-            {/* Active range */}
             <div
               className="absolute top-1/2 h-1 bg-blue-500 rounded-full -translate-y-1/2"
               style={{
@@ -185,22 +219,20 @@ const PriceRange = ({ isOpen, setIsOpen,  }) => {
               }}
             />
 
-            {/* Min thumb */}
             <div
               ref={minThumbRef}
               className="absolute w-4 h-4 bg-white border-2 border-blue-500 rounded-full top-1/2 -translate-y-1/2 cursor-pointer shadow-sm"
               style={{ left: `${minPosition}%` }}
-              onMouseDown={() => handleMouseDown('min')}
-              onTouchStart={() => handleMouseDown('min')}
+              onMouseDown={() => handleMouseDown("min")}
+              onTouchStart={() => handleMouseDown("min")}
             />
 
-            {/* Max thumb */}
             <div
               ref={maxThumbRef}
               className="absolute w-4 h-4 bg-white border-2 border-blue-500 rounded-full top-1/2 -translate-y-1/2 cursor-pointer shadow-sm"
               style={{ left: `${maxPosition}%` }}
-              onMouseDown={() => handleMouseDown('max')}
-              onTouchStart={() => handleMouseDown('max')}
+              onMouseDown={() => handleMouseDown("max")}
+              onTouchStart={() => handleMouseDown("max")}
             />
           </div>
 
@@ -218,45 +250,19 @@ const Filter = ({ onClose }) => {
   const [isPriceOpen, setIsPriceOpen] = useState(true);
   const [isMadeInUSAOpen, setIsMadeInUSAOpen] = useState(true);
   const [isItemOpen, setIsItemOpen] = useState(true);
-  const [fastShipping, setFastShipping] = useState(true);
-  const { categories,singleCategory, setSingleCategory} = useContext(CategoryContext); 
-
+  const [fastShipping, setFastShipping] = useState(false);
+  const [formattedCategories, setFormattedCategories] = useState([]);
+  
+  const { categories, singleCategory, setSingleCategory } = useContext(CategoryContext);
   const location = useLocation();
-  const queryParams = new URLSearchParams(location.search); 
-  useEffect(() => {
+  const queryParams = new URLSearchParams(location.search);
+
+  const toggleMatchingCategories = (formatted) => {
     const parentSlug = queryParams.get("parent_category");
     const subSlug = queryParams.get("sub_category");
     const childSlug = queryParams.get("child_category");
-
-    const formatCategories = (categories) => {
-      const processCategory = (category) => {
-        const name =
-          category.category_name ||
-          category.child_category_name ||
-          category.subcategory_name ||
-          "";
-        const slug = `${formatCategoryName(name)}-${category.id}`;
-        const newCategory = {
-          ...category,
-          slug,
-          toggle: false,
-        };
-        if (category.sub_category) {
-          newCategory.sub_category = category.sub_category.map(processCategory);
-        }
-        if (category.child_category) {
-          newCategory.child_category = category.child_category.map(processCategory);
-        }
-        return newCategory;
-      };
-      return categories.map(processCategory);
-    };
-
-    const formatted = formatCategories(categories || []);
-
-    formatted.forEach((parent) => {
-
-      
+    
+    return formatted.map((parent) => {
       let parentHasMatch = false;
 
       if (parentSlug) {
@@ -264,7 +270,7 @@ const Filter = ({ onClose }) => {
         parentHasMatch = parent.toggle;
       }
 
-      parent.sub_category?.forEach((sub) => {
+      const subCategories = parent.sub_category?.map((sub) => {
         let subHasMatch = false;
 
         if (subSlug) {
@@ -272,17 +278,18 @@ const Filter = ({ onClose }) => {
           subHasMatch = sub.toggle;
         }
 
-        if (childSlug) {
-          sub.child_category?.forEach((child) => {
-            if (child.slug === childSlug) {
-              child.toggle = true;
+        const childCategories = sub.child_category?.map((child) => {
+          if (childSlug) {
+            child.toggle = child.slug === childSlug;
+            if (child.toggle) {
               subHasMatch = true;
               parentHasMatch = true;
-            } else {
-              child.toggle = false;
             }
-          });
-        }
+          } else {
+            child.toggle = false;
+          }
+          return child;
+        });
 
         if (subSlug) {
           sub.toggle = sub.slug === subSlug;
@@ -290,6 +297,12 @@ const Filter = ({ onClose }) => {
         } else {
           sub.toggle = subHasMatch;
         }
+
+        return {
+          ...sub,
+          child_category: childCategories,
+          toggle: sub.toggle
+        };
       });
 
       if (parentSlug) {
@@ -297,80 +310,126 @@ const Filter = ({ onClose }) => {
       } else {
         parent.toggle = parentHasMatch;
       }
-    });
 
-    const matched = formatted.find((p) => p.toggle);
-    setSingleCategory(matched || null);
+      return {
+        ...parent,
+        sub_category: subCategories,
+        toggle: parent.toggle
+      };
+    });
+  };
+
+  const formatCategories = (categories) => {
+    const processCategory = (category) => {
+      const name =
+        category.category_name ||
+        category.child_category_name ||
+        category.subcategory_name ||
+        "";
+      const slug = `${formatCategoryName(name)}-${category.id}`;
+      const newCategory = {
+        ...category,
+        slug,
+        toggle: false,
+      };
+      if (category.sub_category) {
+        newCategory.sub_category = category.sub_category.map(processCategory);
+      }
+      if (category.child_category) {
+        newCategory.child_category = category.child_category.map(processCategory);
+      }
+      return newCategory;
+    };
+    return categories.map(processCategory);
+  };
+
+  useEffect(() => {
+    if (!categories) return;
+
+    const formatted = formatCategories(categories);
+    const withToggles = toggleMatchingCategories(formatted);
+    setFormattedCategories(withToggles);
+
+    const matchedParent = withToggles.find((p) => p.toggle);
+    setSingleCategory(matchedParent || null);
   }, [location.search, categories, setSingleCategory]);
 
   const handleCategoryToggle = (level, id, parentId = null) => {
-    setSingleCategory(prev => {
-      // Create deep copy of the category object
-      const updatedCategory = JSON.parse(JSON.stringify(prev));
-      
-      if (level === 'parent') {
-        // Toggle only the parent category
-        updatedCategory.toggle = !updatedCategory.toggle;
-        
-        // If parent is being unchecked, uncheck all children
-        if (!updatedCategory.toggle) {
-          updatedCategory.sub_category?.forEach(sub => {
-            sub.toggle = false;
-            sub.child_category?.forEach(child => {
-              child.toggle = false;
-            });
-          });
+    setFormattedCategories(prevCategories => {
+      const updatedCategories = prevCategories.map(category => {
+        // For parent level
+        if (level === "parent") {
+          const isToggled = category.id === id;
+          return {
+            ...category,
+            toggle: isToggled,
+            sub_category: category.sub_category?.map(sub => ({
+              ...sub,
+              toggle: false,
+              child_category: sub.child_category?.map(child => ({
+                ...child,
+                toggle: false
+              }))
+            }))
+          };
         }
-      } 
-      else if (level === 'sub') {
-        // Find and toggle the sub-category
-        const subIndex = updatedCategory.sub_category?.findIndex(sub => sub.id === id);
-        if (subIndex !== -1 && subIndex !== undefined) {
-          updatedCategory.sub_category[subIndex].toggle = 
-            !updatedCategory.sub_category[subIndex].toggle;
-          
-          // If sub-category is being unchecked, uncheck its children
-          if (!updatedCategory.sub_category[subIndex].toggle) {
-            updatedCategory.sub_category[subIndex].child_category?.forEach(child => {
-              child.toggle = false;
-            });
-          }
-          // If sub-category is being checked, ensure parent is checked
-          else {
-            updatedCategory.toggle = true;
-          }
+
+        // For sub level
+        if (level === "sub" && category.id === parentId) {
+          return {
+            ...category,
+            sub_category: category.sub_category?.map(sub => ({
+              ...sub,
+              toggle: sub.id === id,
+              child_category: sub.child_category?.map(child => ({
+                ...child,
+                toggle: false
+              }))
+            }))
+          };
         }
-      } 
-      else if (level === 'child') {
-        // Find and toggle the child category
-        for (const sub of updatedCategory.sub_category || []) {
-          const childIndex = sub.child_category?.findIndex(child => child.id === id);
-          if (childIndex !== -1 && childIndex !== undefined) {
-            sub.child_category[childIndex].toggle = 
-              !sub.child_category[childIndex].toggle;
-            
-            // If child is being checked, ensure sub and parent are checked
-            if (sub.child_category[childIndex].toggle) {
-              sub.toggle = true;
-              updatedCategory.toggle = true;
-            }
-            break;
-          }
+
+        // For child level
+        if (level === "child") {
+          return {
+            ...category,
+            sub_category: category.sub_category?.map(sub => {
+              if (sub.id === parentId) {
+                return {
+                  ...sub,
+                  child_category: sub.child_category?.map(child => ({
+                    ...child,
+                    toggle: child.id === id
+                  }))
+                };
+              }
+              return sub;
+            })
+          };
         }
-      }
-      
-      return updatedCategory;
+
+        return category;
+      });
+
+      // Find and set the single category that matches the toggled state
+      const matchedParent = updatedCategories.find(cat => cat.toggle) || 
+                           updatedCategories.find(cat => 
+                             cat.sub_category?.some(sub => sub.toggle)
+                           );
+      setSingleCategory(matchedParent || null);
+
+      return updatedCategories;
     });
   };
 
   // Calculate total stock for parent category by summing all sub-category stocks
-  const parentTotalStock = singleCategory?.sub_category?.reduce((sum, sub) => {
-    return sum + (sub.total_stock || 0);
-  }, 0) || 0;
+  const parentTotalStock = singleCategory?.sub_category?.reduce(
+    (sum, sub) => sum + (sub.total_stock || 0),
+    0
+  ) || 0;
 
   return (
     <div className="w-[282px] bg-white space-y-6 h-screen lg:h-auto overflow-y-auto">
-      {/* Filter Header */}
       <div className="space-y-2">
         <div className="flex justify-between items-center">
           <h2 className="font-semibold text-2xl text-[#182B55] leading-8 px-5 md:px-0 pt-5 md:pt-0">
@@ -385,88 +444,128 @@ const Filter = ({ onClose }) => {
         </div>
       </div>
 
-      {/* Fast Shipping Toggle */}
       <div className="border border-[#ECF0F9] rounded-[8px] px-3 py-[14px] flex items-center space-x-2 bg-[#F8F9FB]">
-        <input 
-          type="checkbox" 
-          checked={fastShipping} 
+        <input
+          type="checkbox"
+          checked={fastShipping}
           onChange={(e) => setFastShipping(e.target.checked)}
-          className="bg-[#3F66BC] w-4 h-4" 
+          className="bg-[#3F66BC] w-4 h-4"
         />
         <label className="text-[16px] leading-5 text-[#182B55] font-medium cursor-pointer">
           Fast Shipping
         </label>
       </div>
 
-      {/* Categories Section */}
-      <ToggleSection 
-        title="Categories" 
-        isOpen={isCategoriesOpen} 
-        setIsOpen={setIsCategoriesOpen}
-      ><p className="text-[16px] leading-5 text-[#1748b1] font-medium cursor-pointer">  
-        {singleCategory?.category_name}
-        
-          </p>
-      </ToggleSection>
-      <ToggleSection 
-        title="Categories" 
-        isOpen={isCategoriesOpen} 
+      <ToggleSection
+        title="Parent Categories"
+        isOpen={isCategoriesOpen}
         setIsOpen={setIsCategoriesOpen}
       >
-        {singleCategory && (
+        <div className="text-[16px] leading-5 text-[#1748b1] font-medium cursor-pointer flex flex-col gap-y-4">
+          {formattedCategories.map((category) => (
+            <div key={category.id} className="cursor-pointer">
+              <Checkbox
+                id={`parent-${category.id}`}
+                label={`${category.category_name} (${category.total_stock || 0})`}
+                checked={category.toggle}
+                onChange={() => {
+                  handleCategoryToggle("parent", category.id);
+                  const url = new URL(window.location.href);
+                  if (category.toggle) {
+                    url.searchParams.delete("parent_category");
+                    url.searchParams.delete("sub_category");
+                    url.searchParams.delete("child_category");
+                  } else {
+                    url.searchParams.set("parent_category", category.slug);
+                    url.searchParams.delete("sub_category");
+                    url.searchParams.delete("child_category");
+                  }
+                  window.history.pushState({}, "", url);
+                }}
+              />
+            </div>
+          ))}
+        </div>
+      </ToggleSection>
+
+      {singleCategory && (
+        <ToggleSection
+          title="Sub Categories"
+          isOpen={isCategoriesOpen}
+          setIsOpen={setIsCategoriesOpen}
+        >
           <div key={singleCategory.id}>
-            {/* Parent Category Checkbox */}
-            <Checkbox
-              id={`parent-${singleCategory.id}`}
-              label={`${singleCategory.category_name} (${parentTotalStock})`}
-              toggle={singleCategory.toggle}
-              onChange={() => handleCategoryToggle('parent', singleCategory.id)}
-            />
-            
-            {/* Sub Categories */}
             {singleCategory.sub_category?.map((sub) => (
               <div key={sub.id} className="ml-4 mt-2">
-                {/* Sub-category Checkbox */}
                 <Checkbox
                   id={`sub-${sub.id}`}
                   label={`${sub.subcategory_name} (${sub.total_stock || 0})`}
-                  toggle={sub.toggle}
-                  onChange={() => handleCategoryToggle('sub', sub.id)}
+                  checked={sub.toggle}
+                  onChange={() => {
+                    handleCategoryToggle("sub", sub.id, singleCategory.id);
+                    const url = new URL(window.location.href);
+                    if (sub.toggle) {
+                      url.searchParams.delete("sub_category");
+                      url.searchParams.delete("child_category");
+                    } else {
+                      url.searchParams.set("parent_category", singleCategory.slug);
+                      url.searchParams.set("sub_category", sub.slug);
+                      url.searchParams.delete("child_category");
+                    }
+                    window.history.pushState({}, "", url);
+                  }}
                 />
-                
-                {/* Child Categories */}
+
                 <div className="ml-4 mt-2 space-y-2">
                   {sub.child_category?.map((child) => (
                     <Checkbox
                       key={child.id}
                       id={`child-${child.id}`}
-                      label={`${child.child_category_name} (${child.total_stock || 0})`}
-                      toggle={child.toggle}
-                      onChange={() => handleCategoryToggle('child', child.id, sub.id)}
+                      label={`${child.child_category_name} (${
+                        child.total_stock || 0
+                      })`}
+                      checked={child.toggle}
+                      onChange={() => {
+                        handleCategoryToggle("child", child.id, sub.id);
+                        const url = new URL(window.location.href);
+                        if (child.toggle) {
+                          url.searchParams.delete("child_category");
+                        } else {
+                          url.searchParams.set("parent_category", singleCategory.slug);
+                          url.searchParams.set("sub_category", sub.slug);
+                          url.searchParams.set("child_category", child.slug);
+                        }
+                        window.history.pushState({}, "", url);
+                      }}
                     />
                   ))}
                 </div>
               </div>
             ))}
           </div>
-        )}
+        </ToggleSection>
+      )}
+
+      <ToggleSection
+        title="Price"
+        isOpen={isPriceOpen}
+        setIsOpen={setIsPriceOpen}
+      >
+        <PriceRange isOpen={isPriceOpen} setIsOpen={setIsPriceOpen} />
       </ToggleSection>
 
-      {/* Price Range Filter */}
-      <ToggleSection title="Price" isOpen={isPriceOpen} setIsOpen={setIsPriceOpen}>
-  <PriceRange isOpen={isPriceOpen} setIsOpen={setIsPriceOpen} />
-</ToggleSection>
-
-      {/* Made in USA Filter */}
-      <ToggleSection title="Made in the USA" isOpen={isMadeInUSAOpen} setIsOpen={setIsMadeInUSAOpen}>
-        <CheckboxUsa id="usa" label="NO " />
+      <ToggleSection
+        title="Made in the USA"
+        isOpen={isMadeInUSAOpen}
+        setIsOpen={setIsMadeInUSAOpen}
+      >
+        <CheckboxUsa id="usa" label="Made in USA" />
       </ToggleSection>
 
-      {/* Item Type Filter */}
       <ToggleSection title="Item" isOpen={isItemOpen} setIsOpen={setIsItemOpen}>
-        <Checkbox id="reducing_bushing" label="Reducing Bushing (9)" />
-        <Checkbox id="bushing" label="Bushing (5)" />
-        <Checkbox id="reducer" label="Reducer Bushing (2)" />
+        <Checkbox id="reducing_bushing" label="Reducing Bushing (9)" checked={false} onChange={() => {}} />
+        <Checkbox id="bushing" label="Bushing (5)" checked={false} onChange={() => {}} />
+        <Checkbox id="reducer" label="Reducer Bushing (2)" checked={false} onChange={() => {}} />
       </ToggleSection>
     </div>
   );

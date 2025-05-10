@@ -13,6 +13,7 @@ import { CartContext } from "../../context/CartContext";
 const Category = () => {
   const [showFilter, setShowFilter] = useState(false);
   const [sortOption, setSortOption] = useState("Relevance");
+  const [totalProducts, setTotalProducts] = useState(0);
 
   const { wishlistItems } = useContext(CartContext);
   const { minPrice, maxPrice, isMadeUsa } = useProductContext();
@@ -37,50 +38,99 @@ const Category = () => {
       .replace(/-+/g, "-");      
   };
 
-  // Add slug to each product based on its category hierarchy
-  const productsWithSlugs = products.map((product) => {
-    const parentName =
-      product.product_category?.sub_category?.parent_category?.category_name ||
-      "";
-    const subName =
-      product.product_category?.sub_category?.subcategory_name || "";
-    const childName = product.product_category?.child_category_name || "";
+ // Add slug to each product based on its category hierarchy
+ const productsWithSlugs = products.map((product) => {
+  const parentName =
+    product.product_category?.sub_category?.parent_category?.category_name ||
+    "";
+  const subName =
+    product.product_category?.sub_category?.subcategory_name || "";
+  const childName = product.product_category?.child_category_name || "";
 
-    const parentId =
-      product.product_category?.sub_category?.parent_category?.id || "";
-    const subId = product.product_category?.sub_category?.id || "";
-    const childId = product.product_category?.id || "";
+  const parentId =
+    product.product_category?.sub_category?.parent_category?.id || "";
+  const subId = product.product_category?.sub_category?.id || "";
+  const childId = product.product_category?.id || "";
 
-    // Generate slugs for each part
-    const parentSlug = parentName
-      ? `${generateSlug(parentName)}-${parentId}`
-      : "";
-    const subSlug = subName ? `${generateSlug(subName)}-${subId}` : "";
-    const childSlug = childName ? `${generateSlug(childName)}-${childId}` : "";
+  // Generate slugs for each part
+  const parentSlug = parentName
+    ? `${generateSlug(parentName)}-${parentId}`
+    : "";
+  const subSlug = subName ? `${generateSlug(subName)}-${subId}` : "";
+  const childSlug = childName ? `${generateSlug(childName)}-${childId}` : "";
 
-    // Combine them to create the full product slug
-    const productSlug = [parentSlug, subSlug, childSlug]
-      .filter(Boolean)
-      .join("-");
+  // Combine them to create the full product slug
+  const productSlug = [parentSlug, subSlug, childSlug]
+    .filter(Boolean)
+    .join("-");
 
-    return {
-      ...product,
-      slug: product.slug || productSlug, // Use existing slug if available, otherwise use generated one
-      // Also add individual slugs to the category structure for easier access
-      product_category: {
-        ...product.product_category,
-        slug: childSlug,
-        sub_category: {
-          ...product.product_category?.sub_category,
-          slug: subSlug,
-          parent_category: {
-            ...product.product_category?.sub_category?.parent_category,
-            slug: parentSlug,
-          },
+  return {
+    ...product,
+    slug: product.slug || productSlug, // Use existing slug if available, otherwise use generated one
+    // Also add individual slugs to the category structure for easier access
+    product_category: {
+      ...product.product_category,
+      slug: childSlug,
+      sub_category: {
+        ...product.product_category?.sub_category,
+        slug: subSlug,
+        parent_category: {
+          ...product.product_category?.sub_category?.parent_category,
+          slug: parentSlug,
         },
       },
-    };
+    },
+  };
+});
+// Filter products and count unique ones
+useEffect(() => {
+  // First filter the products
+  const filtered = productsWithSlugs.filter((product) => {
+    const productChildSlug = product.product_category?.slug;
+    const productSubSlug = product.product_category?.sub_category?.slug;
+    const productParentSlug = product.product_category?.sub_category?.parent_category?.slug;
+
+    if (!singleCategory?.toggle && !singleCategory?.sub_category?.some((sub) => sub.toggle)) {
+      return true;
+    }
+
+    const parentMatch = singleCategory?.toggle && singleCategory.slug === productParentSlug;
+    
+    if (singleCategory?.toggle && !parentMatch) return false;
+
+    const hasToggledSub = singleCategory?.sub_category?.some((sub) => sub.toggle);
+    if (!hasToggledSub) return true;
+
+    const subMatch = singleCategory?.sub_category?.some(
+      (sub) => sub.toggle && sub.slug === productSubSlug
+    );
+    if (!subMatch) return false;
+
+    const matchedSub = singleCategory.sub_category.find(
+      (sub) => sub.toggle && sub.slug === productSubSlug
+    );
+    const hasToggledChild = matchedSub?.child_category?.some(
+      (child) => child.toggle
+    );
+    if (!hasToggledChild) return true;
+
+    const childMatch = matchedSub.child_category.some(
+      (child) => child.toggle && child.slug === productChildSlug
+    );
+    return childMatch;
   });
+
+  // Then count unique products by ID
+  const uniqueProductIds = new Set();
+  filtered.forEach(product => {
+    uniqueProductIds.add(product.id); // or whatever your unique identifier is
+  });
+
+  setTotalProducts(uniqueProductIds.size);
+
+}, [productsWithSlugs, singleCategory]);
+
+ 
 
   // Now filter products based on the selected category using the generated slugs
   const categoryfilteredProducts = productsWithSlugs.filter((product) => {
@@ -99,7 +149,6 @@ const Category = () => {
     }
 
     // Check if parent matches (if parent is toggled in singleCategory)
-    console.log(singleCategory.slug,productParentSlug, "singleCategory.slug");  
     const parentMatch =
       singleCategory?.toggle && singleCategory.slug === productParentSlug;
       console.log(parentMatch, "parentMatch");  
@@ -237,7 +286,7 @@ const Category = () => {
           <div className="hidden lg:flex items-center justify-between mb-6">
             {/* Showing Items */}
             <h1 className="text-[#182B55] font-medium text-lg">
-              Showing {totalItems} items
+              Showing {totalProducts} items
             </h1>
 
             <div className="flex items-center gap-4">

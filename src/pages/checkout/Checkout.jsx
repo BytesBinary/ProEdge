@@ -1,4 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
+import { loadStripe } from '@stripe/stripe-js';
+
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import SubPageHeader from "../../components/common/utils/banner/SubPageHeader";
@@ -218,10 +220,14 @@ useEffect(() => {
   
       const response = await createOrder(finalOrderData);
       const resUpdateOrder = await updateOrder(response.id, {
-        order_id: `${user?.id?.toString().substring(0, 6)}${response.id}`,
+        order_id: `${user?.id?.toString().substring(0, 6)}-${response.id}`,
         customer_id: user ? user.id : null
       });
       console.log("update Order response:", resUpdateOrder);
+
+      const re=await redirectToStripe(resUpdateOrder.order_id);
+      console.log(re,"re")
+
   
       // Save to localStorage before navigation
       localStorage.setItem('currentOrder', JSON.stringify(finalOrderData));
@@ -238,6 +244,37 @@ useEffect(() => {
       setLoading(false);
     }
   };
+
+  const redirectToStripe = async (orderId) => {
+    const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/graphql`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        query: `
+          query {
+            order(filter: { order_id: { _eq: "${orderId}" } }) {
+              id
+              stripe_session_id
+            }
+          }
+        `
+      })
+    });
+  
+    const result = await res.json();
+    console.log(result,"result")
+    const order = result.data?.orders?.[0];
+  
+    if (order?.stripe_session_id) {
+      const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+      stripe.redirectToCheckout({ sessionId: order.stripe_session_id });
+    } else {
+      console.error("Stripe session ID not found.");
+    }
+  };
+  
+  
+  
   // Delivery method handler
   const handleDeliveryMethodChange = (method, shippingCharge) => {
     setOrderData((prev) => ({
@@ -251,7 +288,7 @@ useEffect(() => {
     subtotal: getCartTotal(),
     shipping: orderData.shipping_charge,
     tax: orderData.tax,
-    total: getCartTotal() + orderData.shipping_charge + orderData.tax,
+    total: getCartTotal() ,
     discount: 0,
   };
 

@@ -17,7 +17,7 @@ const ProductCard = ({ productId,variationId,variation_name, stock,made_in,sku,i
   const isWishlisted = isInWishlist(variationId );
 
   const handleClick = () => {
-    const slug = title
+    const slug = variation_name
       .toLowerCase()
       .replace(/[^\w\s-]/g, "")     // Remove special characters
       .trim()                       // Trim leading/trailing spaces
