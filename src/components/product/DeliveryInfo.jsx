@@ -250,7 +250,7 @@ const DeliveryInfo = ({
       bgColor: "bg-[#3F66BC]",
       hoverColor: "hover:bg-[#3F66BC]/80",
       textColor: "text-white",
-      onClick: cartItems.length > 0 ? () => navigate("/cart/checkout") : disabled,
+      onClick: cartItems.length > 0 ? () => navigate("/cart/checkout") : "disabled",
       onClick: () => navigate("/cart/checkout"),
       disabled: !isInCart,
     },

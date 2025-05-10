@@ -50,14 +50,14 @@ const router = createBrowserRouter([
       // { path: "return-order", Component: TrackOrderPage },
       // { path: "modify-order", Component: TrackOrderPage },
       // 🔐 Protected Routes wrapped in PrivateRoute
+      { path: "track-order", Component: TrackOrderPage },
+      { path: "return-order", Component: TrackOrderPage },
+      { path: "modify-order", Component: TrackOrderPage },
+      { path: "order-details/:orderid", Component: OrderDetailsPage },
       {
         Component: PrivateRoute,
         children: [
           { path: "order-history", Component: OrderTable },
-          { path: "order-details/:orderid", Component: OrderDetailsPage },
-          { path: "track-order", Component: TrackOrderPage },
-          { path: "return-order", Component: TrackOrderPage },
-          { path: "modify-order", Component: TrackOrderPage },
         ],
       },
     ],
