@@ -1,14 +1,20 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useOrderContext } from "../../../../context/OrderContext";
 
 const OrderSummaryCard = ({ cart }) => {
   const [isCheckoutPage, setIsCheckoutPage] = useState(false);
+
+  const [shippingCharge, setdShippingCharge] = useState(0);
+
+  const { fetchSettingsGraphQL } = useOrderContext();
+
   // Add safe navigation with default values
   const itemsCount = cart?.itemsCount || 0;
   const subtotal = cart?.subtotal || 0;
-  const shipping = cart?.shipping || 0;
+  const shipping = parseInt(shippingCharge?.shipping_charge )|| 0;
   const tax = cart?.tax || 0;
-  const total = cart?.total || 0;
+  const total = cart?.total+shipping+tax || 0;
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -18,6 +24,20 @@ const OrderSummaryCard = ({ cart }) => {
       setIsCheckoutPage(true);
     }
   }, []);
+
+
+  useEffect(() => {
+    const fetchDeliveryData = async () => {
+      try {
+        const data = await fetchSettingsGraphQL();
+        setdShippingCharge(data);
+      } catch (error) {
+        console.error("Error fetching delivery location data:", error);
+      }
+    };
+
+    fetchDeliveryData();
+  }, [fetchSettingsGraphQL]);
 
   return (
     <div className="bg-white p-6 rounded-xl shadow-sm">

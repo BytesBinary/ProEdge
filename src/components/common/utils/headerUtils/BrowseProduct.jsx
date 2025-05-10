@@ -58,6 +58,8 @@ const BrowseProduct = () => {
       }
     }
   };
+
+  
   return (
     <div
       className="relative group w-full max-w-2xs"

@@ -40,6 +40,20 @@ const GET_ORDER_QUERY = `
 }
 
 `;
+
+const GET_SETTINGS_QUERY = `
+  query {
+    Settings {
+      id
+      Shipping_days
+      delivery_address 
+      shipping_charge
+    }
+  }
+`;
+
+
+
 const SINGLE_ORDER_QUERY = `
   query GetOrderById($id: ID!) {
     order_by_id(id: $id) {
@@ -203,14 +217,16 @@ export const OrderProvider = ({ children }) => {
       return null;
     }
 
-    const id = orderid.slice(-1);
+const id = orderid.split('-')[1]; 
     console.log(id, "last digit");
 
-    const localOrder = orders.find((order) => order.id === id);
-    if (localOrder) {
-      setCurrentOrder(localOrder);
-      return localOrder;
-    }
+    // First check local orders
+  const localOrder = orders.find((order) => order.id === orderid || order.order_id === orderid);
+  if (localOrder) {
+    setCurrentOrder(localOrder);
+    return localOrder;
+  }
+
 
     setOrderLoading(true);
     setError(null);
@@ -229,6 +245,8 @@ export const OrderProvider = ({ children }) => {
       if (response.data.errors) {
         throw new Error(response.data.errors[0].message);
       }
+
+      console.log(response)
 
       const order = response.data.data.order_by_id;
       if (order) {
@@ -360,6 +378,29 @@ export const OrderProvider = ({ children }) => {
     }
   };
 
+ const  fetchSettingsGraphQL=async()=> {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_SERVER_URL}/graphql`,
+        {
+          query: GET_SETTINGS_QUERY
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        }
+      );
+
+      console.log(response.data.data.Settings,"settings")
+      return response.data.data.Settings;
+    } catch (error) {
+      console.error('Error fetching settings:', error);
+      throw error;
+    }
+  }
+
+
   return (
     <OrderContext.Provider
       value={{
@@ -375,6 +416,7 @@ export const OrderProvider = ({ children }) => {
         updateOrder,
         deleteOrder,
         refetchOrders: fetchOrders,
+        fetchSettingsGraphQL
       }}
     >
       {children}

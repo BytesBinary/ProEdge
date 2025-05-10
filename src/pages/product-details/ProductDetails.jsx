@@ -26,8 +26,22 @@ const Product = () => {
   const { title } = useParams();
 
   // Extract product ID from URL
-  const match = title?.match(/-(\d+)$/);
-  const id = match ? parseInt(match[1], 10) : null;
+  const extractIdFromSlug = (slug) => {
+  // Handle null/undefined cases
+  if (!slug) return null;
+  
+  // Split by hyphens and get the last part
+  const parts = slug.split('-');
+  const lastPart = parts[parts.length - 1];
+  
+  // Convert to number (returns NaN if not a number)
+  const id = parseInt(lastPart, 10);
+  
+  // Return null if not a valid number
+  return isNaN(id) ? null : id;
+};
+
+const id=extractIdFromSlug(title);
 
   useEffect(() => {
     const fetchSingleProduct = async () => {
@@ -73,7 +87,7 @@ const Product = () => {
         <PulseLoader color="#3b82f6" size={10} />
         <span className="text-blue-600 ml-2">Loading product...</span>
       </div>
-    )
+    );
   }
   const breadcrumbs = [
     { label: "Home", link: "/" },
@@ -82,17 +96,16 @@ const Product = () => {
   ];
   const thumbnails = Array.isArray(singleProduct.variation)
     ? singleProduct.variation.map((v) => ({
-      id: v.id,
-      image: v.image?.id || "", // Safe access to image id
-      option: v,
-    }))
+        id: v.id,
+        image: v.image?.id || "", // Safe access to image id
+        option: v,
+      }))
     : [];
 
   // Safe access to main image
   const mainImage = singleVariation.image?.id
     ? `${import.meta.env.VITE_SERVER_URL}/assets/${singleVariation.image.id}`
     : singleVariation.image || "";
-
 
   return (
     <>
@@ -127,9 +140,11 @@ const Product = () => {
             product={singleProduct}
             productId={singleProduct.id}
             variationId={singleVariation.id}
-            imageId={singleVariation.image?.id
-              ? singleVariation.image.id
-              : singleVariation.image || ""}
+            imageId={
+              singleVariation.image?.id
+                ? singleVariation.image.id
+                : singleVariation.image || ""
+            }
             variation_name={singleVariation.variation_name}
             offer_price={singleVariation.offer_price}
             originalPrice={singleVariation.regular_price}
