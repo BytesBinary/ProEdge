@@ -50,7 +50,7 @@ const ProductCard = ({ productId,variationId,variation_name, stock,made_in,sku,i
   return (
     <div
       onClick={handleClick}
-      className="max-w-lg rounded-xl border-2 border-[#F8F9FB] px-4 pt-4 pb-6 bg-[#FFFFFF] drop-shadow-[#E1E1E140] drop-shadow-2xl hover:drop-shadow-lg transition "
+      className="max-w-lg my-1 md:my-4 rounded-xl border-2 border-[#F8F9FB] hover:border-[#3F66BC] px-4 pt-4 pb-6 bg-[#FFFFFF] drop-shadow-[#E1E1E140] drop-shadow-md hover:drop-shadow-md hover:scale-105 transition duration-300 cursor-pointer"
     >
       <div className="rounded-xl w-full h-[417px] mb-5 bg-[#FFFFFF]">
         <div className="bg-[#F8F9FB] flex justify-center items-center relative rounded-xl w-full overflow-hidden">
@@ -62,9 +62,9 @@ const ProductCard = ({ productId,variationId,variation_name, stock,made_in,sku,i
 
           <div 
             onClick={handleWishlistClick}
-            className={`group   rounded-full w-9 h-9 flex items-center hover:bg-amber-50 justify-center absolute top-2 right-2 transition duration-300 cursor-pointer ${
-              isWishlisted ? "bg-[#EE2738]" : "bg-[#FFFFFF]"
-            }`}
+            className={`group rounded-full w-9 h-9 flex items-center hover:border-1 hover:border-[#EE2738] justify-center shadow-lg absolute top-2 right-2 transition duration-300 cursor-pointer ${
+              isWishlisted ? "bg-[#EE2738] hover:bg-red-800" : "bg-[#FFFFFF] hover:bg-red-300"
+            } transition-all duration-200`}
           >
             <svg
               width="20"

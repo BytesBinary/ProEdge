@@ -321,7 +321,7 @@ useEffect(() => {
                 <select
                   value={sortOption}
                   onChange={(e) => setSortOption(e.target.value)}
-                  className="w-full appearance-none bg-[#F8F9FB] border border-[#F8F9FB] rounded-[42px] px-6 py-3 pr-8 text-md leading-4 font-medium text-[#182B55] focus:outline-none"
+                  className="w-full appearance-none bg-[#F8F9FB] border-1 border-[#F8F9FB] hover:border-gray-400 rounded-[42px] px-6 py-3 pr-8 text-md leading-4 font-medium text-[#182B55] focus:outline-none transition-all duration-300"
                 >
                   <option>Relevance</option>
                   <option>Newest</option>
