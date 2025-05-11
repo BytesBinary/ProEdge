@@ -176,6 +176,7 @@ const OrderDetailsModal = ({ isOrderDetailsPage, order, onClose }) => {
     doc.setTextColor(textColor);
     doc.setFont("helvetica", "bold");
     doc.text(`Order Details - ${order.order_id}`, margin, yPos);
+    doc.text(` ${order.payment_status}`, margin, yPos+10);
 
     // Add divider line
     doc.setDrawColor(borderColor);
@@ -353,6 +354,8 @@ const OrderDetailsModal = ({ isOrderDetailsPage, order, onClose }) => {
                         }}
                       />
                     </span>
+                  <h3 className="w-20 h-8 rounded-md  text-center bg-green-300 text-amber-50">{order.payment_status==="paid"?"paid":""}</h3>
+
                   </h3>
                   <div className="flex justify-between items-center gap-2">
                     {(currentPath == "/return-order" ||

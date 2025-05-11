@@ -1,21 +1,34 @@
 import React, { useContext, useEffect, useState } from "react";
 import OrderDetailsModal from "../../components/order/OrderDetails";
 import { useOrderContext } from "../../context/OrderContext";
-import { useParams } from "react-router-dom";
+import {  useSearchParams } from "react-router-dom";
 import { CartContext } from "../../context/CartContext";
 import { PulseLoader } from "react-spinners";
+import axios from "axios";
 
 const OrderDetailsPage = () => {
   const [singleOrderData, setSingleOrderData] = useState(null);
   const [isOrderDetailsPage, setIsOrderDetailsPage] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const params = useParams();
+   const [searchParams] = useSearchParams();
+  const sessionId = searchParams.get('session_id');
+  const [sessionDetails, setSessionDetails] = useState(null);
+
+  useEffect(() => {
+    const fetchSession = async () => {
+      const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/stripe-payments/session-details/${sessionId}`);
+      setSessionDetails(res.data);
+    };
+
+    if (sessionId) fetchSession();
+  }, [sessionId]);
 
   const { clearCart } = useContext(CartContext);
 
-  const { fetchOrderById } = useOrderContext();
-  console.log(params, "params");
+  console.log(sessionDetails?.metadata?.order_id,"set")
+
+  const {  updateOrder} = useOrderContext();
   useEffect(() => {
     clearCart();
   }, []);
@@ -25,8 +38,15 @@ const OrderDetailsPage = () => {
     const fetchOrderDetails = async () => {
       try {
         setLoading(true);
-        const order = await fetchOrderById(params.orderid);
-        setSingleOrderData(order);
+        // const order = await fetchOrderById(sessionDetails?.metadata?.order_id);
+        const id = sessionDetails?.metadata?.order_id.split('-')[1]; 
+        if(sessionDetails?.metadata?.order_id && sessionDetails.payment_status==="paid"){
+        const updatedOrder=await updateOrder(id,{payment_status:"paid"});
+        console.log(updateOrder,"mmm")
+        setSingleOrderData(updatedOrder);
+
+
+        }
       } catch (err) {
         console.error("Failed to fetch order:", err);
         setError("Failed to load order details. Please try again.");
@@ -35,10 +55,10 @@ const OrderDetailsPage = () => {
       }
     };
 
-    if (params.orderid) {
+    if (sessionDetails?.metadata?.order_id) {
       fetchOrderDetails();
     }
-  }, []);
+  }, [sessionDetails]);
   console.log(singleOrderData, "singleOrderData");
 
   if (loading) {
@@ -61,6 +81,7 @@ const OrderDetailsPage = () => {
       <OrderDetailsModal
         isOrderDetailsPage={isOrderDetailsPage}
         order={singleOrderData}
+
       />
     </div>
   );

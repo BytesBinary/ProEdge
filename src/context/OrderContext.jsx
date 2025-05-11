@@ -7,39 +7,48 @@ const OrderContext = createContext();
 export const useOrderContext = () => useContext(OrderContext);
 
 const GET_ORDER_QUERY = `
- query GetOrdersByCustomer($customer_id: String) {
-  order(filter: { customer_id: { _eq: $customer_id } }) {
-    id
-    order_id  
-    customer_id
-    name
-    company_name
-    phone_number
-    email
-    street_address
-    address_two
-    city
-    state
-    delivery_method
-    zip_code
-    shipping_charge
-    subtotal
-    tax
-    order_status
-    payment_method
-    billing_name
-    billing_company_name
-    billing_phone_number
-    billing_email
-    billing_street_address
-    billing_address_two
-    billing_city
-    billing_state
-    billing_zip_code
+  query GetOrders($customer_id_filter: string_filter_operators, $email_filter: string_filter_operators) {
+    order(
+      filter: {
+        _or: [
+          { customer_id: $customer_id_filter }
+          { email: $email_filter }
+        ]
+      }
+    ) {
+      id
+      order_id  
+      customer_id
+      name
+      company_name
+      phone_number
+      email
+      street_address
+      address_two
+      city
+      state
+      delivery_method
+      zip_code
+      shipping_charge
+      subtotal
+      tax
+      order_status
+      payment_method
+      payment_status
+      currency
+      billing_name
+      billing_company_name
+      billing_phone_number
+      billing_email
+      billing_street_address
+      billing_address_two
+      billing_city
+      billing_state
+      billing_zip_code
+    }
   }
-}
-
 `;
+
 
 const GET_SETTINGS_QUERY = `
   query {
@@ -75,6 +84,9 @@ const SINGLE_ORDER_QUERY = `
       tax
       order_status
       payment_method
+      payment_status
+
+      currency
       billing_name
       billing_company_name
       billing_phone_number
@@ -107,6 +119,9 @@ const UPDATE_ORDER_MUTATION = `
       tax
       order_status
       payment_method
+      payment_status
+
+      currency
       billing_name
       billing_company_name
       billing_phone_number
@@ -141,6 +156,8 @@ const CREATE_ORDER_MUTATION = `
       tax
       order_status
       payment_method
+      payment_status
+      currency
       billing_name
       billing_company_name
       billing_phone_number
@@ -176,40 +193,44 @@ export const OrderProvider = ({ children }) => {
     fetchOrders();
   }, []);
 
-  const fetchOrders = async () => {
-    setLoading(true);
-    setError(null);
+const fetchOrders = async () => {
+  setLoading(true);
+  setError(null);
 
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_SERVER_URL}/graphql`,
-        {
-          query: GET_ORDER_QUERY,
-          variables: {
-            customer_id: user?.id ,
-          },
-        },
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-      
-      if (response.data.errors) {
-        throw new Error(response.data.errors[0].message);
+  try {
+    // Prepare filters based on available user data
+    const variables = {
+      customer_id_filter: { _eq: user?.id || null },
+      email_filter: { _eq: JSON.parse(localStorage.getItem("currentOrder"))?.email || null }
+    };
+
+    const response = await axios.post(
+      `${import.meta.env.VITE_SERVER_URL}/graphql`,
+      {
+        query: GET_ORDER_QUERY,
+        variables
+      },
+      {
+        headers: { "Content-Type": "application/json" },
       }
+    );
 
-      console.log(response.data.data.order, "response data");
-
-      // adjust depending on response shape
-      setOrders(response.data.data.order || []);
-    } catch (error) {
-      console.error("GraphQL fetch error:", error);
-      setError(error.message);
-      setOrders([]);
-    } finally {
-      setLoading(false);
+    if (response.data.errors) {
+      throw new Error(response.data.errors[0].message);
     }
-  };
+
+    const ordersList = response.data.data.order || [];
+    setOrders(ordersList);
+
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    setError(error.response?.data?.errors?.[0]?.message || error.message || "Failed to fetch orders");
+    setOrders([]);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const fetchOrderById = async (orderid) => {
     console.log(orderid, "orderid");
