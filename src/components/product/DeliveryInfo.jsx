@@ -114,7 +114,7 @@ const DeliveryInfo = ({
   }) => {
     return (
       <button
-        className={`${bgColor} ${hoverColor} ${textColor} py-2 rounded-full w-full transition-colors`}
+        className={`${bgColor} ${hoverColor} ${textColor} py-2 rounded-full w-full transition-colors cursor-pointer`}
         onClick={onClick}
         disabled={disabled}
       >
@@ -239,21 +239,9 @@ const DeliveryInfo = ({
   const buttons = [
     {
       text: isInCart ? "View Cart" : stock > 0 ? "Add to Cart" : "Out of Stock",
-      bgColor: isInCart
-        ? "bg-[#FCD700]"
-        : stock > 0
-        ? "bg-[#FCD700]"
-        : "bg-red-500",
-      hoverColor: isInCart
-        ? "hover:bg-[#FCD700]/60"
-        : stock > 0
-        ? "hover:bg-[#FCD700]"
-        : "hover:bg-red-500",
-      textColor: isInCart
-        ? "text-[#182B255]"
-        : stock > 0
-        ? "text-[#182B55]"
-        : "text-white",
+      bgColor: isInCart ? "bg-[#FCD700]" : stock > 0 ? "bg-[#FCD700]" : "bg-red-500",
+      hoverColor: isInCart ? "hover:bg-[#FCD700]/60" : stock > 0 ? "hover:bg-[#FCD700]/70" : "hover:bg-red-500",
+      textColor: isInCart ? "text-[#182B255]" : stock > 0 ? "text-[#182B55]" : "text-white",
       onClick: isInCart ? () => navigate("/cart") : handleAddToCart,
       disabled: stock <= 0,
     },
@@ -262,6 +250,7 @@ const DeliveryInfo = ({
       bgColor: "bg-[#3F66BC]",
       hoverColor: "hover:bg-[#3F66BC]/80",
       textColor: "text-white",
+      onClick: cartItems.length > 0 ? () => navigate("/cart/checkout") : "disabled",
       onClick: () => navigate("/cart/checkout"),
       disabled: !isInCart,
     },

@@ -18,7 +18,7 @@ const StockBanner = ({
       <div className="absolute inset-0 before:absolute before:inset-0 before:bg-gradient-to-r before:from-[#F8F9FB] before:via-[#F8F9FB]/30 before:to-[#F8F9FB]/0"></div>
 
       {/* Content */}
-      <div className="absolute inset-0 flex flex-col items-start justify-center mx-auto px-8 md:px-32">
+      <div className="absolute inset-0 flex flex-col items-start justify-center mx-auto px-8 md:px-5 max-w-7xl ">
         <div className="relative space-y-4 text-left">
           <p className="text-[#3F66BC] text-lg font-semibold md:text-xl">{tagText}</p>
           <h1 className="text-[#182B55] text-4xl font-bold md:text-5xl">{heading}</h1>

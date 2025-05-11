@@ -36,8 +36,8 @@ const Cart = () => {
       />
 
       <section className="max-w-7xl w-full mx-auto my-16 px-4 md:px-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
-          <h1 className="text-2xl md:text-3xl font-semibold text-[#182B55] mb-4">
+        <div className="lg:col-span-2 space-y-6 ">
+          <h1 className="text-2xl md:text-3xl font-semibold text-[#182B55] mb-4 ">
             Shopping Cart ({cartItems.length} {cartItems.length === 1 ? 'Item' : 'Items'})
           </h1>
           {cartItems.length > 0 ? (

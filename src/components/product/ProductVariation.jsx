@@ -60,7 +60,6 @@ const ProductVariation = ({
           <span className="font-medium text-[#3F66BC]">Typical price: </span>
           <span className="text-[#5D6576] line-through"> ${originalPrice}</span>
         </p>
-       
       </div>
 
       {/* Size Options */}
@@ -74,7 +73,7 @@ const ProductVariation = ({
         </div>
 
         {priceOptions.length > 0 && (
-          <div className="flex justify-start items-start flex-wrap gap-4 max-w-2xl max-h-[300px] md:min-h-[300px] lg:min-h-[200px] overflow-y-auto z-10">
+          <div className="flex justify-start items-start  flex-wrap gap-4 max-w-2xl max-h-[300px] md:min-h-[300px] lg:min-h-[200px] overflow-y-auto z-10">
             {priceOptions.map((option, index) => (
               <VariationCard
                 key={option.id} // Use option.id instead of index for better key
