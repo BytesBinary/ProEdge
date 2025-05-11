@@ -1,5 +1,6 @@
 import React from 'react';
 import HeroImage from '../../assets/images/heroImage.png';
+import { Link } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay } from 'swiper/modules';
 import 'swiper/css';
@@ -10,24 +11,28 @@ const Hero = () => {
     {
       title: "Save Big with Pro-Edge Compressed Air Solutions",
       text: "Discover our premium range of industrial tools designed for maximum efficiency.",
+      buttonUrl:"/products",
       buttonText: "Shop Now",
       bgColor: "bg-black/50"
     },
     {
       title: "Summer Sale - Up to 40% Off",
       text: "Limited time offer on all power tools and accessories. Don't miss out!",
+      buttonUrl:"/products",
       buttonText: "View Deals",
       bgColor: "bg-blue-900/50"
     },
     {
       title: "New Arrivals Just Landed",
       text: "Check out our latest collection of professional-grade equipment.",
+      buttonUrl:"/videos",
       buttonText: "Explore",
       bgColor: "bg-green-900/50"
     },
     {
       title: "Professional Tools for Experts",
       text: "Engineered for durability and precision in demanding work environments.",
+      buttonUrl:"/tech-help",
       buttonText: "Learn More",
       bgColor: "bg-purple-900/50"
     }
@@ -76,12 +81,12 @@ const Hero = () => {
                       {slide.text}
                     </p>
                   </header>
-                  <a href="/shop" className="mt-2 md:mt-4">
+                  <Link to={slide.buttonUrl} className="mt-2 md:mt-4">
                     <button
                       className="bg-[#3F66BC] text-white px-4 py-2 sm:px-6 sm:py-4 rounded-full hover:bg-[#182B55] transition-colors text-sm md:text-lg font-medium shadow-lg">
                       {slide.buttonText}
                     </button>
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
