@@ -47,7 +47,7 @@ const router = createBrowserRouter([
       { path: "track-order", Component: TrackOrderPage },
       { path: "return-order", Component: TrackOrderPage },
       { path: "modify-order", Component: TrackOrderPage },
-      { path: "order-details/:orderid", Component: OrderDetailsPage },
+      { path: "order-details", Component: OrderDetailsPage },
       {
         Component: PrivateRoute,
         children: [
