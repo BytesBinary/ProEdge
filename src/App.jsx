@@ -44,12 +44,6 @@ const router = createBrowserRouter([
       { path: "cart/checkout", Component: Checkout },
       { path: "wish-list", Component: WishList },
       { path: "/faq/:section-title/:title?", Component: FAQPage },
-      // { path: "order-history", Component: OrderTable },
-      // { path: "order-details/:orderid", Component: OrderDetailsPage },
-      // { path: "track-order", Component: TrackOrderPage },
-      // { path: "return-order", Component: TrackOrderPage },
-      // { path: "modify-order", Component: TrackOrderPage },
-      // 🔐 Protected Routes wrapped in PrivateRoute
       { path: "track-order", Component: TrackOrderPage },
       { path: "return-order", Component: TrackOrderPage },
       { path: "modify-order", Component: TrackOrderPage },

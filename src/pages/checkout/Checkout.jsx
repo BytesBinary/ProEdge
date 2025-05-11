@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { loadStripe } from '@stripe/stripe-js';
+import { loadStripe } from "@stripe/stripe-js";
 
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -19,10 +19,13 @@ import { useAuth } from "../../context/AuthContext";
 import { useOrderContext } from "../../context/OrderContext";
 
 const Checkout = () => {
-  const { user } = useAuth(); 
+  const { user } = useAuth();
   const navigate = useNavigate();
-  const { cartItems, getCartTotal,removeFromCart, clearCart } = useContext(CartContext);
-  const {createOrder,updateOrder}=useOrderContext();
+  const { cartItems, getCartTotal, removeFromCart, clearCart } =
+    useContext(CartContext);
+  const { createOrder, updateOrder } = useOrderContext();
+  const { fetchSettingsGraphQL } = useOrderContext();
+
   const [paymentDetails, setPaymentDetails] = useState({
     cardNumber: "",
     cardName: "",
@@ -31,18 +34,24 @@ const Checkout = () => {
   });
 
   const [sameAsShipping, setSameAsShipping] = useState(false);
+  const [shippingCharge, setdShippingCharge] = useState(0);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   // Single order data state
   const [orderData, setOrderData] = useState(() => {
     // Load from localStorage
-    const savedOrder = localStorage.getItem('currentOrder');
-    const savedUser = JSON.parse(localStorage.getItem('user'));
-    const currentUser = user || savedUser; 
-    
+    const savedOrder = localStorage.getItem("currentOrder");
+    const savedUser = JSON.parse(localStorage.getItem("user"));
+    const currentUser = user || savedUser;
+
     const defaultData = {
-      name: currentUser ? `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim() : "",
+      name: currentUser
+        ? `${currentUser.first_name || ""} ${
+            currentUser.last_name || ""
+          }`.trim()
+        : "",
       company_name: "",
       phone_number: "",
       email: currentUser?.email || "",
@@ -57,7 +66,13 @@ const Checkout = () => {
       tax: 0,
       order_status: "pending",
       payment_method: "credit-card",
-      billing_name: currentUser ? `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim() : "",
+      payment_status:"unpaid",
+      currency: "usd",
+      billing_name: currentUser
+        ? `${currentUser.first_name || ""} ${
+            currentUser.last_name || ""
+          }`.trim()
+        : "",
       billing_company_name: "",
       billing_phone_number: "",
       billing_email: currentUser?.email || "",
@@ -67,35 +82,55 @@ const Checkout = () => {
       billing_state: "",
       billing_zip_code: "",
     };
-  
-    return savedOrder ? { ...defaultData, ...JSON.parse(savedOrder) } : defaultData;
-  });
-  
-  
-  
- 
-  // Update user data when auth state changes
-// Separate useEffect hooks for different concerns
-useEffect(() => {
-  // Handle user data synchronization
-  const currentUser = user || JSON.parse(localStorage.getItem('user'));
-  if (currentUser) {
-    setOrderData(prev => ({
-      ...prev,
-      name: `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim(),
-      email: currentUser.email || prev.email,
-      billing_name: `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim(),
-      billing_email: currentUser.email || prev.billing_email
-    }));
-  }
-}, [user]); // Only depend on user changes
 
-useEffect(() => {
-  // Only redirect if not loading (not in the middle of placing an order)
-  if (cartItems.length === 0 && location.pathname !== "/products" && !loading) {
-    navigate("/products");
-  }
-}, [cartItems, navigate, location.pathname, loading]);
+    return savedOrder
+      ? { ...defaultData, ...JSON.parse(savedOrder) }
+      : defaultData;
+  });
+
+  useEffect(() => {
+    const fetchDeliveryData = async () => {
+      try {
+        const data = await fetchSettingsGraphQL();
+        setdShippingCharge(data);
+      } catch (error) {
+        console.error("Error fetching delivery location data:", error);
+      }
+    };
+
+    fetchDeliveryData();
+  }, []);
+
+  // Update user data when auth state changes
+  // Separate useEffect hooks for different concerns
+  useEffect(() => {
+    // Handle user data synchronization
+    const currentUser = user || JSON.parse(localStorage.getItem("user"));
+    if (currentUser) {
+      setOrderData((prev) => ({
+        ...prev,
+        name: `${currentUser.first_name || ""} ${
+          currentUser.last_name || ""
+        }`.trim(),
+        email: currentUser.email || prev.email,
+        billing_name: `${currentUser.first_name || ""} ${
+          currentUser.last_name || ""
+        }`.trim(),
+        billing_email: currentUser.email || prev.billing_email,
+      }));
+    }
+  }, [user]); // Only depend on user changes
+
+  useEffect(() => {
+    // Only redirect if not loading (not in the middle of placing an order)
+    if (
+      cartItems.length === 0 &&
+      location.pathname !== "/products" &&
+      !loading
+    ) {
+      navigate("/products");
+    }
+  }, [cartItems, navigate, location.pathname, loading]);
   // Handle shipping/billing address changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -117,13 +152,27 @@ useEffect(() => {
   };
 
   // Handle payment method changes
-  const handlePaymentChange = (e) => {
-    const { name, value } = e.target;
-    if (name === "payment_method") {
-      setOrderData((prev) => ({ ...prev, payment_method: value }));
-    } else {
-      setPaymentDetails((prev) => ({ ...prev, [name]: value }));
+  const handlePaymentChange = (paymentMethod, requiresCardDetails) => {
+    // Update payment method in order data
+    setOrderData((prev) => ({
+      ...prev,
+      payment_method: paymentMethod,
+      currency: prev.currency || "usd", // Ensure currency is set
+    }));
+
+    // Reset card details if switching to a method that doesn't require them
+    if (!requiresCardDetails) {
+      setPaymentDetails({
+        cardNumber: "",
+        expiryDate: "",
+        cvv: "",
+      });
     }
+
+    // Optional: Log the change for debugging
+    console.log(
+      `Payment method changed to ${paymentMethod} for currency ${orderData.currency}`
+    );
   };
 
   // Toggle same as shipping
@@ -180,7 +229,7 @@ useEffect(() => {
       ["billing_state", orderData.billing_state],
       ["billing_zip_code", orderData.billing_zip_code],
       ["payment_method", orderData.payment_method],
-      ["delivery_method", orderData.delivery_method], 
+      ["delivery_method", orderData.delivery_method],
     ];
 
     const missingFields = requiredFields.filter(([_, value]) => !value);
@@ -188,16 +237,16 @@ useEffect(() => {
   };
 
   // Handle order submission
- 
+
   const handlePlaceOrder = async () => {
     if (!validateForm()) {
       setError("Please fill in all required fields");
       return;
     }
-  
+
     setLoading(true);
     setError(null);
-  
+
     try {
       const finalOrderData = {
         ...orderData,
@@ -209,7 +258,7 @@ useEffect(() => {
         //   price: item.price,
         //   name: item.name,
         // })),
-        // payment_details: 
+        // payment_details:
         //   orderData.payment_method === "credit-card"
         //     ? {
         //         last4: paymentDetails.cardNumber.slice(-4),
@@ -217,23 +266,54 @@ useEffect(() => {
         //       }
         //     : null,
       };
-  
+      const generateGuestId = () => {
+        const chars =
+          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|:,.<>?";
+        const array = new Uint8Array(7);
+        window.crypto.getRandomValues(array);
+        return Array.from(array, (byte) => chars[byte % chars.length]).join("");
+      };
+
+      const guestId = user?.id || generateGuestId();
+
       const response = await createOrder(finalOrderData);
       const resUpdateOrder = await updateOrder(response.id, {
-        order_id: `${user?.id?.toString().substring(0, 6)}-${response.id}`,
-        customer_id: user ? user.id : null
+        order_id: `${guestId?.toString().substring(0, 6)}-${response.id}`,
+        customer_id: user ? user.id : null,
       });
       console.log("update Order response:", resUpdateOrder);
 
-      const re=await redirectToStripe(resUpdateOrder.order_id);
-      console.log(re,"re")
+      const total = getCartTotal();
 
-  
+      // 2. Create Stripe session
+      const stripeResponse = await axios.post(
+        `${import.meta.env.VITE_SERVER_URL}/stripe-payments/create-session`,
+        {
+          amount: Math.round((total + shippingCharge.shipping_charge) * 100), // in cents
+          order_id: resUpdateOrder.order_id,
+          payment_method: orderData.payment_method,
+          currency: orderData.currency,
+          metadata: {
+            order_id: resUpdateOrder.id,
+            user_id: guestId,
+            amount: getCartTotal(),
+          },
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${user?.token || ""}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log(stripeResponse.data, "stripe");
+
+      if (stripeResponse.data.url) {
+        window.location.href = stripeResponse.data.url;
+      }
+
       // Save to localStorage before navigation
-      localStorage.setItem('currentOrder', JSON.stringify(finalOrderData));
-      
-      await navigate(`/order-details/${resUpdateOrder.order_id}`);  
-
+      localStorage.setItem("currentOrder", JSON.stringify(finalOrderData));
     } catch (err) {
       console.error("Order submission error:", err);
       setError(
@@ -245,36 +325,6 @@ useEffect(() => {
     }
   };
 
-  const redirectToStripe = async (orderId) => {
-    const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/graphql`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        query: `
-          query {
-            order(filter: { order_id: { _eq: "${orderId}" } }) {
-              id
-              stripe_session_id
-            }
-          }
-        `
-      })
-    });
-  
-    const result = await res.json();
-    console.log(result,"result")
-    const order = result.data?.orders?.[0];
-  
-    if (order?.stripe_session_id) {
-      const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
-      stripe.redirectToCheckout({ sessionId: order.stripe_session_id });
-    } else {
-      console.error("Stripe session ID not found.");
-    }
-  };
-  
-  
-  
   // Delivery method handler
   const handleDeliveryMethodChange = (method, shippingCharge) => {
     setOrderData((prev) => ({
@@ -288,7 +338,7 @@ useEffect(() => {
     subtotal: getCartTotal(),
     shipping: orderData.shipping_charge,
     tax: orderData.tax,
-    total: getCartTotal() ,
+    total: getCartTotal(),
     discount: 0,
   };
 
@@ -345,11 +395,34 @@ useEffect(() => {
             <h1 className="text-[#182B55] text-xl md:text-3xl font-semibold mb-4">
               3. Payment
             </h1>
+
+            {/* <div className="mb-6">
+              <label
+                htmlFor="payment-method"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Select Payment Method
+              </label>
+              <select
+                id="payment-method"
+                name="payment_method"
+                value={orderData.payment_method}
+                onChange={handlePaymentChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              >
+                <option value="card">Credit/Debit Card</option>
+                <option value="ideal">iDEAL</option>
+                <option value="alipay">Alipay</option>
+                <option value="afterpay_clearpay">Afterpay/Clearpay</option>
+                <option value="klarna">Klarna</option>
+              </select>
+            </div> */}
+
             <PaymentOption
               method={orderData.payment_method}
               onChange={handlePaymentChange}
             />
-
+            {/* 
             {orderData.payment_method === "credit-card" && (
               <>
                 <CardIcons />
@@ -358,7 +431,7 @@ useEffect(() => {
                   onChange={handlePaymentChange}
                 />
               </>
-            )}
+            )} */}
 
             <BillingAddress
               values={{
@@ -416,9 +489,10 @@ useEffect(() => {
 
           <div className="flex flex-col gap-4 my-8">
             {cartItems.map((product) => (
-              <ProductCardTiles key={product.variationId} product={product} 
-              onRemove={() => removeFromCart(product)}
-              
+              <ProductCardTiles
+                key={product.variationId}
+                product={product}
+                onRemove={() => removeFromCart(product)}
               />
             ))}
           </div>
