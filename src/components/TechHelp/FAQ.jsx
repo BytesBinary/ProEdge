@@ -2,12 +2,12 @@ import React from "react";
 import { useFaqContext } from "../../context/FaqContext";
 import { Link } from "react-router-dom";
 import { formatCategoryName } from "../../helper/slugifier/slugify";
-import { PulseLoader } from "react-spinners";
+import { ClipLoader } from "react-spinners";
 
 const FAQ = ({ seeAllLink, leftArrow }) => {
   const { faqSections, loading, error } = useFaqContext();
 
-  if (loading) return <PulseLoader color="#36d7b7" />;
+  if (loading) return <ClipLoader color="#30079f" />
   if (error) return <p>Error: {error}</p>;
   if (!faqSections) return <p>No FAQ sections available</p>;
 
