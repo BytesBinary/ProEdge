@@ -28,6 +28,7 @@ import OrderDetailsPage from "./pages/order/OrderDetailsPage";
 import PrivateRoute from "./components/privaterroute/PrivateRoute";
 import { FaqProvider } from "./context/FaqContext";
 import FAQPage from "./pages/FAQ/FAQPage";
+import NotFoundPage from "./pages/404/NotFoundPage";
 
 const router = createBrowserRouter([
   {
@@ -48,6 +49,7 @@ const router = createBrowserRouter([
       { path: "return-order", Component: TrackOrderPage },
       { path: "modify-order", Component: TrackOrderPage },
       { path: "order-details", Component: OrderDetailsPage },
+      { path: "not-found", Component: NotFoundPage },
       {
         Component: PrivateRoute,
         children: [
