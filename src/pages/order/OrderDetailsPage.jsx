@@ -3,8 +3,8 @@ import OrderDetailsModal from "../../components/order/OrderDetails";
 import { useOrderContext } from "../../context/OrderContext";
 import {  useSearchParams } from "react-router-dom";
 import { CartContext } from "../../context/CartContext";
-import { PulseLoader } from "react-spinners";
 import axios from "axios";
+import { ClipLoader } from "react-spinners";
 
 const OrderDetailsPage = () => {
   const [singleOrderData, setSingleOrderData] = useState(null);
@@ -63,7 +63,7 @@ const OrderDetailsPage = () => {
 
   if (loading) {
     <div className="fixed inset-0 flex items-center justify-center bg-white z-40">
-      <PulseLoader color="#3b82f6" size={10} />
+      <ClipLoader color="#30079f" size={10} />
       <span className="text-blue-600 ml-2">Loading ...</span>
     </div>
   }

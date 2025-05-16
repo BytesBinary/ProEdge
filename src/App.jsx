@@ -29,6 +29,8 @@ import PrivateRoute from "./components/privaterroute/PrivateRoute";
 import { FaqProvider } from "./context/FaqContext";
 import FAQPage from "./pages/FAQ/FAQPage";
 import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
+import UserProfile from "./pages/user/UserProfile";
+import NotFoundPage from "./pages/404/NotFoundPage";
 
 const router = createBrowserRouter([
   {
@@ -48,13 +50,16 @@ const router = createBrowserRouter([
       { path: "track-order", Component: TrackOrderPage },
       { path: "return-order", Component: TrackOrderPage },
       { path: "modify-order", Component: TrackOrderPage },
-      { path: "order-details/:orderid", Component: OrderDetailsPage },
+      { path: "order-details", Component: OrderDetailsPage },
       {
         Component: PrivateRoute,
         children: [
           { path: "order-history", Component: OrderTable },
+          { path: "profile", Component: UserProfile },
         ],
       },
+      // Fallback route
+      { path: "*", Component: NotFoundPage },
     ],
   },
   {

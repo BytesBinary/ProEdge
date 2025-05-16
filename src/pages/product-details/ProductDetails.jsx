@@ -10,6 +10,7 @@ import PageHeader from "../../components/common/utils/banner/SubPageHeader";
 import bgImage from "../../assets/images/productDetails/bg.jpeg";
 import { PulseLoader } from "react-spinners";
 import { Helmet } from "react-helmet-async";
+import { ClipLoader } from "react-spinners";
 
 const Product = () => {
   const [singleProduct, setSingleProduct] = useState(null);
@@ -85,7 +86,7 @@ const id=extractIdFromSlug(title);
   if (!singleProduct || !singleVariation) {
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-white z-40">
-        <PulseLoader color="#3b82f6" size={10} />
+        <ClipLoader color="#30079f" size={10} />
         <span className="text-blue-600 ml-2">Loading product...</span>
       </div>
     );

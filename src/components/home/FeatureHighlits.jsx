@@ -33,13 +33,13 @@ const FeatureHighlights = () => {
       title: "Best Sellers",
       imageSrc: "../../src/assets/images/Card2.png",
       alt: "Bestselling products displayed on a modern shelf",
-      href: "#",
+      href: "/products?parent_category=fittings-9",
     },
     {
       title: "Top Products",
       imageSrc: "../../src/assets/images/Card3.png",
       alt: "Top-rated electronics and gadgets collection",
-      href: "#",
+      href: "/products?parent_category=electric-motors-motor-controls-10",
     },
   ];
 
