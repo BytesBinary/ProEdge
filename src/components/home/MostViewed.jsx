@@ -2,15 +2,14 @@ import { useRef } from "react";
 import { useProductContext } from "../../context/ProductContext";
 import ProductCard from "../common/utils/cards/ProductCard";
 import defaultImage from "../../assets/default.webp";
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Pagination } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/pagination';
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
 
 const MostViewedSection = ({ title }) => {
   const { products } = useProductContext();
-  const desktopSwiperRef = useRef(null);
-  const mobileSwiperRef = useRef(null);
+  const swiperRef = useRef(null);
 
   // Get the last 8 products
   const displayedProducts = products.slice(-8);
@@ -26,10 +25,18 @@ const MostViewedSection = ({ title }) => {
       stock: variation.stock,
       sku: variation.sku_code,
       image: imageId,
-      category: product.product_category?.sub_category?.parent_category?.category_name ||
-        product.category_name || "",
-      title: `${product.title}${variation.variation_name ? ` - ${variation.variation_name}` : ''}`,
-      price: variation.offer_price > 0 ? variation.offer_price : variation.regular_price
+      category:
+        product.product_category?.sub_category?.parent_category
+          ?.category_name ||
+        product.category_name ||
+        "",
+      title: `${product.title}${
+        variation.variation_name ? ` - ${variation.variation_name}` : ""
+      }`,
+      price:
+        variation.offer_price > 0
+          ? variation.offer_price
+          : variation.regular_price,
     };
   };
 
@@ -39,18 +46,17 @@ const MostViewedSection = ({ title }) => {
         {title}
       </h1>
 
-      {/* Desktop View */}
-      <div
-        className="hidden sm:block relative"
-        onMouseEnter={() => desktopSwiperRef.current?.autoplay?.stop()}
-        onMouseLeave={() => desktopSwiperRef.current?.autoplay?.start()}
-      >
-        {displayedProducts.length > 0 && (
-          <>
+      {displayedProducts.length > 0 && (
+        <>
+          <div
+            className="relative"
+            onMouseEnter={() => swiperRef.current?.autoplay?.stop()}
+            onMouseLeave={() => swiperRef.current?.autoplay?.start()}
+          >
             <Swiper
-              onSwiper={(swiper) => (desktopSwiperRef.current = swiper)}
+              onSwiper={(swiper) => (swiperRef.current = swiper)}
               slidesPerView={1}
-              spaceBetween={24}
+              spaceBetween={16}
               loop={true}
               autoplay={{
                 delay: 3000,
@@ -58,67 +64,34 @@ const MostViewedSection = ({ title }) => {
               }}
               pagination={{
                 clickable: true,
-                el: '.mst-desktop-pagination',
+                el: ".most-viewed-pagination",
               }}
               modules={[Autoplay, Pagination]}
               className="w-full"
+              breakpoints={{
+                480: { slidesPerView: 1.5 },
+                640: { slidesPerView: 2, spaceBetween: 10 },
+                768: { slidesPerView: 2.5, spaceBetween: 10 },
+                1024: { slidesPerView: 3, spaceBetween: 10 },
+                1280: { slidesPerView: 4, spaceBetween: 10 },
+              }}
             >
-              {Array.from({ length: Math.ceil(displayedProducts.length / 4) }).map((_, index) => (
-                <SwiperSlide key={`desktop-${index}`}>
-                  <div className="flex justify-center gap-4">
-                    {displayedProducts.slice(index * 4, (index + 1) * 4).map((product) => (
-                      <ProductCard key={`desktop-${product.id}`} {...getProductProps(product)} />
-                    ))}
+              {displayedProducts.map((product) => (
+                <SwiperSlide key={`product-${product.id}`}>
+                  <div className="w-full px-1 flex justify-center gap-0"> 
+                    <ProductCard {...getProductProps(product)} />
                   </div>
                 </SwiperSlide>
               ))}
             </Swiper>
-            <div className="mst-desktop-pagination flex justify-center mt-6 gap-2" />
-          </>
-        )}
-      </div>
-
-      {/* Mobile View */}
-      <div
-        className="sm:hidden relative"
-        onMouseEnter={() => mobileSwiperRef.current?.autoplay?.stop()}
-        onMouseLeave={() => mobileSwiperRef.current?.autoplay?.start()}
-      >
-        <Swiper
-          onSwiper={(swiper) => (mobileSwiperRef.current = swiper)}
-          slidesPerView={1.2}
-          spaceBetween={16}
-          loop={true}
-          autoplay={{
-            delay: 1500,
-            disableOnInteraction: false,
-          }}
-          pagination={{
-            clickable: true,
-            el: '.mst-mobile-pagination',
-          }}
-          modules={[Autoplay, Pagination]}
-          className="w-full"
-          breakpoints={{
-            400: { slidesPerView: 1.5 },
-            500: { slidesPerView: 1.8 },
-          }}
-        >
-          {displayedProducts.map((product) => (
-            <SwiperSlide key={`mobile-${product.id}`}>
-              <div className="px-1">
-                <ProductCard {...getProductProps(product)} />
-              </div>
-            </SwiperSlide>
-          ))}
-        </Swiper>
-        <div className="mst-mobile-pagination flex justify-center mt-4 gap-1.5" />
-      </div>
+            <div className="most-viewed-pagination flex justify-center mt-6 gap-2" />
+          </div>
+        </>
+      )}
 
       {/* Custom Pagination Styles */}
       <style jsx>{`
-        :global(.mst-desktop-pagination .swiper-pagination-bullet),
-        :global(.mst-mobile-pagination .swiper-pagination-bullet) {
+        :global(.most-viewed-pagination .swiper-pagination-bullet) {
           width: 10px;
           height: 10px;
           background: rgba(24, 43, 85, 0.3);
@@ -127,19 +100,20 @@ const MostViewedSection = ({ title }) => {
           opacity: 1;
         }
 
-        :global(.mst-desktop-pagination .swiper-pagination-bullet-active),
-        :global(.mst-mobile-pagination .swiper-pagination-bullet-active) {
+        :global(.most-viewed-pagination .swiper-pagination-bullet-active) {
           background: #182b55;
           width: 24px;
         }
 
-        :global(.mst-mobile-pagination .swiper-pagination-bullet) {
-          width: 8px;
-          height: 8px;
-        }
+        @media (max-width: 640px) {
+          :global(.most-viewed-pagination .swiper-pagination-bullet) {
+            width: 8px;
+            height: 8px;
+          }
 
-        :global(.mst-mobile-pagination .swiper-pagination-bullet-active) {
-          width: 16px;
+          :global(.most-viewed-pagination .swiper-pagination-bullet-active) {
+            width: 16px;
+          }
         }
       `}</style>
     </section>
