@@ -28,6 +28,7 @@ import OrderDetailsPage from "./pages/order/OrderDetailsPage";
 import PrivateRoute from "./components/privaterroute/PrivateRoute";
 import { FaqProvider } from "./context/FaqContext";
 import FAQPage from "./pages/FAQ/FAQPage";
+import NotFoundPage from "./pages/404/NotFoundPage";
 
 const router = createBrowserRouter([
   {
@@ -54,6 +55,8 @@ const router = createBrowserRouter([
           { path: "order-history", Component: OrderTable },
         ],
       },
+      // Fallback route
+      { path: "*", Component: NotFoundPage },
     ],
   },
   {
