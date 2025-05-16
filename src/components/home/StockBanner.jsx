@@ -7,7 +7,7 @@ const StockBanner = ({
   tagText = "Free shipping over $500",
   heading = "Stock Up & Save",
   ctaText = "Shop Now",
-  ctaLink = "#"
+ctaLink = "/products"
 }) => {
   return (
     <section className="relative h-[300px] overflow-hidden md:h-[400px] mt-10">

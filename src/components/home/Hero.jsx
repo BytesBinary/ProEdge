@@ -109,7 +109,7 @@ const Hero = () => {
                   </header>
                   <Link to={slide.buttonUrl} className="mt-2 md:mt-4">
                     <button
-                      className="bg-[#3F66BC] text-white px-4 py-2 sm:px-6 sm:py-4 rounded-full hover:bg-[#182B55] transition-colors text-sm md:text-lg font-medium shadow-lg">
+                      className="bg-[#3F66BC] text-white px-4 py-2 sm:px-6 sm:py-4 rounded-full hover:bg-[#182B55] transition-colors text-sm md:text-lg font-medium shadow-lg hover:cursor-pointer">
                       {slide.buttonText}
                     </button>
                   </Link>

@@ -8,3 +8,5 @@ proedge-api/data.db
 package-lock.json
 .env
 *.db
+.env
+.env
