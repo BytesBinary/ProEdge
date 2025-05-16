@@ -110,16 +110,6 @@ const UserProfile = () => {
           <div className="w-full lg:w-64 flex-shrink-0">
             <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
               <div className="flex flex-col gap-3 items-center space-x-4 mb-6">
-                <img
-                  className="w-16 h-16 rounded-full object-cover border-2 border-gray-200"
-                  src="https://randomuser.me/api/portraits/women/44.jpg"
-                  alt="Profile"
-                />
-                <div className="relative">
-                  <button className="absolute bottom-0 right-0 bg-blue-500 text-white p-1 rounded-full">
-                    <FiEdit className="w-3 h-3" />
-                  </button>
-                </div>
                 <div>
                   <h2 className="font-semibold text-lg">Sarah Johnson</h2>
                   <p className="text-gray-500 text-sm">
