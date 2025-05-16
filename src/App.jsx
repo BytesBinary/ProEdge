@@ -9,6 +9,7 @@ import TechHelp from "./pages/tech-help/TechHelp";
 import Contact from "./pages/contact/Contact";
 import SignIn from "./pages/auth/SignIn";
 import SignUp from "./pages/auth/SignUp";
+import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage";
 import Root from "./layouts/Root";
 import Auth from "./layouts/Auth";
 import CartPage from "./pages/cart/Cart";
@@ -27,10 +28,9 @@ import OrderDetailsPage from "./pages/order/OrderDetailsPage";
 import PrivateRoute from "./components/privaterroute/PrivateRoute";
 import { FaqProvider } from "./context/FaqContext";
 import FAQPage from "./pages/FAQ/FAQPage";
+import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
 import UserProfile from "./pages/user/UserProfile";
 import NotFoundPage from "./pages/404/NotFoundPage";
-import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage";
-import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
 
 const router = createBrowserRouter([
   {
