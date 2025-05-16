@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import OrderDetailsPage from "../order/OrderDetailsPage";
 import {
   FiEdit,
   FiLock,
@@ -10,6 +11,7 @@ import {
   FiPlus,
 } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import OrderTablePage from "../order/OrdersTable";
 const UserProfile = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const [isVerified, setIsVerified] = useState(false);
@@ -28,30 +30,6 @@ const UserProfile = () => {
 
   // Mock data - replace with API calls in a real app
   useEffect(() => {
-    setOrders([
-      {
-        id: 1,
-        number: "#ORD-12345",
-        date: "2023-05-15",
-        status: "Delivered",
-        total: 149.99,
-      },
-      {
-        id: 2,
-        number: "#ORD-12346",
-        date: "2023-05-10",
-        status: "Shipped",
-        total: 89.99,
-      },
-      {
-        id: 3,
-        number: "#ORD-12347",
-        date: "2023-05-05",
-        status: "Processing",
-        total: 199.99,
-      },
-    ]);
-
     setAddresses([
       {
         id: 1,
@@ -303,56 +281,7 @@ const UserProfile = () => {
 
             {/* Order History */}
             {activeTab === "orders" && (
-              <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-                <div className="px-6 py-5 border-b border-gray-200">
-                  <h2 className="text-xl font-semibold">Order History</h2>
-                </div>
-                <div className="divide-y divide-gray-200">
-                  {orders.map((order) => (
-                    <div key={order.id} className="p-6">
-                      <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-                        <div className="mb-4 md:mb-0">
-                          <h3 className="text-lg font-medium text-gray-900">
-                            {order.number}
-                          </h3>
-                          <p className="text-sm text-gray-500">
-                            Placed on {order.date}
-                          </p>
-                        </div>
-                        <div className="flex flex-col md:items-end">
-                          <span
-                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                              order.status === "Delivered"
-                                ? "bg-green-100 text-green-800"
-                                : order.status === "Shipped"
-                                ? "bg-blue-100 text-blue-800"
-                                : "bg-yellow-100 text-yellow-800"
-                            }`}
-                          >
-                            {order.status}
-                          </span>
-                          <p className="mt-1 text-lg font-semibold text-gray-900">
-                            ${order.total.toFixed(2)}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="mt-4 flex space-x-3">
-                        <button className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                          View Details
-                        </button>
-                        {order.status === "Processing" && (
-                          <button
-                            onClick={() => handleCancelOrder(order.id)}
-                            className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                          >
-                            Cancel Order
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <OrderTablePage />
             )}
 
             {/* Address Book */}
