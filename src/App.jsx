@@ -49,13 +49,14 @@ const router = createBrowserRouter([
       { path: "return-order", Component: TrackOrderPage },
       { path: "modify-order", Component: TrackOrderPage },
       { path: "order-details", Component: OrderDetailsPage },
-      { path: "not-found", Component: NotFoundPage },
       {
         Component: PrivateRoute,
         children: [
           { path: "order-history", Component: OrderTable },
         ],
       },
+      // Fallback route
+      { path: "*", Component: NotFoundPage },
     ],
   },
   {
