@@ -6,3 +6,7 @@ package-lock.json
 proedge-api/data.db
 proedge-api/data.db
 package-lock.json
+.env
+*.db
+.env
+.env

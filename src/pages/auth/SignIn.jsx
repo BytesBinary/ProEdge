@@ -48,7 +48,7 @@ const SignIn = () => {
     setCerror(result.message);
 
     if (result.success) {
-      navigate('/');
+      navigate('/profile');
     } else {
       setErrors(result.message);
     }
