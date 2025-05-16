@@ -197,7 +197,7 @@ const Contact = () => {
           first_name: "",
           last_name: "",
           email: "",
-          phone_numbe: "",
+          phone_number: "",
           subject: "",
           category: "",
           details: ""
