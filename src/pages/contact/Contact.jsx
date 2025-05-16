@@ -24,26 +24,39 @@ const Contact = () => {
   const [footer, setFooter] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { categories } = useContext(CategoryContext); 
+  const { categories } = useContext(CategoryContext);
+  const [creating, setCreating] = useState(false);
+  const [formData, setFormData] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+    phone_number: "",
+    subject: "",
+    category: "",
+    details: ""
+  });
+  const [errors, setErrors] = useState({});
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const ALL_FOOTER_QUERY = `
-  query{
-    Footer{
-      id
-      footer_title
-      contact_number
-      fax
-      phone_no
-      email
-      location_title
-      location_url
-      facebook
-      instagram
-      linkedin
-      thread
+    query {
+      Footer {
+        id
+        footer_title
+        contact_number
+        fax
+        phone_no
+        email
+        location_title
+        location_url
+        facebook
+        instagram
+        linkedin
+        thread
+      }
     }
-  }
   `;
+
   const fetchFooter = async () => {
     setLoading(true);
     setError(null);
@@ -74,12 +87,135 @@ const Contact = () => {
     fetchFooter();
   }, []);
 
+  const CREATE_CONTACTS_MUTATION = `
+    mutation CreateContact($data: create_contacts_input!) {
+      create_contacts_item(data: $data) {
+        id
+        first_name
+        last_name
+        email
+        phone_number
+        subject
+        category
+        details
+      }
+    }
+  `;
+
+  const createContact = async (contactData) => {
+    setCreating(true);
+    setError(null);
+
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_SERVER_URL}/graphql`,
+        {
+          query: CREATE_CONTACTS_MUTATION,
+          variables: { data: contactData },
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      if (response.data.errors) {
+        throw new Error(response.data.errors[0].message);
+      }
+
+      return response.data.data.create_contacts_item;
+    } catch (error) {
+      console.error("GraphQL mutation error:", error);
+      setError(error.message);
+      return null;
+    } finally {
+      setCreating(false);
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^[0-9]{10,15}$/;
+
+    // Check each field individually
+    if (!formData.first_name?.trim()) newErrors.first_name = "First name is required";
+    if (!formData.last_name?.trim()) newErrors.last_name = "Last name is required";
+
+    if (!formData.email?.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!emailRegex.test(formData.email)) {
+      newErrors.email = "Please enter a valid email";
+    }
+
+    if (!formData.phone_number?.trim()) {
+      newErrors.phone_number = "Phone number is required";
+    } else if (!phoneRegex.test(formData.phone_number)) {
+      newErrors.phone_number = "Please enter a valid phone number (10-15 digits)";
+    }
+
+    if (!formData.subject?.trim()) newErrors.subject = "Subject is required";
+    if (!formData.category?.trim()) newErrors.category = "Category is required";
+    if (!formData.details?.trim()) newErrors.details = "Details are required";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    console.log("Field changed:", name, value); // Debug log
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ""
+      }));
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    console.log("Form data before validation:", formData); // Debug log
+
+    if (!validateForm()) {
+      console.log("Validation failed", errors); // Debug log
+      return;
+    }
+
+    try {
+      console.log("Submitting form data:", formData); // Debug log
+      const result = await createContact(formData);
+      if (result) {
+        setIsSubmitted(true);
+        setFormData({
+          first_name: "",
+          last_name: "",
+          email: "",
+          phone_numbe: "",
+          subject: "",
+          category: "",
+          details: ""
+        });
+      }
+    } catch (err) {
+      console.error("Submission error:", err); // Debug log
+      setError("Failed to submit the form. Please try again.");
+    }
+  };
+
   const socialLinks = [
     { icon: insta, to: footer.instagram },
     { icon: fb, to: footer.facebook },
     { icon: ln, to: footer.linkedin },
     { icon: twit, to: footer.thread },
   ];
+
   return (
     <>
       <SubPageHeader
@@ -114,12 +250,7 @@ const Contact = () => {
               {socialLinks
                 .filter((link) => link.to)
                 .map((social, index) => (
-                    <SocialIcon
-                      key={index}
-                      indx={index}
-                      icon={social.icon}
-                      url={social.to}
-                    />
+                  <SocialIcon key={index} icon={social.icon} url={social.to} />
                 ))}
             </div>
           </div>
@@ -130,65 +261,120 @@ const Contact = () => {
           <h1 className="font-semibold text-4xl leading-12 text-center md:text-left">
             Get In Touch
           </h1>
-
-          <div className="flex flex-col items-center lg:items-start gap-[16px] mt-8">
-            {/* First row of fields */}
-            <div className="flex flex-col md:w-full md:flex-row justify-between gap-6">
-              {formFields.slice(0, 2).map((field, index) => (
-                <InputField
-                  key={index}
-                  type={field.type}
-                  id={field.id}
-                  name={field.name}
-                  placeholder={field.placeholder}
-                  fullWidth={field.fullWidth}
-                />
-              ))}
+          {isSubmitted ? (
+            <div className="mt-8 p-4 bg-green-100 text-green-700 rounded">
+              Thank you for your message! We'll get back to you soon.
             </div>
+          ) : ''}
+          <form onSubmit={handleSubmit}>
+            <div className="flex flex-col items-center lg:items-start gap-[16px] mt-8">
+              {/* First row of fields */}
+              <div className="flex flex-col md:w-full md:flex-row justify-between gap-6">
+                {formFields.slice(0, 2).map((field, index) => (
+                  <div key={index} className="flex-1">
+                    <InputField
+                      type={field.type}
+                      id={field.id}
+                      name={field.name}
+                      placeholder={field.placeholder}
+                      fullWidth={field.fullWidth}
+                      value={formData[field.name]}
+                      onChange={handleChange}
+                    />
+                    {errors[field.name] && (
+                      <p className="text-red-500 text-sm mt-1">{errors[field.name]}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
 
-            {/* Second row of fields */}
-            <div className="flex flex-col md:w-full md:flex-row justify-between gap-6">
-              {formFields.slice(2, 4).map((field, index) => (
-                <InputField
-                  key={index}
-                  type={field.type}
-                  id={field.id}
-                  name={field.name}
-                  placeholder={field.placeholder}
-                  fullWidth={field.fullWidth}
-                />
+              {/* Second row of fields */}
+              <div className="flex flex-col md:w-full md:flex-row justify-between gap-6">
+                {formFields.slice(2, 4).map((field, index) => (
+                  <div key={index} className="flex-1">
+                    <InputField
+                      type={field.type}
+                      id={field.id}
+                      name={field.name}
+                      placeholder={field.placeholder}
+                      fullWidth={field.fullWidth}
+                      value={formData[field.name]}
+                      onChange={handleChange}
+                    />
+                    {errors[field.name] && (
+                      <p className="text-red-500 text-sm mt-1">{errors[field.name]}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+
+
+
+              {/* Full width fields */}
+              {formFields.slice(4).map((field, index) => (
+                <div key={index} className="w-full">
+                  <InputField
+                    type={field.type}
+                    id={field.id}
+                    name={field.name}
+                    placeholder={field.placeholder}
+                    fullWidth={field.fullWidth}
+                    value={formData[field.name]}
+                    onChange={handleChange}
+                  />
+                  {errors[field.name] && (
+                    <p className="text-red-500 text-sm mt-1">{errors[field.name]}</p>
+                  )}
+                </div>
               ))}
+
+              <div className="w-full">
+                <SelectField
+                  id="category"
+                  name="category"
+                  options={categories.map((cat) => ({
+                    label: cat.category_name,
+                    value: cat.id,
+                  }))}
+                  fullWidth={false}
+                  value={formData.category}
+                  onChange={handleChange}
+                />
+                {errors.category && (
+                  <p className="text-red-500 text-sm mt-1">{errors.category}</p>
+                )}
+              </div>
+
+              <div className="w-full">
+                <TextareaField
+                  id="details"
+                  name="details"
+                  placeholder="Details*"
+                  fullWidth={false}
+                  value={formData.details}
+                  onChange={handleChange}
+                />
+                {errors.details && (
+                  <p className="text-red-500 text-sm mt-1">{errors.details}</p>
+                )}
+              </div>
+
+              {error && (
+                <div className="w-full p-2 bg-red-100 text-red-700 rounded">
+                  {error}
+                </div>
+              )}
+
+              <Button
+                type="submit"
+                className="md:absolute right-0 bottom-0"
+                disabled={creating}
+              >
+                {creating ? "Submitting..." : "Submit Now"}
+              </Button>
             </div>
-
-            {/* Full width fields */}
-            {formFields.slice(4).map((field, index) => (
-              <InputField
-                key={index}
-                type={field.type}
-                id={field.id}
-                name={field.name}
-                placeholder={field.placeholder}
-                fullWidth={field.fullWidth}
-              />
-            ))}
-            <SelectField
-              id="category"
-              name="category"
-              options={categories.map((cat) => ({
-                label: cat.category_name,
-                value: cat.id,
-              }))}
-            />
-
-            <TextareaField
-              id="details"
-              name="details"
-              placeholder="Details*"
-              fullWidth={false}
-            />
-
-            <Button className="md:absolute right-0 bottom-0">Submit Now</Button>
-          </div>
+          </form>
         </div>
       </section>
       <Map locationUrl={footer?.location_url} />
