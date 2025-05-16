@@ -50,7 +50,7 @@ const ProductCard = ({ productId,variationId,variation_name, stock,made_in,sku,i
   return (
     <div
       onClick={handleClick}
-      className="max-w-lg my-1 md:my-4 rounded-xl border-2 border-[#F8F9FB] md:hover:border-[#3F66BC] px-4 pt-4 pb-6 bg-[#FFFFFF] drop-shadow-[#E1E1E140] drop-shadow-md hover:drop-shadow-md hover:scale-105 transition duration-300 cursor-pointer"
+      className="max-w-xs w-full my-1 md:my-4 rounded-xl border-2 border-[#F8F9FB] md:hover:border-[#3F66BC] px-4 pt-4 pb-6 bg-[#FFFFFF] drop-shadow-[#E1E1E140] drop-shadow-md hover:drop-shadow-md hover:scale-105 transition duration-300 cursor-pointer"
     >
       <div className="rounded-xl w-full h-[417px] mb-5 bg-[#FFFFFF]">
         <div className="bg-[#F8F9FB] flex justify-center items-center relative rounded-xl w-full overflow-hidden">

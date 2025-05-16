@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import HeroImage from '../../assets/images/heroImage.png';
 import { Link } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -7,6 +7,8 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 
 const Hero = () => {
+  const swiperRef = useRef(null);
+
   const slides = [
     {
       title: "Save Big with Pro-Edge Compressed Air Solutions",
@@ -38,8 +40,31 @@ const Hero = () => {
     }
   ];
 
+  const handleMouseEnter = () => {
+    swiperRef.current?.autoplay?.stop();
+  };
+
+  const handleMouseLeave = () => {
+    swiperRef.current?.autoplay?.start();
+  };
+
+  const handleTouchStart = () => {
+    swiperRef.current?.autoplay?.stop();
+  };
+
+  const handleTouchEnd = () => {
+    swiperRef.current?.autoplay?.start();
+  };
+
   return (
-    <section className="relative max-w-7xl w-full mx-auto overflow-hidden rounded-2xl" aria-labelledby="hero-heading">
+    <section 
+      className="relative max-w-7xl w-full mx-auto overflow-hidden rounded-2xl"
+      aria-labelledby="hero-heading"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
       <Swiper
         slidesPerView={1}
         spaceBetween={0}
@@ -56,6 +81,7 @@ const Hero = () => {
         }}
         modules={[Pagination, Autoplay]}
         className="w-full"
+        onSwiper={(swiper) => (swiperRef.current = swiper)}
       >
         {slides.map((slide, index) => (
           <SwiperSlide key={index}>
@@ -102,7 +128,6 @@ const Hero = () => {
         </div>
       </nav>
 
-      {/* Bullet Styles (can go in a CSS/SCSS file instead) */}
       <style>{`
         .hero-bullet {
           width: 10px;

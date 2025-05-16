@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { useProductContext } from "../../context/ProductContext";
 import ProductCard from "../common/utils/cards/ProductCard";
 import defaultImage from "../../assets/default.webp";
@@ -8,11 +9,12 @@ import 'swiper/css/pagination';
 
 const MostViewedSection = ({ title }) => {
   const { products } = useProductContext();
+  const desktopSwiperRef = useRef(null);
+  const mobileSwiperRef = useRef(null);
 
   // Get the last 8 products
   const displayedProducts = products.slice(-8);
 
-  // Helper function to get product props
   const getProductProps = (product) => {
     const variation = product.variation?.[0] || {};
     const imageId = variation?.image?.id || defaultImage;
@@ -32,49 +34,58 @@ const MostViewedSection = ({ title }) => {
   };
 
   return (
-    <section className="max-w-7xl w-full mx-auto px-4 py-10">
+    <section className="max-w-[1500px] w-full mx-auto px-4 py-10">
       <h1 className="text-[#182B55] font-semibold text-2xl md:text-5xl text-center mb-10">
         {title}
       </h1>
 
-      {/* Desktop View (hidden on mobile) */}
-      <div className="hidden sm:block relative">
+      {/* Desktop View */}
+      <div
+        className="hidden sm:block relative"
+        onMouseEnter={() => desktopSwiperRef.current?.autoplay?.stop()}
+        onMouseLeave={() => desktopSwiperRef.current?.autoplay?.start()}
+      >
         {displayedProducts.length > 0 && (
           <>
-          <Swiper
-            slidesPerView={1}
-            spaceBetween={24}
-            loop={true}
-            autoplay={{
-              delay: 3000,
-              disableOnInteraction: false,
-            }}
-            pagination={{
-              clickable: true,
-              el: '.mst-desktop-pagination',
-            }}
-            modules={[Autoplay, Pagination]}
-            className="w-full"
-          >
-            {Array.from({ length: Math.ceil(displayedProducts.length / 4) }).map((_, index) => (
-              <SwiperSlide key={`desktop-${index}`}>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                  {displayedProducts.slice(index * 4, (index + 1) * 4).map((product) => (
-                    <ProductCard key={`desktop-${product.id}`} {...getProductProps(product)} />
-                  ))}
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
-          <div className="mst-desktop-pagination flex justify-center mt-6 gap-2"></div>
+            <Swiper
+              onSwiper={(swiper) => (desktopSwiperRef.current = swiper)}
+              slidesPerView={1}
+              spaceBetween={24}
+              loop={true}
+              autoplay={{
+                delay: 3000,
+                disableOnInteraction: false,
+              }}
+              pagination={{
+                clickable: true,
+                el: '.mst-desktop-pagination',
+              }}
+              modules={[Autoplay, Pagination]}
+              className="w-full"
+            >
+              {Array.from({ length: Math.ceil(displayedProducts.length / 4) }).map((_, index) => (
+                <SwiperSlide key={`desktop-${index}`}>
+                  <div className="flex justify-center gap-4">
+                    {displayedProducts.slice(index * 4, (index + 1) * 4).map((product) => (
+                      <ProductCard key={`desktop-${product.id}`} {...getProductProps(product)} />
+                    ))}
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+            <div className="mst-desktop-pagination flex justify-center mt-6 gap-2" />
           </>
         )}
-        {/* Desktop Pagination */}
       </div>
 
-      {/* Mobile View (hidden on desktop) */}
-      <div className="sm:hidden relative">
+      {/* Mobile View */}
+      <div
+        className="sm:hidden relative"
+        onMouseEnter={() => mobileSwiperRef.current?.autoplay?.stop()}
+        onMouseLeave={() => mobileSwiperRef.current?.autoplay?.start()}
+      >
         <Swiper
+          onSwiper={(swiper) => (mobileSwiperRef.current = swiper)}
           slidesPerView={1.2}
           spaceBetween={16}
           loop={true}
@@ -90,7 +101,7 @@ const MostViewedSection = ({ title }) => {
           className="w-full"
           breakpoints={{
             400: { slidesPerView: 1.5 },
-            500: { slidesPerView: 1.8 }
+            500: { slidesPerView: 1.8 },
           }}
         >
           {displayedProducts.map((product) => (
@@ -101,7 +112,6 @@ const MostViewedSection = ({ title }) => {
             </SwiperSlide>
           ))}
         </Swiper>
-        {/* Mobile Pagination */}
         <div className="mst-mobile-pagination flex justify-center mt-4 gap-1.5" />
       </div>
 
@@ -116,18 +126,18 @@ const MostViewedSection = ({ title }) => {
           transition: all 0.3s;
           opacity: 1;
         }
-        
+
         :global(.mst-desktop-pagination .swiper-pagination-bullet-active),
         :global(.mst-mobile-pagination .swiper-pagination-bullet-active) {
-          background: #182B55;
+          background: #182b55;
           width: 24px;
         }
-        
+
         :global(.mst-mobile-pagination .swiper-pagination-bullet) {
           width: 8px;
           height: 8px;
         }
-        
+
         :global(.mst-mobile-pagination .swiper-pagination-bullet-active) {
           width: 16px;
         }
