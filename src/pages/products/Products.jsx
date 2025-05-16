@@ -9,6 +9,7 @@ import { useProductContext } from "../../context/ProductContext";
 import PageHeader from "../../components/common/utils/banner/SubPageHeader";
 import bgImage from "../../assets/images/cart.png";
 import { CartContext } from "../../context/CartContext";
+import { Helmet } from "react-helmet-async";
 
 const Category = () => {
   const [showFilter, setShowFilter] = useState(false);
@@ -32,105 +33,109 @@ const Category = () => {
     if (!str) return "";
     return str
       .toLowerCase()
-      .replace(/[^\w\s-]/g, "")    
-      .trim()                     
-      .replace(/\s+/g, "-")      
-      .replace(/-+/g, "-");      
+      .replace(/[^\w\s-]/g, "")
+      .trim()
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-");
   };
 
- // Add slug to each product based on its category hierarchy
- const productsWithSlugs = products.map((product) => {
-  const parentName =
-    product.product_category?.sub_category?.parent_category?.category_name ||
-    "";
-  const subName =
-    product.product_category?.sub_category?.subcategory_name || "";
-  const childName = product.product_category?.child_category_name || "";
+  // Add slug to each product based on its category hierarchy
+  const productsWithSlugs = products.map((product) => {
+    const parentName =
+      product.product_category?.sub_category?.parent_category?.category_name ||
+      "";
+    const subName =
+      product.product_category?.sub_category?.subcategory_name || "";
+    const childName = product.product_category?.child_category_name || "";
 
-  const parentId =
-    product.product_category?.sub_category?.parent_category?.id || "";
-  const subId = product.product_category?.sub_category?.id || "";
-  const childId = product.product_category?.id || "";
+    const parentId =
+      product.product_category?.sub_category?.parent_category?.id || "";
+    const subId = product.product_category?.sub_category?.id || "";
+    const childId = product.product_category?.id || "";
 
-  // Generate slugs for each part
-  const parentSlug = parentName
-    ? `${generateSlug(parentName)}-${parentId}`
-    : "";
-  const subSlug = subName ? `${generateSlug(subName)}-${subId}` : "";
-  const childSlug = childName ? `${generateSlug(childName)}-${childId}` : "";
+    // Generate slugs for each part
+    const parentSlug = parentName
+      ? `${generateSlug(parentName)}-${parentId}`
+      : "";
+    const subSlug = subName ? `${generateSlug(subName)}-${subId}` : "";
+    const childSlug = childName ? `${generateSlug(childName)}-${childId}` : "";
 
-  // Combine them to create the full product slug
-  const productSlug = [parentSlug, subSlug, childSlug]
-    .filter(Boolean)
-    .join("-");
+    // Combine them to create the full product slug
+    const productSlug = [parentSlug, subSlug, childSlug]
+      .filter(Boolean)
+      .join("-");
 
-  return {
-    ...product,
-    slug: product.slug || productSlug, // Use existing slug if available, otherwise use generated one
-    // Also add individual slugs to the category structure for easier access
-    product_category: {
-      ...product.product_category,
-      slug: childSlug,
-      sub_category: {
-        ...product.product_category?.sub_category,
-        slug: subSlug,
-        parent_category: {
-          ...product.product_category?.sub_category?.parent_category,
-          slug: parentSlug,
+    return {
+      ...product,
+      slug: product.slug || productSlug, // Use existing slug if available, otherwise use generated one
+      // Also add individual slugs to the category structure for easier access
+      product_category: {
+        ...product.product_category,
+        slug: childSlug,
+        sub_category: {
+          ...product.product_category?.sub_category,
+          slug: subSlug,
+          parent_category: {
+            ...product.product_category?.sub_category?.parent_category,
+            slug: parentSlug,
+          },
         },
       },
-    },
-  };
-});
-// Filter products and count unique ones
-useEffect(() => {
-  // First filter the products
-  const filtered = productsWithSlugs.filter((product) => {
-    const productChildSlug = product.product_category?.slug;
-    const productSubSlug = product.product_category?.sub_category?.slug;
-    const productParentSlug = product.product_category?.sub_category?.parent_category?.slug;
-
-    if (!singleCategory?.toggle && !singleCategory?.sub_category?.some((sub) => sub.toggle)) {
-      return true;
-    }
-
-    const parentMatch = singleCategory?.toggle && singleCategory.slug === productParentSlug;
-    
-    if (singleCategory?.toggle && !parentMatch) return false;
-
-    const hasToggledSub = singleCategory?.sub_category?.some((sub) => sub.toggle);
-    if (!hasToggledSub) return true;
-
-    const subMatch = singleCategory?.sub_category?.some(
-      (sub) => sub.toggle && sub.slug === productSubSlug
-    );
-    if (!subMatch) return false;
-
-    const matchedSub = singleCategory.sub_category.find(
-      (sub) => sub.toggle && sub.slug === productSubSlug
-    );
-    const hasToggledChild = matchedSub?.child_category?.some(
-      (child) => child.toggle
-    );
-    if (!hasToggledChild) return true;
-
-    const childMatch = matchedSub.child_category.some(
-      (child) => child.toggle && child.slug === productChildSlug
-    );
-    return childMatch;
+    };
   });
+  // Filter products and count unique ones
+  useEffect(() => {
+    // First filter the products
+    const filtered = productsWithSlugs.filter((product) => {
+      const productChildSlug = product.product_category?.slug;
+      const productSubSlug = product.product_category?.sub_category?.slug;
+      const productParentSlug =
+        product.product_category?.sub_category?.parent_category?.slug;
 
-  // Then count unique products by ID
-  const uniqueProductIds = new Set();
-  filtered.forEach(product => {
-    uniqueProductIds.add(product.id); // or whatever your unique identifier is
-  });
+      if (
+        !singleCategory?.toggle &&
+        !singleCategory?.sub_category?.some((sub) => sub.toggle)
+      ) {
+        return true;
+      }
 
-  setTotalProducts(uniqueProductIds.size);
+      const parentMatch =
+        singleCategory?.toggle && singleCategory.slug === productParentSlug;
 
-}, [productsWithSlugs, singleCategory]);
+      if (singleCategory?.toggle && !parentMatch) return false;
 
- 
+      const hasToggledSub = singleCategory?.sub_category?.some(
+        (sub) => sub.toggle
+      );
+      if (!hasToggledSub) return true;
+
+      const subMatch = singleCategory?.sub_category?.some(
+        (sub) => sub.toggle && sub.slug === productSubSlug
+      );
+      if (!subMatch) return false;
+
+      const matchedSub = singleCategory.sub_category.find(
+        (sub) => sub.toggle && sub.slug === productSubSlug
+      );
+      const hasToggledChild = matchedSub?.child_category?.some(
+        (child) => child.toggle
+      );
+      if (!hasToggledChild) return true;
+
+      const childMatch = matchedSub.child_category.some(
+        (child) => child.toggle && child.slug === productChildSlug
+      );
+      return childMatch;
+    });
+
+    // Then count unique products by ID
+    const uniqueProductIds = new Set();
+    filtered.forEach((product) => {
+      uniqueProductIds.add(product.id); // or whatever your unique identifier is
+    });
+
+    setTotalProducts(uniqueProductIds.size);
+  }, [productsWithSlugs, singleCategory]);
 
   // Now filter products based on the selected category using the generated slugs
   const categoryfilteredProducts = productsWithSlugs.filter((product) => {
@@ -151,7 +156,7 @@ useEffect(() => {
     // Check if parent matches (if parent is toggled in singleCategory)
     const parentMatch =
       singleCategory?.toggle && singleCategory.slug === productParentSlug;
-      console.log(parentMatch, "parentMatch");  
+    console.log(parentMatch, "parentMatch");
 
     // If parent doesn't match, exclude the product
     if (singleCategory?.toggle && !parentMatch) return false;
@@ -237,7 +242,6 @@ useEffect(() => {
     });
   });
 
-
   const priceFilteredProducts = formattedProducts.filter((product) => {
     const productPrice = product.offer_price || product.price || 0;
     const madeInUsa = (product?.made_in || "").toLowerCase().includes("usa");
@@ -267,8 +271,160 @@ useEffect(() => {
   if (sortOption === "Newest") {
     currentItems = [...currentItems].reverse();
   }
+  console.log(singleCategory?.category_name, "ccc");
   return (
     <>
+      {singleCategory && (
+        <Helmet>
+          {/* Dynamic Title */}
+          <title>
+            {`${singleCategory?.category_name} Products`}
+            {isMadeUsa ? " (Non-USA)" : ""}
+            {currentPage > 1 ? ` - Page ${currentPage}` : ""}
+            {` | ${import.meta.env.VITE_SITE_NAME}`}
+          </title>
+
+          {/* Dynamic Description */}
+          <meta
+            name="description"
+            content={
+              `Browse ${totalItems} ${
+                singleCategory?.category_name
+                  ? singleCategory.category_name.toLowerCase()
+                  : ""
+              } products` +
+              `${isMadeUsa ? " not made in USA" : ""}` +
+              `${sortOption === "Newest" ? ", newest arrivals" : ""}` +
+              `${
+                minPrice || maxPrice ? ` ($${minPrice} - $${maxPrice})` : ""
+              }` +
+              `. ${
+                currentPage > 1 ? `Page ${currentPage} of ${totalPages}.` : ""
+              }`
+            }
+          />
+
+          {/* Canonical URL */}
+          <link
+            rel="canonical"
+            href={`${import.meta.env.VITE_CLIENT_URL}/products${
+              singleCategory?.slug ? `/${singleCategory.slug}` : ""
+            }${
+              isMadeUsa
+                ? "?madeInUsa=false"
+                : minPrice > 0 || maxPrice < 1000
+                ? "?"
+                : ""
+            }${minPrice > 0 ? `minPrice=${minPrice}` : ""}${
+              minPrice > 0 && maxPrice < 1000 ? "&" : ""
+            }${maxPrice < 1000 ? `maxPrice=${maxPrice}` : ""}${
+              currentPage > 1
+                ? `${
+                    isMadeUsa || minPrice > 0 || maxPrice < 1000 ? "&" : "?"
+                  }page=${currentPage}`
+                : ""
+            }`}
+          />
+
+          {/* Open Graph / Facebook */}
+          <meta
+            property="og:title"
+            content={`${singleCategory?.category_name || "All"} Products`}
+          />
+          <meta
+            property="og:description"
+            content={`Browse our collection of ${
+              singleCategory?.category_name || "all"
+            } products`}
+          />
+          <meta
+            property="og:url"
+            content={`${import.meta.env.VITE_CLIENT_URL}/products${
+              singleCategory?.slug ? `/${singleCategory.slug}` : ""
+            }`}
+          />
+          <meta property="og:type" content="website" />
+          <meta property="og:image" content={bgImage} />
+
+          {/* Twitter Card */}
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta
+            name="twitter:title"
+            content={`${singleCategory?.category_name || "All"} Products`}
+          />
+          <meta
+            name="twitter:description"
+            content={`Browse our collection of ${
+              singleCategory?.category_name || "all"
+            } products`}
+          />
+          <meta name="twitter:image" content={bgImage} />
+
+          {/* Structured Data */}
+          <script type="application/ld+json">
+            {JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "CollectionPage",
+              name: `${singleCategory?.category_name || "All"} Products`,
+              description: `Browse our collection of ${
+                singleCategory?.category_name || "all"
+              } products`,
+              url: `${import.meta.env.VITE_CLIENT_URL}/products${
+                singleCategory?.slug ? `/${singleCategory.slug}` : ""
+              }`,
+              breadcrumb: {
+                "@type": "BreadcrumbList",
+                itemListElement: [
+                  {
+                    "@type": "ListItem",
+                    position: 1,
+                    name: "Home",
+                    item: `${import.meta.env.VITE_CLIENT_URL}/`,
+                  },
+                  {
+                    "@type": "ListItem",
+                    position: 2,
+                    name: "Products",
+                    item: `${import.meta.env.VITE_CLIENT_URL}/products`,
+                  },
+                  ...(singleCategory?.category_name
+                    ? [
+                        {
+                          "@type": "ListItem",
+                          position: 3,
+                          name: singleCategory.category_name,
+                          item: `${import.meta.env.VITE_CLIENT_URL}/products/${
+                            singleCategory.slug
+                          }`,
+                        },
+                      ]
+                    : []),
+                ],
+              },
+              mainEntity: {
+                "@type": "ItemList",
+                itemListElement: currentItems
+                  .slice(0, 5)
+                  .map((product, index) => ({
+                    "@type": "ListItem",
+                    position: index + 1,
+                    item: {
+                      "@type": "Product",
+                      name: product.title,
+                      image: product.image,
+                      description: product.title,
+                      offers: {
+                        "@type": "Offer",
+                        price: product.price,
+                        priceCurrency: "USD",
+                      },
+                    },
+                  })),
+              },
+            })}
+          </script>
+        </Helmet>
+      )}
       <PageHeader
         title="Categories"
         bgImage={bgImage}
@@ -456,13 +612,15 @@ useEffect(() => {
         </div>
 
         {showFilter && (
-
           <div className="lg:hidden fixed bg-white/5 shadow-sm backdrop-blur-xs left-0 top-0 h-screen w-full z-50">
-
-            <div className="absolute left-0 top-0 h-screen w-full z-[-1] transform transition-transform duration-300 ease-in-out bg-white/5" onClick={() => { setShowFilter(false) }}></div>
+            <div
+              className="absolute left-0 top-0 h-screen w-full z-[-1] transform transition-transform duration-300 ease-in-out bg-white/5"
+              onClick={() => {
+                setShowFilter(false);
+              }}
+            ></div>
             <Filter onClose={() => setShowFilter(false)} />
           </div>
-
         )}
       </div>
     </>
