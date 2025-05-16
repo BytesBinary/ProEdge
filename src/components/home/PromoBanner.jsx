@@ -29,7 +29,7 @@ const PromoBanner = ({
           </p>
 
           <Link to={buttonLink}>
-            <button className="bg-white w-[158px] h-12 py-3 px-6 text-[#20386E] rounded-[40px] text-sm sm:text-base md:text-lg leading-6 mt-[20px] hover:bg-[#f0f4ff] hover:text-[#182B55] hover:opacity-90 cursor-pointer transition duration-300">
+            <button className="bg-white w-[158px] h-12 py-3 px-6 text-[#20386E] rounded-[40px] text-sm sm:text-base md:text-lg leading-6 mt-[20px] hover:bg-[#20386E] hover:text-white cursor-pointer transition duration-300">
               {buttonText}
             </button>
           </Link>

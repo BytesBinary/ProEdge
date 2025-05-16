@@ -24,7 +24,7 @@ const StockBanner = ({
           <h1 className="text-[#182B55] text-4xl font-bold md:text-5xl">{heading}</h1>
           <a
             href={ctaLink}
-            className="inline-block bg-[#3F66BC] text-white rounded-full py-3 px-8 mt-5 font-medium text-lg transition-transform hover:scale-105"
+            className="inline-block bg-[#3F66BC] text-white rounded-full py-3 px-8 mt-5 font-medium text-lg hover:bg-[#0F1F40] transition-colors"
           >
             {ctaText}
           </a>
