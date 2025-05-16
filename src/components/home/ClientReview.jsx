@@ -130,7 +130,9 @@ const ClientReview = ({
               <Swiper
               slidesPerView={2}
                            breakpoints={{
-                640: { slidesPerView: 1 },
+                0:{ slidesPerView: 1 },
+                500: { slidesPerView: 2 },
+                640: { slidesPerView: 2 },
                 768: { slidesPerView:  2},
                 1024: { slidesPerView: 2 },
                 1280: { slidesPerView:  2},
