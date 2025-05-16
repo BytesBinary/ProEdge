@@ -1,21 +1,26 @@
-import React, { useContext } from "react";
+import React, { useContext, useMemo, useRef } from "react";
 import { CategoryContext } from "../../context/CategoryContext";
 import { useNavigate } from "react-router-dom";
 import { formatCategoryName } from "../../helper/slugifier/slugify";
 
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Pagination } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/pagination';
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
 
 const CategoryItem = ({ id, image, label, alt, category_name }) => {
   const navigate = useNavigate();
 
   return (
     <div className="flex flex-col items-center group min-w-[140px]">
-      <div className="relative w-24 h-24 md:w-32 md:h-32 lg:w-36 lg:h-36 rounded-full bg-white p-2 mb-3"
+      <div
+        className="relative w-24 h-24 md:w-32 md:h-32 lg:w-36 lg:h-36 rounded-full bg-white p-2 mb-3"
         onClick={() =>
-          navigate(`/products?parent_category=${formatCategoryName(category_name + " " + id)}`)
+          navigate(
+            `/products?parent_category=${formatCategoryName(
+              category_name + " " + id
+            )}`
+          )
         }
       >
         <img
@@ -25,11 +30,17 @@ const CategoryItem = ({ id, image, label, alt, category_name }) => {
         />
         <div
           onClick={() =>
-            navigate(`/products?parent_category=${formatCategoryName(category_name + " " + id)}`)
+            navigate(
+              `/products?parent_category=${formatCategoryName(
+                category_name + " " + id
+              )}`
+            )
           }
           className="absolute inset-0 hidden group-hover:flex items-center justify-center bg-[#3F66BCAB] rounded-full transition-opacity cursor-pointer"
         >
-          <span className="text-md md:text-lg font-semibold text-white">Shop All</span>
+          <span className="text-md md:text-lg font-semibold text-white">
+            Shop All
+          </span>
         </div>
       </div>
       <span className="w-full text-sm md:text-md lg:text-base leading-tight text-white text-center">
@@ -41,68 +52,75 @@ const CategoryItem = ({ id, image, label, alt, category_name }) => {
 
 const ShopCategorySection = () => {
   const { categories } = useContext(CategoryContext);
+  const swiperRef = useRef(null); // ✅ added reference to swiper
+
+  const sliderNeeded = useMemo(() => categories.length > 6, [categories]);
 
   return (
-    <section aria-labelledby="shop-category-heading" className="overflow-hidden">
+    <section
+      aria-labelledby="shop-category-heading"
+      className="overflow-hidden"
+    >
       <div className="bg-[#182B55] py-16 md:py-28 text-center">
-        <h1 className="text-white text-3xl md:text-5xl font-bold">Shop by Category</h1>
+        <h1 className="text-white text-3xl md:text-5xl font-bold">
+          Shop by Category
+        </h1>
       </div>
 
       <div className="bg-[#3F66BC] py-16 md:py-28 relative">
-        <div className="w-full max-w-7xl md:absolute md:bottom-20 md:left-1/2 md:-translate-x-1/2 px-6">
-          {categories.length > 8 ? (
-            <>
-              <Swiper
-                slidesPerView={2}
-                spaceBetween={24}
-                loop={true}
-                autoplay={{
-                  delay: 3000,
-                  disableOnInteraction: false,
-                }}
-                pagination={{
-                  clickable: true,
-                  el: '.shop-cat-desktop-pagination',
-                }}
-                breakpoints={{
-                  640: { slidesPerView: 3 },
-                  768: { slidesPerView: 4 },
-                  1024: { slidesPerView: 5 },
-                  1280: { slidesPerView: 6 },
-                }}
-                modules={[Autoplay, Pagination]}
-                className="w-full"
-              >
-                {categories.map((category) => (
-                  <SwiperSlide key={category.id}>
-                    <CategoryItem
-                      id={category.id}
-                      image={category.image.id}
-                      label={category.category_name}
-                      alt={category.category_name}
-                      category_name={category.category_name}
-                    />
-                  </SwiperSlide>
-                ))}
-              </Swiper>
-
-              {/* Pagination Bullets */}
-              <div className=".shop-cat-desktop-pagination mt-8 flex justify-center space-x-2" />
-            </>
-          ) : (
-            <div className="grid grid-cols-2 gap-3 md:flex md:gap-6 md:overflow-hidden py-2 custom-scrollbar-hide">
+        <div className="w-full max-w-7xl md:absolute md:bottom-12 md:left-1/2 md:-translate-x-1/2 px-6">
+          <div
+            onMouseEnter={() => swiperRef.current?.autoplay?.stop()} // ✅ pause autoplay
+            onMouseLeave={() => swiperRef.current?.autoplay?.start()} // ✅ resume autoplay
+          >
+            <Swiper
+              onSwiper={(swiper) => (swiperRef.current = swiper)}
+              slidesPerView={2}
+              spaceBetween={24}
+              loop={sliderNeeded}
+              autoplay={
+                sliderNeeded
+                  ? {
+                      delay: 3000,
+                      disableOnInteraction: false,
+                    }
+                  : false
+              }
+              pagination={
+                sliderNeeded
+                  ? {
+                      clickable: true,
+                      el: ".shop-cat-desktop-pagination",
+                    }
+                  : false
+              }
+              watchOverflow={true}
+              breakpoints={{
+                640: { slidesPerView: 3 },
+                768: { slidesPerView: 4 },
+                1024: { slidesPerView: 5 },
+                1280: { slidesPerView: 7 },
+              }}
+              modules={[Autoplay, Pagination]}
+              className="w-full"
+            >
               {categories.map((category) => (
-                <CategoryItem
-                  key={category.id}
-                  id={category.id}
-                  image={category.image.id}
-                  label={category.category_name}
-                  alt={category.category_name}
-                  category_name={category.category_name}
-                />
+                <SwiperSlide key={category.id}>
+                  <CategoryItem
+                    id={category.id}
+                    image={category.image.id}
+                    label={category.category_name}
+                    alt={category.category_name}
+                    category_name={category.category_name}
+                  />
+                </SwiperSlide>
               ))}
-            </div>
-          )}
+            </Swiper>
+
+            {sliderNeeded && (
+              <div className="shop-cat-desktop-pagination mt-8 flex justify-center space-x-2" />
+            )}
+          </div>
         </div>
       </div>
 
@@ -116,17 +134,15 @@ const ShopCategorySection = () => {
           transition: all 0.3s;
           opacity: 1;
         }
-        
+
         :global(.shop-cat-desktop-pagination .swiper-pagination-bullet-active),
         :global(.shop-mobile-pagination .swiper-pagination-bullet-active) {
-          background: #182B55;
+          background: #182b55;
           width: 24px;
         }
       `}</style>
     </section>
   );
-
 };
-
 
 export default ShopCategorySection;

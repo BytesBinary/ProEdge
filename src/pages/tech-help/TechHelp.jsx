@@ -22,7 +22,7 @@ const TechHelp = () => {
     { image: pick, title: "Track an order", link: "/track-order" },
     { image: returning, title: "Start a return", link: "/return-order" },
     { image: history, title: "View order history", link: "/order-history" },
-    { image: qoute, title: "Request a quote", link: "#" },
+    { image: qoute, title: "Request a quote", link: "/contact-us" },
     {
       image: modify,
       title: "Modify or cancel an order",
