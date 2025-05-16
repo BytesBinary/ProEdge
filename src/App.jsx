@@ -9,7 +9,6 @@ import TechHelp from "./pages/tech-help/TechHelp";
 import Contact from "./pages/contact/Contact";
 import SignIn from "./pages/auth/SignIn";
 import SignUp from "./pages/auth/SignUp";
-import ResetPass from "./pages/auth/ResetPass";
 import Root from "./layouts/Root";
 import Auth from "./layouts/Auth";
 import CartPage from "./pages/cart/Cart";
@@ -30,6 +29,8 @@ import { FaqProvider } from "./context/FaqContext";
 import FAQPage from "./pages/FAQ/FAQPage";
 import UserProfile from "./pages/user/UserProfile";
 import NotFoundPage from "./pages/404/NotFoundPage";
+import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage";
+import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
 
 const router = createBrowserRouter([
   {
@@ -67,7 +68,8 @@ const router = createBrowserRouter([
     children: [
       { path: "signin", Component: SignIn },
       { path: "signup", Component: SignUp },
-      { path: "forgot-password", Component: ResetPass },
+      { path: "forgot-password", Component: ForgotPasswordPage },
+      { path: "reset-password", Component: ResetPasswordPage },
     ],
   },
 ]);
