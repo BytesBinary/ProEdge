@@ -1,15 +1,15 @@
 const formFields = [
     {
       type: "text",
-      id: "fname",
-      name: "fname",
+      id: "first_name",
+      name: "first_name",
       placeholder: "First Name*",
       fullWidth: false
     },
     {
       type: "text",
-      id: "lname",
-      name: "lname",
+      id: "last_name",
+      name: "last_name",
       placeholder: "Last Name*",
       fullWidth: false
     },
@@ -22,8 +22,8 @@ const formFields = [
     },
     {
       type: "tel",
-      id: "phone",
-      name: "phone",
+      id: "phone_number",
+      name: "phone_number",
       placeholder: "Phone Number*",
       fullWidth: false
     },
