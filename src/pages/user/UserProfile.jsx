@@ -23,7 +23,6 @@ const UserProfile = () => {
   const handleSignOut = () => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("user");
-    setIsDropdownOpen(false);
     navigate("/");
   };
 
