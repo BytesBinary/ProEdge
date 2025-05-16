@@ -84,7 +84,7 @@ const Footer = () => {
               className="text-[#5D6576] font-medium text-sm md:text-[16px] leading-6 bg-white py-1 pr-24 md:pr-28 pl-6 h-8 md:h-12 w-full rounded-[26px]"
               placeholder="Your email"
             />
-            <button className="absolute top-1/2 right-1 md:right-2 transform -translate-y-1/2 bg-[#182B55] text-white py-2 px-5 rounded-4xl h-7 md:h-10 w-[102px] flex items-center justify-center hover:bg-[#294680] transition duration-300 cursor-pointer">
+            <button className="absolute top-1/2 right-1 md:right-2 transform -translate-y-1/2 bg-[#182B55] text-white py-2 px-5 rounded-4xl h-7 md:h-10 w-[102px] flex items-center justify-center hover:bg-[#0F1F40] transition-colors cursor-pointer">
               SUBMIT
             </button>
           </div>

@@ -29,6 +29,7 @@ import PrivateRoute from "./components/privaterroute/PrivateRoute";
 import { FaqProvider } from "./context/FaqContext";
 import FAQPage from "./pages/FAQ/FAQPage";
 import UserProfile from "./pages/user/UserProfile";
+import NotFoundPage from "./pages/404/NotFoundPage";
 
 const router = createBrowserRouter([
   {
@@ -56,6 +57,8 @@ const router = createBrowserRouter([
           { path: "profile", Component: UserProfile },
         ],
       },
+      // Fallback route
+      { path: "*", Component: NotFoundPage },
     ],
   },
   {

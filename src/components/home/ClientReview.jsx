@@ -112,7 +112,7 @@ const ClientReview = ({
             </p>
           </div>
           <a href={buttonLink}>
-            <button className="bg-[#3F66BC] text-white rounded-4xl py-3 px-8 font-medium text-[16px] leading-6 hover:bg-[#2f529c] cursor-pointer transition duration-300">
+            <button className="bg-[#3F66BC] text-white rounded-4xl py-3 px-8 font-medium text-[16px] leading-6 hover:bg-[#0F1F40] transition-colors cursor-pointer">
               {buttonText}
             </button>
           </a>

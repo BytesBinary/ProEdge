@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { PulseLoader } from "react-spinners";
 import { useFaqContext } from "../../context/FaqContext";
 import PageHeader from "../../components/common/utils/banner/SubPageHeader";
 import bgImage from "../../assets/images/cart.png";
 import { formatCategoryName } from "../../helper/slugifier/slugify";
 import FaqItem from "../../components/TechHelp/FAQItem";
 import { FiChevronDown, FiChevronUp, FiSearch } from "react-icons/fi";
+import { ClipLoader } from "react-spinners";
 
 const FAQPage = () => {
   const { faqSections, loading, error } = useFaqContext();
@@ -60,7 +60,7 @@ const FAQPage = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[60vh]">
-        <PulseLoader color="#3B82F6" size={12} />
+        <ClipLoader color="#30079f" size={12} />
       </div>
     );
   }

@@ -224,7 +224,7 @@ const MobileNav = ({ actionIcons }) => {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     onFocus={() => searchTerm && setShowSearchDropdown(true)}
-                    className="w-full py-3 pl-12 pr-6 rounded-full bg-white/10 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/30"
+                    className="w-full py-3 pl-12 pr-6 rounded-full bg-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white/30"
                   />
                   <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-white" />
                 </div>
@@ -325,7 +325,7 @@ const MobileNav = ({ actionIcons }) => {
                   </Link>
                 ))}
               </div>
-              <p className="text-center text-white/70 text-sm">
+              <p className="text-center text-gray-300 text-sm">
                 © {new Date().getFullYear()} ProEdge Tools
               </p>
             </div>

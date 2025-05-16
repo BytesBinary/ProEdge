@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { CategoryContext } from '../../../../context/CategoryContext';
 import RightArrowIcon from './browseProduct/icons/RightArrowIcon';
 import { formatCategoryName } from '../../../../helper/slugifier/slugify';
-import { PulseLoader } from 'react-spinners';
+import { ClipLoader } from 'react-spinners';
 
 const MobilePanel = ({ isOpen, setIsOpen, selectedCategory, setSelectedCategory }) => {
   const { categories, loading, error } = useContext(CategoryContext);
@@ -44,7 +44,7 @@ const MobilePanel = ({ isOpen, setIsOpen, selectedCategory, setSelectedCategory 
 
   if (loading) return (
     <div className="fixed inset-0 flex items-center justify-center bg-white z-40">
-      <PulseLoader color="#3b82f6" size={10} />
+      <ClipLoader color="#30079f" size={10} />
       <span className="text-blue-600 ml-2">Loading categories...</span>
     </div>
   )
