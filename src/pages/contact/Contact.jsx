@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import ContactInfoItem from "../../components/contactus/ContactInfoItem";
 import SocialIcon from "../../components/contactus/SocialIcon";
 import InputField from "../../components/contactus/InputField";
@@ -18,11 +18,13 @@ import fb from "../../assets/images/contact/fb.png";
 import ln from "../../assets/images/contact/in.png";
 import twit from "../../assets/images/contact/twit.png";
 import { useEffect, useState } from "react";
+import { CategoryContext } from "../../context/CategoryContext";
 
 const Contact = () => {
   const [footer, setFooter] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { categories } = useContext(CategoryContext); 
 
   const ALL_FOOTER_QUERY = `
   query{
@@ -72,12 +74,6 @@ const Contact = () => {
     fetchFooter();
   }, []);
 
-  console.table([
-    footer.instagram,
-    footer.facebook,
-    footer.linkedin,
-    footer.thread,
-  ]);
   const socialLinks = [
     { icon: insta, to: footer.instagram },
     { icon: fb, to: footer.facebook },
@@ -116,12 +112,14 @@ const Contact = () => {
 
             <div className="flex gap-[24px]">
               {socialLinks
-                .filter((link) => link.to) 
+                .filter((link) => link.to)
                 .map((social, index) => (
-                  <>
-                  {console.log(social.to, "social.icon")}
-                  <SocialIcon key={index} icon={social.icon} url={social.to} />
-                  </>
+                    <SocialIcon
+                      key={index}
+                      indx={index}
+                      icon={social.icon}
+                      url={social.to}
+                    />
                 ))}
             </div>
           </div>
@@ -173,12 +171,13 @@ const Contact = () => {
                 fullWidth={field.fullWidth}
               />
             ))}
-
             <SelectField
               id="category"
               name="category"
-              options={categoryOptions}
-              fullWidth={false}
+              options={categories.map((cat) => ({
+                label: cat.category_name,
+                value: cat.id,
+              }))}
             />
 
             <TextareaField
@@ -192,7 +191,6 @@ const Contact = () => {
           </div>
         </div>
       </section>
-      {/* {console.log(fo)} */}
       <Map locationUrl={footer?.location_url} />
     </>
   );
