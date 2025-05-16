@@ -28,6 +28,7 @@ import OrderDetailsPage from "./pages/order/OrderDetailsPage";
 import PrivateRoute from "./components/privaterroute/PrivateRoute";
 import { FaqProvider } from "./context/FaqContext";
 import FAQPage from "./pages/FAQ/FAQPage";
+import UserProfile from "./pages/user/UserProfile";
 
 const router = createBrowserRouter([
   {
@@ -52,6 +53,7 @@ const router = createBrowserRouter([
         Component: PrivateRoute,
         children: [
           { path: "order-history", Component: OrderTable },
+          { path: "profile", Component: UserProfile },
         ],
       },
     ],
