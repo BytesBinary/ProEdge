@@ -8,6 +8,8 @@ import PDS from "../../components/common/utils/ProductDetails/PDS";
 import ProductSpecList from "../../components/product/ProductSpecList";
 import PageHeader from "../../components/common/utils/banner/SubPageHeader";
 import bgImage from "../../assets/images/productDetails/bg.jpeg";
+import { PulseLoader } from "react-spinners";
+import { Helmet } from "react-helmet-async";
 import { ClipLoader } from "react-spinners";
 
 const Product = () => {
@@ -97,18 +99,138 @@ const id=extractIdFromSlug(title);
   const thumbnails = Array.isArray(singleProduct.variation)
     ? singleProduct.variation.map((v) => ({
         id: v.id,
-        image: v.image?.id || "", // Safe access to image id
+        image: v.image?.id || "", 
         option: v,
       }))
     : [];
 
-  // Safe access to main image
   const mainImage = singleVariation.image?.id
-    ? `${import.meta.env.VITE_SERVER_URL}/assets/${singleVariation.image.id}`
-    : singleVariation.image || "";
+  ? `${import.meta.env.VITE_SERVER_URL}/assets/${singleVariation.image.id}`
+  : singleVariation.image || "";
 
-  return (
-    <>
+const productName = `${singleProduct.title} ${singleVariation.variation_name}`;
+const brandName = "ProEdge"; 
+const priceCurrency = "USD";
+
+// Create a more compelling meta title and description
+const metaTitle = `${productName} | ${brandName}`;
+const metaDescription = `Shop high-quality ${productName} - ${singleVariation.product_details?.substring(0, 140) || 'Industrial brass fitting for various applications'}`;
+
+// Generate canonical URL
+const cleanProductName = productName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+const canonicalUrl = `${import.meta.env.VITE_CLIENT_URL}/products/${cleanProductName}-${id}`;
+
+// Generate rich product schema data
+const productSchema = {
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "productID": singleVariation.sku_code,
+  "name": productName,
+  "description": singleVariation.product_details || singleVariation.product_info || metaDescription,
+  "image": mainImage,
+  "brand": {
+    "@type": "Brand",
+    "name": brandName
+  },
+  "offers": {
+    "@type": "Offer",
+    "url": canonicalUrl,
+    "priceCurrency": priceCurrency,
+    "price": singleVariation.offer_price,
+    "priceValidUntil": new Date(Date.now() + 1000 * 60 * 60 * 24 * 365).toISOString().split('T')[0], // 1 year from now
+    "itemCondition": "https://schema.org/NewCondition",
+    "availability": singleVariation.stock > 0 
+      ? "https://schema.org/InStock" 
+      : "https://schema.org/OutOfStock",
+    "shippingDetails": {
+      "@type": "OfferShippingDetails",
+      "shippingRate": {
+        "@type": "MonetaryAmount",
+        "value": "0",
+        "currency": priceCurrency
+      },
+      "shippingDestination": {
+        "@type": "DefinedRegion",
+        "addressCountry": "US"
+      },
+      "deliveryTime": {
+        "@type": "ShippingDeliveryTime",
+        "handlingTime": {
+          "@type": "QuantitativeValue",
+          "minValue": "1",
+          "maxValue": "2",
+          "unitCode": "DAY"
+        },
+        "transitTime": {
+          "@type": "QuantitativeValue",
+          "minValue": singleVariation.shipping_days - 2,
+          "maxValue": singleVariation.shipping_days,
+          "unitCode": "DAY"
+        }
+      }
+    }
+  },
+  "aggregateRating": singleVariation.rating ? {
+    "@type": "AggregateRating",
+    "ratingValue": singleVariation.rating,
+    "reviewCount": singleVariation.total_ratings || 0,
+    "bestRating": "5",
+    "worstRating": "1"
+  } : undefined,
+  "additionalProperty": [
+    {
+      "@type": "PropertyValue",
+      "name": "Material",
+      "value": "Brass"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Country of Origin",
+      "value": singleVariation.made_in || "USA"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Thread Size",
+      "value": singleVariation.variation_value
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "SKU",
+      "value": singleVariation.sku_code
+    }
+  ]
+};
+
+// In your return statement, add the Helmet component at the top:
+return (
+  <>
+    <Helmet>
+      <title>{metaTitle}</title>
+      <meta name="description" content={metaDescription} />
+      <link rel="canonical" href={canonicalUrl} />
+      
+      {/* Open Graph / Facebook */}
+      <meta property="og:type" content="product" />
+      <meta property="og:title" content={metaTitle} />
+      <meta property="og:description" content={metaDescription} />
+      <meta property="og:image" content={mainImage} />
+      <meta property="og:url" content={canonicalUrl} />
+      <meta property="og:site_name" content={brandName} />
+      <meta property="product:price:amount" content={singleVariation.offer_price} />
+      <meta property="product:price:currency" content={priceCurrency} />
+      <meta property="product:brand" content={brandName} />
+      
+      {/* Twitter */}
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={metaTitle} />
+      <meta name="twitter:description" content={metaDescription} />
+      <meta name="twitter:image" content={mainImage} />
+      
+      {/* Product structured data */}
+      <script type="application/ld+json">
+        {JSON.stringify(productSchema)}
+      </script>
+    </Helmet>
       <PageHeader
         title="Product Details"
         bgImage={bgImage}
