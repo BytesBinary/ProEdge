@@ -63,7 +63,7 @@ const ProductCard = ({ productId,variationId,variation_name, stock,made_in,sku,i
           <div 
             onClick={handleWishlistClick}
             className={`group rounded-full w-9 h-9 flex items-center hover:border-1 hover:border-[#EE2738] justify-center shadow-lg absolute top-2 right-2 transition duration-300 cursor-pointer ${
-              isWishlisted ? "bg-[#EE2738] hover:bg-red-800" : "bg-[#FFFFFF] hover:bg-red-300"
+              isWishlisted ? "bg-[#EE2738] hover:bg-red-800" : "bg-[#FFFFFF] hover:bg-red-600"
             } transition-all duration-200`}
           >
             <svg
@@ -100,8 +100,8 @@ const ProductCard = ({ productId,variationId,variation_name, stock,made_in,sku,i
           </div>
           <div 
             onClick={handleAddToCart}
-            className={`rounded-[60px] text-center w-full h-[40px] py-2 px-6 flex items-center justify-center hover:bg-[#e6c200] cursor-pointer transition duration-300 ${
-              isInCart ? "bg-[#182B55] text-white" : "bg-[#FCD700] text-[#182B55]"
+            className={`rounded-[60px] text-center w-full h-[40px] py-2 px-6 flex items-center justify-center hover:bg-[#182B55] hover:text-white cursor-pointer transition duration-300 ${
+              isInCart ? "bg-[#182B55] text-white hover:bg-[#FCD700]" : "bg-[#FCD700] text-[#182B55]"
             }`}
           >
             <h3 className="text-[16px] font-medium leading-6">

@@ -71,14 +71,14 @@ const OrderSummaryCard = ({ cart }) => {
           <div className="flex flex-col gap-3">
             <button
               onClick={() => navigate("/cart/checkout")}
-              className="w-full bg-[#3F66BC] text-white py-2 rounded-full hover:bg-[#3457a4] transition-colors duration-200 cursor-pointer"
+              className="w-full bg-[#3F66BC] text-white py-2 rounded-full hover:bg-[#182B55] transition-colors duration-200 cursor-pointer"
             >
               Proceed to Checkout
             </button>
 
             <button
               onClick={() => navigate("/cart/checkout?guest=true")}
-              className="w-full border border-[#3F66BC] text-[#3F66BC] py-2 rounded-full hover:bg-[#3F66BC] hover:text-white transition-colors duration-200"
+              className="w-full border border-[#3F66BC] cursor-pointer text-[#3F66BC] py-2 rounded-full hover:bg-[#3F66BC] hover:text-white transition-colors duration-200"
             >
               Checkout as Guest
             </button>

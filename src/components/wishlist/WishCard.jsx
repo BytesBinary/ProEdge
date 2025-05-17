@@ -34,7 +34,7 @@ const WishCard = ({
             </span>
             <button
               onClick={onAddToCart}
-              className="bg-[#FCD700] text-black px-4 py-2 rounded-full text-sm inline-block whitespace-nowrap hover:bg-orange-700 cursor-pointer"
+              className="bg-[#FCD700] text-black px-4 py-2 rounded-full text-sm inline-block whitespace-nowrap hover:bg-[#182B55] hover:text-white cursor-pointer"
             >
               Add To Cart
             </button>
