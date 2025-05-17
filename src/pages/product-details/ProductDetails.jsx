@@ -8,7 +8,7 @@ import PDS from "../../components/common/utils/ProductDetails/PDS";
 import ProductSpecList from "../../components/product/ProductSpecList";
 import PageHeader from "../../components/common/utils/banner/SubPageHeader";
 import bgImage from "../../assets/images/productDetails/bg.jpeg";
-import { PulseLoader } from "react-spinners";
+// import { PulseLoader } from "react-spinners";
 import { Helmet } from "react-helmet-async";
 import { ClipLoader } from "react-spinners";
 

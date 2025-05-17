@@ -15,6 +15,7 @@ import shopping from "../../assets/images/techHelp/shopping.png";
 import Icon from "../../components/TechHelp/Icon";
 import FAQ from "../../components/TechHelp/FAQ";
 import PolicyIcon from "../../components/TechHelp/PolicyIcon";
+import PageHeader from "../../components/common/utils/banner/SubPageHeader";
 
 const TechHelp = () => {
  
@@ -30,28 +31,6 @@ const TechHelp = () => {
     },
   ];
 
-  const helpTopics = [
-    {
-      heading: "Ordering",
-      questions: [
-        {
-          href: "#",
-          text: "How long does it take to process and deliver an order?",
-        },
-        { href: "#", text: "How can I cancel my order?" },
-      ],
-      seeAllLink: "#",
-    },
-    {
-      heading: "Shipping",
-      questions: [
-        { href: "#", text: "What shipping methods are available?" },
-        { href: "#", text: "Do you ship internationally?" },
-      ],
-      seeAllLink: "#",
-    },
-  ];
-
   const policies = [
     { image: returni, title: "Return Policy", link: "#" },
     { image: payment, title: "Payment Policy", link: "#" },
@@ -61,29 +40,8 @@ const TechHelp = () => {
 
   return (
     <div>
-      <div className="relative w-full h-[20vh] md:h-[30vh] lg:h-[20vw] overflow-hidden">
-        <img
-          src={bg}
-          alt="A man using a grinder on wood"
-          className="absolute inset-0 w-full h-full object-cover object-center"
-        />
-        <div className="absolute inset-0 bg-black/60"></div>
 
-        <div className="relative container mx-auto h-full flex flex-col justify-center items-start px-6 md:px-12 lg:px-20 text-white">
-          <h1 className="text-3xl md:text-4xl font-semibold">Tech Help</h1>
-          <nav className="mt-2 text-sm md:text-base flex items-center gap-2 md:gap-4">
-            <a href="/" className="hover:underline">
-              Home
-            </a>
-            <img
-              src={greater}
-              alt="An icon pointing to the right"
-              className="w-6 h-6"
-            />
-            <span className="text-gray-300">Tech Help</span>
-          </nav>
-        </div>
-      </div>
+      <PageHeader title="Tech Help" bgImage={bg} breadcrumbs={[{ link : "/", label: "Home" }, { label: "Tech Help" }]} />
 
       <section className="my-10 max-w-7xl mx-auto">
         <h1 className="text-[#182B55] text-3xl md:text-5xl leading-tight font-semibold text-center">

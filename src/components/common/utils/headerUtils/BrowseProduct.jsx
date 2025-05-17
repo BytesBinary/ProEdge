@@ -62,7 +62,7 @@ const BrowseProduct = () => {
   
   return (
     <div
-      className="relative group w-full max-w-2xs"
+      className="relative group w-full max-w-2xs z-50"
       ref={dropdownRef}
       onMouseEnter={() => handleHover(true)}
       onMouseLeave={() => handleHover(false)}
