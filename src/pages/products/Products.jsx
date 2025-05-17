@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import Filter from "../../components/category/Filter";
-import Card from "../../components/category/Card";
 import Pagination from "../../components/category/Pagination";
 import { IoFilterSharp } from "react-icons/io5";
 import { CategoryContext } from "../../context/CategoryContext";
@@ -10,6 +9,7 @@ import PageHeader from "../../components/common/utils/banner/SubPageHeader";
 import bgImage from "../../assets/images/cart.png";
 import { CartContext } from "../../context/CartContext";
 import { Helmet } from "react-helmet-async";
+import ProductCard from "../../components/common/utils/cards/ProductCard";
 
 const Category = () => {
   const [showFilter, setShowFilter] = useState(false);
@@ -84,7 +84,7 @@ const Category = () => {
     };
   });
   // Filter products and count unique ones
-  useEffect(() => {
+  useEffect(() => { 
     // First filter the products
     const filtered = productsWithSlugs.filter((product) => {
       const productChildSlug = product.product_category?.slug;
@@ -430,7 +430,7 @@ const Category = () => {
         bgImage={bgImage}
         breadcrumbs={[{ link: "/", label: "Home" }, { label: "Products" }]}
       />
-      <div className="w-full max-w-[1200px] mx-auto mt-3 md:mt-20 flex flex-col lg:flex-row justify-between items-start gap-10">
+      <div className="w-full max-w-[1310px] mx-auto mt-3 md:mt-20 flex flex-col lg:flex-row justify-between items-start gap-10">
         {/* Desktop Filter Section */}
         <div className="hidden lg:block w-64">
           <Filter />
@@ -442,7 +442,7 @@ const Category = () => {
           <div className="hidden lg:flex items-center justify-between mb-6">
             {/* Showing Items */}
             <h1 className="text-[#182B55] font-medium text-lg">
-              Showing {totalProducts} items
+              Showing {totalItems} items
             </h1>
 
             <div className="flex items-center gap-4">
@@ -583,9 +583,9 @@ const Category = () => {
           </div>
 
           {/* Cards */}
-          <div className="mx-auto grid grid-cols-1 gap-6 mt-10 sm:grid-cols-2 md:grid-cols-3">
+          <div className="flex justify-center items-center flex-wrap gap-6">
             {currentItems.map((product) => (
-              <Card
+              <ProductCard
                 key={product.variationId}
                 productId={product.id}
                 variationId={product.variationId}
