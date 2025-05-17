@@ -20,7 +20,7 @@ const MainNav = () => {
   ];
 
   return (
-    <nav className="bg-[#182B55] text-white md:py-4 sticky  top-0 z-40 md:z-50 " aria-label="Main navigation">
+    <nav className="bg-[#182B55] text-white md:py-4 sticky  top-0 z-20 md:z-50 " aria-label="Main navigation">
       <div className="max-w-7xl w-full mx-auto flex flex-wrap flex-col lg:flex-row items-center justify-between gap-4 py-4 px-8">
         {/* Logo and Mobile Icons */}
         <div className="flex w-full lg:w-auto justify-between items-center gap-2">

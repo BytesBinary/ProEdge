@@ -202,7 +202,7 @@ const DesktopNav = ({ actionIcons }) => {
 
         {/* Search Results Dropdown */}
         {showSearchDropdown && searchResults.length > 0 && (
-          <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto">
+          <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-lg shadow-lg z-30 max-h-80 overflow-y-auto">
             {searchResults.map((result, index) => (
               <div
                 key={`${result.productId}-${result.variationId}-${index}`}
@@ -289,7 +289,7 @@ const DesktopNav = ({ actionIcons }) => {
             {/* Dropdown Menu */}
             {isDropdownOpen && (
               <div
-                className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl py-1 z-50 border border-gray-100"
+                className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl py-1 z-30 border border-gray-100"
                 onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
               >
                 {/* User Info Section */}

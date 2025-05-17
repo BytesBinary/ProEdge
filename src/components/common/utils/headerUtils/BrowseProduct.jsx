@@ -62,7 +62,7 @@ const BrowseProduct = () => {
   
   return (
     <div
-      className="relative group w-full max-w-2xs z-10"
+      className="relative group w-full max-w-2xs"
       ref={dropdownRef}
       onMouseEnter={() => handleHover(true)}
       onMouseLeave={() => handleHover(false)}
@@ -74,7 +74,7 @@ const BrowseProduct = () => {
             setSelectedCategory(categories[0]); // auto-select on click if none
           }
         }}
-        className="w-full px-5 py-2 md:py-4 bg-[#182B55] text-white rounded-full flex justify-between items-center gap-2 transition-all"
+        className="w-full px-5 py-2 md:py-4 bg-[#182B55] text-white rounded-full flex justify-between items-center gap-2 transition-all z-10"
         aria-expanded={isOpen}
         aria-haspopup="true"
       >
@@ -102,7 +102,7 @@ const BrowseProduct = () => {
 
       {!mobileView && (
         <div
-          className={`absolute top-full -translate-x-5 mt-2 md:mt-7 md:w-4xl z-50 ${
+          className={`absolute top-full -translate-x-5 mt-2 md:mt-7 md:w-4xl z-40 ${
             isOpen
               ? "opacity-100 pointer-events-auto"
               : "opacity-0 pointer-events-none"
