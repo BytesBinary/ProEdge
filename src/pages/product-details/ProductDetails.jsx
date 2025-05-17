@@ -43,7 +43,17 @@ const Product = () => {
   return isNaN(id) ? null : id;
 };
 
+  const extractedVariationIdFromSlug = (slug) => {
+    if (!slug) return { productId: null, variationId: null };
+
+    const parts = slug.split("-");
+    const variationId = parseInt(parts[parts.length - 2], 10);
+
+    return isNaN(variationId) ? null : variationId;
+  };
+
 const id=extractIdFromSlug(title);
+const variationId = extractedVariationIdFromSlug(title);
 
   useEffect(() => {
     const fetchSingleProduct = async () => {
@@ -58,16 +68,26 @@ const id=extractIdFromSlug(title);
 
   useEffect(() => {
     if (singleProduct?.variation?.length > 0) {
-      const defaultVariation = selectedVariationId
-        ? singleProduct.variation.find((v) => v.id === selectedVariationId)
-        : singleProduct.variation[0];
+      let defaultVariation;
+
+      if (
+        variationId &&
+        singleProduct.variation.some((v) => String(v.id) === String(variationId))
+      ) {
+        defaultVariation = singleProduct.variation.find(
+          (v) => String(v.id) === String(variationId)
+        );
+      } else {
+        defaultVariation = singleProduct.variation[0];
+      }
 
       if (defaultVariation) {
         setSingleVariation(defaultVariation);
         setSelectedVariationId(defaultVariation.id);
       }
     }
-  }, [singleProduct, selectedVariationId]);
+  }, [singleProduct, variationId]);
+
 
   const handleVariationChange = (selectedVariation) => {
     if (!selectedVariation) return;
@@ -311,7 +331,6 @@ return (
               <div className="space-y-4">
                 <div className="bg-gray-50 rounded-lg p-4">
                   {singleVariation.product_details}
-                  {console.log(singleVariation.product_details)}
                 </div>
               </div>
             )}

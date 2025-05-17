@@ -24,7 +24,7 @@ const ProductCard = ({ productId,variationId,variation_name, stock,made_in,sku,i
       .slice(0, 20)                 // Take first 10 characters only
       .replace(/\s+/g, "-")         // Replace spaces with dashes
       .replace(/-+/g, "-");         // Replace multiple dashes with single dash
-    navigate(`/single-product/${slug}-${productId}`);
+    navigate(`/single-product/${slug}-${variationId}-${productId}`);
   };
 
   const handleWishlistClick = (e) => {
