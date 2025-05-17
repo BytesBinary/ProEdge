@@ -583,7 +583,7 @@ const Category = () => {
           </div>
 
           {/* Cards */}
-          <div className="grid grid-cols-1 gap-6 mt-10 sm:grid-cols-2 md:grid-cols-3">
+          <div className="mx-auto grid grid-cols-1 gap-6 mt-10 sm:grid-cols-2 md:grid-cols-3">
             {currentItems.map((product) => (
               <Card
                 key={product.variationId}
