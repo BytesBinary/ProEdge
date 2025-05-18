@@ -31,6 +31,7 @@ import FAQPage from "./pages/FAQ/FAQPage";
 import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
 import UserProfile from "./pages/user/UserProfile";
 import NotFoundPage from "./pages/404/NotFoundPage";
+import AllReviews from "./pages/all-reviews/AllReviews";
 
 const router = createBrowserRouter([
   {
@@ -51,6 +52,7 @@ const router = createBrowserRouter([
       { path: "return-order", Component: TrackOrderPage },
       { path: "modify-order", Component: TrackOrderPage },
       { path: "order-details", Component: OrderDetailsPage },
+      { path: "all-reviews", Component: AllReviews },
       {
         Component: PrivateRoute,
         children: [
