@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import plus from "../../../../assets/icons/plus.svg"
 import minus from "../../../../assets/icons/minus.svg"
 import { CartContext } from "../../../../context/CartContext";
+import { formatNumberWithCommas } from "../../../../helper/localPrice/localeprice";
 
 const ProductCard = ({ product,onRemove  }) => {
 
@@ -40,7 +41,7 @@ const ProductCard = ({ product,onRemove  }) => {
 
           <span className="text-lg sm:text-xl font-semibold text-gray-800">
             <span className="align-super text-xs sm:text-sm">$</span>
-            {(product.offer_price||product.price)*product.quantity}
+            {formatNumberWithCommas((product.offer_price||product.price)*product.quantity)}
             {/* <span className="align-super text-xs sm:text-sm">{product.priceCents}</span> */}
           </span>
         </div>
@@ -59,8 +60,6 @@ const ProductCard = ({ product,onRemove  }) => {
 
           <nav className="flex gap-3 text-xs sm:text-sm">
             <button onClick={onRemove}className="text-[#3F66BC] hover:underline cursor-pointer">Remove</button>
-            <div className="mx-3 border-l-2 border-[#ECF0F9]"></div>
-            <button className="text-[#3F66BC] hover:underline cursor-pointer">Save For Later</button>
           </nav>
         </div>
       </div>

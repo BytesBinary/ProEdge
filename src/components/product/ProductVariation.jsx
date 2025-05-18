@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import VariationCard from "./VariationCard";
 import { RiArrowDropDownLine } from "react-icons/ri";
+import { formatNumberWithCommas } from "../../helper/localPrice/localeprice";
 
 const ProductVariation = ({
   title,
@@ -15,19 +16,7 @@ const ProductVariation = ({
   onVariationChange,
   selectedVariationId,
 }) => {
-  const formatNumberWithCommas = (number) => {
-    // Convert to number first
-    const num = Number(number);
-    
-    // Check if the conversion was successful
-    if (isNaN(num)) {
-      // If not a valid number, return the original as string
-      return String(number);
-    }
-    
-    // Format with commas
-    return num.toLocaleString('en-US');
-  };
+  
 
   return (
     <div className="w-full flex flex-col justify-between items-start gap-6 lg:gap-0 p-8 lg:p-0">

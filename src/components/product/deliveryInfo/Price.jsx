@@ -1,17 +1,18 @@
 import React from "react";
+import { formatNumberWithCommas } from "../../../helper/localPrice/localeprice";
 
 const Price = ({ priceData }) => {
   return (
     <div className="flex flex-col items-start w-full text-[12px] leading-[18px] text-[#182B55]">
       <div className="flex items-center">
-        <span>{priceData.dollar}</span>&nbsp;
-        <h1 className="text-2xl font-semibold leading-8">{priceData.whole}</h1>
+        <span>{formatNumberWithCommas(priceData.dollar)}</span>&nbsp;
+        <h1 className="text-2xl font-semibold leading-8">{formatNumberWithCommas(priceData.whole)}</h1>
         &nbsp;
-        {priceData.cents && <span>.{priceData.cents}</span>}
+        {priceData.cents && <span>.{formatNumberWithCommas(priceData.cents)}</span>}
       </div>
       {priceData.originalPrice && (
         <span className="text-sm line-through text-gray-500">
-          ${priceData.originalPrice}
+          ${formatNumberWithCommas(priceData.originalPrice)}
         </span>
       )}
     </div>
