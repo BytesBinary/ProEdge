@@ -60,8 +60,6 @@ const ProductCard = ({ product,onRemove  }) => {
 
           <nav className="flex gap-3 text-xs sm:text-sm">
             <button onClick={onRemove}className="text-[#3F66BC] hover:underline cursor-pointer">Remove</button>
-            <div className="mx-3 border-l-2 border-[#ECF0F9]"></div>
-            <button className="text-[#3F66BC] hover:underline cursor-pointer">Save For Later</button>
           </nav>
         </div>
       </div>
