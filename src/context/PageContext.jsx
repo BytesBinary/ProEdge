@@ -86,7 +86,7 @@ export const PageProvider = ({ children }) => {
           }
         );
 
-        const pages = response.data.data.pages || [];
+        const pages = response.data.data.page || [];
         setBlocks(pages[0]?.blocks || []);
       } catch (err) {
         setError(err);

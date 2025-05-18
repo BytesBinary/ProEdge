@@ -10,7 +10,8 @@ import { usePageBlocks } from '../../context/PageContext';
 const Hero = () => {
   const swiperRef = useRef(null);
   const {blocks}=usePageBlocks();
-   c
+  console.log(blocks,"blocks")
+   
 
   const slides = [
     {
