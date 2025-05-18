@@ -1,5 +1,6 @@
 import VariationCard from "./VariationCard";
 import { RiArrowDropDownLine } from "react-icons/ri";
+
 const ProductVariation = ({
   title,
   sku,
@@ -13,6 +14,20 @@ const ProductVariation = ({
   onVariationChange,
   selectedVariationId,
 }) => {
+  const formatNumberWithCommas = (number) => {
+    // Convert to number first
+    const num = Number(number);
+    
+    // Check if the conversion was successful
+    if (isNaN(num)) {
+      // If not a valid number, return the original as string
+      return String(number);
+    }
+    
+    // Format with commas
+    return num.toLocaleString('en-US');
+  };
+
   return (
     <div className="w-full flex flex-col justify-between items-start gap-6 lg:gap-0 p-8 lg:p-0">
       {/* Product Details */}
@@ -35,10 +50,10 @@ const ProductVariation = ({
             <RiArrowDropDownLine size={30} />
           </div>
           <div className="border-l-2 broder-[#3F66BC] h-4"></div>
-          <p className="">{totalRatings} ratings</p>
+          <p className="">{formatNumberWithCommas(totalRatings)} ratings</p>
         </div>
         <div className="bg-[#3F66BC] w-3/4 p-2 relative flex items-center text-sm font-semibold gap-2 overflow-hidden h-8">
-          <span className="text-white">Pro - Edge’s</span>
+          <span className="text-white">Pro - Edge's</span>
           <span className="text-[#FCD700]">Choice</span>
 
           {/* White diagonal cut */}
@@ -56,13 +71,13 @@ const ProductVariation = ({
       <div className="flex flex-col gap-2">
         <h1 className="text-3xl lg:text-4xl font-medium pt-6 pb-2">
           <span className="text-lg align-super">$</span>{" "}
-          <span>{currentPrice}</span>
+          <span>{formatNumberWithCommas(currentPrice)}</span>
         </h1>
         {originalPrice > 0 && (
           <p className="text-lg lg:text-xl leading-8">
             <span className="font-medium text-[#3F66BC]">Typical price: </span>
             <span className="text-[#5D6576] line-through">
-              ${originalPrice}
+              ${formatNumberWithCommas(originalPrice)}
             </span>
           </p>
         )}
@@ -79,10 +94,10 @@ const ProductVariation = ({
         </div>
 
         {priceOptions.length > 0 && (
-          <div className="flex justify-start items-start  flex-wrap gap-4 max-w-2xl max-h-[300px] md:min-h-[300px] lg:min-h-[200px] overflow-y-auto z-10">
-            {priceOptions.map((option, index) => (
+          <div className="flex justify-start items-start flex-wrap gap-4 max-w-2xl max-h-[300px] md:min-h-[300px] lg:min-h-[200px] overflow-y-auto z-10">
+            {priceOptions.map((option) => (
               <VariationCard
-                key={option.id} // Use option.id instead of index for better key
+                key={option.id}
                 title={option.variation_value}
                 price={option.offer_price}
                 originalPrice={option.regular_price}
