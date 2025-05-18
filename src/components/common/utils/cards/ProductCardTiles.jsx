@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import plus from "../../../../assets/icons/plus.svg"
 import minus from "../../../../assets/icons/minus.svg"
 import { CartContext } from "../../../../context/CartContext";
+import { formatNumberWithCommas } from "../../../../helper/localPrice/localeprice";
 
 const ProductCard = ({ product,onRemove  }) => {
 
@@ -40,7 +41,7 @@ const ProductCard = ({ product,onRemove  }) => {
 
           <span className="text-lg sm:text-xl font-semibold text-gray-800">
             <span className="align-super text-xs sm:text-sm">$</span>
-            {(product.offer_price||product.price)*product.quantity}
+            {formatNumberWithCommas((product.offer_price||product.price)*product.quantity)}
             {/* <span className="align-super text-xs sm:text-sm">{product.priceCents}</span> */}
           </span>
         </div>

@@ -1,4 +1,5 @@
 import React from "react";
+import { formatNumberWithCommas } from "../../helper/localPrice/localeprice";
 
 const VariationCard = ({
   title,
@@ -7,19 +8,7 @@ const VariationCard = ({
   onClick,
   isSelected,
 }) => {
-   const formatNumberWithCommas = (number) => {
-    // Convert to number first
-    const num = Number(number);
-    
-    // Check if the conversion was successful
-    if (isNaN(num)) {
-      // If not a valid number, return the original as string
-      return String(number);
-    }
-    
-    // Format with commas
-    return num.toLocaleString('en-US');
-  };
+  
   return (
     <div
       className={`w-32 h-24 ${isSelected ? "bg-[#3F66BC]" : "bg-[#F8F9FB]"

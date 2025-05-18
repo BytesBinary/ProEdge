@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { FiDollarSign } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { CartContext } from "../../../../context/CartContext";
+import { formatNumberWithCommas } from "../../../../helper/localPrice/localeprice";
 
 const ProductCard = ({ productId,variationId,variation_name, stock,made_in,sku,image, category, title, price,length }) => {
   const {
@@ -95,7 +96,7 @@ const ProductCard = ({ productId,variationId,variation_name, stock,made_in,sku,i
           </div>
           <div className="mb-[10px]">
             <p className="text-[#3F66BC] text-2xl font-semibold leading-8 gap-y-2.5 flex items-center justify-start">
-              <FiDollarSign/> {price}
+              <FiDollarSign/> {formatNumberWithCommas(price)}
             </p>
           </div>
           <div 
