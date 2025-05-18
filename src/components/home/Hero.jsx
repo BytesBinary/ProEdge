@@ -70,7 +70,7 @@ const Hero = () => {
                 <source srcSet={HeroImage} type="image/webp/png" />
                 <img
                   src={`${import.meta.env.VITE_SERVER_URL}/assets/${
-                    slide.item.image.id
+                    slide.item.image?.id
                   }`}
                   alt={`Slide ${index + 1}: ${slide.item.title}`}
                   className="w-full h-[30rem] object-cover aspect-[16/9] sm:aspect-[21/9] md:aspect-auto"

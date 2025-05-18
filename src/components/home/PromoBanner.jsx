@@ -13,7 +13,7 @@ const PromoBanner = () => {
     <section className="my-10">
       <div className="relative w-full h-[328px]">
         {/* Background Image */}
-        <img src={`${import.meta.env.VITE_SERVER_URL}/assets/${bannerData.item.image.id}`} alt="Promotional Banner" className="w-full h-full object-cover" />
+        <img src={`${import.meta.env.VITE_SERVER_URL}/assets/${bannerData.item.image?.id}`} alt="Promotional Banner" className="w-full h-full object-cover" />
 
         {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-[#151A26]/0 via-[#151A26]/50 to-[#151A26]/0"></div>
