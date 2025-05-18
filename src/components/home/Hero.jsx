@@ -11,7 +11,6 @@ const Hero = () => {
   const swiperRef = useRef(null);
   const { blocks, loading, error } = useFetchPageBlocks("home");
 
-  if (loading) return <p>Loading...</p>;
   if (error) return <p>Error loading content: {error.message}</p>;
 
   console.log(blocks, "blocks");

@@ -54,6 +54,7 @@ const GET_PAGE_BLOCKS_QUERY = `
             icon { id }
             title
             subtitle
+            type
           }
         }
       }
