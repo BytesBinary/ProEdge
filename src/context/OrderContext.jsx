@@ -170,6 +170,21 @@ const CREATE_ORDER_MUTATION = `
     }
   }
 `;
+const CREATE_ORDER_DETAILS_MUTATION = `
+  mutation CreateOrder($data: create_order_details_input!) {
+    create_order_details_item(data: $data) {
+      id
+      order_id 
+      variation_id
+      product_title
+      user_id
+      user_email
+      total_price
+     
+      
+    }
+  }
+`;
 
 const DELETE_ORDER_MUTATION = `
   mutation DeleteOrder($id: ID!) {
@@ -315,6 +330,37 @@ const id = orderid.split('-')[1];
       setCreating(false);
     }
   };
+  const createOrderDetails = async (orderDetailsData) => {
+    setCreating(true);
+    setError(null);
+
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_SERVER_URL}/graphql`,
+        {
+          query: CREATE_ORDER_DETAILS_MUTATION,
+          variables: { data: orderDetailsData },
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      // console.log(response.data, 'response');
+
+     
+      const newOrder = response.data.data.create_order_details_item;
+      setOrders((prev) => [...prev, newOrder]);
+
+      return newOrder;
+    } catch (error) {
+      console.error("GraphQL mutation error:", error);
+      setError(error.message);
+      return null;
+    } finally {
+      setCreating(false);
+    }
+  };
 
   //update order
   const updateOrder = async (orderId, updatedFields) => {
@@ -436,6 +482,7 @@ const id = orderid.split('-')[1];
         createOrder,
         updateOrder,
         deleteOrder,
+        createOrderDetails,
         refetchOrders: fetchOrders,
         fetchSettingsGraphQL
       }}
