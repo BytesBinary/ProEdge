@@ -35,7 +35,9 @@ const VariationCard = ({
             className={`${isSelected ? "text-white" : "text-[#5D6576]"
               } line-through group-hover:text-white`}
           >
-            ${originalPrice}
+            {
+              originalPrice<=0 ? "" : originalPrice
+            }
           </h1>
         </div>
       </div>
