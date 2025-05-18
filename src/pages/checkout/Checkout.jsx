@@ -168,11 +168,6 @@ const Checkout = () => {
         cvv: "",
       });
     }
-
-    // Optional: Log the change for debugging
-    console.log(
-      `Payment method changed to ${paymentMethod} for currency ${orderData.currency}`
-    );
   };
 
   // Toggle same as shipping
@@ -281,7 +276,6 @@ const Checkout = () => {
         order_id: `${guestId?.toString().substring(0, 6)}-${response.id}`,
         customer_id: user ? user.id : null,
       });
-      console.log("update Order response:", resUpdateOrder);
 
       const total = getCartTotal();
 
@@ -306,7 +300,6 @@ const Checkout = () => {
           },
         }
       );
-      console.log(stripeResponse.data, "stripe");
 
       if (stripeResponse.data.url) {
         window.location.href = stripeResponse.data.url;

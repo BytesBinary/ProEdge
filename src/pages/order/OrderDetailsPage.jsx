@@ -26,8 +26,6 @@ const OrderDetailsPage = () => {
 
   const { clearCart } = useContext(CartContext);
 
-  console.log(sessionDetails?.metadata?.order_id,"set")
-
   const {  updateOrder} = useOrderContext();
   useEffect(() => {
     clearCart();
@@ -42,7 +40,6 @@ const OrderDetailsPage = () => {
         const id = sessionDetails?.metadata?.order_id.split('-')[1]; 
         if(sessionDetails?.metadata?.order_id && sessionDetails.payment_status==="paid"){
         const updatedOrder=await updateOrder(id,{payment_status:"paid"});
-        console.log(updateOrder,"mmm")
         setSingleOrderData(updatedOrder);
 
 
@@ -59,8 +56,6 @@ const OrderDetailsPage = () => {
       fetchOrderDetails();
     }
   }, [sessionDetails]);
-  console.log(singleOrderData, "singleOrderData");
-
   if (loading) {
     <div className="fixed inset-0 flex items-center justify-center bg-white z-40">
       <ClipLoader color="#30079f" size={10} />

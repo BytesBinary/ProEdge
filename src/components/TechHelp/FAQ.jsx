@@ -31,7 +31,6 @@ const FAQ = ({ seeAllLink, leftArrow }) => {
                   )}/${formatCategoryName(faq.question)}`}
                   className="hover:underline"
                 >
-                  {console.log(faq.question, "faq.section_title")}
                   <h2>{faq.question}</h2>
                 </Link>
               ))}

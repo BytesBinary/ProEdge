@@ -233,13 +233,11 @@ const fetchOrders = async () => {
 
 
   const fetchOrderById = async (orderid) => {
-    console.log(orderid, "orderid");
     if (orderid.length < 6) {
       return null;
     }
 
 const id = orderid.split('-')[1]; 
-    console.log(id, "last digit");
 
     // First check local orders
   const localOrder = orders.find((order) => order.id === orderid || order.order_id === orderid);
@@ -267,7 +265,6 @@ const id = orderid.split('-')[1];
         throw new Error(response.data.errors[0].message);
       }
 
-      console.log(response)
 
       const order = response.data.data.order_by_id;
       if (order) {
@@ -300,7 +297,6 @@ const id = orderid.split('-')[1];
         }
       );
 
-      // console.log(response.data, 'response');
 
      
       const newOrder = response.data.data.create_order_item;
@@ -336,7 +332,6 @@ const id = orderid.split('-')[1];
         }
       );
 
-      // console.log(response.data, 'update response');
 
       // Handle errors if they exist
       if (response.data.errors) {
@@ -380,7 +375,6 @@ const id = orderid.split('-')[1];
         }
       );
 
-      // console.log(response.data, 'delete response');
 
       if (response.data.errors) {
         throw new Error(response.data.errors[0].message);
@@ -413,7 +407,6 @@ const id = orderid.split('-')[1];
         }
       );
 
-      console.log(response.data.data.Settings,"settings")
       return response.data.data.Settings;
     } catch (error) {
       console.error('Error fetching settings:', error);

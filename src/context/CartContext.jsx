@@ -41,7 +41,6 @@ export function CartProvider({ children }) {
 
   // Cart methods
   const addToCart = (item) => {
-    // console.log(item, 'item')
     const isItemInCart = cartItems.find(cartItem => cartItem.variationId === item.variationId);
     if (!isItemInCart) {
       setCartItems(prev => [...prev, { ...item,quantity }]);
@@ -90,7 +89,6 @@ export function CartProvider({ children }) {
   };
 
   const isInWishlist = (itemId) => {
-    console.log(itemId, 'itemId')
     return wishlistItems.some(item => item.variationId === itemId);
   };
 

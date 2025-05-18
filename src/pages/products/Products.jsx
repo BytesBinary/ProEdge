@@ -26,8 +26,6 @@ const Category = () => {
     setCurrentPage(page);
   };
 
-  console.log(minPrice, maxPrice, "minPrice,maxPrice");
-
   // Function to generate a slug from a string
   const generateSlug = (str) => {
     if (!str) return "";
@@ -156,7 +154,6 @@ const Category = () => {
     // Check if parent matches (if parent is toggled in singleCategory)
     const parentMatch =
       singleCategory?.toggle && singleCategory.slug === productParentSlug;
-    console.log(parentMatch, "parentMatch");
 
     // If parent doesn't match, exclude the product
     if (singleCategory?.toggle && !parentMatch) return false;
@@ -271,7 +268,6 @@ const Category = () => {
   if (sortOption === "Newest") {
     currentItems = [...currentItems].reverse();
   }
-  console.log(singleCategory?.category_name, "ccc");
   return (
     <>
       {singleCategory && (

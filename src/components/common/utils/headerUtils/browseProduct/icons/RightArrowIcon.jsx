@@ -1,6 +1,5 @@
 // Right Arrow Icon Component
 const RightArrowIcon = ({ className }) => {
-// console.log(className,'className');
   return(
   <svg
     className={className}

@@ -83,7 +83,6 @@ const OrderDetailsModal = ({ isOrderDetailsPage, order, onClose }) => {
       </span>
     );
   };
-  console.log(console.log(order, "order"));
 
   const currentPath = location.pathname;
 

@@ -163,7 +163,6 @@ const Contact = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log("Field changed:", name, value); // Debug log
     setFormData(prev => ({
       ...prev,
       [name]: value
@@ -181,15 +180,12 @@ const Contact = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log("Form data before validation:", formData); // Debug log
 
     if (!validateForm()) {
-      console.log("Validation failed", errors); // Debug log
       return;
     }
 
     try {
-      console.log("Submitting form data:", formData); // Debug log
       const result = await createContact(formData);
       if (result) {
         setIsSubmitted(true);

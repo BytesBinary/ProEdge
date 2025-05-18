@@ -49,7 +49,6 @@ const Navfooter = () => {
   useEffect(() => {
     fetchFooter();
   }, []);
-  // console.log(footer, 'fromfooter')
 
   return (
     <nav aria-label="Secondary navigation">

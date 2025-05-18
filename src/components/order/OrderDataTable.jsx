@@ -6,8 +6,6 @@ import { EyeIcon, ChevronLeftIcon, ChevronRightIcon, CheckCircleIcon, PauseCircl
 
 const OrderDataTable = ({ onViewDetails }) => {
   const { orders, loading } = useOrderContext();
-  // console.log(loading,'loading');
-  // console.log(orders,'orders');
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const ordersPerPage = 10;

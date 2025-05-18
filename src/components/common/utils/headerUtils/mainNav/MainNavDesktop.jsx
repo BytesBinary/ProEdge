@@ -110,7 +110,6 @@ const DesktopNav = ({ actionIcons }) => {
   };
 
   const handleProductClick = (productId, variation_name) => {
-    console.log(variation_name, "prod");
     const slug = variation_name
       ?.toLowerCase()
       .replace(/[^\w\s-]/g, "") // Remove special characters

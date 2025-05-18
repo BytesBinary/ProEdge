@@ -53,7 +53,6 @@ const Footer = () => {
   useEffect(() => {
     fetchFooter();
   }, []);
-  // console.log(footer, 'fromfooter')
 
 
   const infoLinks = ["Products", "Videos", "Tech help", "Contact Us"];

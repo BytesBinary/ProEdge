@@ -32,7 +32,6 @@ const PrivateRoute = () => {
         }
 
         // Case 3: Valid token
-        console.log("Token is valid until", new Date(decoded.exp * 1000));
         setIsValid(true);
       } catch (err) {
         console.error("Invalid token:", err.message);
