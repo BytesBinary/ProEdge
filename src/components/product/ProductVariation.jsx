@@ -21,7 +21,9 @@ const ProductVariation = ({
           {variationName}{" "}
         </h1>
         <h3 className="text-base lg:text-lg">SKU: {sku}</h3>
-        <h3 className="text-base md:text-md lg:text-lg">Visit the controls pro Store</h3>
+        <h3 className="text-base md:text-md lg:text-lg">
+          Visit the controls pro Store
+        </h3>
         <div className="max-w-[260px] w-full text-sm lg:text-lg flex justify-between items-center gap-1">
           <p className="font-semibold">{rating}</p>
           <div className="flex items-center gap-3">
@@ -56,10 +58,14 @@ const ProductVariation = ({
           <span className="text-lg align-super">$</span>{" "}
           <span>{currentPrice}</span>
         </h1>
-        <p className="text-lg lg:text-xl leading-8">
-          <span className="font-medium text-[#3F66BC]">Typical price: </span>
-          <span className="text-[#5D6576] line-through"> ${originalPrice}</span>
-        </p>
+        {originalPrice > 0 && (
+          <p className="text-lg lg:text-xl leading-8">
+            <span className="font-medium text-[#3F66BC]">Typical price: </span>
+            <span className="text-[#5D6576] line-through">
+              ${originalPrice}
+            </span>
+          </p>
+        )}
       </div>
 
       {/* Size Options */}

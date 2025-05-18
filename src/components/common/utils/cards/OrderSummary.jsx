@@ -46,7 +46,7 @@ const OrderSummaryCard = ({ cart }) => {
       </h2>
       <ul className="space-y-2 text-gray-700">
         <li className="flex justify-between">
-          <span>Subtotal ({itemsCount} Items)</span>
+          <span>Subtotal </span>
           <span>${subtotal.toFixed(2)}</span>
         </li>
         <li className="flex justify-between text-[#5D6576]">

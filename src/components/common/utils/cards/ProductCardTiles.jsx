@@ -10,6 +10,7 @@ const ProductCard = ({ product,onRemove  }) => {
     IncrementQuantity,
     DecrementQuantity,
     } = useContext(CartContext);
+    console.log(product,"cartproduct")
   return (
     <article className="bg-white p-3 sm:p-4 rounded-xl shadow-sm flex flex-col md:flex-row items-start gap-3 sm:gap-4">
       {/* {console.log(product)} */}
@@ -39,7 +40,7 @@ const ProductCard = ({ product,onRemove  }) => {
 
           <span className="text-lg sm:text-xl font-semibold text-gray-800">
             <span className="align-super text-xs sm:text-sm">$</span>
-            {product.price}
+            {(product.offer_price||product.price)*product.quantity}
             {/* <span className="align-super text-xs sm:text-sm">{product.priceCents}</span> */}
           </span>
         </div>
