@@ -32,10 +32,10 @@ const TechHelp = () => {
   ];
 
   const policies = [
-    { image: returni, title: "Return Policy", link: "#" },
-    { image: payment, title: "Payment Policy", link: "#" },
-    { image: term, title: "Terms of Use", link: "#" },
-    { image: shopping, title: "Shipping Policy", link: "#" },
+    { image: returni, title: "Return Policy", link: "/return-policy" },
+    { image: payment, title: "Payment Policy", link: "/payment-policy" },
+    { image: term, title: "Terms of Use", link: "/terms-of-use" },
+    { image: shopping, title: "Shipping Policy", link: "/shipping-policy" },
   ];
 
   return (
