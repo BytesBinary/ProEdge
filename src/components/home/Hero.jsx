@@ -1,46 +1,24 @@
-import React, { useRef } from 'react';
-import HeroImage from '../../assets/images/heroImage.png';
-import { Link } from 'react-router-dom';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination, Autoplay } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/pagination';
-import { usePageBlocks } from '../../context/PageContext';
+import React, { useRef } from "react";
+import HeroImage from "../../assets/images/heroImage.png";
+import { Link } from "react-router-dom";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination, Autoplay } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
+import { useFetchPageBlocks } from "../../context/PageContext";
 
 const Hero = () => {
   const swiperRef = useRef(null);
-  const {blocks}=usePageBlocks();
-  console.log(blocks,"blocks")
-   
+  const { blocks, loading, error } = useFetchPageBlocks("home");
 
-  const slides = [
-    {
-      title: "Save Big with Pro-Edge Compressed Air Solutions",
-      text: "Discover our premium range of industrial tools designed for maximum efficiency.",
-      buttonUrl: "/products",
-      buttonText: "Shop Now",
-    },
-    {
-      title: "Summer Sale - Up to 40% Off",
-      text: "Limited time offer on all power tools and accessories. Don't miss out!",
-      buttonUrl: "/products",
-      buttonText: "View Deals",
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error loading content: {error.message}</p>;
 
-    },
-    {
-      title: "New Arrivals Just Landed",
-      text: "Check out our latest collection of professional-grade equipment.",
-      buttonUrl: "/videos",
-      buttonText: "Explore",
-
-    },
-    {
-      title: "Professional Tools for Experts",
-      text: "Engineered for durability and precision in demanding work environments.",
-      buttonUrl: "/tech-help",
-      buttonText: "Learn More",
-    }
-  ];
+  console.log(blocks, "blocks");
+  const slides = blocks?.filter(
+    (block) => block?.item?.type?.toLowerCase().trim() === "slider"
+  );
+  console.log(slides, "hfhf");
 
   const handleMouseEnter = () => {
     swiperRef.current?.autoplay?.stop();
@@ -59,8 +37,8 @@ const Hero = () => {
   };
 
   return (
-    <section 
-      className="relative max-w-7xl w-full mx-auto overflow-hidden rounded-2xl"
+    <section
+      className="relative max-w-7xl h-[30rem] w-full mx-auto overflow-hidden rounded-2xl"
       aria-labelledby="hero-heading"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -77,9 +55,9 @@ const Hero = () => {
         }}
         pagination={{
           clickable: true,
-          el: '.hero-pagination',
-          bulletClass: 'hero-bullet',
-          bulletActiveClass: 'hero-bullet-active'
+          el: ".hero-pagination",
+          bulletClass: "hero-bullet",
+          bulletActiveClass: "hero-bullet-active",
         }}
         modules={[Pagination, Autoplay]}
         className="w-full"
@@ -91,28 +69,32 @@ const Hero = () => {
               <picture>
                 <source srcSet={HeroImage} type="image/webp/png" />
                 <img
-                  src={HeroImage}
-                  alt={`Slide ${index + 1}: ${slide.title}`}
-                  className="w-full h-auto object-cover aspect-[16/9] sm:aspect-[21/9] md:aspect-auto"
+                  src={`${import.meta.env.VITE_SERVER_URL}/assets/${
+                    slide.item.image.id
+                  }`}
+                  alt={`Slide ${index + 1}: ${slide.item.title}`}
+                  className="w-full h-[30rem] object-cover aspect-[16/9] sm:aspect-[21/9] md:aspect-auto"
                   loading="lazy"
+                  // height="450px"
                 />
               </picture>
 
               <div className={`absolute inset-0 ${slide.bgColor}`}>
                 <div className="max-w-7xl w-full mx-auto flex flex-col justify-center items-start h-full px-4 md:px-8 py-10">
                   <header>
-                    <h1 id="hero-heading"
-                      className="text-white text-md md:text-4xl font-bold max-w-[95%] sm:max-w-[80%] md:max-w-[495px]">
-                      {slide.title}
+                    <h1
+                      id="hero-heading"
+                      className="text-white text-md md:text-4xl font-bold max-w-[95%] sm:max-w-[80%] md:max-w-[495px]"
+                    >
+                      {slide.item.title}
                     </h1>
                     <p className="text-white mt-4 text-sm md:text-xl max-w-[80%]">
-                      {slide.text}
+                      {slide.item.subtitle}
                     </p>
                   </header>
-                  <Link to={slide.buttonUrl} className="mt-2 md:mt-4">
-                    <button
-                      className="bg-[#3F66BC] text-white px-4 py-2 sm:px-6 sm:py-4 rounded-full hover:bg-[#182B55] transition-colors text-sm md:text-lg font-medium shadow-lg hover:cursor-pointer">
-                      {slide.buttonText}
+                  <Link to={slide.item.button_url} className="mt-2 md:mt-4">
+                    <button className="bg-[#3F66BC] text-white px-4 py-2 sm:px-6 sm:py-4 rounded-full hover:bg-[#182B55] transition-colors text-sm md:text-lg font-medium shadow-lg hover:cursor-pointer">
+                      {slide.item.button_text}
                     </button>
                   </Link>
                 </div>
@@ -123,8 +105,10 @@ const Hero = () => {
       </Swiper>
 
       {/* Pagination Dots */}
-      <nav aria-label="Carousel Navigation"
-        className="absolute bottom-3 sm:bottom-3 md:bottom-4 lg:bottom-8 left-1/2 transform -translate-x-1/2 z-10">
+      <nav
+        aria-label="Carousel Navigation"
+        className="absolute bottom-3 sm:bottom-3 md:bottom-4 lg:bottom-8 left-1/2 transform -translate-x-1/2 z-10"
+      >
         <div className="hero-pagination flex justify-center items-center gap-2 md:gap-3 lg:gap-4 bg-white/10 backdrop-blur-sm py-2 sm:py-2.5 px-4 sm:px-6 rounded-full shadow-md">
           {/* Swiper inserts bullets here */}
         </div>
@@ -143,7 +127,7 @@ const Hero = () => {
         }
       `}</style>
     </section>
-  )
-}
+  );
+};
 
 export default Hero;

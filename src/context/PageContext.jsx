@@ -1,63 +1,59 @@
-// context/PageContext.tsx
-import React, { createContext, useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
-// Replace with your Directus GraphQL endpoint
 const GRAPHQL_URL = `${import.meta.env.VITE_SERVER_URL}/graphql`;
 
-// GraphQL query as a string
-const GET_GLOBAL_PAGE_BLOCKS = `
-  query {
-    page(filter: { permalink: { _eq: "home" } }) {
+const GET_PAGE_BLOCKS_QUERY = `
+  query GetPageBlocks($permalink: String!) {
+    page(filter: { permalink: { _eq: $permalink } }) {
       id
       title
       permalink
       blocks {
         id
         sort
+        collection
         item {
+          __typename
           ... on slider {
             id
             sort
             title
             subtitle
-            image{
-            id
-            }
+            image { id }
             button_text
             button_url
             type
-           
           }
           ... on breadcramb {
             id
             sort
             title
-             image{
-            id
-            }
+            image { id }
             type
-            
           }
           ... on page_text {
             id
             sort
             text
             type
-            
           }
           ... on banner {
             id
             sort
             title
             subtitle
-            image{
-            id
-            }
+            image { id }
             button_text
             button_url
             type
-            
+          }
+          ... on features {
+            id
+            sort
+            icon { id }
+            title
+            subtitle
           }
         }
       }
@@ -65,45 +61,40 @@ const GET_GLOBAL_PAGE_BLOCKS = `
   }
 `;
 
-const PageContext = createContext(null);
-
-export const PageProvider = ({ children }) => {
+export const useFetchPageBlocks = (permalink) => {
   const [blocks, setBlocks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    if (!permalink) return;
+
     const fetchBlocks = async () => {
       try {
         setLoading(true);
         const response = await axios.post(
           GRAPHQL_URL,
-          { query: GET_GLOBAL_PAGE_BLOCKS },
           {
-            headers: {
-              "Content-Type": "application/json",
-            },
+            query: GET_PAGE_BLOCKS_QUERY,
+            variables: { permalink },
+          },
+          {
+            headers: { "Content-Type": "application/json" },
           }
         );
 
-        const pages = response.data.data.page || [];
+        const pages = response.data?.data?.page || [];
         setBlocks(pages[0]?.blocks || []);
       } catch (err) {
+        console.error("Error fetching page blocks:", err);
         setError(err);
-        console.error("Error fetching global blocks:", err);
       } finally {
         setLoading(false);
       }
     };
 
     fetchBlocks();
-  }, []);
+  }, [permalink]);
 
-  return (
-    <PageContext.Provider value={{ blocks, loading, error }}>
-      {children}
-    </PageContext.Provider>
-  );
+  return { blocks, loading, error };
 };
-
-export const usePageBlocks = () => useContext(PageContext);

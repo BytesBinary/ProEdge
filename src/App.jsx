@@ -32,7 +32,6 @@ import { FaqProvider } from "./context/FaqContext";
 import FAQPage from "./pages/FAQ/FAQPage";
 import UserProfile from "./pages/user/UserProfile";
 import NotFoundPage from "./pages/404/NotFoundPage";
-import { PageProvider } from "./context/PageContext";
 
 const router = createBrowserRouter([
   {
@@ -77,6 +76,7 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+  
   return (
     <AuthProvider>
       <CategoryProvider>
@@ -84,9 +84,7 @@ function App() {
           <CartProvider>
             <OrderProvider>
               <FaqProvider>
-                <PageProvider>
                 <RouterProvider router={router} />
-                </PageProvider>
               </FaqProvider>
             </OrderProvider>
           </CartProvider>
