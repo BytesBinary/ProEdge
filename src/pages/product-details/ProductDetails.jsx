@@ -29,19 +29,19 @@ const Product = () => {
 
   // Extract product ID from URL
   const extractIdFromSlug = (slug) => {
-  // Handle null/undefined cases
-  if (!slug) return null;
-  
-  // Split by hyphens and get the last part
-  const parts = slug.split('-');
-  const lastPart = parts[parts.length - 1];
-  
-  // Convert to number (returns NaN if not a number)
-  const id = parseInt(lastPart, 10);
-  
-  // Return null if not a valid number
-  return isNaN(id) ? null : id;
-};
+    // Handle null/undefined cases
+    if (!slug) return null;
+
+    // Split by hyphens and get the last part
+    const parts = slug.split("-");
+    const lastPart = parts[parts.length - 1];
+
+    // Convert to number (returns NaN if not a number)
+    const id = parseInt(lastPart, 10);
+
+    // Return null if not a valid number
+    return isNaN(id) ? null : id;
+  };
 
   const extractedVariationIdFromSlug = (slug) => {
     if (!slug) return { productId: null, variationId: null };
@@ -52,14 +52,16 @@ const Product = () => {
     return isNaN(variationId) ? null : variationId;
   };
 
-const id=extractIdFromSlug(title);
-const variationId = extractedVariationIdFromSlug(title);
+  const id = extractIdFromSlug(title);
+  const variationId = extractedVariationIdFromSlug(title);
 
   useEffect(() => {
     const fetchSingleProduct = async () => {
       if (id) {
         const product = await fetchProductById(id);
+        console.log(product, "singleproduct");
         setSingleProduct(product);
+        updateMostViewed(product);
       }
     };
 
@@ -72,7 +74,9 @@ const variationId = extractedVariationIdFromSlug(title);
 
       if (
         variationId &&
-        singleProduct.variation.some((v) => String(v.id) === String(variationId))
+        singleProduct.variation.some(
+          (v) => String(v.id) === String(variationId)
+        )
       ) {
         defaultVariation = singleProduct.variation.find(
           (v) => String(v.id) === String(variationId)
@@ -87,7 +91,28 @@ const variationId = extractedVariationIdFromSlug(title);
       }
     }
   }, [singleProduct, variationId]);
+  function updateMostViewed(product) {
+    // 1️⃣ pull the current store (object keyed by product id).
+    let store = {};
+    try {
+      store = JSON.parse(localStorage.getItem("mostViewed")) || {};
+    } catch (err) {
+      console.log(err);
+      /* corrupted JSON → start fresh */
+    }
 
+    // 2️⃣ bump the counter for this product.
+    const id = String(product.id); // make sure it’s a string key
+    const views = store[id]?.count ?? 0;
+
+    store[id] = {
+      ...product,
+      count: views + 1, // add / increment
+    };
+
+    // 3️⃣ save it back.
+    localStorage.setItem("mostViewed", JSON.stringify(store));
+  }
 
   const handleVariationChange = (selectedVariation) => {
     if (!selectedVariation) return;
@@ -119,138 +144,157 @@ const variationId = extractedVariationIdFromSlug(title);
   const thumbnails = Array.isArray(singleProduct.variation)
     ? singleProduct.variation.map((v) => ({
         id: v.id,
-        image: v.image?.id || "", 
+        image: v.image?.id || "",
         option: v,
       }))
     : [];
 
   const mainImage = singleVariation.image?.id
-  ? `${import.meta.env.VITE_SERVER_URL}/assets/${singleVariation.image.id}`
-  : singleVariation.image || "";
+    ? `${import.meta.env.VITE_SERVER_URL}/assets/${singleVariation.image.id}`
+    : singleVariation.image || "";
 
-const productName = `${singleProduct.title} ${singleVariation.variation_name}`;
-const brandName = "ProEdge"; 
-const priceCurrency = "USD";
+  const productName = `${singleProduct.title} ${singleVariation.variation_name}`;
+  const brandName = "ProEdge";
+  const priceCurrency = "USD";
 
-// Create a more compelling meta title and description
-const metaTitle = `${productName} | ${brandName}`;
-const metaDescription = `Shop high-quality ${productName} - ${singleVariation.product_details?.substring(0, 140) || 'Industrial brass fitting for various applications'}`;
+  // Create a more compelling meta title and description
+  const metaTitle = `${productName} | ${brandName}`;
+  const metaDescription = `Shop high-quality ${productName} - ${
+    singleVariation.product_details?.substring(0, 140) ||
+    "Industrial brass fitting for various applications"
+  }`;
 
-// Generate canonical URL
-const cleanProductName = productName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-const canonicalUrl = `${import.meta.env.VITE_CLIENT_URL}/products/${cleanProductName}-${id}`;
+  // Generate canonical URL
+  const cleanProductName = productName
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+  const canonicalUrl = `${
+    import.meta.env.VITE_CLIENT_URL
+  }/products/${cleanProductName}-${id}`;
 
-// Generate rich product schema data
-const productSchema = {
-  "@context": "https://schema.org",
-  "@type": "Product",
-  "productID": singleVariation.sku_code,
-  "name": productName,
-  "description": singleVariation.product_details || singleVariation.product_info || metaDescription,
-  "image": mainImage,
-  "brand": {
-    "@type": "Brand",
-    "name": brandName
-  },
-  "offers": {
-    "@type": "Offer",
-    "url": canonicalUrl,
-    "priceCurrency": priceCurrency,
-    "price": singleVariation.offer_price,
-    "priceValidUntil": new Date(Date.now() + 1000 * 60 * 60 * 24 * 365).toISOString().split('T')[0], // 1 year from now
-    "itemCondition": "https://schema.org/NewCondition",
-    "availability": singleVariation.stock > 0 
-      ? "https://schema.org/InStock" 
-      : "https://schema.org/OutOfStock",
-    "shippingDetails": {
-      "@type": "OfferShippingDetails",
-      "shippingRate": {
-        "@type": "MonetaryAmount",
-        "value": "0",
-        "currency": priceCurrency
-      },
-      "shippingDestination": {
-        "@type": "DefinedRegion",
-        "addressCountry": "US"
-      },
-      "deliveryTime": {
-        "@type": "ShippingDeliveryTime",
-        "handlingTime": {
-          "@type": "QuantitativeValue",
-          "minValue": "1",
-          "maxValue": "2",
-          "unitCode": "DAY"
+  // Generate rich product schema data
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    productID: singleVariation.sku_code,
+    name: productName,
+    description:
+      singleVariation.product_details ||
+      singleVariation.product_info ||
+      metaDescription,
+    image: mainImage,
+    brand: {
+      "@type": "Brand",
+      name: brandName,
+    },
+    offers: {
+      "@type": "Offer",
+      url: canonicalUrl,
+      priceCurrency: priceCurrency,
+      price: singleVariation.offer_price,
+      priceValidUntil: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365)
+        .toISOString()
+        .split("T")[0], // 1 year from now
+      itemCondition: "https://schema.org/NewCondition",
+      availability:
+        singleVariation.stock > 0
+          ? "https://schema.org/InStock"
+          : "https://schema.org/OutOfStock",
+      shippingDetails: {
+        "@type": "OfferShippingDetails",
+        shippingRate: {
+          "@type": "MonetaryAmount",
+          value: "0",
+          currency: priceCurrency,
         },
-        "transitTime": {
-          "@type": "QuantitativeValue",
-          "minValue": singleVariation.shipping_days - 2,
-          "maxValue": singleVariation.shipping_days,
-          "unitCode": "DAY"
+        shippingDestination: {
+          "@type": "DefinedRegion",
+          addressCountry: "US",
+        },
+        deliveryTime: {
+          "@type": "ShippingDeliveryTime",
+          handlingTime: {
+            "@type": "QuantitativeValue",
+            minValue: "1",
+            maxValue: "2",
+            unitCode: "DAY",
+          },
+          transitTime: {
+            "@type": "QuantitativeValue",
+            minValue: singleVariation.shipping_days - 2,
+            maxValue: singleVariation.shipping_days,
+            unitCode: "DAY",
+          },
+        },
+      },
+    },
+    aggregateRating: singleVariation.rating
+      ? {
+          "@type": "AggregateRating",
+          ratingValue: singleVariation.rating,
+          reviewCount: singleVariation.total_ratings || 0,
+          bestRating: "5",
+          worstRating: "1",
         }
-      }
-    }
-  },
-  "aggregateRating": singleVariation.rating ? {
-    "@type": "AggregateRating",
-    "ratingValue": singleVariation.rating,
-    "reviewCount": singleVariation.total_ratings || 0,
-    "bestRating": "5",
-    "worstRating": "1"
-  } : undefined,
-  "additionalProperty": [
-    {
-      "@type": "PropertyValue",
-      "name": "Material",
-      "value": "Brass"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "Country of Origin",
-      "value": singleVariation.made_in || "USA"
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "Thread Size",
-      "value": singleVariation.variation_value
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "SKU",
-      "value": singleVariation.sku_code
-    }
-  ]
-};
+      : undefined,
+    additionalProperty: [
+      {
+        "@type": "PropertyValue",
+        name: "Material",
+        value: "Brass",
+      },
+      {
+        "@type": "PropertyValue",
+        name: "Country of Origin",
+        value: singleVariation.made_in || "USA",
+      },
+      {
+        "@type": "PropertyValue",
+        name: "Thread Size",
+        value: singleVariation.variation_value,
+      },
+      {
+        "@type": "PropertyValue",
+        name: "SKU",
+        value: singleVariation.sku_code,
+      },
+    ],
+  };
 
-// In your return statement, add the Helmet component at the top:
-return (
-  <>
-    <Helmet>
-      <title>{metaTitle}</title>
-      <meta name="description" content={metaDescription} />
-      <link rel="canonical" href={canonicalUrl} />
-      
-      {/* Open Graph / Facebook */}
-      <meta property="og:type" content="product" />
-      <meta property="og:title" content={metaTitle} />
-      <meta property="og:description" content={metaDescription} />
-      <meta property="og:image" content={mainImage} />
-      <meta property="og:url" content={canonicalUrl} />
-      <meta property="og:site_name" content={brandName} />
-      <meta property="product:price:amount" content={singleVariation.offer_price} />
-      <meta property="product:price:currency" content={priceCurrency} />
-      <meta property="product:brand" content={brandName} />
-      
-      {/* Twitter */}
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content={metaTitle} />
-      <meta name="twitter:description" content={metaDescription} />
-      <meta name="twitter:image" content={mainImage} />
-      
-      {/* Product structured data */}
-      <script type="application/ld+json">
-        {JSON.stringify(productSchema)}
-      </script>
-    </Helmet>
+  // In your return statement, add the Helmet component at the top:
+  return (
+    <>
+      <Helmet>
+        <title>{metaTitle}</title>
+        <meta name="description" content={metaDescription} />
+        <link rel="canonical" href={canonicalUrl} />
+
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="product" />
+        <meta property="og:title" content={metaTitle} />
+        <meta property="og:description" content={metaDescription} />
+        <meta property="og:image" content={mainImage} />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:site_name" content={brandName} />
+        <meta
+          property="product:price:amount"
+          content={singleVariation.offer_price}
+        />
+        <meta property="product:price:currency" content={priceCurrency} />
+        <meta property="product:brand" content={brandName} />
+
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={metaTitle} />
+        <meta name="twitter:description" content={metaDescription} />
+        <meta name="twitter:image" content={mainImage} />
+
+        {/* Product structured data */}
+        <script type="application/ld+json">
+          {JSON.stringify(productSchema)}
+        </script>
+      </Helmet>
       <PageHeader
         title="Product Details"
         bgImage={bgImage}

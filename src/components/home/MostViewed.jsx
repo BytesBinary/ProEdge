@@ -11,8 +11,26 @@ const MostViewedSection = ({ title }) => {
   const { products } = useProductContext();
   const swiperRef = useRef(null);
 
-  // Get the last 8 products
-  const displayedProducts = products.slice(-8);
+  const getRandomProducts = (arr, count) => {
+  const shuffled = [...arr].sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, count);
+};
+
+function getMostViewed(limit = 8) {
+  try {
+    const store = JSON.parse(localStorage.getItem("mostViewed")) || {};
+    return Object.values(store)
+      .sort((a, b) => b.count - a.count)
+      .slice(0, limit);                   // e.g. top 5
+  } catch (err) {
+    console.log(err);
+    return [];
+  }
+}
+const  mostViwedProduct=getMostViewed();
+
+const displayedProducts =mostViwedProduct.length>0? mostViwedProduct:getRandomProducts(products, 8);
+
 
   const getProductProps = (product) => {
     const variation = product.variation?.[0] || {};
