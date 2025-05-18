@@ -5,9 +5,12 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
+import { usePageBlocks } from '../../context/PageContext';
 
 const Hero = () => {
   const swiperRef = useRef(null);
+  const {blocks}=usePageBlocks();
+   c
 
   const slides = [
     {
