@@ -32,6 +32,7 @@ import { FaqProvider } from "./context/FaqContext";
 import FAQPage from "./pages/FAQ/FAQPage";
 import UserProfile from "./pages/user/UserProfile";
 import NotFoundPage from "./pages/404/NotFoundPage";
+import Policies from "./pages/tech-help/Policies";
 
 const router = createBrowserRouter([
   {
@@ -52,6 +53,11 @@ const router = createBrowserRouter([
       { path: "return-order", Component: TrackOrderPage },
       { path: "modify-order", Component: TrackOrderPage },
       { path: "order-details", Component: OrderDetailsPage },
+      { path: "return-policy", Component: Policies },
+      { path: "payment-policy", Component: Policies },
+      { path: "terms-of-use", Component: Policies },      
+      { path: "shipping-policy", Component: Policies },   
+
       {
         Component: PrivateRoute,
         children: [

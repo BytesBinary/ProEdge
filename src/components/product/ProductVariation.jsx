@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import VariationCard from "./VariationCard";
 import { RiArrowDropDownLine } from "react-icons/ri";
 
@@ -36,9 +37,11 @@ const ProductVariation = ({
           {variationName}{" "}
         </h1>
         <h3 className="text-base lg:text-lg">SKU: {sku}</h3>
-        <h3 className="text-base md:text-md lg:text-lg">
-          Visit the controls pro Store
-        </h3>
+        <Link to="/products">
+          <h3 className="text-base md:text-md lg:text-lg">
+            Shop all products 
+          </h3>
+        </Link>
         <div className="max-w-[260px] w-full text-sm lg:text-lg flex justify-between items-center gap-1">
           <p className="font-semibold">{rating}</p>
           <div className="flex items-center gap-3">
@@ -75,7 +78,7 @@ const ProductVariation = ({
         </h1>
         {originalPrice > 0 && (
           <p className="text-lg lg:text-xl leading-8">
-            <span className="font-medium text-[#3F66BC]">Typical price: </span>
+            <span className="font-medium text-[#3F66BC]">Regular Price: </span>
             <span className="text-[#5D6576] line-through">
               ${formatNumberWithCommas(originalPrice)}
             </span>
@@ -86,7 +89,7 @@ const ProductVariation = ({
       {/* Size Options */}
       <div className="w-full flex flex-col justify-between gap-4 lg:gap-0 pr-3 lg:pr-0">
         <div className="text-md lg:text-lg mb-3 py-2 md:py-6">
-          <span className="text-[#5D6576]">Size:</span>
+          <span className="text-[#5D6576]">Other Options:</span>
           <span className="text-[#3F66BC] font-semibold">
             {" "}
             {variationValue}
