@@ -90,6 +90,29 @@ const Product = () => {
     }
   }, [singleProduct, variationId]);
 
+  function updateMostViewed(product) {
+    // 1️⃣ pull the current store (object keyed by product id).
+    let store = {};
+    try {
+      store = JSON.parse(localStorage.getItem("mostViewed")) || {};
+    } catch (err) {
+      // console.log(err);
+      /* corrupted JSON → start fresh */
+    }
+
+    // 2️⃣ bump the counter for this product.
+    const id = String(product.id); // make sure it’s a string key
+    const views = store[id]?.count ?? 0;
+
+    store[id] = {
+      ...product,
+      count: views + 1, // add / increment
+    };
+
+    // 3️⃣ save it back.
+    localStorage.setItem("mostViewed", JSON.stringify(store));
+  }
+
   const handleVariationChange = (selectedVariation) => {
     if (!selectedVariation) return;
 

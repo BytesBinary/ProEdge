@@ -32,7 +32,7 @@ const Category = () => {
     setCurrentPage(page);
   };
 
-  console.log(minPrice, maxPrice, "minPrice,maxPrice");
+  // console.log(minPrice, maxPrice, "minPrice,maxPrice");
 
   // Function to generate a slug from a string
   const generateSlug = (str) => {
@@ -279,7 +279,7 @@ const Category = () => {
   if (sortOption === "Newest") {
     currentItems = [...currentItems].reverse();
   }
-  console.log(singleCategory?.category_name, "ccc");
+  // console.log(singleCategory?.category_name, "ccc");
   return (
     <>
       {singleCategory && (

@@ -254,13 +254,13 @@ const fetchOrders = async () => {
 
 
   const fetchOrderById = async (orderid) => {
-    console.log(orderid, "orderid");
+    // console.log(orderid, "orderid");
     if (orderid.length < 6) {
       return null;
     }
 
 const id = orderid.split('-')[1]; 
-    console.log(id, "last digit");
+    // console.log(id, "last digit");
 
     // First check local orders
   const localOrder = orders.find((order) => order.id === orderid || order.order_id === orderid);
@@ -288,7 +288,7 @@ const id = orderid.split('-')[1];
         throw new Error(response.data.errors[0].message);
       }
 
-      console.log(response)
+      // console.log(response)
 
       const order = response.data.data.order_by_id;
       if (order) {
@@ -350,6 +350,7 @@ const id = orderid.split('-')[1];
         },
         {
           headers: { "Content-Type": "application/json" },
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         }
       );
 

@@ -23,7 +23,7 @@ function getMostViewed(limit = 8) {
       .sort((a, b) => b.count - a.count)
       .slice(0, limit);                   // e.g. top 5
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     return [];
   }
 }
