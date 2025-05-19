@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { CartContext } from "../../../../context/CartContext";
 import { formatNumberWithCommas } from "../../../../helper/localPrice/localeprice";
 
-const ProductCard = ({ productId,variationId,variation_name, stock,made_in,sku,image, image_url, category, title, price,length }) => {
+const ProductCard = ({ productId,variationId,variation_name, stock,made_in,sku,image, category, title, price,length }) => {
   const {
     addToCart,
     isInWishlist,
@@ -56,7 +56,7 @@ const ProductCard = ({ productId,variationId,variation_name, stock,made_in,sku,i
       <div className="rounded-xl w-full h-[417px] mb-5 bg-[#FFFFFF]">
         <div className="bg-[#F8F9FB] flex justify-center items-center relative rounded-xl w-full overflow-hidden">
           <img
-            src={image ? `${import.meta.env.VITE_SERVER_URL}/assets/${image}` : image_url}
+            src={`${import.meta.env.VITE_SERVER_URL}/assets/${image}`}
             alt="product"
             className="h-[167px] w-full object-cover rounded-lg"
           />

@@ -41,7 +41,6 @@ const ALL_PRODUCTS_QUERY = `
         image {
           id
         }
-        image_url
         made_in
         shipping_days
         date_created  
@@ -86,7 +85,6 @@ const SINGLE_PRODUCT_QUERY = `
         image {
           id
         }
-        image_url
         made_in
         shipping_days
         date_created
