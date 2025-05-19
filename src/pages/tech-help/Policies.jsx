@@ -42,7 +42,11 @@ const Policies = () => {
             <div className="bg-gray-50 min-h-screen">
                 <div className="container mx-auto px-4 py-8 max-w-4xl">
                     <div className="bg-white rounded-lg shadow-md p-6 md:p-8">
-                        <ShadowedRichText html={page_text?.item?.text} />
+                        {page_text?.item?.text ? (
+                            <ShadowedRichText html={page_text.item.text} />
+                        ) : (
+                            <div>Loading...</div>
+                        )}
                     </div>
                 </div>
             </div>
