@@ -29,12 +29,12 @@ function getMostViewed(limit = 8) {
 }
 const  mostViwedProduct=getMostViewed();
 
-const displayedProducts =mostViwedProduct.length>0? mostViwedProduct:getRandomProducts(products, 8);
+const displayedProducts = mostViwedProduct.length>0 ? mostViwedProduct:getRandomProducts(products, 8);
 
-
-  const getProductProps = (product) => {
-    const variation = product.variation?.[0] || {};
-    const imageId = variation?.image?.id || defaultImage;
+const getProductProps = (product) => {
+  const variation = product.variation?.[0] || {};
+  const imageId = variation?.image?.id || defaultImage;
+  console.log(product);
 
     return {
       productId: product.id,
@@ -57,6 +57,7 @@ const displayedProducts =mostViwedProduct.length>0? mostViwedProduct:getRandomPr
           : variation.regular_price,
     };
   };
+  console.log(products,'products');
 
   return (
     <section className="max-w-[1500px] w-full mx-auto px-4 py-10">

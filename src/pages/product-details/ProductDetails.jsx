@@ -59,9 +59,7 @@ const Product = () => {
     const fetchSingleProduct = async () => {
       if (id) {
         const product = await fetchProductById(id);
-        console.log(product, "singleproduct");
         setSingleProduct(product);
-        updateMostViewed(product);
       }
     };
 
@@ -91,28 +89,6 @@ const Product = () => {
       }
     }
   }, [singleProduct, variationId]);
-  function updateMostViewed(product) {
-    // 1️⃣ pull the current store (object keyed by product id).
-    let store = {};
-    try {
-      store = JSON.parse(localStorage.getItem("mostViewed")) || {};
-    } catch (err) {
-      console.log(err);
-      /* corrupted JSON → start fresh */
-    }
-
-    // 2️⃣ bump the counter for this product.
-    const id = String(product.id); // make sure it’s a string key
-    const views = store[id]?.count ?? 0;
-
-    store[id] = {
-      ...product,
-      count: views + 1, // add / increment
-    };
-
-    // 3️⃣ save it back.
-    localStorage.setItem("mostViewed", JSON.stringify(store));
-  }
 
   const handleVariationChange = (selectedVariation) => {
     if (!selectedVariation) return;
@@ -144,6 +120,7 @@ const Product = () => {
   const thumbnails = Array.isArray(singleProduct.variation)
     ? singleProduct.variation.map((v) => ({
         id: v.id,
+        image_url: v.image_url || "",
         image: v.image?.id || "",
         option: v,
       }))
@@ -151,7 +128,7 @@ const Product = () => {
 
   const mainImage = singleVariation.image?.id
     ? `${import.meta.env.VITE_SERVER_URL}/assets/${singleVariation.image.id}`
-    : singleVariation.image || "";
+    : singleVariation.image_url || "";
 
   const productName = `${singleProduct.title} ${singleVariation.variation_name}`;
   const brandName = "ProEdge";
