@@ -67,13 +67,13 @@ const {  updateOrder,createOrderDetails,fetchSettingsGraphQL} = useOrderContext(
           for (const item of cartItems) {
             console.log("creating")
             const orderDetailsData = {
-              order_id: updatedOrder.id,
-              variation_id: item.variationId,
+              order_id: {id:updatedOrder.id},
+              variation_id:{id: parseInt(item.variationId)},
               product_title: item.title,
-              user_id: updatedOrder.user_id?updatedOrder.user_id : "guest",
+              user_id: {id:updatedOrder.user_id?updatedOrder.user_id : "guest"},
               user_email: updatedOrder.email,
-              total_price: item.price * item.quantity,
-              quantity: item.quantity,
+              total_price:String((item.price * item.quantity)),
+              quantity:parseInt( item.quantity),
             };
 
             await createOrderDetails(orderDetailsData);
