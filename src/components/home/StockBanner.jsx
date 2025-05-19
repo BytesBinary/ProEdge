@@ -14,8 +14,8 @@ const StockBanner = ({
     
       // console.log(blocks,"blocks")
       const banners=blocks?.filter(block => block?.item?.type?.toLowerCase().trim()==="banner");
-      console.log(banners,"banner")
-      // const bannerData=banners[1];
+      // console.log(banners,"banner")
+      const bannerData=banners[1];
   return (
     <section className="relative h-[300px] overflow-hidden md:h-[400px] mt-10">
       {/* Background Image */}
