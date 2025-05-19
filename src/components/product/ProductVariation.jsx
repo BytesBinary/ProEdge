@@ -16,8 +16,6 @@ const ProductVariation = ({
   onVariationChange,
   selectedVariationId,
 }) => {
-  
-
   return (
     <div className="w-full flex flex-col justify-between items-start gap-6 lg:gap-0 p-8 lg:p-0">
       {/* Product Details */}
@@ -27,9 +25,7 @@ const ProductVariation = ({
         </h1>
         <h3 className="text-base lg:text-lg">SKU: {sku}</h3>
         <Link to="/products">
-          <h3 className="text-base md:text-md lg:text-lg">
-            Shop all products 
-          </h3>
+          <h3 className="text-base md:text-md lg:text-lg">Shop all products</h3>
         </Link>
         <div className="max-w-[260px] w-full text-sm lg:text-lg flex justify-between items-center gap-1">
           <p className="font-semibold">{rating}</p>
@@ -74,7 +70,14 @@ const ProductVariation = ({
           </p>
         )}
       </div>
-
+      <div className="flex flex-col lg:flex-row items-start lg:items-center">
+        <p className="text-sm lg:text-base leading-7">
+          <span className="text-[#5D6576]">Get Fast, </span>
+          <span className="font-medium text-[#182B55] mr-2">
+            Free Shipping on Orders Over $500.
+          </span>
+        </p>
+      </div>
       {/* Size Options */}
       <div className="w-full flex flex-col justify-between gap-4 lg:gap-0 pr-3 lg:pr-0">
         <div className="text-md lg:text-lg mb-3 py-2 md:py-6">
