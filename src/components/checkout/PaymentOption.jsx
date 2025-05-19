@@ -48,7 +48,7 @@ const PaymentOption = ({ method, onChange, currency = 'usd' }) => {
         <button
           key={payment.id}
           type="button"
-          className={`flex items-center text-sm sm:text-md font-semibold px-5 py-2.5 rounded-full transition-all border ${
+          className={`flex items-center cursor-pointer text-sm sm:text-md font-semibold px-5 py-2.5 rounded-full transition-all border ${
             method === payment.id
               ? 'bg-[#3F66BC] text-white border-[#3F66BC] shadow-md'
               : 'bg-white text-[#3F66BC] border-[#ECF0F9] hover:shadow-md'

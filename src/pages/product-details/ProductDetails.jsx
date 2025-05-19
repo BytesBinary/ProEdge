@@ -59,7 +59,7 @@ const Product = () => {
     const fetchSingleProduct = async () => {
       if (id) {
         const product = await fetchProductById(id);
-        console.log(product, "singleproduct");
+        // console.log(product, "singleproduct");
         setSingleProduct(product);
         updateMostViewed(product);
       }
@@ -97,7 +97,7 @@ const Product = () => {
     try {
       store = JSON.parse(localStorage.getItem("mostViewed")) || {};
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       /* corrupted JSON → start fresh */
     }
 

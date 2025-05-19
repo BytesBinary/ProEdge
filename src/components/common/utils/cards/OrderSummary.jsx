@@ -22,7 +22,7 @@ const OrderSummaryCard = ({ cart }) => {
   const location = useLocation();
 
 
-  console.log(shippingcharge,"shipping")
+  // console.log(shippingcharge,"shipping")
   useEffect(() => {
     if (location.pathname === "/cart/checkout") {
       setIsCheckoutPage(true);

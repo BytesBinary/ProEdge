@@ -20,9 +20,9 @@ const ServiceFeatures = () => {
 
   const features = blocks?.filter(block => block?.item?.type?.toLowerCase().trim() === "feature");
 
-  console.log("blocks", blocks);
+  // console.log("blocks", blocks);
   
-  console.log("features", features);
+  // console.log("features", features);
 
   // const features = [
   //   {

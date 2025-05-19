@@ -54,7 +54,7 @@ const TrackOrderPage = () => {
     };
     setInfo(content);
   }, [pathname]);
-  console.log(orders, "ordeamadeerrs");
+  // console.log(orders, "ordeamadeerrs");
   return (
     <>
       <PageHeader

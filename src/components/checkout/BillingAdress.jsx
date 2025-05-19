@@ -20,7 +20,7 @@ const BillingAddress= ({
           name="sameAsShipping"
           checked={sameAsShipping}
           onChange={onSameAsShippingChange}
-          className="mr-2"
+          className="mr-2 cursor-pointer"
         />
         <label htmlFor="sameAsShipping" className="text-sm text-gray-700">
           Same as Shipping Address
