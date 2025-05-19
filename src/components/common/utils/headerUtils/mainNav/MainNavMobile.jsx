@@ -7,7 +7,6 @@ import {
   FiHeart,
   FiShoppingCart,
   FiUser,
-  FiSettings,
   FiLogOut
 } from "react-icons/fi";
 import { useProductContext } from "../../../../../context/ProductContext";
@@ -42,8 +41,7 @@ const MobileNav = ({ actionIcons }) => {
     };
   }, []);
 
-  // Search functionality (same as before)
-  useEffect(() => {
+  const performSearch = () => {
     if (searchTerm.trim() === "") {
       setSearchResults([]);
       setShowSearchDropdown(false);
@@ -53,42 +51,55 @@ const MobileNav = ({ actionIcons }) => {
     const results = [];
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
 
-    products.forEach((product) => {
-      const productTitle = product.title?.toLowerCase() || "";
-      const titleMatchIndex = productTitle.indexOf(lowerCaseSearchTerm);
+   products.forEach((product) => {
+  const productTitle = product.title?.toLowerCase() || "";
+  const titleMatchIndex = productTitle.indexOf(lowerCaseSearchTerm);
 
-      const categoryName = product.product_category?.child_category_name?.toLowerCase() || "";
-      const categoryMatchIndex = categoryName.indexOf(lowerCaseSearchTerm);
+  const categoryName =
+    product.product_category?.child_category_name?.toLowerCase() || "";
+  const categoryMatchIndex = categoryName.indexOf(lowerCaseSearchTerm);
 
-      product.variation?.forEach((variation) => {
-        const variationName = variation.variation_name?.toLowerCase() || "";
-        const variationMatchIndex = variationName.indexOf(lowerCaseSearchTerm);
+  product.variation?.forEach((variation) => {
+    const variationName = variation.variation_name?.toLowerCase() || "";
+    const variationMatchIndex = variationName.indexOf(lowerCaseSearchTerm);
 
-        let matchIndex = -1;
-        if (variationMatchIndex !== -1) {
-          matchIndex = variationMatchIndex;
-        } else if (titleMatchIndex !== -1) {
-          matchIndex = titleMatchIndex;
-        } else if (categoryMatchIndex !== -1) {
-          matchIndex = categoryMatchIndex;
-        }
+    const skuCode = variation.sku_code?.toLowerCase() || "";
+    const skuMatchIndex = skuCode.indexOf(lowerCaseSearchTerm);
 
-        if (matchIndex !== -1) {
-          results.push({
-            productId: product.id,
-            variationId: variation.id,
-            productTitle: product.title,
-            variationName: variation.variation_name,
-            categoryName: product.product_category?.child_category_name,
-            image: variation.image || product.image,
-            matchIndex,
-            matchLength: searchTerm.length,
-            matchType: variationMatchIndex !== -1 ? "variation" :
-              titleMatchIndex !== -1 ? "title" : "category"
-          });
-        }
+    let matchIndex = -1;
+    let matchType = "";
+
+    if (skuMatchIndex !== -1) {
+      matchIndex = skuMatchIndex;
+      matchType = "sku_code";
+    } else if (variationMatchIndex !== -1) {
+      matchIndex = variationMatchIndex;
+      matchType = "variation";
+    } else if (titleMatchIndex !== -1) {
+      matchIndex = titleMatchIndex;
+      matchType = "title";
+    } else if (categoryMatchIndex !== -1) {
+      matchIndex = categoryMatchIndex;
+      matchType = "category";
+    }
+
+    if (matchIndex !== -1) {
+      results.push({
+        productId: product.id,
+        variationId: variation.id,
+        productTitle: product.title,
+        variationName: variation.variation_name,
+        categoryName: product.product_category?.child_category_name,
+        skuCode: variation.sku_code,
+        image: variation.image || product.image,
+        matchIndex,
+        matchLength: searchTerm.length,
+        matchType,
       });
-    });
+    }
+  });
+});
+
 
     results.sort((a, b) => {
       if (a.matchType === "variation" && b.matchType !== "variation") return -1;
@@ -100,7 +111,7 @@ const MobileNav = ({ actionIcons }) => {
 
     setSearchResults(results);
     setShowSearchDropdown(results.length > 0);
-  }, [searchTerm, products]);
+  };
 
   const handleSignOut = () => {
     localStorage.removeItem("access_token");
@@ -210,10 +221,7 @@ const MobileNav = ({ actionIcons }) => {
                 className="w-full max-w-md mb-8 relative"
                 onSubmit={(e) => {
                   e.preventDefault();
-                  if (searchResults.length > 0) {
-                    navigate(`/products/${searchResults[0].productId}/variations/${searchResults[0].variationId}`);
-                  }
-                  setShowSearchDropdown(false);
+                  performSearch();
                 }}
                 ref={searchRef}
               >
@@ -223,10 +231,14 @@ const MobileNav = ({ actionIcons }) => {
                     placeholder="Search products..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    onFocus={() => searchTerm && setShowSearchDropdown(true)}
                     className="w-full py-3 pl-12 pr-6 rounded-full bg-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white/30"
                   />
-                  <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-white" />
+                  <button 
+                    type="submit"
+                    className="absolute left-4 top-1/2 transform -translate-y-1/2"
+                  >
+                    <FiSearch className="w-5 h-5 text-white" />
+                  </button>
                 </div>
                 {showSearchDropdown && searchResults.length > 0 && (
                   <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto">
@@ -245,6 +257,7 @@ const MobileNav = ({ actionIcons }) => {
                           navigate(`/single-product/${slug}-${result.productId}`);
                           setShowSearchDropdown(false);
                           setSearchTerm("");
+                          setIsOpen(false);
                         }}
                       >
                         <div className="w-10 h-10 rounded-full overflow-hidden mr-3 flex-shrink-0">
