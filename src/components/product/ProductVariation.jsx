@@ -1,5 +1,8 @@
+import { Link } from "react-router-dom";
 import VariationCard from "./VariationCard";
 import { RiArrowDropDownLine } from "react-icons/ri";
+import { formatNumberWithCommas } from "../../helper/localPrice/localeprice";
+
 const ProductVariation = ({
   title,
   sku,
@@ -13,6 +16,8 @@ const ProductVariation = ({
   onVariationChange,
   selectedVariationId,
 }) => {
+  
+
   return (
     <div className="w-full flex flex-col justify-between items-start gap-6 lg:gap-0 p-8 lg:p-0">
       {/* Product Details */}
@@ -21,7 +26,11 @@ const ProductVariation = ({
           {variationName}{" "}
         </h1>
         <h3 className="text-base lg:text-lg">SKU: {sku}</h3>
-        <h3 className="text-base md:text-md lg:text-lg">Visit the controls pro Store</h3>
+        <Link to="/products">
+          <h3 className="text-base md:text-md lg:text-lg">
+            Shop all products 
+          </h3>
+        </Link>
         <div className="max-w-[260px] w-full text-sm lg:text-lg flex justify-between items-center gap-1">
           <p className="font-semibold">{rating}</p>
           <div className="flex items-center gap-3">
@@ -33,10 +42,10 @@ const ProductVariation = ({
             <RiArrowDropDownLine size={30} />
           </div>
           <div className="border-l-2 broder-[#3F66BC] h-4"></div>
-          <p className="">{totalRatings} ratings</p>
+          <p className="">{formatNumberWithCommas(totalRatings)} ratings</p>
         </div>
         <div className="bg-[#3F66BC] w-3/4 p-2 relative flex items-center text-sm font-semibold gap-2 overflow-hidden h-8">
-          <span className="text-white">Pro - Edge’s</span>
+          <span className="text-white">Pro - Edge's</span>
           <span className="text-[#FCD700]">Choice</span>
 
           {/* White diagonal cut */}
@@ -54,18 +63,22 @@ const ProductVariation = ({
       <div className="flex flex-col gap-2">
         <h1 className="text-3xl lg:text-4xl font-medium pt-6 pb-2">
           <span className="text-lg align-super">$</span>{" "}
-          <span>{currentPrice}</span>
+          <span>{formatNumberWithCommas(currentPrice)}</span>
         </h1>
-        <p className="text-lg lg:text-xl leading-8">
-          <span className="font-medium text-[#3F66BC]">Typical price: </span>
-          <span className="text-[#5D6576] line-through"> ${originalPrice}</span>
-        </p>
+        {originalPrice > 0 && (
+          <p className="text-lg lg:text-xl leading-8">
+            <span className="font-medium text-[#3F66BC]">Regular Price: </span>
+            <span className="text-[#5D6576] line-through">
+              ${formatNumberWithCommas(originalPrice)}
+            </span>
+          </p>
+        )}
       </div>
 
       {/* Size Options */}
       <div className="w-full flex flex-col justify-between gap-4 lg:gap-0 pr-3 lg:pr-0">
         <div className="text-md lg:text-lg mb-3 py-2 md:py-6">
-          <span className="text-[#5D6576]">Size:</span>
+          <span className="text-[#5D6576]">Other Options:</span>
           <span className="text-[#3F66BC] font-semibold">
             {" "}
             {variationValue}
@@ -73,10 +86,10 @@ const ProductVariation = ({
         </div>
 
         {priceOptions.length > 0 && (
-          <div className="flex justify-start items-start  flex-wrap gap-4 max-w-2xl max-h-[300px] md:min-h-[300px] lg:min-h-[200px] overflow-y-auto z-10">
-            {priceOptions.map((option, index) => (
+          <div className="flex justify-start items-start flex-wrap gap-4 max-w-2xl max-h-[300px] md:min-h-[300px] lg:min-h-[200px] overflow-y-auto z-10">
+            {priceOptions.map((option) => (
               <VariationCard
-                key={option.id} // Use option.id instead of index for better key
+                key={option.id}
                 title={option.variation_value}
                 price={option.offer_price}
                 originalPrice={option.regular_price}

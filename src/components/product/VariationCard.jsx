@@ -1,4 +1,5 @@
 import React from "react";
+import { formatNumberWithCommas } from "../../helper/localPrice/localeprice";
 
 const VariationCard = ({
   title,
@@ -7,6 +8,7 @@ const VariationCard = ({
   onClick,
   isSelected,
 }) => {
+  
   return (
     <div
       className={`w-32 h-24 ${isSelected ? "bg-[#3F66BC]" : "bg-[#F8F9FB]"
@@ -30,12 +32,14 @@ const VariationCard = ({
             } group-hover:border-white/25 border-dashed`}
         ></div>
         <div className="flex flex-col gap-1 justify-between text-xs font-medium">
-          <h1 className="group-hover:text-white">${price}</h1>
+          <h1 className="group-hover:text-white">  ${formatNumberWithCommas(price)}</h1>
           <h1
             className={`${isSelected ? "text-white" : "text-[#5D6576]"
               } line-through group-hover:text-white`}
           >
-            ${originalPrice}
+            {
+              originalPrice<=0 ? "" : formatNumberWithCommas(originalPrice)
+            }
           </h1>
         </div>
       </div>

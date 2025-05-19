@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useOrderContext } from "../../../../context/OrderContext";
+import { formatNumberWithCommas } from "../../../../helper/localPrice/localeprice";
 
 const OrderSummaryCard = ({ cart }) => {
   const [isCheckoutPage, setIsCheckoutPage] = useState(false);
@@ -46,16 +47,16 @@ const OrderSummaryCard = ({ cart }) => {
       </h2>
       <ul className="space-y-2 text-gray-700">
         <li className="flex justify-between">
-          <span>Subtotal ({itemsCount} Items)</span>
-          <span>${subtotal.toFixed(2)}</span>
+          <span>Subtotal </span>
+          <span>${formatNumberWithCommas(subtotal.toFixed(2))}</span>
         </li>
         <li className="flex justify-between text-[#5D6576]">
           <span>Shipping</span>
-          <span>${shipping.toFixed(2)}</span>
+          <span>${formatNumberWithCommas(shipping.toFixed(2))}</span>
         </li>
         <li className="flex justify-between">
           <span>Tax</span>
-          <span>${tax.toFixed(2)}</span>
+          <span>${formatNumberWithCommas(tax.toFixed(2))}</span>
         </li>
       </ul>
 
@@ -63,7 +64,7 @@ const OrderSummaryCard = ({ cart }) => {
 
       <div className="flex justify-between font-bold text-lg text-[#182B55]">
         <span className="text-[#5D6576]">Total</span>
-        <span>${total.toFixed(2)}</span>
+        <span>${formatNumberWithCommas(total.toFixed(2))}</span>
       </div>
 
       <div className="mt-6 space-y-3">

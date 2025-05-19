@@ -10,6 +10,8 @@ import Contact from "./pages/contact/Contact";
 import SignIn from "./pages/auth/SignIn";
 import SignUp from "./pages/auth/SignUp";
 import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage";
+import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
+
 import Root from "./layouts/Root";
 import Auth from "./layouts/Auth";
 import CartPage from "./pages/cart/Cart";
@@ -28,9 +30,9 @@ import OrderDetailsPage from "./pages/order/OrderDetailsPage";
 import PrivateRoute from "./components/privaterroute/PrivateRoute";
 import { FaqProvider } from "./context/FaqContext";
 import FAQPage from "./pages/FAQ/FAQPage";
-import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
 import UserProfile from "./pages/user/UserProfile";
 import NotFoundPage from "./pages/404/NotFoundPage";
+import Policies from "./pages/tech-help/Policies";
 
 const router = createBrowserRouter([
   {
@@ -51,6 +53,11 @@ const router = createBrowserRouter([
       { path: "return-order", Component: TrackOrderPage },
       { path: "modify-order", Component: TrackOrderPage },
       { path: "order-details", Component: OrderDetailsPage },
+      { path: "return-policy", Component: Policies },
+      { path: "payment-policy", Component: Policies },
+      { path: "terms-of-use", Component: Policies },      
+      { path: "shipping-policy", Component: Policies },   
+
       {
         Component: PrivateRoute,
         children: [
@@ -75,6 +82,7 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+  
   return (
     <AuthProvider>
       <CategoryProvider>

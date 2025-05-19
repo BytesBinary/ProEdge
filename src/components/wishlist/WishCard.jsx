@@ -1,4 +1,5 @@
 import React from "react";
+import { formatNumberWithCommas } from "../../helper/localPrice/localeprice";
 
 const WishCard = ({
   image,
@@ -27,9 +28,9 @@ const WishCard = ({
           <div className="flex flex-wrap gap-4 justify-between md:justify-center items-center">
             <span className="text-lg sm:text-xl font-semibold text-gray-800">
               <span className="align-super text-xs sm:text-sm">$</span>
-              {priceDollars}
+              {formatNumberWithCommas(priceDollars)}
               <span className="align-super text-xs sm:text-sm">
-                {priceCents}
+                {formatNumberWithCommas(priceCents)}
               </span>
             </span>
             <button
