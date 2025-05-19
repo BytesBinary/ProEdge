@@ -59,9 +59,7 @@ const Product = () => {
     const fetchSingleProduct = async () => {
       if (id) {
         const product = await fetchProductById(id);
-        // console.log(product, "singleproduct");
         setSingleProduct(product);
-        updateMostViewed(product);
       }
     };
 
@@ -91,6 +89,7 @@ const Product = () => {
       }
     }
   }, [singleProduct, variationId]);
+
   function updateMostViewed(product) {
     // 1️⃣ pull the current store (object keyed by product id).
     let store = {};
@@ -144,6 +143,7 @@ const Product = () => {
   const thumbnails = Array.isArray(singleProduct.variation)
     ? singleProduct.variation.map((v) => ({
         id: v.id,
+        image_url: v.image_url || "",
         image: v.image?.id || "",
         option: v,
       }))
@@ -151,7 +151,7 @@ const Product = () => {
 
   const mainImage = singleVariation.image?.id
     ? `${import.meta.env.VITE_SERVER_URL}/assets/${singleVariation.image.id}`
-    : singleVariation.image || "";
+    : singleVariation.image_url || "";
 
   const productName = `${singleProduct.title} ${singleVariation.variation_name}`;
   const brandName = "ProEdge";
