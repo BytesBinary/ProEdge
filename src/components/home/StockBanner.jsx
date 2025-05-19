@@ -12,10 +12,10 @@ const StockBanner = ({
       if (loading) return <p>Loading...</p>;
       if (error) return <p>Error loading content: {error.message}</p>;
     
-      console.log(blocks,"blocks")
+      // console.log(blocks,"blocks")
       const banners=blocks?.filter(block => block?.item?.type?.toLowerCase().trim()==="banner");
       console.log(banners,"banner")
-      const bannerData=banners[1];
+      // const bannerData=banners[1];
   return (
     <section className="relative h-[300px] overflow-hidden md:h-[400px] mt-10">
       {/* Background Image */}

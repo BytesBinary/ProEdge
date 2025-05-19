@@ -13,11 +13,11 @@ const Hero = () => {
 
   if (error) return <p>Error loading content: {error.message}</p>;
 
-  console.log(blocks, "blocks");
+  // console.log(blocks, "blocks");
   const slides = blocks?.filter(
     (block) => block?.item?.type?.toLowerCase().trim() === "slider"
   );
-  console.log(slides, "hfhf");
+  // console.log(slides, "hfhf");
 
   const handleMouseEnter = () => {
     swiperRef.current?.autoplay?.stop();

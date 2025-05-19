@@ -41,7 +41,7 @@ const {  updateOrder,createOrderDetails,fetchSettingsGraphQL} = useOrderContext(
 
   const { cartItems,clearCart,getCartTotal } = useContext(CartContext);
 
-  console.log(sessionDetails?.metadata?.order_id,"set")
+  // console.log(sessionDetails?.metadata?.order_id,"set")
 
   // useEffect(() => {
   //   clearCart();
@@ -59,13 +59,13 @@ const {  updateOrder,createOrderDetails,fetchSettingsGraphQL} = useOrderContext(
 
       if (orderId && sessionDetails.payment_status === "paid") {
         const updatedOrder = await updateOrder(id, { payment_status: "paid" });
-        console.log(updatedOrder, "updated order");
+        // console.log(updatedOrder, "updated order");
 
         setSingleOrderData(updatedOrder);
 
         if (updatedOrder.payment_status === "paid" && cartItems?.length > 0) {
           for (const item of cartItems) {
-            console.log("creating")
+            // console.log("creating")
             const orderDetailsData = {
               order_id: updatedOrder.id,
               variation_id: item.variationId,
@@ -93,7 +93,7 @@ const {  updateOrder,createOrderDetails,fetchSettingsGraphQL} = useOrderContext(
   }
 }, [sessionDetails, cartItems]); // include cartItems in dependencies
 
-  console.log(singleOrderData, "singleOrderData");
+  // console.log(singleOrderData, "singleOrderData");
 
   if (loading) {
     <div className="fixed inset-0 flex items-center justify-center bg-white z-40">
