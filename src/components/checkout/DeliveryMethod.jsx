@@ -6,7 +6,7 @@ const DeliveryMethod = ({ selectedMethod, onChange }) => {
     {
       id: 'standard',
       name: 'delivery_method',
-      label: 'Free! Standard Ground',
+      label: 'Standard Ground',
       value: 'standard',
       shippingCharge: 0
     }
