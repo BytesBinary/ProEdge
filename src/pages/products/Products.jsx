@@ -10,11 +10,17 @@ import bgImage from "../../assets/images/cart.png";
 import { CartContext } from "../../context/CartContext";
 import { Helmet } from "react-helmet-async";
 import ProductCard from "../../components/common/utils/cards/ProductCard";
+import { useFetchPageBlocks } from "../../context/PageContext";
 
 const Category = () => {
   const [showFilter, setShowFilter] = useState(false);
   const [sortOption, setSortOption] = useState("Relevance");
   const [totalProducts, setTotalProducts] = useState(0);
+  const { blocks } = useFetchPageBlocks("products");
+
+  const breadcrumb = blocks?.filter(
+    (block) => block?.item?.type?.toLowerCase().trim() === "breadcrumb"
+  )[0];
 
   const { wishlistItems } = useContext(CartContext);
   const { minPrice, maxPrice, isMadeUsa } = useProductContext();
@@ -426,9 +432,9 @@ const Category = () => {
         </Helmet>
       )}
       <PageHeader
-        title="Categories"
-        bgImage={bgImage}
-        breadcrumbs={[{ link: "/", label: "Home" }, { label: "Products" }]}
+        title={breadcrumb?.item?.title}
+        bgImage={`${import.meta.env.VITE_SERVER_URL}/assets/${breadcrumb?.item?.image?.id}`}
+        breadcrumbs={[{ link: "/", label: "Home" }, { label: breadcrumb?.item?.title }]}
       />
       <div className="w-full max-w-[1310px] mx-auto mt-3 md:mt-20 flex flex-col lg:flex-row justify-between items-start gap-10">
         {/* Desktop Filter Section */}

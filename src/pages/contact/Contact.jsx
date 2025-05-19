@@ -19,6 +19,8 @@ import ln from "../../assets/images/contact/in.png";
 import twit from "../../assets/images/contact/twit.png";
 import { useEffect, useState } from "react";
 import { CategoryContext } from "../../context/CategoryContext";
+import { useFetchPageBlocks } from "../../context/PageContext";
+import PageHeader from "../../components/common/utils/banner/SubPageHeader";
 
 const Contact = () => {
   const [footer, setFooter] = useState([]);
@@ -37,6 +39,11 @@ const Contact = () => {
   });
   const [errors, setErrors] = useState({});
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const { blocks } = useFetchPageBlocks("products");
+
+  const breadcrumb = blocks?.filter(
+    (block) => block?.item?.type?.toLowerCase().trim() === "breadcrumb"
+  )[0];
 
   const ALL_FOOTER_QUERY = `
     query {
@@ -218,12 +225,11 @@ const Contact = () => {
 
   return (
     <>
-      <SubPageHeader
-        title="Contact Us"
-        bgImage={bgImage}
-        breadcrumbs={breadcrumbs}
+      <PageHeader
+        title={breadcrumb?.item?.title}
+        bgImage={`${import.meta.env.VITE_SERVER_URL}/assets/${breadcrumb?.item?.image?.id}`}
+        breadcrumbs={[{ link: "/", label: "Home" }, { label: breadcrumb?.item?.title }]}
       />
-
       <section className="w-full max-w-[1200px] mx-auto mt-3 md:mt-20 flex flex-col lg:flex-row justify-center items-center lg:items-start gap-10">
         {/* Contact Information Section */}
         <div className="w-full max-w-md h-[549px] bg-[#3F66BC] py-8 px-6 rounded-[16px] mx-auto flex flex-col justify-between text-white">

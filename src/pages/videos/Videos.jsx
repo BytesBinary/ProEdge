@@ -17,11 +17,18 @@ const videos = [
 ];
 import pageData from '../../data/videos/PageData';
 import axios from 'axios';
+import { useFetchPageBlocks } from '../../context/PageContext';
+import PageHeader from '../../components/common/utils/banner/SubPageHeader';
 
 const Videos = () => {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { blocks } = useFetchPageBlocks("videos");
+
+  const breadcrumb = blocks?.filter(
+    (block) => block?.item?.type?.toLowerCase().trim() === "breadcrumb"
+  )[0];
 
   const ALL_VIDEOS_QUERY = `
   query {
@@ -52,9 +59,9 @@ const Videos = () => {
       if (response.data.errors) {
         throw new Error(response.data.errors[0].message);
       }
-      
+
       // Assuming the response structure is correct as `response.data.data.Videos`
-      setVideos(response.data.data.Videos || []); 
+      setVideos(response.data.data.Videos || []);
     } catch (error) {
       console.error("GraphQL fetch error:", error);
       setError(error.message);
@@ -69,15 +76,15 @@ const Videos = () => {
   }, []);
 
   // console.log(videos, "videos"); // Check videos in console
-  
+
   return (
     <div>
-      <SubPageHeader
-        title={pageData.title}
-        bgImage={pageData.bgImage}
-        breadcrumbs={pageData.breadcrumbs}
+      <PageHeader
+        title={breadcrumb?.item?.title}
+        bgImage={`${import.meta.env.VITE_SERVER_URL}/assets/${breadcrumb?.item?.image?.id}`}
+        breadcrumbs={[{ link: "/", label: "Home" }, { label: breadcrumb?.item?.title }]}
       />
-      
+
       <section className="my-10">
         <h1 className="text-[#182B55] text-5xl leading-16 font-semibold text-center">
           Watch Video

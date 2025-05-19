@@ -7,7 +7,6 @@ const PageHeader = ({ title = "Title", bgImage, breadcrumbs = [] }) => {
       {/* Background image */}
       <img
         src={bgImage}
-        alt={`Background for ${title}`}
         className="absolute inset-0 w-full h-full object-cover object-center"
       />
 
