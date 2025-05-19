@@ -10,16 +10,65 @@ import {
   FiPlus,
 } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import OrderTablePage from "../order/OrdersTable";
+import { useOrderContext } from "../../context/OrderContext";
+
 const UserProfile = () => {
   const [activeTab, setActiveTab] = useState("overview");
-  const [isVerified, setIsVerified] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [twoFactorEnabled, setTwoFactorEnabled] = useState(true);
-  const [orders, setOrders] = useState([]);
-  const [addresses, setAddresses] = useState([]);
   const [showAddressModal, setShowAddressModal] = useState(false);
   const [newAddress, setNewAddress] = useState({});
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+  const { orders, updateOrder } = useOrderContext();
 
+  const [trackingId, setTrackingId] = useState("");
+  const [selectedOrder, setSelectedOrder] = useState(null);
+
+  const handleTrackOrder = () => {
+    const order = orders.find((o) => o.order_id === trackingId.trim());
+    if (order) {
+      setSelectedOrder(order);
+      setTrackingId("");
+    } else {
+      alert("Order not found. Please check your order ID and try again.");
+    }
+  };
+
+  const handleCancelOrder = async (order) => {
+    const confirmCancel = confirm(
+      "Are you sure you want to cancel this order?"
+    );
+    if (!confirmCancel) return;
+
+    try {
+      await updateOrder(order.id, { order_status: "cancelled" });
+      alert("Order has been successfully cancelled.");
+    } catch (error) {
+      // console.error("Error cancelling order:", error);
+      alert("Failed to cancel the order. Please try again." + error);
+    }
+  };
+
+  const handleReturnOrder = async (order) => {
+    if (order.order_status === "on-hold") {
+      alert("Order is already Returned");
+      return;
+    }
+
+    if (order.order_status === "completed") {
+      alert("Order is already Completed. You cannot return it.");
+      return;
+    }
+
+    try {
+      await updateOrder(order.id, { order_status: "on-hold" });
+      alert("Order is now on hold.");
+    } catch (error) {
+      console.error("Error updating order:", error);
+      alert("Failed to update order. Please try again.");
+    }
+  };
   const handleSignOut = () => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("user");
@@ -28,50 +77,14 @@ const UserProfile = () => {
 
   // Mock data - replace with API calls in a real app
   useEffect(() => {
-    setOrders([
-      {
-        id: 1,
-        number: "#ORD-12345",
-        date: "2023-05-15",
-        status: "Delivered",
-        total: 149.99,
-      },
-      {
-        id: 2,
-        number: "#ORD-12346",
-        date: "2023-05-10",
-        status: "Shipped",
-        total: 89.99,
-      },
-      {
-        id: 3,
-        number: "#ORD-12347",
-        date: "2023-05-05",
-        status: "Processing",
-        total: 199.99,
-      },
-    ]);
-
-    setAddresses([
-      {
-        id: 1,
-        type: "Home",
-        street: "123 Main St",
-        city: "New York",
-        state: "NY",
-        zip: "10001",
-        isDefault: true,
-      },
-      {
-        id: 2,
-        type: "Work",
-        street: "456 Business Ave",
-        city: "New York",
-        state: "NY",
-        zip: "10002",
-        isDefault: false,
-      },
-    ]);
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (err) {
+        console.error("Failed to parse user data:", err);
+      }
+    }
   }, []);
 
   const handleSaveProfile = () => {
@@ -79,19 +92,7 @@ const UserProfile = () => {
     setIsEditing(false);
   };
 
-  const handleCancelOrder = (orderId) => {
-    // API call would go here
-    setOrders(orders.filter((order) => order.id !== orderId));
-  };
-
-  const handleAddAddress = () => {
-    // API call would go here
-    setAddresses([...addresses, { ...newAddress, id: addresses.length + 1 }]);
-    setShowAddressModal(false);
-    setNewAddress({});
-  };
-
-  const navigate = useNavigate();
+  if (!user) return <p>Loading user data...</p>;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -108,15 +109,14 @@ const UserProfile = () => {
           {/* Sidebar Navigation */}
           <div className="w-full lg:w-64 flex-shrink-0">
             <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
-              <div className="flex flex-col gap-3 items-center space-x-4 mb-6">
+              <div className="flex flex-col gap-3 items-start ml-3 space-x-4 mb-6">
                 <div>
-                  <h2 className="font-semibold text-lg">Sarah Johnson</h2>
-                  <p className="text-gray-500 text-sm">
-                    sarah.johnson@example.com
-                  </p>
+                  <h2 className="font-semibold text-lg">
+                    {user.first_name + " " + user.last_name}
+                  </h2>
+                  <p className="text-gray-500 text-sm">{user.email}</p>
                 </div>
               </div>
-
               <nav className="space-y-1">
                 <button
                 
@@ -140,14 +140,14 @@ const UserProfile = () => {
                   Order History
                 </button>
                 <button
-                  onClick={() => setActiveTab("addresses")}
+                  onClick={() => setActiveTab("return-order")}
                   className={`w-full text-left px-4 py-2 rounded-md ${
-                    activeTab === "addresses"
+                    activeTab === "return-order"
                       ? "bg-blue-50 text-blue-600"
                       : "text-gray-700 hover:bg-gray-100"
                   }`}
                 >
-                  Address Book
+                  Modify order
                 </button>
                 <button
                   onClick={() => setActiveTab("security")}
@@ -157,7 +157,7 @@ const UserProfile = () => {
                       : "text-gray-700 hover:bg-gray-100"
                   }`}
                 >
-                  Security & Settings
+                  Change Password
                 </button>
                 <button
                   onClick={handleSignOut}
@@ -210,24 +210,6 @@ const UserProfile = () => {
                   )}
                 </div>
 
-                {!isVerified && (
-                  <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
-                    <div className="flex">
-                      <div className="flex-shrink-0">
-                        <FiShield className="h-5 w-5 text-yellow-400" />
-                      </div>
-                      <div className="ml-3">
-                        <p className="text-sm text-yellow-700">
-                          Your account is not verified.{" "}
-                          <button className="font-medium text-yellow-700 hover:text-yellow-600 underline">
-                            Verify now
-                          </button>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
                 <div className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
@@ -241,7 +223,7 @@ const UserProfile = () => {
                           className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                         />
                       ) : (
-                        <p className="text-gray-900">Sarah</p>
+                        <p className="text-gray-900">{user.first_name}</p>
                       )}
                     </div>
                     <div>
@@ -255,7 +237,7 @@ const UserProfile = () => {
                           className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                         />
                       ) : (
-                        <p className="text-gray-900">Johnson</p>
+                        <p className="text-gray-900">{user.last_name}</p>
                       )}
                     </div>
                   </div>
@@ -272,30 +254,8 @@ const UserProfile = () => {
                       />
                     ) : (
                       <div className="flex items-center">
-                        <p className="text-gray-900">
-                          sarah.johnson@example.com
-                        </p>
-                        {isVerified ? (
-                          <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                            Verified
-                          </span>
-                        ) : null}
+                        <p className="text-gray-900">{user.email}</p>
                       </div>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Phone Number
-                    </label>
-                    {isEditing ? (
-                      <input
-                        type="tel"
-                        defaultValue="+1 (555) 123-4567"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                      />
-                    ) : (
-                      <p className="text-gray-900">+1 (555) 123-4567</p>
                     )}
                   </div>
                 </div>
@@ -309,205 +269,192 @@ const UserProfile = () => {
                   <h2 className="text-xl font-semibold">Order History</h2>
                 </div>
                 <div className="divide-y divide-gray-200">
-                  {orders.map((order) => (
-                    <div key={order.id} className="p-6">
-                      <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-                        <div className="mb-4 md:mb-0">
-                          <h3 className="text-lg font-medium text-gray-900">
-                            {order.number}
-                          </h3>
-                          <p className="text-sm text-gray-500">
-                            Placed on {order.date}
-                          </p>
-                        </div>
-                        <div className="flex flex-col md:items-end">
-                          <span
-                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                              order.status === "Delivered"
-                                ? "bg-green-100 text-green-800"
-                                : order.status === "Shipped"
-                                ? "bg-blue-100 text-blue-800"
-                                : "bg-yellow-100 text-yellow-800"
-                            }`}
-                          >
-                            {order.status}
-                          </span>
-                          <p className="mt-1 text-lg font-semibold text-gray-900">
-                            ${order.total.toFixed(2)}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="mt-4 flex space-x-3">
-                        <button className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                          View Details
-                        </button>
-                        {order.status === "Processing" && (
-                          <button
-                            onClick={() => handleCancelOrder(order.id)}
-                            className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                          >
-                            Cancel Order
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  ))}
+                  <OrderTablePage />
                 </div>
               </div>
             )}
 
-            {/* Address Book */}
-            {activeTab === "addresses" && (
-              <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-                <div className="px-6 py-5 border-b border-gray-200 flex justify-between items-center">
-                  <h2 className="text-xl font-semibold">Address Book</h2>
+            {/*Return Order */}
+            {activeTab === "return-order" && (
+              <div className="bg-white rounded-lg shadow-sm p-6">
+                <div className="mb-6">
+                  <h2 className="text-xl font-semibold">Return Order</h2>
+                  <p className="text-gray-500 mt-2">
+                    Enter your order ID to initiate a return process
+                  </p>
+                </div>
+
+                <div className="flex flex-col md:flex-row gap-4">
+                  <input
+                    type="text"
+                    placeholder="Enter Order ID"
+                    className="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    value={trackingId}
+                    onChange={(e) => setTrackingId(e.target.value)}
+                  />
                   <button
-                    onClick={() => setShowAddressModal(true)}
-                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                    onClick={handleTrackOrder}
+                    className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
                   >
-                    <FiPlus className="-ml-1 mr-2 h-5 w-5" />
-                    Add New Address
+                    Find Order
                   </button>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
-                  {addresses.map((address) => (
-                    <div
-                      key={address.id}
-                      className={`border rounded-lg p-4 ${
-                        address.isDefault
-                          ? "border-blue-500 bg-blue-50"
-                          : "border-gray-200"
-                      }`}
-                    >
-                      <div className="flex justify-between">
-                        <h3 className="font-medium text-gray-900">
-                          {address.type}
-                        </h3>
-                        {address.isDefault && (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                            Default
-                          </span>
-                        )}
-                      </div>
-                      <p className="mt-2 text-gray-600">
-                        {address.street}
-                        <br />
-                        {address.city}, {address.state} {address.zip}
-                      </p>
-                      <div className="mt-4 flex space-x-3">
-                        <button className="text-sm font-medium text-blue-600 hover:text-blue-500">
-                          Edit
-                        </button>
-                        {!address.isDefault && (
-                          <button className="text-sm font-medium text-blue-600 hover:text-blue-500">
-                            Set as Default
-                          </button>
-                        )}
-                        <button className="text-sm font-medium text-red-600 hover:text-red-500">
-                          Delete
-                        </button>
+
+                {selectedOrder && (
+                  <div className="mt-8 border-t pt-6">
+                    <h3 className="text-lg font-medium mb-4">Order Details</h3>
+
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                          <p className="text-sm text-gray-500">Order ID</p>
+                          <p className="font-medium">
+                            {selectedOrder.order_id}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-500">Order Date</p>
+                          <p className="font-medium">
+                            {selectedOrder.order_date}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-500">Status</p>
+                          <p className="font-medium">
+                            {selectedOrder.order_status}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-500">Total Amount</p>
+                          <p className="font-medium">
+                            ${selectedOrder.subtotal}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  ))}
-                </div>
-              </div>
-            )}
 
-            {/* Security & Settings */}
-            {activeTab === "security" && (
-              <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-                <div className="px-6 py-5 border-b border-gray-200">
-                  <h2 className="text-xl font-semibold">Security & Settings</h2>
-                </div>
-                <div className="divide-y divide-gray-200">
-                  <div className="p-6">
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <h3 className="text-lg font-medium text-gray-900">
-                          Two-Factor Authentication
-                        </h3>
-                        <p className="mt-1 text-sm text-gray-500">
-                          Add an extra layer of security to your account
-                        </p>
-                      </div>
+                    <div className="mt-6 flex flex-col sm:flex-row gap-3">
                       <button
-                        onClick={() => setTwoFactorEnabled(!twoFactorEnabled)}
-                        className={`relative inline-flex h-6 w-11 items-center rounded-full ${
-                          twoFactorEnabled ? "bg-blue-600" : "bg-gray-200"
-                        }`}
+                        onClick={() => handleCancelOrder(selectedOrder)}
+                        className="px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
                       >
-                        <span
-                          className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${
-                            twoFactorEnabled ? "translate-x-6" : "translate-x-1"
-                          }`}
-                        />
+                        Cancel Order
+                      </button>
+                      <button
+                        onClick={() => {
+                          // Implement return order logic
+                          alert(
+                            `Return initiated for order ${selectedOrder.order_id}`
+                          );
+                          handleReturnOrder(selectedOrder);
+                        }}
+                        className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                      >
+                        Return Order
                       </button>
                     </div>
                   </div>
-                  <div className="p-6">
-                    <h3 className="text-lg font-medium text-gray-900">
-                      Change Password
-                    </h3>
-                    <p className="mt-1 text-sm text-gray-500">
-                      Update your account password
-                    </p>
-                    <button className="mt-4 inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                      Change Password
-                    </button>
-                  </div>
-                  <div className="p-6">
-                    <h3 className="text-lg font-medium text-gray-900">
-                      Email Notifications
-                    </h3>
-                    <p className="mt-1 text-sm text-gray-500">
-                      Manage your email notification preferences
-                    </p>
-                    <div className="mt-4 space-y-4">
-                      <div className="flex items-start">
-                        <div className="flex items-center h-5">
-                          <input
-                            id="order-notifications"
-                            name="order-notifications"
-                            type="checkbox"
-                            className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded"
-                            defaultChecked
-                          />
-                        </div>
-                        <div className="ml-3 text-sm">
-                          <label
-                            htmlFor="order-notifications"
-                            className="font-medium text-gray-700"
-                          >
-                            Order updates
-                          </label>
-                          <p className="text-gray-500">
-                            Receive notifications about your orders
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-start">
-                        <div className="flex items-center h-5">
-                          <input
-                            id="promotional-notifications"
-                            name="promotional-notifications"
-                            type="checkbox"
-                            className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded"
-                            defaultChecked
-                          />
-                        </div>
-                        <div className="ml-3 text-sm">
-                          <label
-                            htmlFor="promotional-notifications"
-                            className="font-medium text-gray-700"
-                          >
-                            Promotional offers
-                          </label>
-                          <p className="text-gray-500">
-                            Receive special offers and discounts
-                          </p>
-                        </div>
-                      </div>
+                )}
+              </div>
+            )}
+
+            {/* Change Password */}
+            {activeTab === "security" && (
+              <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+                <div className="px-6 py-5 border-b border-gray-200">
+                  <h2 className="text-xl font-semibold">Security Settings</h2>
+                </div>
+                <div className="p-6">
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    Change Password
+                  </h3>
+                  <p className="text-sm text-gray-500 mb-6">
+                    For security, your new password must be at least 8
+                    characters long and contain a mix of letters, numbers, and
+                    symbols.
+                  </p>
+
+                  <form className="space-y-4">
+                    <div>
+                      <label
+                        htmlFor="current-password"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
+                        Current Password
+                      </label>
+                      <input
+                        type="password"
+                        id="current-password"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        placeholder="Enter your current password"
+                        required
+                      />
                     </div>
+
+                    <div>
+                      <label
+                        htmlFor="new-password"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
+                        New Password
+                      </label>
+                      <input
+                        type="password"
+                        id="new-password"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        placeholder="Enter new password"
+                        required
+                        minLength="8"
+                      />
+                      <p className="mt-1 text-xs text-gray-500">
+                        Must be at least 8 characters
+                      </p>
+                    </div>
+
+                    <div>
+                      <label
+                        htmlFor="confirm-password"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
+                        Confirm New Password
+                      </label>
+                      <input
+                        type="password"
+                        id="confirm-password"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        placeholder="Re-enter new password"
+                        required
+                        minLength="8"
+                      />
+                    </div>
+
+                    <div className="flex items-center mt-6">
+                      <button
+                        type="submit"
+                        className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                      >
+                        Update Password
+                      </button>
+                      <button
+                        type="button"
+                        className="ml-3 px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </form>
+
+                  <div className="mt-8 pt-6 border-t border-gray-200">
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">
+                      Password Requirements
+                    </h3>
+                    <ul className="text-sm text-gray-500 list-disc pl-5 space-y-1">
+                      <li>Minimum 8 characters</li>
+                      <li>At least one uppercase letter</li>
+                      <li>At least one number</li>
+                      <li>At least one special character (!@#$%^&*)</li>
+                      <li>Should not match your current password</li>
+                    </ul>
                   </div>
                 </div>
               </div>

@@ -15,11 +15,14 @@ const OrderSummaryCard = ({ cart }) => {
   const subtotal = cart?.subtotal || 0;
   const shipping = parseInt(shippingCharge?.shipping_charge )|| 0;
   const tax = cart?.tax || 0;
-  const total = cart?.total+shipping+tax || 0;
+  const shippingcharge=subtotal>500? 0:shipping;
+  const total = cart?.total+shippingcharge+tax || 0;
 
   const navigate = useNavigate();
   const location = useLocation();
 
+
+  console.log(shippingcharge,"shipping")
   useEffect(() => {
     if (location.pathname === "/cart/checkout") {
       setIsCheckoutPage(true);
@@ -52,7 +55,7 @@ const OrderSummaryCard = ({ cart }) => {
         </li>
         <li className="flex justify-between text-[#5D6576]">
           <span>Shipping</span>
-          <span>${formatNumberWithCommas(shipping.toFixed(2))}</span>
+          <span>${formatNumberWithCommas(shippingcharge.toFixed(2))}</span>
         </li>
         <li className="flex justify-between">
           <span>Tax</span>

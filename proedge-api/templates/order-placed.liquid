@@ -1,0 +1,7 @@
+{% layout "email-base" %}
+{% block content %}
+  <p>Hi {{ firstname }},</p>
+  <p>Thanks for your order!</p>
+  <p><strong>Order ID:</strong> {{ order_id }}</p>
+  <p><strong>Status:</strong> {{ status }}</p>
+{% endblock %}
