@@ -22,7 +22,7 @@ const ProductImage = ({ thumbnails, mainImage, onVariationChange }) => {
       }
     }
   };
-  console.table([...thumbnails]);
+
   return (
     <div className="flex flex-col md:flex-row gap-4 w-full p-10 lg:p-0 justify-center">
       {/* Thumbnails */}
@@ -41,7 +41,7 @@ const ProductImage = ({ thumbnails, mainImage, onVariationChange }) => {
               src={
                 thumb.image
                   ? `${import.meta.env.VITE_SERVER_URL}/assets/${thumb.image}`
-                  : thumb.image_url
+                  : ""
               }
               alt={`Thumbnail ${index + 1}`}
               className="w-full h-full object-contain"
