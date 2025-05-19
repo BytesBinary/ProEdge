@@ -31,7 +31,7 @@ const DesktopNav = ({ actionIcons }) => {
     };
   }, []);
 
-  useEffect(() => {
+  const performSearch = () => {
     if (searchTerm.trim() === "") {
       setSearchResults([]);
       setShowSearchDropdown(false);
@@ -41,47 +41,55 @@ const DesktopNav = ({ actionIcons }) => {
     const results = [];
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
 
-    products.forEach((product) => {
-      const productTitle = product.title?.toLowerCase() || "";
-      const titleMatchIndex = productTitle.indexOf(lowerCaseSearchTerm);
+   products.forEach((product) => {
+  const productTitle = product.title?.toLowerCase() || "";
+  const titleMatchIndex = productTitle.indexOf(lowerCaseSearchTerm);
 
-      const categoryName =
-        product.product_category?.child_category_name?.toLowerCase() || "";
-      const categoryMatchIndex = categoryName.indexOf(lowerCaseSearchTerm);
+  const categoryName =
+    product.product_category?.child_category_name?.toLowerCase() || "";
+  const categoryMatchIndex = categoryName.indexOf(lowerCaseSearchTerm);
 
-      product.variation?.forEach((variation) => {
-        const variationName = variation.variation_name?.toLowerCase() || "";
-        const variationMatchIndex = variationName.indexOf(lowerCaseSearchTerm);
+  product.variation?.forEach((variation) => {
+    const variationName = variation.variation_name?.toLowerCase() || "";
+    const variationMatchIndex = variationName.indexOf(lowerCaseSearchTerm);
 
-        let matchIndex = -1;
-        if (variationMatchIndex !== -1) {
-          matchIndex = variationMatchIndex;
-        } else if (titleMatchIndex !== -1) {
-          matchIndex = titleMatchIndex;
-        } else if (categoryMatchIndex !== -1) {
-          matchIndex = categoryMatchIndex;
-        }
+    const skuCode = variation.sku_code?.toLowerCase() || "";
+    const skuMatchIndex = skuCode.indexOf(lowerCaseSearchTerm);
 
-        if (matchIndex !== -1) {
-          results.push({
-            productId: product.id,
-            variationId: variation.id,
-            productTitle: product.title,
-            variationName: variation.variation_name,
-            categoryName: product.product_category?.child_category_name,
-            image: variation.image || product.image,
-            matchIndex,
-            matchLength: searchTerm.length,
-            matchType:
-              variationMatchIndex !== -1
-                ? "variation"
-                : titleMatchIndex !== -1
-                ? "title"
-                : "category",
-          });
-        }
+    let matchIndex = -1;
+    let matchType = "";
+
+    if (skuMatchIndex !== -1) {
+      matchIndex = skuMatchIndex;
+      matchType = "sku_code";
+    } else if (variationMatchIndex !== -1) {
+      matchIndex = variationMatchIndex;
+      matchType = "variation";
+    } else if (titleMatchIndex !== -1) {
+      matchIndex = titleMatchIndex;
+      matchType = "title";
+    } else if (categoryMatchIndex !== -1) {
+      matchIndex = categoryMatchIndex;
+      matchType = "category";
+    }
+
+    if (matchIndex !== -1) {
+      results.push({
+        productId: product.id,
+        variationId: variation.id,
+        productTitle: product.title,
+        variationName: variation.variation_name,
+        categoryName: product.product_category?.child_category_name,
+        skuCode: variation.sku_code,
+        image: variation.image || product.image,
+        matchIndex,
+        matchLength: searchTerm.length,
+        matchType,
       });
-    });
+    }
+  });
+});
+
 
     results.sort((a, b) => {
       if (a.matchType === "variation" && b.matchType !== "variation") return -1;
@@ -93,7 +101,7 @@ const DesktopNav = ({ actionIcons }) => {
 
     setSearchResults(results);
     setShowSearchDropdown(results.length > 0);
-  }, [searchTerm, products]);
+  };
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
@@ -101,23 +109,17 @@ const DesktopNav = ({ actionIcons }) => {
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    if (searchResults.length > 0) {
-      navigate(
-        `/products/${searchResults[0].productId}/variations/${searchResults[0].variationId}`
-      );
-    }
-    setShowSearchDropdown(false);
+    performSearch();
   };
 
   const handleProductClick = (productId, variation_name) => {
-    console.log(variation_name, "prod");
     const slug = variation_name
       ?.toLowerCase()
-      .replace(/[^\w\s-]/g, "") // Remove special characters
-      .trim() // Trim leading/trailing spaces
-      .slice(0, 20) // Take first 10 characters only
-      .replace(/\s+/g, "-") // Replace spaces with dashes
-      .replace(/-+/g, "-"); // Replace multiple dashes with single dash
+      .replace(/[^\w\s-]/g, "")
+      .trim()
+      .slice(0, 20)
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-");
     navigate(`/single-product/${slug}-${productId}`);
     setShowSearchDropdown(false);
     setSearchTerm("");
@@ -189,7 +191,6 @@ const DesktopNav = ({ actionIcons }) => {
             className="flex-1 px-6 py-3 text-gray-900 focus:outline-none text-base"
             value={searchTerm}
             onChange={handleSearchChange}
-            onFocus={() => searchTerm && setShowSearchDropdown(true)}
           />
           <button
             type="submit"
@@ -200,7 +201,7 @@ const DesktopNav = ({ actionIcons }) => {
           </button>
         </div>
 
-        {/* Search Results Dropdown */}
+        {/* Search Results Dropdown - Only shown after search button is clicked */}
         {showSearchDropdown && searchResults.length > 0 && (
           <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-lg shadow-lg z-30 max-h-80 overflow-y-auto">
             {searchResults.map((result, index) => (
@@ -236,6 +237,7 @@ const DesktopNav = ({ actionIcons }) => {
         )}
       </form>
 
+      {/* Rest of your component remains the same */}
       {/* Auth and Icons */}
       <div className="flex items-center gap-4 md:gap-6">
         {isAuthenticated ? (
@@ -290,7 +292,7 @@ const DesktopNav = ({ actionIcons }) => {
             {isDropdownOpen && (
               <div
                 className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl py-1 z-30 border border-gray-100"
-                onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
+                onClick={(e) => e.stopPropagation()}
               >
                 {/* User Info Section */}
                 <div className="px-4 py-3 border-b border-gray-100">
