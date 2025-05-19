@@ -61,13 +61,13 @@ const ShopCategorySection = () => {
       aria-labelledby="shop-category-heading"
       className="overflow-hidden"
     >
-      <div className="bg-[#182B55] py-16 md:py-28 text-center">
+      <div className="bg-[#182B55] py-16 md:py-30 text-center">
         <h1 className="text-white text-3xl md:text-5xl font-bold">
           Shop by Category
         </h1>
       </div>
 
-      <div className="bg-[#3F66BC] py-16 md:py-28 relative">
+      <div className="bg-[#3F66BC] py-16 md:py-20 relative">
         <div className="w-full max-w-7xl md:absolute md:bottom-12 md:left-1/2 md:-translate-x-1/2 px-6">
           <div
             onMouseEnter={() => swiperRef.current?.autoplay?.stop()} // ✅ pause autoplay

@@ -74,7 +74,7 @@ const ProductVariation = ({
           </p>
         )}
       </div>
-
+      <p className="font-medium text-[#182B55] text-md"><span className="text-[#5D6576] text-md">Get Fast,</span>Free Shipping on Orders Over $500.</p>
       {/* Size Options */}
       <div className="w-full flex flex-col justify-between gap-4 lg:gap-0 pr-3 lg:pr-0">
         <div className="text-md lg:text-lg mb-3 py-2 md:py-6">
