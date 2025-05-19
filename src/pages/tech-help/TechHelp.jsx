@@ -16,9 +16,14 @@ import Icon from "../../components/TechHelp/Icon";
 import FAQ from "../../components/TechHelp/FAQ";
 import PolicyIcon from "../../components/TechHelp/PolicyIcon";
 import PageHeader from "../../components/common/utils/banner/SubPageHeader";
+import { useFetchPageBlocks } from "../../context/PageContext";
 
 const TechHelp = () => {
- 
+  const { blocks } = useFetchPageBlocks("tech-help");
+
+  const breadcrumb = blocks?.filter(
+    (block) => block?.item?.type?.toLowerCase().trim() === "breadcrumb"
+  )[0];
   const whatToDo = [
     { image: pick, title: "Track an order", link: "/track-order" },
     { image: returning, title: "Start a return", link: "/return-order" },
@@ -41,7 +46,11 @@ const TechHelp = () => {
   return (
     <div>
 
-      <PageHeader title="Tech Help" bgImage={bg} breadcrumbs={[{ link : "/", label: "Home" }, { label: "Tech Help" }]} />
+      <PageHeader
+        title={breadcrumb?.item?.title}
+        bgImage={`${import.meta.env.VITE_SERVER_URL}/assets/${breadcrumb?.item?.image?.id}`}
+        breadcrumbs={[{ link: "/", label: "Home" }, { label: breadcrumb?.item?.title }]}
+      />
 
       <section className="my-10 max-w-7xl mx-auto">
         <h1 className="text-[#182B55] text-3xl md:text-5xl leading-tight font-semibold text-center">
