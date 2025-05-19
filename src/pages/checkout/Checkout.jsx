@@ -66,7 +66,7 @@ const Checkout = () => {
       tax: 0,
       order_status: "pending",
       payment_method: "credit-card",
-      payment_status:"unpaid",
+      payment_status: "unpaid",
       currency: "usd",
       billing_name: currentUser
         ? `${currentUser.first_name || ""} ${
@@ -289,7 +289,13 @@ const Checkout = () => {
       const stripeResponse = await axios.post(
         `${import.meta.env.VITE_SERVER_URL}/stripe-payments/create-session`,
         {
-          amount: Math.round((total + shippingCharge.shipping_charge) * 100), // in cents
+          amount: Math.round(
+            (total +
+              (total > 500 ? 0 : parseInt(shippingCharge.shipping_charge))) *
+              100
+          ),
+
+          // in cents
           order_id: resUpdateOrder.order_id,
           payment_method: orderData.payment_method,
           currency: orderData.currency,

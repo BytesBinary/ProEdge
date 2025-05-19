@@ -1,0 +1,7 @@
+{% layout "email-base" %}
+{% block content %}
+  <p>Hi {{ firstname }},</p>
+  <p>Your order has been cancelled.</p>
+  <p><strong>Order ID:</strong> {{ order_id }}</p>
+  <p>If this was a mistake, please contact support.</p>
+{% endblock %}
