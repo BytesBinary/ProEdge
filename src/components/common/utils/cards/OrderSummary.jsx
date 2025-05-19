@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useOrderContext } from "../../../../context/OrderContext";
 import { formatNumberWithCommas } from "../../../../helper/localPrice/localeprice";
+import { BsCurrencyDollar } from "react-icons/bs";
 
 const OrderSummaryCard = ({ cart }) => {
   const [isCheckoutPage, setIsCheckoutPage] = useState(false);
@@ -51,23 +52,23 @@ const OrderSummaryCard = ({ cart }) => {
       <ul className="space-y-2 text-gray-700">
         <li className="flex justify-between">
           <span>Subtotal </span>
-          <span>${formatNumberWithCommas(subtotal.toFixed(2))}</span>
+          <span className="flex items-center gap-x-1"><BsCurrencyDollar/>{formatNumberWithCommas(subtotal.toFixed(2))}</span>
         </li>
         <li className="flex justify-between text-[#5D6576]">
           <span>Shipping</span>
-          <span>${formatNumberWithCommas(shippingcharge.toFixed(2))}</span>
+          <span className="flex items-center gap-x-1"><BsCurrencyDollar/>{formatNumberWithCommas(shippingcharge.toFixed(2))}</span>
         </li>
         <li className="flex justify-between">
           <span>Tax</span>
-          <span>${formatNumberWithCommas(tax.toFixed(2))}</span>
+          <span className="flex items-center gap-x-1"><BsCurrencyDollar/>{formatNumberWithCommas(tax.toFixed(2))}</span>
         </li>
       </ul>
 
       <div className="my-3 border-1 border-[#ECF0F9]"></div>
 
-      <div className="flex justify-between font-bold text-lg text-[#182B55]">
+      <div className="flex items-center justify-between font-bold text-lg text-[#182B55]">
         <span className="text-[#5D6576]">Total</span>
-        <span>${formatNumberWithCommas(total.toFixed(2))}</span>
+        <span className="flex items-center gap-x-1"><BsCurrencyDollar/>{formatNumberWithCommas(total.toFixed(2))}</span>
       </div>
 
       <div className="mt-6 space-y-3">

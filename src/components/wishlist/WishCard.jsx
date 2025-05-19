@@ -1,5 +1,6 @@
 import React from "react";
 import { formatNumberWithCommas } from "../../helper/localPrice/localeprice";
+import { BsCurrencyDollar } from "react-icons/bs";
 
 const WishCard = ({
   image,
@@ -26,8 +27,8 @@ const WishCard = ({
             {title}
           </h2>
           <div className="flex flex-wrap gap-4 justify-between md:justify-center items-center">
-            <span className="text-lg sm:text-xl font-semibold text-gray-800">
-              <span className="align-super text-xs sm:text-sm">$</span>
+            <span className="text-lg flex items-center sm:text-xl font-semibold text-gray-800">
+              <span className="align-super text-xs sm:text-sm"><BsCurrencyDollar/></span>
               {formatNumberWithCommas(priceDollars)}
               <span className="align-super text-xs sm:text-sm">
                 {formatNumberWithCommas(priceCents)}

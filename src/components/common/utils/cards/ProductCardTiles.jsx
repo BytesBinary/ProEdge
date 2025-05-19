@@ -3,6 +3,7 @@ import plus from "../../../../assets/icons/plus.svg"
 import minus from "../../../../assets/icons/minus.svg"
 import { CartContext } from "../../../../context/CartContext";
 import { formatNumberWithCommas } from "../../../../helper/localPrice/localeprice";
+import { BsCurrencyDollar } from "react-icons/bs";
 
 const ProductCard = ({ product,onRemove  }) => {
 
@@ -11,7 +12,6 @@ const ProductCard = ({ product,onRemove  }) => {
     IncrementQuantity,
     DecrementQuantity,
     } = useContext(CartContext);
-    console.log(product,"cartproduct")
   return (
     <article className="bg-white p-3 sm:p-4 rounded-xl shadow-sm flex flex-col md:flex-row items-start gap-3 sm:gap-4">
       {/* {console.log(product)} */}
@@ -39,8 +39,8 @@ const ProductCard = ({ product,onRemove  }) => {
             </button>
           </div>
 
-          <span className="text-lg sm:text-xl font-semibold text-gray-800">
-            <span className="align-super text-xs sm:text-sm">$</span>
+          <span className="text-lg flex items-center  sm:text-xl font-semibold text-gray-800">
+            <span className="align-super text-xs sm:text-sm"><BsCurrencyDollar/></span>
             {formatNumberWithCommas((product.offer_price||product.price)*product.quantity)}
             {/* <span className="align-super text-xs sm:text-sm">{product.priceCents}</span> */}
           </span>

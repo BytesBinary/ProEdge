@@ -1,5 +1,6 @@
 import React from "react";
 import { formatNumberWithCommas } from "../../../helper/localPrice/localeprice";
+import { BsCurrencyDollar } from "react-icons/bs";
 
 const Price = ({ priceData }) => {
   return (
@@ -12,7 +13,7 @@ const Price = ({ priceData }) => {
       </div>
       {priceData.originalPrice && (
         <span className="text-sm line-through text-gray-500">
-          ${formatNumberWithCommas(priceData.originalPrice)}
+          <BsCurrencyDollar/>{formatNumberWithCommas(priceData.originalPrice)}
         </span>
       )}
     </div>
