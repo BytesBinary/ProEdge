@@ -1,5 +1,5 @@
 import { useLocation } from 'react-router-dom';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useFetchPageBlocks } from '../../context/PageContext';
 import PageHeader from '../../components/common/utils/banner/SubPageHeader';
 
@@ -18,7 +18,19 @@ const Policies = () => {
         (block) => block?.item?.type?.toLowerCase().trim() === "page_text"
     )[0];
 
-    console.log(page_text, "page_text");
+    function ShadowedRichText({ html }) {
+        const hostRef = useRef(null);
+        useEffect(() => {
+            const hostEl = hostRef.current;
+            if (hostEl && !hostEl.shadowRoot) {
+                // Attach shadow root once and inject HTML
+                const shadow = hostEl.attachShadow({ mode: 'open' });
+                shadow.innerHTML = html;
+            }
+        }, [html]);
+
+        return <div ref={hostRef}></div>;
+    }
 
     return (
         <>
@@ -30,16 +42,7 @@ const Policies = () => {
             <div className="bg-gray-50 min-h-screen">
                 <div className="container mx-auto px-4 py-8 max-w-4xl">
                     <div className="bg-white rounded-lg shadow-md p-6 md:p-8">
-                        {page_text?.item?.text ? (
-                            <div
-                                className="prose max-w-none"
-                                dangerouslySetInnerHTML={{
-                                    __html: page_text.item.text,
-                                }}
-                            />
-                        ) : (
-                            <div>No policy content available.</div>
-                        )}
+                        <ShadowedRichText html={page_text?.item?.text} />
                     </div>
                 </div>
             </div>
