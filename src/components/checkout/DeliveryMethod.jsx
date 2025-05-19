@@ -6,23 +6,9 @@ const DeliveryMethod = ({ selectedMethod, onChange }) => {
     {
       id: 'standard',
       name: 'delivery_method',
-      label: 'Free! Standard Ground (3-5 business days)',
+      label: 'Standard Ground',
       value: 'standard',
       shippingCharge: 0
-    },
-    {
-      id: 'express',
-      name: 'delivery_method',
-      label: 'Express Delivery (1-2 business days)',
-      value: 'express',
-      shippingCharge: 15
-    },
-    {
-      id: 'overnight',
-      name: 'delivery_method',
-      label: 'Overnight Delivery',
-      value: 'overnight',
-      shippingCharge: 25
     }
   ];
 
