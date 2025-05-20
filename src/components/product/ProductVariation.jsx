@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import VariationCard from "./VariationCard";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { formatNumberWithCommas } from "../../helper/localPrice/localeprice";
+import { BsCurrencyDollar } from "react-icons/bs";
 
 const ProductVariation = ({
   title,
@@ -65,7 +66,7 @@ const ProductVariation = ({
           <p className="text-lg lg:text-xl leading-8">
             <span className="font-medium text-[#3F66BC]">Regular Price: </span>
             <span className="text-[#5D6576] line-through">
-              ${formatNumberWithCommas(originalPrice)}
+              <BsCurrencyDollar/>{formatNumberWithCommas(originalPrice)}
             </span>
           </p>
         )}

@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
-import { FiDollarSign } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import { BsCurrencyDollar } from "react-icons/bs";
 import { CartContext } from "../../../../context/CartContext";
 import { formatNumberWithCommas } from "../../../../helper/localPrice/localeprice";
 
@@ -139,8 +139,8 @@ const ProductCard = ({
             </h1>
           </div>
           <div className="mb-[10px]">
-            <p className="text-[#3F66BC] text-2xl font-semibold leading-8 gap-y-2.5 flex items-center justify-start">
-              <FiDollarSign /> {formatNumberWithCommas(price)}
+            <p className="text-[#3F66BC] text-xl font-semibold leading-8 gap-y-2.5 flex items-center justify-start">
+              <BsCurrencyDollar/> {formatNumberWithCommas(price)}
             </p>
           </div>
           <div

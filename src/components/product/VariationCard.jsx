@@ -1,5 +1,6 @@
 import React from "react";
 import { formatNumberWithCommas } from "../../helper/localPrice/localeprice";
+import { BsCurrencyDollar } from "react-icons/bs";
 
 const VariationCard = ({
   title,
@@ -31,8 +32,8 @@ const VariationCard = ({
           className={`border-t ${isSelected ? "border-white/25" : "border-[#3F66BC]/10"
             } group-hover:border-white/25 border-dashed`}
         ></div>
-        <div className="flex flex-col gap-1 justify-between text-xs font-medium">
-          <h1 className="group-hover:text-white">  ${formatNumberWithCommas(price)}</h1>
+        <div className="flex  gap-1 justify-between text-xs font-medium">
+          <h1 className="flex items-center group-hover:text-white">  <BsCurrencyDollar/>{formatNumberWithCommas(price)}</h1>
           <h1
             className={`${isSelected ? "text-white" : "text-[#5D6576]"
               } line-through group-hover:text-white`}
