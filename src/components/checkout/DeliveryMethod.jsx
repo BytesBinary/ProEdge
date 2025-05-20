@@ -15,7 +15,7 @@ const DeliveryMethod = ({ selectedMethod, onChange }) => {
   return (
     <div className="w-full">
       <h1 className="text-[#182B55] text-xl md:text-3xl font-semibold mb-4">
-        2. Delivery Method
+        3. Delivery Method
       </h1>
       <div className="space-y-2">
         {deliveryOptions.map((option) => (
