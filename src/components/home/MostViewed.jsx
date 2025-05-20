@@ -29,13 +29,12 @@ function getMostViewed(limit = 8) {
 }
 const  mostViwedProduct=getMostViewed();
 
-const displayedProducts =mostViwedProduct.length>0? mostViwedProduct:getRandomProducts(products, 8);
+const displayedProducts = mostViwedProduct.length>0 ? mostViwedProduct:getRandomProducts(products, 8);
 
-
-  const getProductProps = (product) => {
-    const variation = product.variation?.[0] || {};
-    const imageId = variation?.image?.id || defaultImage;
-
+const getProductProps = (product) => {
+  const variation = product.variation?.[0] || {};
+  const imageId = variation?.image?.id || defaultImage;
+  const imageUrl = variation?.image_url || defaultImage;
     return {
       productId: product.id,
       variationId: variation.id,
@@ -43,6 +42,7 @@ const displayedProducts =mostViwedProduct.length>0? mostViwedProduct:getRandomPr
       stock: variation.stock,
       sku: variation.sku_code,
       image: imageId,
+      image_url:imageUrl,
       category:
         product.product_category?.sub_category?.parent_category
           ?.category_name ||

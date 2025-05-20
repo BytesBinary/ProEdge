@@ -42,6 +42,12 @@ const UserProfile = () => {
   };
 
   const handleCancelOrder = async (order) => {
+    
+    if(order.order_status === "cancelled"){
+      alert("Order is already cancelled");
+      return;
+    }
+
     const confirmCancel = confirm(
       "Are you sure you want to cancel this order?"
     );
@@ -63,6 +69,11 @@ const UserProfile = () => {
 
     if (order.order_status === "completed") {
       alert("Order is already Completed. You cannot return it.");
+      return;
+    }
+
+    if (order.order_status === "cancelled") {
+      alert("Order is already Cancelled. You cannot return it.");
       return;
     }
 

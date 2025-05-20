@@ -4,33 +4,64 @@ import { BsCurrencyDollar } from "react-icons/bs";
 import { CartContext } from "../../../../context/CartContext";
 import { formatNumberWithCommas } from "../../../../helper/localPrice/localeprice";
 
-const ProductCard = ({ productId,variationId,variation_name, stock,made_in,sku,image, category, title, price,length }) => {
+const ProductCard = ({
+  productId,
+  variationId,
+  variation_name,
+  stock,
+  made_in,
+  sku,
+  image,
+  image_url,
+  category,
+  title,
+  price,
+  length,
+}) => {
+  const getImage = () => {
+    if (image_url && image_url !== "NULL") return image_url;
+    if (image && image !== "NULL")
+      return `${import.meta.env.VITE_SERVER_URL}/assets/${image}`;
+    return "";
+  };
+
   const {
     addToCart,
     isInWishlist,
     addToWishlist,
     removeFromWishlist,
-    cartItems
-  } = useContext(CartContext);  
+    cartItems,
+  } = useContext(CartContext);
   const navigate = useNavigate();
-  
-  const isInCart = cartItems.some(item => item.variationId === variationId);
-  const isWishlisted = isInWishlist(variationId );
+
+  const isInCart = cartItems.some((item) => item.variationId === variationId);
+  const isWishlisted = isInWishlist(variationId);
 
   const handleClick = () => {
     const slug = variation_name
       .toLowerCase()
-      .replace(/[^\w\s-]/g, "")     // Remove special characters
-      .trim()                       // Trim leading/trailing spaces
-      .slice(0, 20)                 // Take first 10 characters only
-      .replace(/\s+/g, "-")         // Replace spaces with dashes
-      .replace(/-+/g, "-");         // Replace multiple dashes with single dash
+      .replace(/[^\w\s-]/g, "") // Remove special characters
+      .trim() // Trim leading/trailing spaces
+      .slice(0, 20) // Take first 10 characters only
+      .replace(/\s+/g, "-") // Replace spaces with dashes
+      .replace(/-+/g, "-"); // Replace multiple dashes with single dash
     navigate(`/single-product/${slug}-${variationId}-${productId}`);
   };
 
   const handleWishlistClick = (e) => {
     e.stopPropagation();
-    const product = { productId,variationId,variation_name,stock,sku, image, category, title, price };
+    const product = {
+      productId,
+      variationId,
+      variation_name,
+      stock,
+      sku,
+      image,
+      image_url,
+      category,
+      title,
+      price,
+    };
     if (isWishlisted) {
       removeFromWishlist(product);
     } else {
@@ -40,7 +71,18 @@ const ProductCard = ({ productId,variationId,variation_name, stock,made_in,sku,i
 
   const handleAddToCart = (e) => {
     e.stopPropagation();
-    const product = { productId,variationId,variation_name, stock,sku,image, category, title, price };
+    const product = {
+      productId,
+      variationId,
+      variation_name,
+      stock,
+      sku,
+      image,
+      image_url,
+      category,
+      title,
+      price,
+    };
     if (isInCart) {
       navigate("/cart");
     } else {
@@ -56,15 +98,17 @@ const ProductCard = ({ productId,variationId,variation_name, stock,made_in,sku,i
       <div className="rounded-xl w-full h-[417px] mb-5 bg-[#FFFFFF]">
         <div className="bg-[#F8F9FB] flex justify-center items-center relative rounded-xl w-full overflow-hidden">
           <img
-            src={`${import.meta.env.VITE_SERVER_URL}/assets/${image}`}
-            alt="product"
+            src={getImage()}
+            alt="Product"
             className="h-[167px] w-full object-cover rounded-lg"
           />
 
-          <div 
+          <div
             onClick={handleWishlistClick}
             className={`group rounded-full w-9 h-9 flex items-center hover:border-1 hover:border-[#EE2738] justify-center shadow-lg absolute top-2 right-2 transition duration-300 cursor-pointer ${
-              isWishlisted ? "bg-[#EE2738] hover:bg-red-800" : "bg-[#FFFFFF] hover:bg-red-300"
+              isWishlisted
+                ? "bg-[#EE2738] hover:bg-red-800"
+                : "bg-[#FFFFFF] hover:bg-red-300"
             } transition-all duration-200`}
           >
             <svg
@@ -89,7 +133,7 @@ const ProductCard = ({ productId,variationId,variation_name, stock,made_in,sku,i
             <h2 className="text-[14px] text-[#3F66BC] font-medium leading-10">
               {category}
             </h2>
-          
+
             <h1 className="text-[#182B55] text-lg font-medium leading-[30px] cursor-pointer">
               {variation_name}
             </h1>
@@ -99,10 +143,12 @@ const ProductCard = ({ productId,variationId,variation_name, stock,made_in,sku,i
               <BsCurrencyDollar/> {formatNumberWithCommas(price)}
             </p>
           </div>
-          <div 
+          <div
             onClick={handleAddToCart}
             className={`rounded-[60px] text-center w-full h-[40px] py-2 px-6 flex items-center justify-center hover:bg-[#e6c200] cursor-pointer transition duration-300 ${
-              isInCart ? "bg-[#182B55] text-white" : "bg-[#FCD700] text-[#182B55]"
+              isInCart
+                ? "bg-[#182B55] text-white"
+                : "bg-[#FCD700] text-[#182B55]"
             }`}
           >
             <h3 className="text-[16px] font-medium leading-6">

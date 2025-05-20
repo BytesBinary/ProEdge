@@ -152,6 +152,10 @@ const DesktopNav = ({ actionIcons }) => {
             skuCode: variation.sku_code,
             image: variation.image || product.image,
             ...bestMatch,
+            image_url: variation.image_url || product.image_url,
+            matchIndex,
+            matchLength: searchTerm.length,
+            matchType,
           });
         }
       });
@@ -308,6 +312,13 @@ const DesktopNav = ({ actionIcons }) => {
                       src={`${import.meta.env.VITE_SERVER_URL}/assets/${
                         result.image.id
                       }`}
+                      alt={result.variationName}
+                      className="w-full h-full object-cover"
+                    />
+                  )}
+                  {result.image_url && (
+                    <img
+                      src={result.image_url}
                       alt={result.variationName}
                       className="w-full h-full object-cover"
                     />

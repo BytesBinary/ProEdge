@@ -4,6 +4,7 @@ import { BsCurrencyDollar } from "react-icons/bs";
 
 const WishCard = ({
   image,
+  image_url,
   title,
   priceDollars,
   priceCents,
@@ -13,10 +14,17 @@ const WishCard = ({
   onAddToCart,
   onRemove,
 }) => {
+  const getImage = () => {
+    if (image_url && image_url !== "NULL") return image_url;
+    if (image && image !== "NULL")
+      return `${import.meta.env.VITE_SERVER_URL}/assets/${image}`;
+    return "";
+  };
+  console.log(image_url,'wishurl')
   return (
     <article className="bg-white p-4 rounded-xl shadow-sm flex flex-col md:flex-row items-start gap-4">
       <img
-        src={`${import.meta.env.VITE_SERVER_URL}/assets/${image}`}
+        src={getImage()}
         alt={title}
         className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain"
       />

@@ -1,22 +1,24 @@
 import React, { useContext } from "react";
-import plus from "../../../../assets/icons/plus.svg"
-import minus from "../../../../assets/icons/minus.svg"
+import plus from "../../../../assets/icons/plus.svg";
+import minus from "../../../../assets/icons/minus.svg";
 import { CartContext } from "../../../../context/CartContext";
 import { formatNumberWithCommas } from "../../../../helper/localPrice/localeprice";
 import { BsCurrencyDollar } from "react-icons/bs";
 
-const ProductCard = ({ product,onRemove  }) => {
-
-  // console.log(onRemove, 'product')
-   const { 
-    IncrementQuantity,
-    DecrementQuantity,
-    } = useContext(CartContext);
+const ProductCard = ({ product, onRemove }) => {
+  const { IncrementQuantity, DecrementQuantity } = useContext(CartContext);
+  console.log(product, "cartproduct");
+  const getImage = () => {
+    if (product.image_url && product.image_url !== "NULL") return product.image_url;
+    if (product.image && product.image !== "NULL")
+      return `${import.meta.env.VITE_SERVER_URL}/assets/${product.image}`;
+    return "";
+  };
   return (
     <article className="bg-white p-3 sm:p-4 rounded-xl shadow-sm flex flex-col md:flex-row items-start gap-3 sm:gap-4">
       {/* {console.log(product)} */}
       <img
-        src={`${import.meta.env.VITE_SERVER_URL}/assets/${product.image}`}
+        src={getImage()}
         alt={product.name}
         className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain"
       />
@@ -28,13 +30,23 @@ const ProductCard = ({ product,onRemove  }) => {
           </h2>
 
           <div className="flex items-center gap-1 sm:gap-2 order-last sm:order-none">
-            <button className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-[#F8F9FB] rounded-md text-lg cursor-pointer hover:bg-gray-200" onClick={()=>{DecrementQuantity(product.variationId)}}>
+            <button
+              className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-[#F8F9FB] rounded-md text-lg cursor-pointer hover:bg-gray-200"
+              onClick={() => {
+                DecrementQuantity(product.variationId);
+              }}
+            >
               <img src={minus} alt="Minus Icon" />
             </button>
-            <span  className="bg-[#3F66BC] text-white w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center rounded-md text-sm sm:text-base">
+            <span className="bg-[#3F66BC] text-white w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center rounded-md text-sm sm:text-base">
               {product.quantity}
             </span>
-            <button onClick={()=>{IncrementQuantity(product.variationId)}} className="flex justify-center items-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-[#F8F9FB] rounded-md text-lg cursor-pointer hover:bg-gray-200">
+            <button
+              onClick={() => {
+                IncrementQuantity(product.variationId);
+              }}
+              className="flex justify-center items-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-[#F8F9FB] rounded-md text-lg cursor-pointer hover:bg-gray-200"
+            >
               <img src={plus} alt="Plus Icon" />
             </button>
           </div>
@@ -47,7 +59,7 @@ const ProductCard = ({ product,onRemove  }) => {
         </div>
 
         <p className="text-[#018C01] font-semibold text-lg mt-1 sm:mt-2">
-          {product.stock >0? "In Stock" : "Out of Stock"}
+          {product.stock > 0 ? "In Stock" : "Out of Stock"}
         </p>
 
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-2">
@@ -59,7 +71,12 @@ const ProductCard = ({ product,onRemove  }) => {
           </div>
 
           <nav className="flex gap-3 text-xs sm:text-sm">
-            <button onClick={onRemove}className="text-[#3F66BC] hover:underline cursor-pointer">Remove</button>
+            <button
+              onClick={onRemove}
+              className="text-[#3F66BC] hover:underline cursor-pointer"
+            >
+              Remove
+            </button>
           </nav>
         </div>
       </div>

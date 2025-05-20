@@ -25,7 +25,7 @@ const Cart = () => {
     total: getCartTotal(), // You might want to add shipping and tax to this
     discount: 0  // You can add discount logic here
   };
-
+  console.table(cartItems);
   return (
     <>
       <SubPageHeader
@@ -67,6 +67,7 @@ const Cart = () => {
                 <WishCard
                   key={index}
                   image={product.image}
+                  image_url={product.image_url}
                   title={product.variation_name}
                   priceDollars={dollars}
                   priceCents={`.${cents}`}

@@ -90,7 +90,7 @@ const Category = () => {
     };
   });
   // Filter products and count unique ones
-  useEffect(() => { 
+  useEffect(() => {
     // First filter the products
     const filtered = productsWithSlugs.filter((product) => {
       const productChildSlug = product.product_category?.slug;
@@ -162,7 +162,6 @@ const Category = () => {
     // Check if parent matches (if parent is toggled in singleCategory)
     const parentMatch =
       singleCategory?.toggle && singleCategory.slug === productParentSlug;
-    // console.log(parentMatch, "parentMatch");
 
     // If parent doesn't match, exclude the product
     if (singleCategory?.toggle && !parentMatch) return false;
@@ -209,6 +208,7 @@ const Category = () => {
       return {
         id: product.id,
         image: product.image,
+        image_url: product.image_url,
         title: product.title,
         price: product.offer_price || 0,
         category_name:
@@ -232,6 +232,7 @@ const Category = () => {
         variationId: variation.id,
         variation_name: variation.variation_name,
         image: variation.image || product.image,
+        image_url: variation.image_url || product.image_url,
         title: title.trim(),
         stock: variation.stock || 0,
         sku: variation.sku_code || "",
@@ -272,6 +273,7 @@ const Category = () => {
   const endIndex = startIndex + itemsPerPage;
   let currentItems = priceFilteredProducts.slice(startIndex, endIndex);
 
+  console.table([...currentItems]);
   //Check wishList Items
 
   if (sortOption === "Newest") {
@@ -433,8 +435,13 @@ const Category = () => {
       )}
       <PageHeader
         title={breadcrumb?.item?.title}
-        bgImage={`${import.meta.env.VITE_SERVER_URL}/assets/${breadcrumb?.item?.image?.id}`}
-        breadcrumbs={[{ link: "/", label: "Home" }, { label: breadcrumb?.item?.title }]}
+        bgImage={`${import.meta.env.VITE_SERVER_URL}/assets/${
+          breadcrumb?.item?.image?.id
+        }`}
+        breadcrumbs={[
+          { link: "/", label: "Home" },
+          { label: breadcrumb?.item?.title },
+        ]}
       />
       <div className="w-full max-w-[1310px] mx-auto mt-3 md:mt-20 flex flex-col lg:flex-row justify-between items-start gap-10">
         {/* Desktop Filter Section */}
@@ -599,6 +606,7 @@ const Category = () => {
                 category={product.category_name}
                 title={product.title}
                 image={product.image?.id}
+                image_url={product.image_url}
                 price={product.price}
                 stock={product.stock}
                 made_in={product.made_in}

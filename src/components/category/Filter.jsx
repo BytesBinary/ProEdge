@@ -13,9 +13,8 @@ const ToggleSection = ({ title, children, isOpen, setIsOpen }) => (
     >
       <h2 className="text-lg font-medium text-[#182B55] leading-6">{title}</h2>
       <svg
-        className={`w-4 h-4 transform transition-transform ${
-          isOpen ? "rotate-180" : ""
-        }`}
+        className={`w-4 h-4 transform transition-transform ${isOpen ? "rotate-180" : ""
+          }`}
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
@@ -152,9 +151,8 @@ const PriceRange = ({ isOpen, setIsOpen }) => {
       >
         <h2 className="text-lg font-medium text-[#182B55] leading-6">Price Range</h2>
         <svg
-          className={`w-4 h-4 transform transition-transform ${
-            isOpen ? "rotate-180" : ""
-          }`}
+          className={`w-4 h-4 transform transition-transform ${isOpen ? "rotate-180" : ""
+            }`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -252,7 +250,7 @@ const Filter = ({ onClose }) => {
   const [isItemOpen, setIsItemOpen] = useState(true);
   const [fastShipping, setFastShipping] = useState(false);
   const [formattedCategories, setFormattedCategories] = useState([]);
-  
+
   const { categories, singleCategory, setSingleCategory } = useContext(CategoryContext);
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -261,7 +259,7 @@ const Filter = ({ onClose }) => {
     const parentSlug = queryParams.get("parent_category");
     const subSlug = queryParams.get("sub_category");
     const childSlug = queryParams.get("child_category");
-    
+
     return formatted.map((parent) => {
       let parentHasMatch = false;
 
@@ -412,10 +410,10 @@ const Filter = ({ onClose }) => {
       });
 
       // Find and set the single category that matches the toggled state
-      const matchedParent = updatedCategories.find(cat => cat.toggle) || 
-                           updatedCategories.find(cat => 
-                             cat.sub_category?.some(sub => sub.toggle)
-                           );
+      const matchedParent = updatedCategories.find(cat => cat.toggle) ||
+        updatedCategories.find(cat =>
+          cat.sub_category?.some(sub => sub.toggle)
+        );
       setSingleCategory(matchedParent || null);
 
       return updatedCategories;
@@ -443,7 +441,26 @@ const Filter = ({ onClose }) => {
           </button>
         </div>
       </div>
+      <div class="flex flex-wrap gap-2 w-[282px] font-medium">
 
+        <span
+          class="flex items-center text-[12px] leading-[16px] bg-[#F8F9FB] text-[#182B55] px-3 py-2 w-[131px] h-[32px] rounded-[40px]">
+          Electric Motors
+          <button class="ml-2 text-[#182B55]">&times;</button>
+        </span>
+        <span
+          class="flex items-center text-[12px] leading-[16px] bg-[#F8F9FB] text-[#182B55] px-3 py-2 w-[131px] h-[32px] rounded-[40px]">
+          Single Phase
+          <button class="ml-2 text-[#182B55]">&times;</button>
+        </span>
+        <span
+          class="flex items-center text-[12px] leading-[16px] bg-[#F8F9FB] text-[#182B55] px-3 py-2 w-[131px] h-[32px] rounded-[40px]">
+          Fast Shipping
+          <button class="ml-2 text-[#182B55]">&times;</button>
+        </span>
+
+        <button class="text-[16px] leading-6 text-[#3F66BC] hover:underline cursor-pointer">Clear All</button>
+      </div>
       <div className="border border-[#ECF0F9] rounded-[8px] px-3 py-[14px] flex items-center space-x-2 bg-[#F8F9FB]">
         <input
           type="checkbox"
@@ -521,9 +538,8 @@ const Filter = ({ onClose }) => {
                     <Checkbox
                       key={child.id}
                       id={`child-${child.id}`}
-                      label={`${child.child_category_name} (${
-                        child.total_stock || 0
-                      })`}
+                      label={`${child.child_category_name} (${child.total_stock || 0
+                        })`}
                       checked={child.toggle}
                       onChange={() => {
                         handleCategoryToggle("child", child.id, sub.id);
@@ -563,9 +579,9 @@ const Filter = ({ onClose }) => {
       </ToggleSection>
 
       <ToggleSection title="Item" isOpen={isItemOpen} setIsOpen={setIsItemOpen}>
-        <Checkbox id="reducing_bushing" label="Reducing Bushing (9)" checked={false} onChange={() => {}} />
-        <Checkbox id="bushing" label="Bushing (5)" checked={false} onChange={() => {}} />
-        <Checkbox id="reducer" label="Reducer Bushing (2)" checked={false} onChange={() => {}} />
+        <Checkbox id="reducing_bushing" label="Reducing Bushing (9)" checked={false} onChange={() => { }} />
+        <Checkbox id="bushing" label="Bushing (5)" checked={false} onChange={() => { }} />
+        <Checkbox id="reducer" label="Reducer Bushing (2)" checked={false} onChange={() => { }} />
       </ToggleSection>
     </div>
   );
