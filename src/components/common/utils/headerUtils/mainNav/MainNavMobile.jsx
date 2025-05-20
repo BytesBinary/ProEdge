@@ -7,7 +7,8 @@ import {
   FiHeart,
   FiShoppingCart,
   FiUser,
-  FiLogOut,
+  FiSettings,
+  FiLogOut
 } from "react-icons/fi";
 import { useProductContext } from "../../../../../context/ProductContext";
 
@@ -15,196 +16,18 @@ const MobileNav = ({ actionIcons }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
-  const [showSearchDropdown, setShowSearchDropdown] = useState(false);
   const searchRef = useRef(null);
   const userMenuRef = useRef(null);
   const storedUser = JSON.parse(localStorage.getItem("user"));
   const token = localStorage.getItem("access_token");
-  const { products } = useProductContext();
+  const { searchTerm, setSearchTerm } = useProductContext();
 
-  // Close dropdowns when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (searchRef.current && !searchRef.current.contains(event.target)) {
-        setShowSearchDropdown(false);
-      }
-      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
-        setIsUserMenuOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
- const getLevenshteinDistance = (a = "", b = "") => {
-    const matrix = Array.from({ length: a.length + 1 }, (_, i) =>
-      Array(b.length + 1).fill(i === 0 ? 0 : i)
-    );
-
-  // Helper: Levenshtein distance function
-  const getLevenshteinDistance = (a = "", b = "") => {
-    const matrix = Array.from({ length: a.length + 1 }, (_, i) =>
-      Array(b.length + 1).fill(i === 0 ? 0 : i)
-    );
-
-    for (let j = 0; j <= b.length; j++) matrix[0][j] = j;
-
-    for (let i = 1; i <= a.length; i++) {
-      for (let j = 1; j <= b.length; j++) {
-        matrix[i][j] =
-          a[i - 1] === b[j - 1]
-            ? matrix[i - 1][j - 1]
-            : Math.min(
-                matrix[i - 1][j - 1] + 1, // replace
-                matrix[i][j - 1] + 1, // insert
-                matrix[i - 1][j] + 1 // delete
-              );
-      }
+  const handleSearch = (e) => {
+    if (e) {
+      e.preventDefault();
     }
-
-    return matrix[a.length][b.length];
-  };
-
-  const performSearch = () => {
-    if (searchTerm.trim() === "") {
-      setSearchResults([]);
-      setShowSearchDropdown(false);
-      return;
-    }
-
-    const results = [];
-    const lowerCaseSearchTerm = searchTerm.toLowerCase();
-    const tokens = lowerCaseSearchTerm.split(/\s+/).filter(Boolean);
-
-    products.forEach((product) => {
-      const productTitle = product.title?.toLowerCase() || "";
-      const childCategory =
-        product.product_category?.child_category_name?.toLowerCase() || "";
-      const subCategory =
-        product.product_category?.subcategory_name?.toLowerCase() || "";
-      const category =
-        product.product_category?.category_name?.toLowerCase() || "";
-
-      product.variation?.forEach((variation) => {
-        const variationName = variation.variation_name?.toLowerCase() || "";
-        const variationValue = variation.variation_value?.toLowerCase() || "";
-        const skuCode = variation.sku_code?.toLowerCase() || "";
-        const offerPrice = (
-          variation.offer_price?.toString() || ""
-        ).toLowerCase();
-
-        const features = variation.features || [];
-        const featureStrings = features.flatMap((f) => [
-          f.feature_name?.toLowerCase() || "",
-          f.feature_value?.toLowerCase() || "",
-        ]);
-
-        const allFields = [
-          { type: "title", value: productTitle },
-          { type: "child_category", value: childCategory },
-          { type: "subcategory", value: subCategory },
-          { type: "category", value: category },
-          { type: "variation", value: variationName },
-          { type: "variation_value", value: variationValue },
-          { type: "sku_code", value: skuCode },
-          { type: "offer_price", value: offerPrice },
-          ...featureStrings.map((val) => ({ type: "feature", value: val })),
-        ];
-
-        let bestMatch = null;
-
-        for (const token of tokens) {
-          for (const field of allFields) {
-            const index = field.value.indexOf(token);
-            if (index !== -1) {
-              bestMatch = {
-                matchType: field.type,
-                matchIndex: index,
-                matchLength: token.length,
-                token,
-                fuzzy: false,
-              };
-              break;
-            } else {
-              let foundFuzzy = false;
-              const maxFuzzyDistance = token.length >= 10 ? 3 : 2;
-
-              // Make sure we attempt comparisons even if the token is longer than the field value
-              const comparisonSlices =
-                field.value.length >= token.length
-                  ? [...Array(field.value.length - token.length + 2).keys()]
-                  : [0]; // Only compare once when token is longer than field
-
-              for (let i of comparisonSlices) {
-                const substring = field.value.slice(i, i + token.length + 2); // Include some room for fuzzy matching
-                const distance = getLevenshteinDistance(token, substring);
-
-                if (distance <= maxFuzzyDistance) {
-                  bestMatch = {
-                    matchType: field.type,
-                    matchIndex: i,
-                    matchLength: token.length,
-                    token,
-                    fuzzy: true,
-                  };
-                  foundFuzzy = true;
-                  break;
-                }
-              }
-              if (foundFuzzy) break;
-            }
-          }
-          if (bestMatch) break;
-        }
-
-        if (bestMatch) {
-          results.push({
-            productId: product.id,
-            variationId: variation.id,
-            productTitle: product.title,
-            variationName: variation.variation_name,
-            categoryName: product.product_category?.child_category_name,
-            skuCode: variation.sku_code,
-            image: variation.image || product.image,
-            imageUrl: variation.image_url || product.image_url,
-            ...bestMatch,
-                    matchIndex,
-        matchLength: searchTerm.length,
-        matchType,
-          });
-        }
-      });
-    });
-
-    // Sort results: exact match > fuzzy match, then priority by field
-    results.sort((a, b) => {
-      if (a.fuzzy !== b.fuzzy) return a.fuzzy ? 1 : -1;
-
-      const priority = [
-        "variation",
-        "title",
-        "child_category",
-        "subcategory",
-        "category",
-        "variation_value",
-        "feature",
-        "sku_code",
-        "offer_price",
-      ];
-
-      const aPriority = priority.indexOf(a.matchType);
-      const bPriority = priority.indexOf(b.matchType);
-
-      if (aPriority !== bPriority) return aPriority - bPriority;
-      return a.matchIndex - b.matchIndex;
-    });
-
-    setSearchResults(results);
-    setShowSearchDropdown(results.length > 0);
+    setIsOpen(false);
+    navigate("/products");
   };
 
   const handleSignOut = () => {
@@ -225,16 +48,16 @@ const MobileNav = ({ actionIcons }) => {
 
   // User menu items
   const userMenuItems = [
-    {
+    { 
       icon: <FiUser className="w-5 h-5" />,
       text: "My Profile",
-      action: () => navigate("/profile"),
+      action: () => navigate("/profile")
     },
-    {
+    { 
       icon: <FiLogOut className="w-5 h-5" />,
       text: "Sign Out",
-      action: handleSignOut,
-    },
+      action: handleSignOut
+    }
   ];
 
   return (
@@ -275,11 +98,10 @@ const MobileNav = ({ actionIcons }) => {
                   className="flex items-center gap-2 text-white"
                 >
                   <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-medium">
-                    {storedUser.first_name?.charAt(0)}
-                    {storedUser.last_name?.charAt(0)}
+                    {storedUser.first_name?.charAt(0)}{storedUser.last_name?.charAt(0)}
                   </div>
                 </button>
-
+                
                 {isUserMenuOpen && (
                   <div className="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 z-50">
                     <div className="px-4 py-2 border-b border-gray-100">
@@ -312,12 +134,9 @@ const MobileNav = ({ actionIcons }) => {
             {/* Menu Content */}
             <div className="flex-1 flex flex-col items-center justify-center px-6 pt-16">
               {/* Search Bar */}
-              <form
+              <form 
                 className="w-full max-w-md mb-8 relative"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  performSearch();
-                }}
+                onSubmit={handleSearch}
                 ref={searchRef}
               >
                 <div className="relative">
@@ -328,65 +147,14 @@ const MobileNav = ({ actionIcons }) => {
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="w-full py-3 pl-12 pr-6 rounded-full bg-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white/30"
                   />
-                  <button
-                    type="submit"
+                  <button 
+                    type="button"
+                    onClick={handleSearch}
                     className="absolute left-4 top-1/2 transform -translate-y-1/2"
                   >
                     <FiSearch className="w-5 h-5 text-white" />
                   </button>
                 </div>
-                {showSearchDropdown && searchResults.length > 0 && (
-                  <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto">
-                    {searchResults.slice(0, 5).map((result, index) => (
-                      <div
-                        key={`${result.productId}-${result.variationId}-${index}`}
-                        className="p-3 hover:bg-gray-100 cursor-pointer flex items-center border-b border-gray-100 last:border-b-0"
-                        onClick={() => {
-                          const slug = result.variationName
-                            ?.toLowerCase()
-                            .replace(/[^\w\s-]/g, "")
-                            .trim()
-                            .slice(0, 20)
-                            .replace(/\s+/g, "-")
-                            .replace(/-+/g, "-");
-                          navigate(
-                            `/single-product/${slug}-${result.productId}`
-                          );
-                          setShowSearchDropdown(false);
-                          setSearchTerm("");
-                          setIsOpen(false);
-                        }}
-                      >
-                        <div className="w-10 h-10 rounded-full overflow-hidden mr-3 flex-shrink-0">
-                          {result.image && (
-                            <img
-                              src={`${import.meta.env.VITE_SERVER_URL}/assets/${
-                                result.image.id
-                              }`}
-                              alt={result.variationName}
-                              className="w-full h-full object-cover"
-                            />
-                          )}
-                          {result.imageUrl && (
-                            <img
-                              src={result.imageUrl}
-                              alt={result.variationName}
-                              className="w-full h-full object-cover"
-                            />
-                          )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-gray-900 truncate">
-                            {result.variationName}
-                          </p>
-                          <p className="text-xs text-gray-500 truncate">
-                            {result.categoryName}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
               </form>
 
               {/* Navigation Links */}
@@ -434,9 +202,9 @@ const MobileNav = ({ actionIcons }) => {
                         {icon.count > 99 ? "99+" : icon.count}
                       </span>
                     )}
-                    {icon.icon === "cart" ? (
+                    {icon.icon === 'cart' ? (
                       <FiShoppingCart className="w-6 h-6 text-white" />
-                    ) : icon.icon === "heart" ? (
+                    ) : icon.icon === 'heart' ? (
                       <FiHeart className="w-6 h-6 text-white" />
                     ) : (
                       <img src={icon.icon} alt={icon.alt} className="w-6 h-6" />
@@ -453,7 +221,6 @@ const MobileNav = ({ actionIcons }) => {
       )}
     </div>
   );
-}
 };
 
 export default MobileNav;

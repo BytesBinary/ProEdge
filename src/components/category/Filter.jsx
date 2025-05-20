@@ -441,7 +441,7 @@ const Filter = ({ onClose }) => {
           </button>
         </div>
       </div>
-      <div class="flex flex-wrap gap-2 w-[282px] font-medium">
+      {/* <div class="flex flex-wrap gap-2 w-[282px] font-medium">
 
         <span
           class="flex items-center text-[12px] leading-[16px] bg-[#F8F9FB] text-[#182B55] px-3 py-2 w-[131px] h-[32px] rounded-[40px]">
@@ -460,7 +460,7 @@ const Filter = ({ onClose }) => {
         </span>
 
         <button class="text-[16px] leading-6 text-[#3F66BC] hover:underline cursor-pointer">Clear All</button>
-      </div>
+      </div> */}
       <div className="border border-[#ECF0F9] rounded-[8px] px-3 py-[14px] flex items-center space-x-2 bg-[#F8F9FB]">
         <input
           type="checkbox"
