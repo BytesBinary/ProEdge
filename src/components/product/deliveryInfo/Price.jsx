@@ -7,7 +7,7 @@ const Price = ({ priceData }) => {
     <div className="flex flex-col items-start w-full text-[12px] leading-[18px] text-[#182B55]">
       <div className="flex items-center">
         <span>{formatNumberWithCommas(priceData.dollar)}</span>&nbsp;
-        <h1 className="text-2xl font-semibold leading-8">{formatNumberWithCommas(priceData.whole)}</h1>
+        <h1 className="text-2xl font-semibold leading-8">{formatNumberWithCommas(priceData.whole, true)}</h1>
         &nbsp;
         {priceData.cents && <span>.{formatNumberWithCommas(priceData.cents)}</span>}
       </div>

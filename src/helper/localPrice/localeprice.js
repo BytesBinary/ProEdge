@@ -1,4 +1,4 @@
-export const formatNumberWithCommas = (number) => {
+export const formatNumberWithCommas = (number, trailingzeros = false) => {
     // Convert to number first
     const num = Number(number);
     
@@ -7,7 +7,13 @@ export const formatNumberWithCommas = (number) => {
       // If not a valid number, return the original as string
       return String(number);
     }
-    
+
+    if( trailingzeros) {
+      return num.toLocaleString('en-US');
+    }
     // Format with commas
-    return num.toLocaleString('en-US');
-  };
+    return num.toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+};
