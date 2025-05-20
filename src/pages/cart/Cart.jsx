@@ -25,7 +25,7 @@ const Cart = () => {
     total: getCartTotal(), // You might want to add shipping and tax to this
     discount: 0  // You can add discount logic here
   };
-  console.table(cartItems);
+  // console.table(cartItems);
   return (
     <>
       <SubPageHeader

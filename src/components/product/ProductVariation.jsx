@@ -39,7 +39,7 @@ const ProductVariation = ({
             <RiArrowDropDownLine size={30} />
           </div>
           <div className="border-l-2 broder-[#3F66BC] h-4"></div>
-          <p className="">{formatNumberWithCommas(totalRatings)} ratings</p>
+          <p className="">{formatNumberWithCommas(totalRatings, true)} ratings</p>
         </div>
         <div className="bg-[#3F66BC] w-3/4 p-2 relative flex items-center text-sm font-semibold gap-2 overflow-hidden h-8">
           <span className="text-white">Pro - Edge's</span>

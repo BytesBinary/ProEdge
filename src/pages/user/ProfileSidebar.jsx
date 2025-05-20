@@ -37,6 +37,16 @@ const ProfileSidebar = ({ activeTab, setActiveTab, user, handleSignOut }) => {
             Order History
           </button>
           <button
+            onClick={() => setActiveTab("track-order")}
+            className={`w-full text-left px-4 py-2 rounded-md ${
+              activeTab === "track-order"
+                ? "bg-blue-50 text-blue-600"
+                : "text-gray-700 hover:bg-gray-100"
+            }`}
+          >
+            Track Order
+          </button>
+          <button
             onClick={() => setActiveTab("return-order")}
             className={`w-full text-left px-4 py-2 rounded-md ${
               activeTab === "return-order"

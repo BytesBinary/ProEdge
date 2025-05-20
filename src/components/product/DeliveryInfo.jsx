@@ -225,8 +225,8 @@ const DeliveryInfo = ({
     {
       text: isInCart ? "View Cart" : stock > 0 ? "Add to Cart" : "Out of Stock",
       bgColor: isInCart ? "bg-[#FCD700]" : stock > 0 ? "bg-[#FCD700]" : "bg-red-500",
-      hoverColor: isInCart ? "hover:bg-green-500" : stock > 0 ? "hover:bg-green-700" : "hover:bg-red-500",
-      textColor: isInCart ? "text-[#182B255]" : stock > 0 ? "text-[#182B55]" : "text-white",
+      hoverColor: isInCart ? "hover:bg-[#3F66BC]" : stock > 0 ? "hover:bg[#3F66BC]" : "hover:bg-red-500",
+      textColor: isInCart ? "text-[#182B255] hover:text-white" : stock > 0 ? "text-[#182B55]" : "text-white",
       onClick: isInCart ? () => navigate("/cart") : handleAddToCart,
       disabled: stock <= 0,
     },

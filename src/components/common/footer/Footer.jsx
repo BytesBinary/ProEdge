@@ -117,12 +117,12 @@ const Footer = () => {
           ))}
         </div>
 
-        <div className="w-[292px] h-40 md:h-48 flex flex-col justify-between items-start text-white text-sm md:text-[16px] leading-3 md:leading-6">
+        <div className="w-[292px] h-40 md:h-48 flex flex-col justify-start gap-3 items-start text-white text-sm md:text-[16px] leading-3 md:leading-6">
           <h1 className="text-xl md:text-2xl font-medium leading-[30px]">Warehouse Location</h1>
           <h3 className="font-semibold">Location</h3>
           <p>{footer?.location_title}</p>
-          <h3 className="font-semibold">Open</h3>
-          <p>Mon-Fri 8:00am-5:00pm (est)</p>
+          {/* <h3 className="font-semibold">Open</h3>
+          <p>Mon-Fri 8:00am-5:00pm (est)</p> */}
         </div>
 
       </div>

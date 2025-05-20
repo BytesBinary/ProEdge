@@ -22,7 +22,7 @@ const ProductImage = ({ thumbnails, mainImage, onVariationChange }) => {
       }
     }
   };
-  console.table([...thumbnails]);
+  // console.table([...thumbnails]);
   return (
     <div className="flex flex-col md:flex-row gap-4 w-full p-10 lg:p-0 justify-center">
       {/* Thumbnails */}

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import SubPageHeader from "../../components/common/utils/banner/SubPageHeader";
 import bgImage from "../../assets/images/cart.png";
@@ -369,6 +369,28 @@ useEffect(() => {
 
       <section className="mt-10 max-w-7xl w-full mx-auto p-5 grid grid-cols-1 md:grid-cols-3 gap-0 md:gap-10">
         <form className="col-span-2 space-y-8">
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-xl md:text-3xl font-semibold text-[#182B55]">
+              1. Cart ({cartItems.length} Items)
+            </h1>
+            <button
+              className="ml-auto px-4 py-2 rounded-full bg-white border-2 border-[#ECF0F9] text-sm text-[#3F66BC] hover:cursor-pointer"
+              onClick={() => navigate("/cart")}
+            >
+              Edit Cart
+            </button>
+          </div>
+
+          <div className="flex flex-col gap-4 my-8">
+            {cartItems.map((product) => (
+              <ProductCardTiles
+                key={product.variationId}
+                product={product}
+                onRemove={() => removeFromCart(product)}
+              />
+            ))}
+          </div>
+
           <ShippingAddress
             values={{
               fullname: orderData.name,
@@ -405,7 +427,7 @@ useEffect(() => {
 
           <div>
             <h1 className="text-[#182B55] text-xl md:text-3xl font-semibold mb-4">
-              3. Payment
+              4. Payment
             </h1>
 
             {/* <div className="mb-6">
@@ -487,28 +509,6 @@ useEffect(() => {
         </div>
 
         <section className="my-10 col-span-2">
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-xl md:text-3xl font-semibold text-[#182B55]">
-              4. Cart ({cartItems.length} Items)
-            </h1>
-            <button
-              className="ml-auto px-4 py-2 rounded-full bg-white border-2 border-[#ECF0F9] text-sm text-[#3F66BC] hover:cursor-pointer"
-              onClick={() => navigate("/cart")}
-            >
-              Edit Cart
-            </button>
-          </div>
-
-          <div className="flex flex-col gap-4 my-8">
-            {cartItems.map((product) => (
-              <ProductCardTiles
-                key={product.variationId}
-                product={product}
-                onRemove={() => removeFromCart(product)}
-              />
-            ))}
-          </div>
-
           <Button
             label={loading ? "Processing..." : "Place Order"}
             onClick={handlePlaceOrder}
@@ -521,14 +521,14 @@ useEffect(() => {
 
           <p className="text-sm max-w-md w-full mx-auto text-[#182B55] text-center mt-3">
             By clicking Place Order you agree to Pro Edge's
-            <a href="#" className="text-[#3F66BC] underline">
+            <Link to="/terms-of-use" className="text-[#3F66BC] underline">
               {" "}
               Terms & Conditions
-            </a>
+            </Link>
             and{" "}
-            <a href="#" className="text-[#3F66BC] underline">
+            <Link to="/payment-policy" className="text-[#3F66BC] underline">
               Privacy Policy
-            </a>
+            </Link>
             .
           </p>
         </section>

@@ -74,7 +74,7 @@ const Hero = ({ blocks, loading, error }) => {
                   // height="450px"
                 />
               </picture>
-
+              <div className="bg-gray-900/60 inset-0 absolute w-full h-full"></div>
               <div className={`absolute inset-0 ${slide.bgColor}`}>
                 <div className="max-w-7xl w-full mx-auto flex flex-col justify-center items-start h-full px-4 md:px-8 py-10">
                   <header>

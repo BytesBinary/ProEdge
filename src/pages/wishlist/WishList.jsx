@@ -8,7 +8,7 @@ import { CartContext } from "../../context/CartContext.jsx";
 const WishList = () => {
   const { wishlistItems, removeFromWishlist, addToCart } =
     useContext(CartContext);
-    console.table(wishlistItems, 'wishlistItems');
+    // console.table(wishlistItems, 'wishlistItems');
 
   return (
     <>
