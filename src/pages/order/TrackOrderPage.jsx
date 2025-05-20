@@ -5,29 +5,54 @@ import { useOrderContext } from "../../context/OrderContext";
 import PageHeader from "../../components/common/utils/banner/SubPageHeader";
 import bgImage from "../../assets/images/productDetails/bg.jpeg";
 import { useLocation } from "react-router-dom";
+
 const pageContent = {
   "/track-order": {
     title: "Track Your Order",
-    description:
-      "Enter your order ID to track its current status and location.",
+    description: "Enter your order ID to track its current status and location.",
+    accountDescription: "View and track items from your order history.",
+    guestDescription: "Track your items using your order number."
   },
   "/return-order": {
     title: "Return Your Order",
-    description:
-      "Enter your order ID to initiate a return and follow the return process.",
+    description: "Enter your order ID to initiate a return and follow the return process.",
+    accountDescription: "View and return items from your order history.",
+    guestDescription: "Return your items using your order number."
   },
   "/modify-order": {
     title: "Modify Your Order",
-    description:
-      "Enter your order ID to modify your order details before it ships.",
+    description: "Enter your order ID to modify your order details before it ships.",
+    accountDescription: "View and modify items from your order history.",
+    guestDescription: "Modify your items using your order number."
   },
 };
 
 const TrackOrderPage = () => {
   const { orders } = useOrderContext();
   const [trackingId, setTrackingId] = useState("");
+  const [email, setEmail] = useState("");
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showDetails, setShowDetails] = useState(false);
+  const { pathname } = useLocation();
+  
+  const initialContent = pageContent[pathname] || {
+    title: "Order Support",
+    description: "Manage your order here.",
+    accountDescription: "Manage items from your order history.",
+    guestDescription: "Manage your items using your order number."
+  };
+  
+  const [info, setInfo] = useState(initialContent);
+
+  useEffect(() => {
+    const content = pageContent[pathname] || {
+      title: "Order Support",
+      description: "Manage your order here.",
+      accountDescription: "Manage items from your order history.",
+      guestDescription: "Manage your items using your order number."
+    };
+    setInfo(content);
+  }, [pathname]);
 
   const handleTrackOrder = () => {
     const order = orders.find((o) => o.order_id === trackingId.trim());
@@ -39,63 +64,106 @@ const TrackOrderPage = () => {
       alert("Order not found. Please check your order ID and try again.");
     }
   };
-  const { pathname } = useLocation();
-  const initialContent = pageContent[pathname] || {
-    title: "Order Support",
-    description: "Manage your order here.",
-  };
-  const [info, setInfo] = useState(initialContent);
-  // console.log(pathname, "pathname");
 
-  useEffect(() => {
-    const content = pageContent[pathname] || {
-      title: "Order Support",
-      description: "Manage your order here.",
-    };
-    setInfo(content);
-  }, [pathname]);
-  // console.log(orders, "ordeamadeerrs");
   return (
     <>
       <PageHeader
-        title="Track Your Order"
+        title={info.title}
         bgImage={bgImage}
         breadcrumbs={[
           { label: "Home", link: "/" },
           { label: "Orders", link: "/order-history" },
-          { label: "Track Your Order", path: "#" },
+          { label: info.title, path: "#" },
         ]}
       />
-      <div className="max-w-2xl mx-auto px-4 py-8">
-        <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-          <div className="flex items-center space-x-3 mb-4">
-            <div className="bg-blue-100 p-2 rounded-full">
-              <TruckIcon className="h-6 w-6 text-blue-600" />
-            </div>
-            <div>
-              <h2 className="text-lg font-semibold text-gray-900">
-                { info.title }
-              </h2>
-              <p className="text-sm text-gray-500">{ info.description }</p>
+      
+      <div className="container mx-auto px-4 py-12 max-w-6xl">
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-12 text-center">
+          {info.title}
+        </h1>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Left Section - Account Holders */}
+          <div className="bg-gray-100 p-8 rounded-lg shadow-sm">
+            <div className="flex flex-col h-full">
+              <div className="mb-6">
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="bg-blue-100 p-2 rounded-full">
+                    <TruckIcon className="h-6 w-6 text-blue-600" />
+                  </div>
+                  <h2 className="text-2xl font-semibold text-gray-800">
+                    Proedge account holders
+                  </h2>
+                </div>
+                <p className="text-gray-600">{info.accountDescription}</p>
+              </div>
+              
+              <div className="mt-auto">
+                <button className="w-full bg-teal-800 hover:bg-teal-900 text-white font-medium py-3 px-4 rounded-md transition duration-200">
+                  Sign In
+                </button>
+              </div>
             </div>
           </div>
-          <div className="flex flex-col sm:flex-row gap-3">
-            <input
-              type="text"
-              value={trackingId}
-              onChange={(e) => setTrackingId(e.target.value)}
-              placeholder="Enter Order ID"
-              className="flex-1 border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm"
-            />
-            <button
-              onClick={handleTrackOrder}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm"
-            >
-              Track
-            </button>
+          
+          {/* Right Section - Guest Customers */}
+          <div className="bg-gray-100 p-8 rounded-lg shadow-sm">
+            <div className="flex flex-col h-full">
+              <div className="mb-6">
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="bg-blue-100 p-2 rounded-full">
+                    <TruckIcon className="h-6 w-6 text-blue-600" />
+                  </div>
+                  <h2 className="text-2xl font-semibold text-gray-800">
+                    Guest Customers
+                  </h2>
+                </div>
+                <p className="text-gray-600">{info.guestDescription}</p>
+              </div>
+              
+              <div className="space-y-4">
+                <div>
+                  <label htmlFor="order-number" className="block text-sm font-medium text-gray-700 mb-1">
+                    Order Number
+                  </label>
+                  <input
+                    type="text"
+                    id="order-number"
+                    value={trackingId}
+                    onChange={(e) => setTrackingId(e.target.value)}
+                    placeholder="Order Number"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-teal-800 focus:border-teal-800"
+                  />
+                  <p className="mt-1 text-xs text-gray-500">Starts with 'WB' or 'SO'</p>
+                </div>
+                
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                    Email Address
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Email Address"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-teal-800 focus:border-teal-800"
+                  />
+                </div>
+              </div>
+              
+              <div className="mt-auto pt-4">
+                <button
+                  onClick={handleTrackOrder}
+                  className="w-full bg-teal-800 hover:bg-teal-900 text-white font-medium py-3 px-4 rounded-md transition duration-200"
+                >
+                  Find Order
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-
+        
         {/* Order Details Modal */}
         {showDetails && selectedOrder && (
           <OrderDetailsModal
