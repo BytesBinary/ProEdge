@@ -40,6 +40,10 @@ const MobileNav = ({ actionIcons }) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+ const getLevenshteinDistance = (a = "", b = "") => {
+    const matrix = Array.from({ length: a.length + 1 }, (_, i) =>
+      Array(b.length + 1).fill(i === 0 ? 0 : i)
+    );
 
   // Helper: Levenshtein distance function
   const getLevenshteinDistance = (a = "", b = "") => {
@@ -152,7 +156,6 @@ const MobileNav = ({ actionIcons }) => {
                   break;
                 }
               }
-
               if (foundFuzzy) break;
             }
           }
@@ -440,6 +443,7 @@ const MobileNav = ({ actionIcons }) => {
       )}
     </div>
   );
+}
 };
 
 export default MobileNav;
