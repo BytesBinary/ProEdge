@@ -34,8 +34,7 @@ const displayedProducts = mostViwedProduct.length>0 ? mostViwedProduct:getRandom
 const getProductProps = (product) => {
   const variation = product.variation?.[0] || {};
   const imageId = variation?.image?.id || defaultImage;
-  console.log(product);
-
+  const imageUrl = variation?.image_url || defaultImage;
     return {
       productId: product.id,
       variationId: variation.id,
@@ -43,6 +42,7 @@ const getProductProps = (product) => {
       stock: variation.stock,
       sku: variation.sku_code,
       image: imageId,
+      image_url:imageUrl,
       category:
         product.product_category?.sub_category?.parent_category
           ?.category_name ||
@@ -57,7 +57,6 @@ const getProductProps = (product) => {
           : variation.regular_price,
     };
   };
-  console.log(products,'products');
 
   return (
     <section className="max-w-[1500px] w-full mx-auto px-4 py-10">
