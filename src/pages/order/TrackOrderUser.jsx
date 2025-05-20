@@ -60,7 +60,7 @@ const TrackOrderUser = ({ pageInfo }) => {
               placeholder="Order Number"
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#182B55] focus:border-[#182B55]"
             />
-            <p className="mt-1 text-xs text-gray-500">Check memo or order history if not remember </p>
+            <p className="mt-1 text-xs text-gray-500">Please check your order confirmation email to find your order ID number.</p>
             {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
           </div>
         </div>
