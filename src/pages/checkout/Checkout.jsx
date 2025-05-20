@@ -33,7 +33,7 @@ const Checkout = () => {
     cvv: "",
   });
 
-  const [sameAsShipping, setSameAsShipping] = useState(false);
+  const [sameAsShipping, setSameAsShipping] = useState(true);
   const [shippingCharge, setdShippingCharge] = useState(0);
 
   const [loading, setLoading] = useState(false);
@@ -180,7 +180,7 @@ const Checkout = () => {
     const isChecked = e.target.checked;
     setSameAsShipping(isChecked);
 
-    if (isChecked) {
+    if (!isChecked) {
       // Copy shipping data to billing
       setOrderData((prev) => ({
         ...prev,

@@ -1,7 +1,7 @@
 import React from "react";
 import LabelInput from "../common/form/LabelInput";
 
-const BillingAddress= ({
+const BillingAddress = ({
   values,
   onChange,
   onClear,
@@ -10,7 +10,9 @@ const BillingAddress= ({
 }) => {
   return (
     <div className="mt-8">
-      <h2 className="text-lg md:text-2xl font-semibold mb-2 text-[#182B55]">Billing Address</h2>
+      <h2 className="text-lg md:text-2xl font-semibold mb-2 text-[#182B55]">
+        Billing Address
+      </h2>
 
       {/* Same As Shipping Checkbox & Clear Button */}
       <div className="flex items-center mb-4">
@@ -35,45 +37,47 @@ const BillingAddress= ({
       </div>
 
       {/* Billing Fields */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <LabelInput
-          label="Full Name (First & Last Name)"
-          id="billingFullname"
-          name="billingFullname"
-          required={true}
-          value={values.billingFullname}
-          onChange={onChange}
-        />
-        <LabelInput
-          label="Company Name (optional)"
-          id="billingCompany"
-          name="billingCompany"
-          required={false}
-          value={values.billingCompany}
-          onChange={onChange}
-        />
-        <LabelInput
-          label="Phone Number"
-          id="billingPhone"
-          name="billingPhone"
-          type="tel"
-          required={true}
-          value={values.billingPhone}
-          onChange={onChange}
-        />
-        <LabelInput
-          label="Email Address* For order confirmation"
-          id="billingEmail"
-          name="billingEmail"
-          type="email"
-          required={true}
-          value={values.billingEmail}
-          onChange={onChange}
-        />
-      </div>
+      {!sameAsShipping && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <LabelInput
+            label="Full Name (First & Last Name)"
+            id="billingFullname"
+            name="billingFullname"
+            required={true}
+            value={values.billingFullname}
+            onChange={onChange}
+          />
+          <LabelInput
+            label="Company Name (optional)"
+            id="billingCompany"
+            name="billingCompany"
+            required={false}
+            value={values.billingCompany}
+            onChange={onChange}
+          />
+          <LabelInput
+            label="Phone Number"
+            id="billingPhone"
+            name="billingPhone"
+            type="tel"
+            required={true}
+            value={values.billingPhone}
+            onChange={onChange}
+          />
+          <LabelInput
+            label="Email Address* For order confirmation"
+            id="billingEmail"
+            name="billingEmail"
+            type="email"
+            required={true}
+            value={values.billingEmail}
+            onChange={onChange}
+          />
+        </div>
+      )}
 
       {/* Street Address */}
-      <div className="mt-4">
+     {!sameAsShipping && (  <div className="mt-4">
         <LabelInput
           label="Street Address* No PO boxes"
           id="billingStreet"
@@ -82,10 +86,10 @@ const BillingAddress= ({
           value={values.billingStreet}
           onChange={onChange}
         />
-      </div>
+      </div>)}
 
       {/* Address 2 */}
-      <div className="mt-4">
+     {!sameAsShipping && (  <div className="mt-4">
         <LabelInput
           label="Address 2 (optional) Apt., Floor, Suite, etc."
           id="billingAddress2"
@@ -94,10 +98,10 @@ const BillingAddress= ({
           value={values.billingAddress2}
           onChange={onChange}
         />
-      </div>
+      </div>)}
 
       {/* City, State, ZIP */}
-      <div className="grid grid-cols-1 md:grid-cols-7 gap-4 mt-4">
+      {!sameAsShipping && ( <div className="grid grid-cols-1 md:grid-cols-7 gap-4 mt-4">
         <LabelInput
           className="md:col-span-3"
           label="City"
@@ -125,14 +129,19 @@ const BillingAddress= ({
           value={values.billingZip}
           onChange={onChange}
         />
-      </div>
+      </div>)}
 
       {/* Purchase Order */}
-      <div className="mt-4">
-        <label htmlFor="purchaseOrder" className="block font-medium text-[#182B55]">
+      {!sameAsShipping && (<div className="mt-4">
+        <label
+          htmlFor="purchaseOrder"
+          className="block font-medium text-[#182B55]"
+        >
           <div className="flex justify-between">
             <span>Purchase Order # (optional)</span>
-            <span className="text-[#5D6576]">Can contain up to 20 characters</span>
+            <span className="text-[#5D6576]">
+              Can contain up to 20 characters
+            </span>
           </div>
         </label>
         <input
@@ -144,7 +153,7 @@ const BillingAddress= ({
           maxLength={20}
           className="w-full border-2 border-[#ECF0F9] bg-[#FFFFFF] rounded-md p-2 mt-1 focus:outline-none focus:border-blue-500"
         />
-      </div>
+      </div>)}
     </div>
   );
 };

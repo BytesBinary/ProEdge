@@ -31,6 +31,30 @@ const DesktopNav = ({ actionIcons }) => {
     };
   }, []);
 
+  // Helper: Levenshtein distance function
+  const getLevenshteinDistance = (a = "", b = "") => {
+    const matrix = Array.from({ length: a.length + 1 }, (_, i) =>
+      Array(b.length + 1).fill(i === 0 ? 0 : i)
+    );
+
+    for (let j = 0; j <= b.length; j++) matrix[0][j] = j;
+
+    for (let i = 1; i <= a.length; i++) {
+      for (let j = 1; j <= b.length; j++) {
+        matrix[i][j] =
+          a[i - 1] === b[j - 1]
+            ? matrix[i - 1][j - 1]
+            : Math.min(
+                matrix[i - 1][j - 1] + 1, // replace
+                matrix[i][j - 1] + 1, // insert
+                matrix[i - 1][j] + 1 // delete
+              );
+      }
+    }
+
+    return matrix[a.length][b.length];
+  };
+
   const performSearch = () => {
     if (searchTerm.trim() === "") {
       setSearchResults([]);
@@ -40,62 +64,119 @@ const DesktopNav = ({ actionIcons }) => {
 
     const results = [];
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
+    const tokens = lowerCaseSearchTerm.split(/\s+/).filter(Boolean);
 
-   products.forEach((product) => {
-  const productTitle = product.title?.toLowerCase() || "";
-  const titleMatchIndex = productTitle.indexOf(lowerCaseSearchTerm);
+    products.forEach((product) => {
+      const productTitle = product.title?.toLowerCase() || "";
+      const childCategory =
+        product.product_category?.child_category_name?.toLowerCase() || "";
+      const subCategory =
+        product.product_category?.subcategory_name?.toLowerCase() || "";
+      const category =
+        product.product_category?.category_name?.toLowerCase() || "";
 
-  const categoryName =
-    product.product_category?.child_category_name?.toLowerCase() || "";
-  const categoryMatchIndex = categoryName.indexOf(lowerCaseSearchTerm);
+      product.variation?.forEach((variation) => {
+        const variationName = variation.variation_name?.toLowerCase() || "";
+        const variationValue = variation.variation_value?.toLowerCase() || "";
+        const skuCode = variation.sku_code?.toLowerCase() || "";
+        const offerPrice = (
+          variation.offer_price?.toString() || ""
+        ).toLowerCase();
 
-  product.variation?.forEach((variation) => {
-    const variationName = variation.variation_name?.toLowerCase() || "";
-    const variationMatchIndex = variationName.indexOf(lowerCaseSearchTerm);
+        const features = variation.features || [];
+        const featureStrings = features.flatMap((f) => [
+          f.feature_name?.toLowerCase() || "",
+          f.feature_value?.toLowerCase() || "",
+        ]);
 
-    const skuCode = variation.sku_code?.toLowerCase() || "";
-    const skuMatchIndex = skuCode.indexOf(lowerCaseSearchTerm);
+        const allFields = [
+          { type: "title", value: productTitle },
+          { type: "child_category", value: childCategory },
+          { type: "subcategory", value: subCategory },
+          { type: "category", value: category },
+          { type: "variation", value: variationName },
+          { type: "variation_value", value: variationValue },
+          { type: "sku_code", value: skuCode },
+          { type: "offer_price", value: offerPrice },
+          ...featureStrings.map((val) => ({ type: "feature", value: val })),
+        ];
 
-    let matchIndex = -1;
-    let matchType = "";
+        let bestMatch = null;
 
-    if (skuMatchIndex !== -1) {
-      matchIndex = skuMatchIndex;
-      matchType = "sku_code";
-    } else if (variationMatchIndex !== -1) {
-      matchIndex = variationMatchIndex;
-      matchType = "variation";
-    } else if (titleMatchIndex !== -1) {
-      matchIndex = titleMatchIndex;
-      matchType = "title";
-    } else if (categoryMatchIndex !== -1) {
-      matchIndex = categoryMatchIndex;
-      matchType = "category";
-    }
+        for (const token of tokens) {
+          for (const field of allFields) {
+            const index = field.value.indexOf(token);
 
-    if (matchIndex !== -1) {
-      results.push({
-        productId: product.id,
-        variationId: variation.id,
-        productTitle: product.title,
-        variationName: variation.variation_name,
-        categoryName: product.product_category?.child_category_name,
-        skuCode: variation.sku_code,
-        image: variation.image || product.image,
-        matchIndex,
-        matchLength: searchTerm.length,
-        matchType,
+            if (index !== -1) {
+              bestMatch = {
+                matchType: field.type,
+                matchIndex: index,
+                matchLength: token.length,
+                token,
+                fuzzy: false,
+              };
+              break;
+            } else {
+              let foundFuzzy = false;
+              for (let i = 0; i <= field.value.length - token.length; i++) {
+                const substring = field.value.substring(
+                  i,
+                  i + token.length + 2
+                ); // include some room
+                const distance = getLevenshteinDistance(token, substring);
+                if (distance <= 2) {
+                  bestMatch = {
+                    matchType: field.type,
+                    matchIndex: i,
+                    matchLength: token.length,
+                    token,
+                    fuzzy: true,
+                  };
+                  foundFuzzy = true;
+                  break;
+                }
+              }
+              if (foundFuzzy) break;
+            }
+          }
+          if (bestMatch) break;
+        }
+
+        if (bestMatch) {
+          results.push({
+            productId: product.id,
+            variationId: variation.id,
+            productTitle: product.title,
+            variationName: variation.variation_name,
+            categoryName: product.product_category?.child_category_name,
+            skuCode: variation.sku_code,
+            image: variation.image || product.image,
+            ...bestMatch,
+          });
+        }
       });
-    }
-  });
-});
+    });
 
-
+    // Sort results: exact match > fuzzy match, then priority by field
     results.sort((a, b) => {
-      if (a.matchType === "variation" && b.matchType !== "variation") return -1;
-      if (a.matchType !== "variation" && b.matchType === "variation") return 1;
-      if (a.matchType === "title" && b.matchType === "category") return -1;
-      if (a.matchType === "category" && b.matchType === "title") return 1;
+      if (a.fuzzy !== b.fuzzy) return a.fuzzy ? 1 : -1;
+
+      const priority = [
+        "variation",
+        "title",
+        "child_category",
+        "subcategory",
+        "category",
+        "variation_value",
+        "feature",
+        "sku_code",
+        "offer_price",
+      ];
+
+      const aPriority = priority.indexOf(a.matchType);
+      const bPriority = priority.indexOf(b.matchType);
+
+      if (aPriority !== bPriority) return aPriority - bPriority;
       return a.matchIndex - b.matchIndex;
     });
 
@@ -125,8 +206,8 @@ const DesktopNav = ({ actionIcons }) => {
     setSearchTerm("");
   };
 
-  const highlightMatch = (text, matchIndex, matchLength) => {
-    if (!text || matchIndex === -1) return text;
+  const highlightMatch = (text, matchIndex, matchLength, fuzzy) => {
+    if (!text || matchIndex === -1 || fuzzy) return text;
 
     const before = text.slice(0, matchIndex);
     const match = text.slice(matchIndex, matchIndex + matchLength);
@@ -142,28 +223,37 @@ const DesktopNav = ({ actionIcons }) => {
   };
 
   const getMatchedText = (result) => {
-    switch (result.matchType) {
-      case "variation":
-        return highlightMatch(
-          result.variationName,
-          result.variationName.toLowerCase().indexOf(searchTerm.toLowerCase()),
-          searchTerm.length
-        );
-      case "title":
-        return highlightMatch(
-          result.productTitle,
-          result.productTitle.toLowerCase().indexOf(searchTerm.toLowerCase()),
-          searchTerm.length
-        );
-      case "category":
-        return highlightMatch(
-          result.categoryName,
-          result.categoryName.toLowerCase().indexOf(searchTerm.toLowerCase()),
-          searchTerm.length
-        );
-      default:
-        return result.variationName;
-    }
+    const text = (() => {
+      switch (result.matchType) {
+        case "variation":
+          return result.variationName;
+        case "title":
+          return result.productTitle;
+        case "child_category":
+        case "subcategory":
+        case "category":
+          return result.categoryName;
+        case "sku_code":
+          return result.skuCode;
+        case "variation_value":
+          return result.variationValue;
+        case "feature_name":
+          return result.featureName;
+        case "feature_value":
+          return result.featureValue;
+        case "offer_price":
+          return result.offerPrice;
+        default:
+          return result.variationName;
+      }
+    })();
+
+    return highlightMatch(
+      text,
+      text?.toLowerCase().indexOf(result.token?.toLowerCase()),
+      result.token?.length,
+      result.fuzzy
+    );
   };
 
   const handleSignOut = () => {
