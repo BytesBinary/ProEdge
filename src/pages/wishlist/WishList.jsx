@@ -8,6 +8,7 @@ import { CartContext } from "../../context/CartContext.jsx";
 const WishList = () => {
   const { wishlistItems, removeFromWishlist, addToCart } =
     useContext(CartContext);
+    console.table(wishlistItems, 'wishlistItems');
 
   return (
     <>
@@ -30,6 +31,7 @@ const WishList = () => {
               <WishCard
                 key={index}
                 image={item.image}
+                image_url={item.image_url}
                 title={item.title}
                 priceDollars={dollars}
                 priceCents={`.${cents}`}

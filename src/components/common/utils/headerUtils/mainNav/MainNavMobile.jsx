@@ -92,6 +92,7 @@ const MobileNav = ({ actionIcons }) => {
         categoryName: product.product_category?.child_category_name,
         skuCode: variation.sku_code,
         image: variation.image || product.image,
+        imageUrl: variation.image_url || product.image_url,
         matchIndex,
         matchLength: searchTerm.length,
         matchType,
@@ -264,6 +265,13 @@ const MobileNav = ({ actionIcons }) => {
                           {result.image && (
                             <img
                               src={`${import.meta.env.VITE_SERVER_URL}/assets/${result.image.id}`}
+                              alt={result.variationName}
+                              className="w-full h-full object-cover"
+                            />
+                          )}
+                          {result.imageUrl && (
+                            <img
+                              src={result.imageUrl}
                               alt={result.variationName}
                               className="w-full h-full object-cover"
                             />

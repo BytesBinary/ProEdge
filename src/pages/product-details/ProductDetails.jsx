@@ -60,6 +60,7 @@ const Product = () => {
       if (id) {
         const product = await fetchProductById(id);
         setSingleProduct(product);
+        updateMostViewed(product);
       }
     };
 
