@@ -1,12 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
-import levenshtein from 'fast-levenshtein'; // Optional fuzzy matching lib
-
+import React, { useContext, useEffect, useState, useMemo } from "react";
+import levenshtein from 'fast-levenshtein';
 import Filter from "../../components/category/Filter";
 import Pagination from "../../components/category/Pagination";
 import { IoFilterSharp } from "react-icons/io5";
 import { CategoryContext } from "../../context/CategoryContext";
 import { useProductContext } from "../../context/ProductContext";
-// import PriceCard from "../../components/product/PriceCard";
 import PageHeader from "../../components/common/utils/banner/SubPageHeader";
 import bgImage from "../../assets/images/cart.png";
 import { CartContext } from "../../context/CartContext";
@@ -19,29 +17,19 @@ const Category = () => {
   const [showFilter, setShowFilter] = useState(false);
   const [sortOption, setSortOption] = useState("Relevance");
   const [totalProducts, setTotalProducts] = useState(0);
-  const [productSearchterms,setProductSearchterms]=useState([])
-  const { blocks } = useFetchPageBlocks("products");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 9;
 
+  const { blocks } = useFetchPageBlocks("products");
   const breadcrumb = blocks?.filter(
     (block) => block?.item?.type?.toLowerCase().trim() === "breadcrumb"
   )[0];
 
   const { wishlistItems } = useContext(CartContext);
-  const { minPrice, maxPrice, isMadeUsa } = useProductContext();
-
+  const { minPrice, maxPrice, isMadeUsa, searchTerm } = useProductContext();
   const { products, loading } = useProductContext();
   const { singleCategory } = useContext(CategoryContext);
- const location = useLocation();
-  
-  // Properly extract search params
-  const searchParams = new URLSearchParams(location.search);
-
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
-
-  // console.log(minPrice, maxPrice, "minPrice,maxPrice");
+  const location = useLocation();
 
   // Function to generate a slug from a string
   const generateSlug = (str) => {
@@ -55,58 +43,253 @@ const Category = () => {
   };
 
   // Add slug to each product based on its category hierarchy
-  const productsWithSlugs = products.map((product) => {
-    const parentName =
-      product.product_category?.sub_category?.parent_category?.category_name ||
-      "";
-    const subName =
-      product.product_category?.sub_category?.subcategory_name || "";
-    const childName = product.product_category?.child_category_name || "";
+  const productsWithSlugs = useMemo(() => {
+    return products.map((product) => {
+      const parentName =
+        product.product_category?.sub_category?.parent_category?.category_name ||
+        "";
+      const subName =
+        product.product_category?.sub_category?.subcategory_name || "";
+      const childName = product.product_category?.child_category_name || "";
 
-    const parentId =
-      product.product_category?.sub_category?.parent_category?.id || "";
-    const subId = product.product_category?.sub_category?.id || "";
-    const childId = product.product_category?.id || "";
+      const parentId =
+        product.product_category?.sub_category?.parent_category?.id || "";
+      const subId = product.product_category?.sub_category?.id || "";
+      const childId = product.product_category?.id || "";
 
-    // Generate slugs for each part
-    const parentSlug = parentName
-      ? `${generateSlug(parentName)}-${parentId}`
-      : "";
-    const subSlug = subName ? `${generateSlug(subName)}-${subId}` : "";
-    const childSlug = childName ? `${generateSlug(childName)}-${childId}` : "";
+      // Generate slugs for each part
+      const parentSlug = parentName
+        ? `${generateSlug(parentName)}-${parentId}`
+        : "";
+      const subSlug = subName ? `${generateSlug(subName)}-${subId}` : "";
+      const childSlug = childName ? `${generateSlug(childName)}-${childId}` : "";
 
-    // Combine them to create the full product slug
-    const productSlug = [parentSlug, subSlug, childSlug]
-      .filter(Boolean)
-      .join("-");
+      // Combine them to create the full product slug
+      const productSlug = [parentSlug, subSlug, childSlug]
+        .filter(Boolean)
+        .join("-");
 
-    return {
-      ...product,
-      slug: product.slug || productSlug, // Use existing slug if available, otherwise use generated one
-      // Also add individual slugs to the category structure for easier access
-      product_category: {
-        ...product.product_category,
-        slug: childSlug,
-        sub_category: {
-          ...product.product_category?.sub_category,
-          slug: subSlug,
-          parent_category: {
-            ...product.product_category?.sub_category?.parent_category,
-            slug: parentSlug,
+      return {
+        ...product,
+        slug: product.slug || productSlug,
+        product_category: {
+          ...product.product_category,
+          slug: childSlug,
+          sub_category: {
+            ...product.product_category?.sub_category,
+            slug: subSlug,
+            parent_category: {
+              ...product.product_category?.sub_category?.parent_category,
+              slug: parentSlug,
+            },
           },
         },
-      },
+      };
+    });
+  }, [products]);
+
+  // Search function with improved logic
+  const performSearch = useMemo(() => {
+    if (!searchTerm || searchTerm.trim() === "") {
+      return productsWithSlugs;
+    }
+
+    const lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
+    const tokens = lowerCaseSearchTerm.split(/\s+/).filter(Boolean);
+
+    if (tokens.length === 0) {
+      return [];
+    }
+
+    const fieldConfig = {
+      title: { weight: 10, exactMatchBonus: 5 },
+      sku_code: { weight: 8, exactMatchBonus: 4 },
+      variation_value: { weight: 6, exactMatchBonus: 3 },
+      variation_name: { weight: 5, exactMatchBonus: 2 },
+      feature_name: { weight: 4, exactMatchBonus: 2 },
+      feature_value: { weight: 4, exactMatchBonus: 2 },
+      child_category_name: { weight: 7, exactMatchBonus: 3 },
+      subcategory_name: { weight: 6, exactMatchBonus: 2 },
+      category_name: { weight: 5, exactMatchBonus: 2 },
+      product_info: { weight: 0.5, exactMatchBonus: 0 },
+      product_details: { weight: 0.5, exactMatchBonus: 0 }
     };
-  });
-  // Filter products and count unique ones
-  useEffect(() => {
-    // First filter the products
-    const filtered = productsWithSlugs.filter((product) => {
+
+    const getCategoryNames = (product) => {
+      const categories = [];
+      if (product.product_category) {
+        if (product.product_category.child_category_name) {
+          categories.push({
+            name: product.product_category.child_category_name.toLowerCase(),
+            type: 'child_category_name'
+          });
+        }
+        if (product.product_category.sub_category?.subcategory_name) {
+          categories.push({
+            name: product.product_category.sub_category.subcategory_name.toLowerCase(),
+            type: 'subcategory_name'
+          });
+        }
+        if (product.product_category.sub_category?.parent_category?.category_name) {
+          categories.push({
+            name: product.product_category.sub_category.parent_category.category_name.toLowerCase(),
+            type: 'category_name'
+          });
+        }
+      }
+      return categories;
+    };
+
+    // Check for exact category match first
+    const exactCategoryMatch = productsWithSlugs.filter(product => {
+      const categories = getCategoryNames(product);
+      return categories.some(c => c.name === lowerCaseSearchTerm);
+    });
+    if (exactCategoryMatch.length > 0) {
+      return exactCategoryMatch;
+    }
+
+    const scoreFieldMatch = (fieldValue, token, fieldName) => {
+      if (!fieldValue) return 0;
+      const config = fieldConfig[fieldName] || { weight: 1 };
+      let score = 0;
+
+      if (fieldValue === token) {
+        score += config.weight + (config.exactMatchBonus || 0);
+      } else if (fieldValue.startsWith(token)) {
+        score += config.weight * 0.8;
+      } else if (fieldValue.includes(token)) {
+        score += config.weight * 0.6;
+      } else {
+        const distance = levenshtein.get(fieldValue, token);
+        const length = Math.max(fieldValue.length, token.length);
+        const similarity = 1 - distance / length;
+        if (similarity > 0.7) {
+          score += config.weight * similarity * 0.5;
+        }
+      }
+      return score;
+    };
+
+    const scoreVariation = (product, variation) => {
+      let totalScore = 0;
+      let matchedTokens = new Set();
+
+      const processField = (value, fieldName) => {
+        if (!value) return;
+        const lowerValue = value.toLowerCase();
+        tokens.forEach(token => {
+          const tokenScore = scoreFieldMatch(lowerValue, token, fieldName);
+          if (tokenScore > 0) {
+            totalScore += tokenScore;
+            matchedTokens.add(token);
+          }
+        });
+      };
+
+      processField(product.title, 'title');
+      const categoryNames = getCategoryNames(product);
+      categoryNames.forEach(category => {
+        processField(category.name, category.type);
+      });
+
+      processField(variation.variation_name, 'variation_name');
+      processField(variation.variation_value, 'variation_value');
+      processField(variation.sku_code, 'sku_code');
+      processField(variation.product_info, 'product_info');
+      processField(variation.product_details, 'product_details');
+
+      variation.features?.forEach(feature => {
+        processField(feature.feature_name, 'feature_name');
+        processField(feature.feature_value, 'feature_value');
+      });
+
+      const tokenCoverage = matchedTokens.size / tokens.length;
+      totalScore *= 1 + (tokenCoverage * 0.5);
+
+      if (tokens.length > 1) {
+        const phrase = tokens.join(' ');
+        const importantFields = [
+          product.title?.toLowerCase(),
+          ...categoryNames.map(c => c.name),
+          variation.variation_name?.toLowerCase(),
+          variation.sku_code?.toLowerCase()
+        ];
+        if (importantFields.some(field => field?.includes(phrase))) {
+          totalScore *= 1.5;
+        }
+      }
+
+      return {
+        score: totalScore,
+        matchedTokens: matchedTokens.size
+      };
+    };
+
+    const scoredResults = [];
+
+    productsWithSlugs.forEach(product => {
+      product.variation?.forEach(variation => {
+        const { score, matchedTokens } = scoreVariation(product, variation);
+        if (score > 0.1) {
+          scoredResults.push({
+            product,
+            variation,
+            score,
+            matchedTokens
+          });
+        }
+      });
+    });
+
+    scoredResults.sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      return b.matchedTokens - a.matchedTokens;
+    });
+
+    const productMap = new Map();
+    scoredResults.forEach(result => {
+      const existing = productMap.get(result.product._id);
+      if (!existing || result.score > existing.score) {
+        productMap.set(result.product._id, {
+          ...result.product,
+          bestMatchScore: result.score,
+          bestMatchVariation: result.variation,
+          matchedTokens: result.matchedTokens
+        });
+      }
+    });
+
+    const finalResults = Array.from(productMap.values());
+    finalResults.sort((a, b) => {
+      if (b.bestMatchScore !== a.bestMatchScore) return b.bestMatchScore - a.bestMatchScore;
+      return b.matchedTokens - a.matchedTokens;
+    });
+
+    // Add fallback products from matching categories if very few results
+    if (finalResults.length < 10) {
+      const existingIds = finalResults.map(p => p._id);
+      const fallback = productsWithSlugs.filter(product =>
+        !existingIds.includes(product._id) &&
+        getCategoryNames(product).some(c =>
+          tokens.some(token => c.name.includes(token))
+        )
+      );
+      finalResults.push(...fallback);
+    }
+
+    return finalResults;
+  }, [productsWithSlugs, searchTerm]);
+
+  // Filter products based on category hierarchy
+  const categoryFilteredProducts = useMemo(() => {
+    return performSearch.filter((product) => {
       const productChildSlug = product.product_category?.slug;
       const productSubSlug = product.product_category?.sub_category?.slug;
       const productParentSlug =
         product.product_category?.sub_category?.parent_category?.slug;
 
+      // If no category is selected at all, show all products
       if (
         !singleCategory?.toggle &&
         !singleCategory?.sub_category?.some((sub) => sub.toggle)
@@ -114,299 +297,160 @@ const Category = () => {
         return true;
       }
 
+      // Check if parent matches (if parent is toggled in singleCategory)
       const parentMatch =
         singleCategory?.toggle && singleCategory.slug === productParentSlug;
 
+      // If parent doesn't match, exclude the product
       if (singleCategory?.toggle && !parentMatch) return false;
 
+      // Check if any sub-category is toggled
       const hasToggledSub = singleCategory?.sub_category?.some(
         (sub) => sub.toggle
       );
+
+      // If no sub-category is toggled, include all products under parent
       if (!hasToggledSub) return true;
 
+      // Check if current product's sub-category matches any toggled sub-category
       const subMatch = singleCategory?.sub_category?.some(
         (sub) => sub.toggle && sub.slug === productSubSlug
       );
+
+      // If sub-category doesn't match any toggled sub-category, exclude
       if (!subMatch) return false;
 
+      // Check if any child category is toggled under the matched sub-category
       const matchedSub = singleCategory.sub_category.find(
         (sub) => sub.toggle && sub.slug === productSubSlug
       );
       const hasToggledChild = matchedSub?.child_category?.some(
         (child) => child.toggle
       );
+
+      // If no child category is toggled, include all products under the sub-category
       if (!hasToggledChild) return true;
 
+      // Check if current product's child category matches any toggled child category
       const childMatch = matchedSub.child_category.some(
         (child) => child.toggle && child.slug === productChildSlug
       );
+
+      // Only include if child category matches
       return childMatch;
     });
+  }, [performSearch, singleCategory]);
 
-    // Then count unique products by ID
-    const uniqueProductIds = new Set();
-    filtered.forEach((product) => {
-      uniqueProductIds.add(product.id); // or whatever your unique identifier is
-    });
-
-    setTotalProducts(uniqueProductIds.size);
-  }, [productsWithSlugs, singleCategory]);
-
-console.log(productsWithSlugs,"productwithsug");
-  const searchTerm = searchParams.get("searchTerm")?.trim() || "";
-  console.log(searchTerm,"searchTerm")
-
-const performSearch = () => {
-  const searchTerm = searchParams.get("searchTerm");
-
-  // Return all products if no search term is provided
-  if (!searchTerm || searchTerm.trim() === "") {
-    return productsWithSlugs;
-  }
-
-  const lowerCaseSearchTerm = searchTerm.toLowerCase();
-  const tokens = lowerCaseSearchTerm.split(/\s+/).filter(Boolean);
-
-  const results = [];
-
-  const fieldPriority = {
-    title: 8,
-    variation: 7,
-    variation_value: 6,
-    child_category: 5,
-    subcategory: 4,
-    category: 3,
-    feature: 2,
-    sku_code: 1,
-    offer_price: 0,
-  };
-
-  const isFuzzyMatch = (fieldValue, token) => {
-    const threshold = 2;
-    return (
-      fieldValue.includes(token) ||
-      levenshtein.get(fieldValue, token) <= threshold
-    );
-  };
-
-  productsWithSlugs.forEach((product) => {
-    const productTitle = product.title?.toLowerCase() || "";
-    const childCategory = product.product_category?.child_category_name?.toLowerCase() || "";
-    const subCategory = product.product_category?.subcategory_name?.toLowerCase() || "";
-    const category = product.product_category?.category_name?.toLowerCase() || "";
-
-    product.variation?.forEach((variation) => {
-      const variationName = variation.variation_name?.toLowerCase() || "";
-      const variationValue = variation.variation_value?.toLowerCase() || "";
-      const skuCode = variation.sku_code?.toLowerCase() || "";
-      const offerPrice = (variation.offer_price?.toString() || "").toLowerCase();
-
-      const features = variation.features || [];
-      const featureStrings = features.flatMap((f) => [
-        f.feature_name?.toLowerCase() || "",
-        f.feature_value?.toLowerCase() || "",
-      ]);
-
-      const allFields = [
-        { type: "title", value: productTitle },
-        { type: "child_category", value: childCategory },
-        { type: "subcategory", value: subCategory },
-        { type: "category", value: category },
-        { type: "variation", value: variationName },
-        { type: "variation_value", value: variationValue },
-        { type: "sku_code", value: skuCode },
-        { type: "offer_price", value: offerPrice },
-        ...featureStrings.map((val) => ({ type: "feature", value: val })),
-      ];
-
-      let totalScore = 0;
-      let allTokensMatched = true;
-
-      for (const token of tokens) {
-        let matched = false;
-        for (const field of allFields) {
-          if (isFuzzyMatch(field.value, token)) {
-            totalScore += (fieldPriority[field.type] || 0);
-            matched = true;
-            break;
-          }
-        }
-        if (!matched) {
-          allTokensMatched = false;
-          break;
-        }
+  // Format products with variations
+  const formattedProducts = useMemo(() => {
+    return categoryFilteredProducts.flatMap((product) => {
+      // If no variations, return a single product with basic info
+      if (!product.variation || product.variation.length === 0) {
+        return {
+          id: product.id,
+          image: product.image,
+          image_url: product.image_url,
+          title: product.title,
+          price: product.offer_price || 0,
+          category_name:
+            product.product_category?.sub_category?.parent_category
+              ?.category_name || "",
+          variation: null,
+          made_in: product.made_in,
+          stock: product.stock,
+          sku: product.sku_code || ""
+        };
       }
 
-      if (allTokensMatched) {
-        results.push({
-          product,
-          variation,
-          matchScore: totalScore,
-        });
+      // Map each variation to a separate product entry
+      return product.variation.map((variation) => {
+        const features = variation.features || [];
+        const featureText = features.map((f) => f.feature_value).join(", ");
+
+        let title = product.title;
+        if (featureText) title += ` (${featureText})`;
+        if (variation.variation_name) title += ` - ${variation.variation_name}`;
+
+        return {
+          id: product.id,
+          variationId: variation.id,
+          variation_name: variation.variation_name,
+          image: variation.image || product.image,
+          image_url: variation.image_url || product.image_url,
+          title: title.trim(),
+          stock: variation.stock || 0,
+          sku: variation.sku_code || "",
+          price:
+            variation.offer_price > 0
+              ? variation.offer_price
+              : variation.regular_price,
+          category_name:
+            product.product_category?.sub_category?.parent_category
+              ?.category_name || "",
+          variation: variation,
+          made_in: variation.made_in || product.made_in,
+        };
+      });
+    });
+  }, [categoryFilteredProducts]);
+
+  // Apply price and made in USA filters
+  const priceFilteredProducts = useMemo(() => {
+    return formattedProducts.filter((product) => {
+      const productPrice = product.price || 0;
+      const madeInUsa = (product?.made_in || "").toLowerCase().includes("usa");
+
+      // If "Made in USA" filter is active, only show non-USA products
+      if (isMadeUsa) {
+        return !madeInUsa;
       }
+
+      // Apply price range filter
+      return productPrice >= minPrice && productPrice <= maxPrice;
     });
-  });
+  }, [formattedProducts, minPrice, maxPrice, isMadeUsa]);
 
-  results.sort((a, b) => b.matchScore - a.matchScore);
-
-  const uniqueProductsMap = new Map();
-  results.forEach(({ product }) => {
-    if (!uniqueProductsMap.has(product._id)) {
-      uniqueProductsMap.set(product._id, product);
+  // Sort products based on selected option
+  const sortedProducts = useMemo(() => {
+    const productsCopy = [...priceFilteredProducts];
+    switch (sortOption) {
+      case "Newest":
+        return productsCopy.reverse();
+      case "Price: Low to High":
+        return productsCopy.sort((a, b) => a.price - b.price);
+      case "Price: High to Low":
+        return productsCopy.sort((a, b) => b.price - a.price);
+      default:
+        return productsCopy;
     }
-  });
+  }, [priceFilteredProducts, sortOption]);
 
-  return [...uniqueProductsMap.values()];
-};
-
-useEffect(()=>{
-const productSearchd=performSearch();
-setProductSearchterms(productSearchd)
-
-
-},[searchTerm])
-  // Now filter products based on the selected category using the generated slugs
-  const categoryfilteredProducts = productSearchterms.filter((product) => {
-    // Extract product category details using the generated slugs
-    const productChildSlug = product.product_category?.slug;
-    const productSubSlug = product.product_category?.sub_category?.slug;
-    const productParentSlug =
-      product.product_category?.sub_category?.parent_category?.slug;
-
-    // If no category is selected at all, show all products
-    if (
-      !singleCategory?.toggle &&
-      !singleCategory?.sub_category?.some((sub) => sub.toggle)
-    ) {
-      return true;
-    }
-
-    // Check if parent matches (if parent is toggled in singleCategory)
-    const parentMatch =
-      singleCategory?.toggle && singleCategory.slug === productParentSlug;
-
-    // If parent doesn't match, exclude the product
-    if (singleCategory?.toggle && !parentMatch) return false;
-
-    // Check if any sub-category is toggled
-    const hasToggledSub = singleCategory?.sub_category?.some(
-      (sub) => sub.toggle
-    );
-
-    // If no sub-category is toggled, include all products under parent
-    if (!hasToggledSub) return true;
-
-    // Check if current product's sub-category matches any toggled sub-category
-    const subMatch = singleCategory?.sub_category?.some(
-      (sub) => sub.toggle && sub.slug === productSubSlug
-    );
-
-    // If sub-category doesn't match any toggled sub-category, exclude
-    if (!subMatch) return false;
-
-    // Check if any child category is toggled under the matched sub-category
-    const matchedSub = singleCategory.sub_category.find(
-      (sub) => sub.toggle && sub.slug === productSubSlug
-    );
-    const hasToggledChild = matchedSub?.child_category?.some(
-      (child) => child.toggle
-    );
-
-    // If no child category is toggled, include all products under the sub-category
-    if (!hasToggledChild) return true;
-
-    // Check if current product's child category matches any toggled child category
-    const childMatch = matchedSub.child_category.some(
-      (child) => child.toggle && child.slug === productChildSlug
-    );
-
-    // Only include if child category matches
-    return childMatch;
-  });
-  // formattedProducts
-  const formattedProducts = categoryfilteredProducts.flatMap((product) => {
-    // If no variations, return a single product with basic info
-    if (!product.variation || product.variation.length === 0) {
-      return {
-        id: product.id,
-        image: product.image,
-        image_url: product.image_url,
-        title: product.title,
-        price: product.offer_price || 0,
-        category_name:
-          product.product_category?.sub_category?.parent_category
-            ?.category_name || "",
-        variation: null,
-      };
-    }
-
-    // Map each variation to a separate product entry
-    return product.variation.map((variation) => {
-      const features = variation.features || [];
-      const featureText = features.map((f) => f.feature_value).join(", ");
-
-      let title = product.title;
-      if (featureText) title += ` (${featureText})`;
-      if (variation.variation_name) title += ` - ${variation.variation_name}`;
-
-      return {
-        id: product.id,
-        variationId: variation.id,
-        variation_name: variation.variation_name,
-        image: variation.image || product.image,
-        image_url: variation.image_url || product.image_url,
-        title: title.trim(),
-        stock: variation.stock || 0,
-        sku: variation.sku_code || "",
-        price:
-          variation.offer_price > 0
-            ? variation.offer_price
-            : variation.regular_price,
-        category_name:
-          product.product_category?.sub_category?.parent_category
-            ?.category_name || "",
-        variation: variation,
-        made_in: variation.made_in,
-      };
-    });
-  });
-
-  const priceFilteredProducts = formattedProducts.filter((product) => {
-    const productPrice = product.offer_price || product.price || 0;
-    const madeInUsa = (product?.made_in || "").toLowerCase().includes("usa");
-
-    if (isMadeUsa) {
-      // Only include products NOT made in USA, ignore price
-      return !madeInUsa;
-    }
-
-    // If checkbox is unchecked, apply price filter
-    return productPrice >= minPrice && productPrice <= maxPrice;
-  });
-
-  //Codes for pagination
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 9;
-  const totalItems = priceFilteredProducts.length;
+  // Pagination logic
+  const totalItems = sortedProducts.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
-
-  // Calculate indexes for slicing
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  let currentItems = priceFilteredProducts.slice(startIndex, endIndex);
+  const currentItems = sortedProducts.slice(startIndex, endIndex);
 
-  console.table([...currentItems]);
-  //Check wishList Items
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
-  if (sortOption === "Newest") {
-    currentItems = [...currentItems].reverse();
-  }
-  // console.log(singleCategory?.category_name, "ccc");
+  // Update total products count when category changes
+  useEffect(() => {
+    const uniqueProductIds = new Set();
+    categoryFilteredProducts.forEach((product) => {
+      uniqueProductIds.add(product.id);
+    });
+    setTotalProducts(uniqueProductIds.size);
+    setCurrentPage(1); // Reset to first page when filters change
+  }, [categoryFilteredProducts]);
+
   return (
     <>
       {singleCategory && (
         <Helmet>
-          {/* Dynamic Title */}
           <title>
             {`${singleCategory?.category_name} Products`}
             {isMadeUsa ? " (Non-USA)" : ""}
@@ -414,7 +458,6 @@ setProductSearchterms(productSearchd)
             {` | ${import.meta.env.VITE_SITE_NAME}`}
           </title>
 
-          {/* Dynamic Description */}
           <meta
             name="description"
             content={
@@ -434,7 +477,6 @@ setProductSearchterms(productSearchd)
             }
           />
 
-          {/* Canonical URL */}
           <link
             rel="canonical"
             href={`${import.meta.env.VITE_CLIENT_URL}/products${
@@ -456,7 +498,6 @@ setProductSearchterms(productSearchd)
             }`}
           />
 
-          {/* Open Graph / Facebook */}
           <meta
             property="og:title"
             content={`${singleCategory?.category_name || "All"} Products`}
@@ -476,7 +517,6 @@ setProductSearchterms(productSearchd)
           <meta property="og:type" content="website" />
           <meta property="og:image" content={bgImage} />
 
-          {/* Twitter Card */}
           <meta name="twitter:card" content="summary_large_image" />
           <meta
             name="twitter:title"
@@ -490,7 +530,6 @@ setProductSearchterms(productSearchd)
           />
           <meta name="twitter:image" content={bgImage} />
 
-          {/* Structured Data */}
           <script type="application/ld+json">
             {JSON.stringify({
               "@context": "https://schema.org",
@@ -616,8 +655,8 @@ setProductSearchterms(productSearchd)
                 >
                   <option>Relevance</option>
                   <option>Newest</option>
-                  <option>Oldest</option>
-                  <option>Most Popular</option>
+                  <option>Price: Low to High</option>
+                  <option>Price: High to Low</option>
                 </select>
 
                 <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
@@ -660,8 +699,8 @@ setProductSearchterms(productSearchd)
                 >
                   <option>Relevance</option>
                   <option>Newest</option>
-                  <option>Oldest</option>
-                  <option>Most Popular</option>
+                  <option>Price: Low to High</option>
+                  <option>Price: High to Low</option>
                 </select>
 
                 <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
@@ -719,32 +758,45 @@ setProductSearchterms(productSearchd)
 
           {/* Cards */}
           <div className="flex justify-center items-center flex-wrap gap-6">
-            {currentItems.map((product) => (
-              <ProductCard
-                key={product.variationId}
-                productId={product.id}
-                variationId={product.variationId}
-                variation_name={product.variation_name}
-                category={product.category_name}
-                title={product.title}
-                image={product.image?.id}
-                image_url={product.image_url}
-                price={product.price}
-                stock={product.stock}
-                made_in={product.made_in}
-                sku={product.sku}
-                variation={product.variation}
-                length={currentItems.length}
-              />
-            ))}
+            {loading ? (
+              <div className="w-full flex justify-center items-center py-20">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+              </div>
+            ) : currentItems.length > 0 ? (
+              currentItems.map((product) => (
+                <ProductCard
+                  key={`${product.id}-${product.variationId || 'base'}`}
+                  productId={product.id}
+                  variationId={product.variationId}
+                  variation_name={product.variation_name}
+                  category={product.category_name}
+                  title={product.title}
+                  image={product.image?.id}
+                  image_url={product.image_url}
+                  price={product.price}
+                  stock={product.stock}
+                  made_in={product.made_in}
+                  sku={product.sku}
+                  variation={product.variation}
+                  length={currentItems.length}
+                />
+              ))
+            ) : (
+              <div className="w-full text-center py-20">
+                <h3 className="text-xl font-medium text-gray-600">No products found matching your criteria</h3>
+                <p className="text-gray-500 mt-2">Try adjusting your filters or search term</p>
+              </div>
+            )}
           </div>
 
           {/* Pagination */}
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
-          />
+          {totalPages > 1 && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          )}
         </div>
 
         {showFilter && (

@@ -8,7 +8,6 @@ const authLinks = [{ path: "/auth/signin", label: "Sign In" }];
 const DesktopNav = ({ actionIcons }) => {
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [showSearchDropdown, setShowSearchDropdown] = useState(false);
   const searchRef = useRef(null);
@@ -17,6 +16,7 @@ const DesktopNav = ({ actionIcons }) => {
   const { products } = useProductContext();
 
   const isAuthenticated = token && storedUser;
+  const {searchTerm,setSearchTerm}=useProductContext();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -194,7 +194,7 @@ const DesktopNav = ({ actionIcons }) => {
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    navigate(`/products?searchTerm=${searchTerm}`)
+    navigate(`/products`)
     // performSearch();
   };
 
