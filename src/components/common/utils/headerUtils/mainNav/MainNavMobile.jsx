@@ -40,10 +40,6 @@ const MobileNav = ({ actionIcons }) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
- const getLevenshteinDistance = (a = "", b = "") => {
-    const matrix = Array.from({ length: a.length + 1 }, (_, i) =>
-      Array(b.length + 1).fill(i === 0 ? 0 : i)
-    );
 
   // Helper: Levenshtein distance function
   const getLevenshteinDistance = (a = "", b = "") => {
@@ -171,10 +167,9 @@ const MobileNav = ({ actionIcons }) => {
             skuCode: variation.sku_code,
             image: variation.image || product.image,
             imageUrl: variation.image_url || product.image_url,
-            ...bestMatch,
-                    matchIndex,
-        matchLength: searchTerm.length,
-        matchType,
+            matchIndex: bestMatch.matchIndex,
+            matchLength: searchTerm.length,
+            matchType: bestMatch.matchType,
           });
         }
       });
@@ -453,7 +448,6 @@ const MobileNav = ({ actionIcons }) => {
       )}
     </div>
   );
-}
 };
 
 export default MobileNav;
