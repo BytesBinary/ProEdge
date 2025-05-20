@@ -1,11 +1,9 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
 import { CartContext } from "../../context/CartContext";
 import Price from "./deliveryInfo/Price";
-import ShippingInfo from "./deliveryInfo/ShippingInfo";
 import DeliveryInfocard from "./deliveryInfo/DeliveryInfocard";
 import InfoItem from "./deliveryInfo/InfoItem";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useOrderContext } from "../../context/OrderContext";
+import { useNavigate } from "react-router-dom";
 
 const DeliveryInfo = ({
   product,
@@ -17,31 +15,18 @@ const DeliveryInfo = ({
   originalPrice,
   stock,
   sku,
+  deliveryData
 }) => {
   const { cartItems, addToCart, quantity, setQuantity } =
     useContext(CartContext);
 
-  const { fetchSettingsGraphQL } = useOrderContext();
 
   const [isInCart, setIsInCart] = useState(false);
   const [cartItem, setCartItem] = useState(null);
-  const [deliverLocationData, setDeliverLocationData] = useState(null);
 
   const navigate = useNavigate();
-  const location = useLocation();
 
-  useEffect(() => {
-    const fetchDeliveryData = async () => {
-      try {
-        const data = await fetchSettingsGraphQL();
-        setDeliverLocationData(data);
-      } catch (error) {
-        console.error("Error fetching delivery location data:", error);
-      }
-    };
-
-    fetchDeliveryData();
-  }, [fetchSettingsGraphQL]);
+  
 
   useEffect(() => {
     const item = cartItems.find((item) => item.variationId === variationId);
@@ -251,7 +236,6 @@ const DeliveryInfo = ({
       hoverColor: "hover:bg-[#3F66BC]",
       textColor: "text-white",
       onClick: cartItems.length > 0 ? () => navigate("/cart/checkout") : "disabled",
-      onClick: () => navigate("/cart/checkout"),
       disabled: !isInCart,
     },
   ];
@@ -276,7 +260,7 @@ const DeliveryInfo = ({
     <div className="max-w-xs w-full rounded-xl border-2 border-[#ECF0F9] bg-[#F8F9FB] p-4 space-y-4">
       <Price priceData={priceData} />
       {/* <ShippingInfo shippingInfo={shippingInfo} /> */}
-      <DeliveryInfocard  />
+      <DeliveryInfocard  deliveryData={deliveryData}/>
       <StockQuantity
         stockData={{
           status: stock > 0 ? "In Stock" : "Out of Stock",

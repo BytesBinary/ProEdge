@@ -1,22 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useOrderContext } from "../../../context/OrderContext";
 
-const DeliveryInfocard = ({ deliveryInfo }) => {
-  const [deliveryData, setDeliveryData] = useState(null);
-  const { fetchSettingsGraphQL } = useOrderContext();
+const DeliveryInfocard = ({ deliveryData }) => {
   const [userLocation, setUserLocation] = useState("Fetching your location...");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await fetchSettingsGraphQL();
-        setDeliveryData(data);
-      } catch (error) {
-        console.error("Error fetching delivery data:", error);
-      }
-    };
-    fetchData();
-  }, [fetchSettingsGraphQL]);
+ 
 
   // Get user's location
   useEffect(() => {

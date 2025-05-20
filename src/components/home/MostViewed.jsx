@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useProductContext } from "../../context/ProductContext";
 import ProductCard from "../common/utils/cards/ProductCard";
 import defaultImage from "../../assets/default.webp";
@@ -8,13 +8,23 @@ import "swiper/css";
 import "swiper/css/pagination";
 
 const MostViewedSection = ({ title }) => {
-  const { products } = useProductContext();
+  const {products ,fetchProducts } = useProductContext();
   const swiperRef = useRef(null);
 
   const getRandomProducts = (arr, count) => {
   const shuffled = [...arr].sort(() => 0.5 - Math.random());
   return shuffled.slice(0, count);
 };
+  const hasFetched = useRef(false);
+
+useEffect(() => {
+
+  if (!hasFetched.current) {
+    fetchProducts();
+    hasFetched.current = true;
+  }
+}, []);
+
 
 function getMostViewed(limit = 8) {
   try {

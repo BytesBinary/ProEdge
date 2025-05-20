@@ -210,9 +210,7 @@ export const OrderProvider = ({ children }) => {
 
   const user = JSON.parse(localStorage.getItem("user"));
 
-  useEffect(() => {
-    fetchOrders();
-  }, []);
+  
 
 const fetchOrders = async () => {
   setLoading(true);

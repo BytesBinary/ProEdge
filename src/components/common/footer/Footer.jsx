@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import logo from "../../../assets/ProEdgeLogo.png";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -49,10 +49,16 @@ const Footer = () => {
       setLoading(false);
     }
   };
+ const hasFetched = useRef(false);
 
   useEffect(() => {
+
+  if (!hasFetched.current) {
     fetchFooter();
-  }, []);
+    hasFetched.current = true;
+  }
+}, []);
+ 
   // console.log(footer, 'fromfooter')
 
 

@@ -1,13 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useFaqContext } from "../../context/FaqContext";
 import { Link } from "react-router-dom";
 import { formatCategoryName } from "../../helper/slugifier/slugify";
 import { ClipLoader } from "react-spinners";
+import { useRef } from "react";
 
 const FAQ = ({ seeAllLink, leftArrow }) => {
-  const { faqSections, loading, error } = useFaqContext();
+  const { faqSections, fetchFaqSections, loading, error } = useFaqContext();
+   const hasFetched = useRef(false);
+  useEffect(() => {
+  if (hasFetched.current) return;
+  hasFetched.current = true;
+  fetchFaqSections();
+}, []);
 
-  if (loading) return <ClipLoader color="#30079f" />
+
+  if (loading) return <ClipLoader color="#30079f" />;
   if (error) return <p>Error: {error}</p>;
   if (!faqSections) return <p>No FAQ sections available</p>;
 

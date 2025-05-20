@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useProductContext } from "../../context/ProductContext";
 import { useParams } from "react-router-dom";
 import ProductImage from "../../components/product/ProductImage";
@@ -11,11 +11,12 @@ import bgImage from "../../assets/images/productDetails/bg.jpeg";
 // import { PulseLoader } from "react-spinners";
 import { Helmet } from "react-helmet-async";
 import { ClipLoader } from "react-spinners";
+import { useOrderContext } from "../../context/OrderContext";
 
 const Product = () => {
   const [singleProduct, setSingleProduct] = useState(null);
   const [singleVariation, setSingleVariation] = useState(null);
-  const [features, setFeatures] = useState(null);
+  const { fetchSettingsGraphQL } = useOrderContext();
 
   const [activeTab, setActiveTab] = useState("Features");
 
@@ -24,8 +25,29 @@ const Product = () => {
   };
 
   const [selectedVariationId, setSelectedVariationId] = useState(null);
+   const [deliveryData, setDeliveryData] = useState(null);
+ 
+
   const { fetchProductById } = useProductContext();
   const { title } = useParams();
+
+  const hasFetched = useRef(false);
+  
+  useEffect(() => {
+    if (hasFetched.current) return;
+    hasFetched.current = true;
+  
+    const fetchDeliveryData = async () => {
+      try {
+        const data = await fetchSettingsGraphQL();
+        setDeliveryData(data);
+      } catch (error) {
+        console.error("Error fetching delivery location data:", error);
+      }
+    };
+  
+    fetchDeliveryData();
+  }, []);
 
   // Extract product ID from URL
   const extractIdFromSlug = (slug) => {
@@ -55,17 +77,25 @@ const Product = () => {
   const id = extractIdFromSlug(title);
   const variationId = extractedVariationIdFromSlug(title);
 
-  useEffect(() => {
-    const fetchSingleProduct = async () => {
-      if (id) {
-        const product = await fetchProductById(id);
-        setSingleProduct(product);
-        updateMostViewed(product);
-      }
-    };
+  const hasSingleProductFetched = useRef(false);
 
-    fetchSingleProduct();
-  }, [id]);
+useEffect(() => {
+  if (!id || hasSingleProductFetched.current) return;
+  hasSingleProductFetched.current = true;
+
+  const fetchSingleProduct = async () => {
+    try {
+      const product = await fetchProductById(id);
+      setSingleProduct(product);
+      updateMostViewed(product);
+    } catch (error) {
+      console.error("Error fetching single product:", error);
+    }
+  };
+
+  fetchSingleProduct();
+}, [id]);
+
 
   useEffect(() => {
     if (singleProduct?.variation?.length > 0) {
@@ -337,6 +367,8 @@ const Product = () => {
             originalPrice={singleVariation.regular_price}
             stock={singleVariation.stock}
             sku={singleVariation.sku_code}
+            deliveryData={deliveryData}
+
           />
         </section>
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useOrderContext } from "../../../../context/OrderContext";
 import { formatNumberWithCommas } from "../../../../helper/localPrice/localeprice";
@@ -31,18 +31,23 @@ const OrderSummaryCard = ({ cart }) => {
   }, []);
 
 
-  useEffect(() => {
-    const fetchDeliveryData = async () => {
-      try {
-        const data = await fetchSettingsGraphQL();
-        setdShippingCharge(data);
-      } catch (error) {
-        console.error("Error fetching delivery location data:", error);
-      }
-    };
+ const hasFetched = useRef(false);
 
-    fetchDeliveryData();
-  }, [fetchSettingsGraphQL]);
+useEffect(() => {
+  if (hasFetched.current) return;
+  hasFetched.current = true;
+
+  const fetchDeliveryData = async () => {
+    try {
+      const data = await fetchSettingsGraphQL();
+      setdShippingCharge(data);
+    } catch (error) {
+      console.error("Error fetching delivery location data:", error);
+    }
+  };
+
+  fetchDeliveryData();
+}, []);
 
   return (
     <div className="bg-white p-6 rounded-xl shadow-sm">

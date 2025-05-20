@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 
 const GRAPHQL_URL = `${import.meta.env.VITE_SERVER_URL}/graphql`;
@@ -67,8 +67,12 @@ export const useFetchPageBlocks = (permalink) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const lastPermalinkRef = useRef(null);
+
   useEffect(() => {
-    if (!permalink) return;
+    if (!permalink || lastPermalinkRef.current === permalink) return;
+
+    lastPermalinkRef.current = permalink; 
 
     const fetchBlocks = async () => {
       try {

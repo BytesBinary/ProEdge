@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 
 import { Link, useNavigate } from "react-router-dom";
@@ -88,18 +88,24 @@ const Checkout = () => {
       : defaultData;
   });
 
-  useEffect(() => {
-    const fetchDeliveryData = async () => {
-      try {
-        const data = await fetchSettingsGraphQL();
-        setdShippingCharge(data);
-      } catch (error) {
-        console.error("Error fetching delivery location data:", error);
-      }
-    };
+  const hasFetched = useRef(false);
 
-    fetchDeliveryData();
-  }, []);
+useEffect(() => {
+  if (hasFetched.current) return;
+  hasFetched.current = true;
+
+  const fetchDeliveryData = async () => {
+    try {
+      const data = await fetchSettingsGraphQL();
+      setdShippingCharge(data);
+    } catch (error) {
+      console.error("Error fetching delivery location data:", error);
+    }
+  };
+
+  fetchDeliveryData();
+}, []);
+
 
   // Update user data when auth state changes
   // Separate useEffect hooks for different concerns
