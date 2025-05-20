@@ -5,7 +5,7 @@ const ShippingAddress = ({ values, onChange }) => {
   return (
     <div>
       <h1 className="text-[#182B55] text-xl md:text-3xl font-semibold mb-4">
-        1. Shipping Address
+        2. Shipping Address
       </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
