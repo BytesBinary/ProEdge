@@ -6,6 +6,7 @@ import ProfileSidebar from "./ProfileSidebar";
 import ProfileOverview from "./ProfileOverview";
 import ReturnOrder from "./ReturnOrder";
 import SecuritySettings from "./SecuritySettings";
+import TrackOrderUser from "../order/TrackOrderUser";
 
 const UserProfile = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -128,6 +129,10 @@ const UserProfile = () => {
                   <OrderTablePage />
                 </div>
               </div>
+            )}
+
+            {activeTab === "track-order" && (
+              <TrackOrderUser pageInfo={{ title: "Track Order", description: "Track your order using order ID" }} />
             )}
 
             {activeTab === "return-order" && (
