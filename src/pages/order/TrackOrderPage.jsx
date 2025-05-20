@@ -4,7 +4,7 @@ import OrderDetailsModal from "../../components/order/OrderDetails";
 import { useOrderContext } from "../../context/OrderContext";
 import PageHeader from "../../components/common/utils/banner/SubPageHeader";
 import bgImage from "../../assets/images/productDetails/bg.jpeg";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const pageContent = {
   "/track-order": {
@@ -98,10 +98,10 @@ const TrackOrderPage = () => {
                 <p className="text-gray-600">{info.accountDescription}</p>
               </div>
               
-              <div className="mt-auto">
-                <button className="w-full bg-teal-800 hover:bg-teal-900 text-white font-medium py-3 px-4 rounded-md transition duration-200">
-                  Sign In
-                </button>
+              <div className="mt-4">
+                <Link to="/auth/signin" className="w-full block text-center bg-[#182B55] hover:bg-blue-900 text-white font-medium py-3 px-4 rounded-md transition duration-200">
+                   Sign In
+                </Link>
               </div>
             </div>
           </div>
@@ -132,7 +132,7 @@ const TrackOrderPage = () => {
                     value={trackingId}
                     onChange={(e) => setTrackingId(e.target.value)}
                     placeholder="Order Number"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-teal-800 focus:border-teal-800"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#182B55] focus:border-[#182B55]"
                   />
                   <p className="mt-1 text-xs text-gray-500">Starts with 'WB' or 'SO'</p>
                 </div>
@@ -147,7 +147,7 @@ const TrackOrderPage = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Email Address"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-teal-800 focus:border-teal-800"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#182B55] focus:border-[#182B55]"
                   />
                 </div>
               </div>
@@ -155,7 +155,7 @@ const TrackOrderPage = () => {
               <div className="mt-auto pt-4">
                 <button
                   onClick={handleTrackOrder}
-                  className="w-full bg-teal-800 hover:bg-teal-900 text-white font-medium py-3 px-4 rounded-md transition duration-200"
+                  className="w-full bg-[#182B55] hover:bg-blue-900 text-white font-medium py-3 px-4 rounded-md transition duration-200"
                 >
                   Find Order
                 </button>
