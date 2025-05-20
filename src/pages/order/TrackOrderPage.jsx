@@ -34,6 +34,16 @@ const TrackOrderPage = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showDetails, setShowDetails] = useState(false);
   const { pathname } = useLocation();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("access_token");
+    if (token) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, []);
   
   const initialContent = pageContent[pathname] || {
     title: "Order Support",
@@ -99,8 +109,8 @@ const TrackOrderPage = () => {
               </div>
               
               <div className="mt-4">
-                <Link to="/auth/signin" className="w-full block text-center bg-[#182B55] hover:bg-blue-900 text-white font-medium py-3 px-4 rounded-md transition duration-200">
-                   Sign In
+                <Link to={isLoggedIn ? '/profile' : '/auth/signin'} className="w-full block text-center bg-[#182B55] hover:bg-blue-900 text-white font-medium py-3 px-4 rounded-md transition duration-200">
+                   {isLoggedIn ? 'Go To My Account' : 'Login'}
                 </Link>
               </div>
             </div>
@@ -124,14 +134,14 @@ const TrackOrderPage = () => {
               <div className="space-y-4">
                 <div>
                   <label htmlFor="order-number" className="block text-sm font-medium text-gray-700 mb-1">
-                    Order Number
+                    Order ID Number
                   </label>
                   <input
                     type="text"
                     id="order-number"
                     value={trackingId}
                     onChange={(e) => setTrackingId(e.target.value)}
-                    placeholder="Order Number"
+                    placeholder="Order ID Number"
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#182B55] focus:border-[#182B55]"
                   />
                   <p className="mt-1 text-xs text-gray-500">Starts with 'WB' or 'SO'</p>

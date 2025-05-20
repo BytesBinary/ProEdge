@@ -50,14 +50,14 @@ const TrackOrderUser = ({ pageInfo }) => {
         <div className="space-y-4">
           <div>
             <label htmlFor="order-number" className="block text-sm font-medium text-gray-700 mb-1">
-              Order Number
+              Order ID Number
             </label>
             <input
               type="text"
               id="order-number"
               value={orderNumber}
               onChange={(e) => setOrderNumber(e.target.value)}
-              placeholder="Order Number"
+              placeholder="Order ID Number"
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#182B55] focus:border-[#182B55]"
             />
             <p className="mt-1 text-xs text-gray-500">Please check your order confirmation email to find your order ID number.</p>
