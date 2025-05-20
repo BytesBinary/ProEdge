@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useRef } from "react";
+import React, { useContext, useMemo, useRef, useEffect } from "react";
 import { CategoryContext } from "../../context/CategoryContext";
 import { useNavigate } from "react-router-dom";
 import { formatCategoryName } from "../../helper/slugifier/slugify";
@@ -8,7 +8,7 @@ import { Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 
-const CategoryItem = ({ id, image, label, alt, category_name }) => {
+const CategoryItem = React.memo(({ id, image, label, alt, category_name }) => {
   const navigate = useNavigate();
 
   return (
@@ -48,19 +48,31 @@ const CategoryItem = ({ id, image, label, alt, category_name }) => {
       </span>
     </div>
   );
-};
+});
 
 const ShopCategorySection = () => {
   const { categories } = useContext(CategoryContext);
-  const swiperRef = useRef(null); // ✅ added reference to swiper
+  const swiperRef = useRef(null);
 
-  const sliderNeeded = useMemo(() => categories.length > 6, [categories]);
+  // Memoize swiper slides to prevent re-renders
+  const swiperSlides = useMemo(() => (
+    categories.map((category) => (
+      <SwiperSlide key={category.id}>
+        <CategoryItem
+          id={category.id}
+          image={category.image.id}
+          label={category.category_name}
+          alt={category.category_name}
+          category_name={category.category_name}
+        />
+      </SwiperSlide>
+    ))
+  ), [categories]);
+
+  const sliderNeeded = categories.length > 6;
 
   return (
-    <section
-      aria-labelledby="shop-category-heading"
-      className="overflow-hidden"
-    >
+    <section aria-labelledby="shop-category-heading" className="overflow-hidden">
       <div className="bg-[#182B55] py-20 md:py-28 text-center">
         <h1 className="text-white text-3xl md:text-5xl font-bold">
           Shop by Category
@@ -70,8 +82,8 @@ const ShopCategorySection = () => {
       <div className="bg-[#3F66BC] py-20 md:py-28 relative">
         <div className="w-full max-w-7xl absolute bottom-4 md:bottom-12 md:left-1/2 md:-translate-x-1/2 px-6">
           <div
-            onMouseEnter={() => swiperRef.current?.autoplay?.stop()} // ✅ pause autoplay
-            onMouseLeave={() => swiperRef.current?.autoplay?.start()} // ✅ resume autoplay
+            onMouseEnter={() => swiperRef.current?.autoplay?.stop()}
+            onMouseLeave={() => swiperRef.current?.autoplay?.start()}
           >
             <Swiper
               onSwiper={(swiper) => (swiperRef.current = swiper)}
@@ -104,17 +116,7 @@ const ShopCategorySection = () => {
               modules={[Autoplay, Pagination]}
               className="w-full"
             >
-              {categories.map((category) => (
-                <SwiperSlide key={category.id}>
-                  <CategoryItem
-                    id={category.id}
-                    image={category.image.id}
-                    label={category.category_name}
-                    alt={category.category_name}
-                    category_name={category.category_name}
-                  />
-                </SwiperSlide>
-              ))}
+              {swiperSlides}
             </Swiper>
 
             <div className="h-2 mt-8"></div>
@@ -122,30 +124,11 @@ const ShopCategorySection = () => {
             {sliderNeeded && (
               <div className="shop-cat-desktop-pagination flex justify-center space-x-2" />
             )}
-            
           </div>
         </div>
       </div>
-
-      <style jsx>{`
-        :global(.shop-cat-desktop-pagination .swiper-pagination-bullet),
-        :global(.shop-mobile-pagination .swiper-pagination-bullet) {
-          width: 10px;
-          height: 10px;
-          background: rgba(24, 43, 85, 0.3);
-          border-radius: 9999px;
-          transition: all 0.3s;
-          opacity: 1;
-        }
-
-        :global(.shop-cat-desktop-pagination .swiper-pagination-bullet-active),
-        :global(.shop-mobile-pagination .swiper-pagination-bullet-active) {
-          background: #182b55;
-          width: 24px;
-        }
-      `}</style>
     </section>
   );
 };
 
-export default ShopCategorySection;
+export default React.memo(ShopCategorySection);

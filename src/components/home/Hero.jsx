@@ -5,12 +5,10 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
-import { useFetchPageBlocks } from "../../context/PageContext";
 
-const Hero = () => {
+const Hero = ({ blocks, loading, error }) => {
   const swiperRef = useRef(null);
-  const { blocks, loading, error } = useFetchPageBlocks("home");
-
+  if (loading) return <p>Loading...</p>;
   if (error) return <p>Error loading content: {error.message}</p>;
 
   // console.log(blocks, "blocks");

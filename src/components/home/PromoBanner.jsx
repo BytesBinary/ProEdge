@@ -1,8 +1,6 @@
 import {Link} from "react-router-dom"
-import { useFetchPageBlocks } from "../../context/PageContext";
-const PromoBanner = () => {
+const PromoBanner = ({ blocks, loading, error }) => {
 
-   const { blocks, loading, error } = useFetchPageBlocks("home");
   
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error loading content: {error.message}</p>;

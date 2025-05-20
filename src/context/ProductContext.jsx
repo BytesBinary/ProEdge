@@ -108,9 +108,7 @@ export const ProductProvider = ({ children }) => {
 
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
+  
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -202,6 +200,7 @@ export const ProductProvider = ({ children }) => {
         error,
         currentProduct,
         productLoading,
+        fetchProducts,
         fetchProductById,
         searchTerm,
         setSearchTerm,

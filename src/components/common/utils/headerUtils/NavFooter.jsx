@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useEffect, useState, useRef } from "react";
+
 import { Link } from "react-router-dom";
 import NavigationLink from "./NavigationLink";
 import BrowseProduct from "./BrowseProduct";
-import { useState, useEffect } from "react";
 import CallIcon from "../../../../assets/icons/CallIcon.jsx";
 import axios from "axios";
 
@@ -45,10 +45,15 @@ const Navfooter = () => {
       setLoading(false);
     }
   };
+  const hasFetched = useRef(false);
 
   useEffect(() => {
+
+  if (!hasFetched.current) {
     fetchFooter();
-  }, []);
+    hasFetched.current = true;
+  }
+}, []);
   // console.log(footer, 'fromfooter')
 
   return (

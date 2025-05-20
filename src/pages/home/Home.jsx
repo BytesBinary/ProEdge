@@ -7,18 +7,21 @@ import MostViewedSection from "../../components/home/MostViewed";
 import PromoBanner from "../../components/home/PromoBanner";
 import ClientReviews from "../../components/home/ClientReview";
 import StockBanner from "../../components/home/StockBanner";
+import { useFetchPageBlocks } from "../../context/PageContext";
 
 const Home = () => {
+  const { blocks,loading, error } = useFetchPageBlocks("home");
+
   return (
     <>
-      <Hero />
+      <Hero blocks={blocks} loading={loading} error={error}/>
       <FeatureHighlits />
-      <ServiceFeatures />
+      <ServiceFeatures blocks={blocks} loading={loading} error={error}/>
       <ShopCategorySection />
       <MostViewedSection title={"Most Viewed Products"}/>
-      <PromoBanner />
+      <PromoBanner blocks={blocks} loading={loading} error={error}/>
       <ClientReviews />
-      <StockBanner />
+      <StockBanner blocks={blocks} loading={loading} error={error}/>
     </>
   );
 };

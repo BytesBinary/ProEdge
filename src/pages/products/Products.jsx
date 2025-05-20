@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState, useMemo } from "react";
-import levenshtein from 'fast-levenshtein';
+import React, { useContext, useEffect, useState, useMemo, useRef } from "react";
+import levenshtein from "fast-levenshtein";
 import Filter from "../../components/category/Filter";
 import Pagination from "../../components/category/Pagination";
 import { IoFilterSharp } from "react-icons/io5";
@@ -11,7 +11,6 @@ import { CartContext } from "../../context/CartContext";
 import { Helmet } from "react-helmet-async";
 import ProductCard from "../../components/common/utils/cards/ProductCard";
 import { useFetchPageBlocks } from "../../context/PageContext";
-import { useLocation, useSearchParams } from "react-router-dom";
 
 const Category = () => {
   const [showFilter, setShowFilter] = useState(false);
@@ -26,11 +25,24 @@ const Category = () => {
   )[0];
 
   const { wishlistItems } = useContext(CartContext);
-  const { minPrice, maxPrice, isMadeUsa, searchTerm } = useProductContext();
-  const { products, loading } = useProductContext();
+  const {
+    minPrice,
+    maxPrice,
+    isMadeUsa,
+    searchTerm,
+    products,
+    fetchProducts,
+    loading,
+  } = useProductContext();
   const { singleCategory } = useContext(CategoryContext);
-  const location = useLocation();
+  const hasFetched = useRef(false);
 
+  useEffect(() => {
+    if (!hasFetched.current) {
+      hasFetched.current = true;
+      fetchProducts();
+    }
+  }, []);
   // Function to generate a slug from a string
   const generateSlug = (str) => {
     if (!str) return "";
@@ -46,8 +58,8 @@ const Category = () => {
   const productsWithSlugs = useMemo(() => {
     return products.map((product) => {
       const parentName =
-        product.product_category?.sub_category?.parent_category?.category_name ||
-        "";
+        product.product_category?.sub_category?.parent_category
+          ?.category_name || "";
       const subName =
         product.product_category?.sub_category?.subcategory_name || "";
       const childName = product.product_category?.child_category_name || "";
@@ -62,7 +74,9 @@ const Category = () => {
         ? `${generateSlug(parentName)}-${parentId}`
         : "";
       const subSlug = subName ? `${generateSlug(subName)}-${subId}` : "";
-      const childSlug = childName ? `${generateSlug(childName)}-${childId}` : "";
+      const childSlug = childName
+        ? `${generateSlug(childName)}-${childId}`
+        : "";
 
       // Combine them to create the full product slug
       const productSlug = [parentSlug, subSlug, childSlug]
@@ -112,7 +126,7 @@ const Category = () => {
       subcategory_name: { weight: 6, exactMatchBonus: 2 },
       category_name: { weight: 5, exactMatchBonus: 2 },
       product_info: { weight: 0.5, exactMatchBonus: 0 },
-      product_details: { weight: 0.5, exactMatchBonus: 0 }
+      product_details: { weight: 0.5, exactMatchBonus: 0 },
     };
 
     const getCategoryNames = (product) => {
@@ -121,19 +135,21 @@ const Category = () => {
         if (product.product_category.child_category_name) {
           categories.push({
             name: product.product_category.child_category_name.toLowerCase(),
-            type: 'child_category_name'
+            type: "child_category_name",
           });
         }
         if (product.product_category.sub_category?.subcategory_name) {
           categories.push({
             name: product.product_category.sub_category.subcategory_name.toLowerCase(),
-            type: 'subcategory_name'
+            type: "subcategory_name",
           });
         }
-        if (product.product_category.sub_category?.parent_category?.category_name) {
+        if (
+          product.product_category.sub_category?.parent_category?.category_name
+        ) {
           categories.push({
             name: product.product_category.sub_category.parent_category.category_name.toLowerCase(),
-            type: 'category_name'
+            type: "category_name",
           });
         }
       }
@@ -141,9 +157,9 @@ const Category = () => {
     };
 
     // Check for exact category match first
-    const exactCategoryMatch = productsWithSlugs.filter(product => {
+    const exactCategoryMatch = productsWithSlugs.filter((product) => {
       const categories = getCategoryNames(product);
-      return categories.some(c => c.name === lowerCaseSearchTerm);
+      return categories.some((c) => c.name === lowerCaseSearchTerm);
     });
     if (exactCategoryMatch.length > 0) {
       return exactCategoryMatch;
@@ -178,7 +194,7 @@ const Category = () => {
       const processField = (value, fieldName) => {
         if (!value) return;
         const lowerValue = value.toLowerCase();
-        tokens.forEach(token => {
+        tokens.forEach((token) => {
           const tokenScore = scoreFieldMatch(lowerValue, token, fieldName);
           if (tokenScore > 0) {
             totalScore += tokenScore;
@@ -187,56 +203,56 @@ const Category = () => {
         });
       };
 
-      processField(product.title, 'title');
+      processField(product.title, "title");
       const categoryNames = getCategoryNames(product);
-      categoryNames.forEach(category => {
+      categoryNames.forEach((category) => {
         processField(category.name, category.type);
       });
 
-      processField(variation.variation_name, 'variation_name');
-      processField(variation.variation_value, 'variation_value');
-      processField(variation.sku_code, 'sku_code');
-      processField(variation.product_info, 'product_info');
-      processField(variation.product_details, 'product_details');
+      processField(variation.variation_name, "variation_name");
+      processField(variation.variation_value, "variation_value");
+      processField(variation.sku_code, "sku_code");
+      processField(variation.product_info, "product_info");
+      processField(variation.product_details, "product_details");
 
-      variation.features?.forEach(feature => {
-        processField(feature.feature_name, 'feature_name');
-        processField(feature.feature_value, 'feature_value');
+      variation.features?.forEach((feature) => {
+        processField(feature.feature_name, "feature_name");
+        processField(feature.feature_value, "feature_value");
       });
 
       const tokenCoverage = matchedTokens.size / tokens.length;
-      totalScore *= 1 + (tokenCoverage * 0.5);
+      totalScore *= 1 + tokenCoverage * 0.5;
 
       if (tokens.length > 1) {
-        const phrase = tokens.join(' ');
+        const phrase = tokens.join(" ");
         const importantFields = [
           product.title?.toLowerCase(),
-          ...categoryNames.map(c => c.name),
+          ...categoryNames.map((c) => c.name),
           variation.variation_name?.toLowerCase(),
-          variation.sku_code?.toLowerCase()
+          variation.sku_code?.toLowerCase(),
         ];
-        if (importantFields.some(field => field?.includes(phrase))) {
+        if (importantFields.some((field) => field?.includes(phrase))) {
           totalScore *= 1.5;
         }
       }
 
       return {
         score: totalScore,
-        matchedTokens: matchedTokens.size
+        matchedTokens: matchedTokens.size,
       };
     };
 
     const scoredResults = [];
 
-    productsWithSlugs.forEach(product => {
-      product.variation?.forEach(variation => {
+    productsWithSlugs.forEach((product) => {
+      product.variation?.forEach((variation) => {
         const { score, matchedTokens } = scoreVariation(product, variation);
         if (score > 0.1) {
           scoredResults.push({
             product,
             variation,
             score,
-            matchedTokens
+            matchedTokens,
           });
         }
       });
@@ -248,32 +264,34 @@ const Category = () => {
     });
 
     const productMap = new Map();
-    scoredResults.forEach(result => {
+    scoredResults.forEach((result) => {
       const existing = productMap.get(result.product._id);
       if (!existing || result.score > existing.score) {
         productMap.set(result.product._id, {
           ...result.product,
           bestMatchScore: result.score,
           bestMatchVariation: result.variation,
-          matchedTokens: result.matchedTokens
+          matchedTokens: result.matchedTokens,
         });
       }
     });
 
     const finalResults = Array.from(productMap.values());
     finalResults.sort((a, b) => {
-      if (b.bestMatchScore !== a.bestMatchScore) return b.bestMatchScore - a.bestMatchScore;
+      if (b.bestMatchScore !== a.bestMatchScore)
+        return b.bestMatchScore - a.bestMatchScore;
       return b.matchedTokens - a.matchedTokens;
     });
 
     // Add fallback products from matching categories if very few results
     if (finalResults.length < 10) {
-      const existingIds = finalResults.map(p => p._id);
-      const fallback = productsWithSlugs.filter(product =>
-        !existingIds.includes(product._id) &&
-        getCategoryNames(product).some(c =>
-          tokens.some(token => c.name.includes(token))
-        )
+      const existingIds = finalResults.map((p) => p._id);
+      const fallback = productsWithSlugs.filter(
+        (product) =>
+          !existingIds.includes(product._id) &&
+          getCategoryNames(product).some((c) =>
+            tokens.some((token) => c.name.includes(token))
+          )
       );
       finalResults.push(...fallback);
     }
@@ -358,7 +376,7 @@ const Category = () => {
           variation: null,
           made_in: product.made_in,
           stock: product.stock,
-          sku: product.sku_code || ""
+          sku: product.sku_code || "",
         };
       }
 
@@ -434,7 +452,7 @@ const Category = () => {
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   // Update total products count when category changes
@@ -765,7 +783,7 @@ const Category = () => {
             ) : currentItems.length > 0 ? (
               currentItems.map((product) => (
                 <ProductCard
-                  key={`${product.id}-${product.variationId || 'base'}`}
+                  key={`${product.id}-${product.variationId || "base"}`}
                   productId={product.id}
                   variationId={product.variationId}
                   variation_name={product.variation_name}
@@ -783,8 +801,12 @@ const Category = () => {
               ))
             ) : (
               <div className="w-full text-center py-20">
-                <h3 className="text-xl font-medium text-gray-600">No products found matching your criteria</h3>
-                <p className="text-gray-500 mt-2">Try adjusting your filters or search term</p>
+                <h3 className="text-xl font-medium text-gray-600">
+                  No products found matching your criteria
+                </h3>
+                <p className="text-gray-500 mt-2">
+                  Try adjusting your filters or search term
+                </p>
               </div>
             )}
           </div>

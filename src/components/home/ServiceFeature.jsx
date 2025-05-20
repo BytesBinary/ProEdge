@@ -1,10 +1,13 @@
 import React from "react";
-import { useFetchPageBlocks } from "../../context/PageContext";
 
 const FeatureBox = ({ icon, title, subtitle }) => (
   <div className="flex items-center gap-4 bg-white rounded-xl shadow-sm hover:shadow-md p-8">
     <div className="bg-blue-100 rounded-full p-4">
-      <img src={`${import.meta.env.VITE_SERVER_URL}/assets/${icon.id}`} alt={title} className="w-10 h-10" />
+      <img
+        src={`${import.meta.env.VITE_SERVER_URL}/assets/${icon.id}`}
+        alt={title}
+        className="w-10 h-10"
+      />
     </div>
     <div>
       <h2 className="text-2xl font-semibold text-[#182B55]">{title}</h2>
@@ -13,15 +16,17 @@ const FeatureBox = ({ icon, title, subtitle }) => (
   </div>
 );
 
-const ServiceFeatures = () => {
-  const { blocks, loading, error } = useFetchPageBlocks("home");
+const ServiceFeatures = ({ blocks, loading, error }) => {
+  if (loading) return <p>Loading...</p>;
 
   if (error) return <p>Error loading content: {error.message}</p>;
 
-  const features = blocks?.filter(block => block?.item?.type?.toLowerCase().trim() === "feature");
+  const features = blocks?.filter(
+    (block) => block?.item?.type?.toLowerCase().trim() === "feature"
+  );
 
   // console.log("blocks", blocks);
-  
+
   // console.log("features", features);
 
   // const features = [

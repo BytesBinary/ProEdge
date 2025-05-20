@@ -1,5 +1,4 @@
-// FaqContext.js
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
 
 // Create context
@@ -62,14 +61,13 @@ export const FaqProvider = ({ children }) => {
     }
   };
 
-  useEffect(() => {
-    fetchFaqSections();
-  }, []);
+  
 
   return (
     <FaqContext.Provider
       value={{
         faqSections,
+        fetchFaqSections,
         loading,
         error,
         refetch: fetchFaqSections,

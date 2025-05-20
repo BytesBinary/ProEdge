@@ -60,30 +60,36 @@ const ClientReview = ({
   const [reviews, setReviews] = useState([]);
   const swiperRef = useRef(null);
 
-  useEffect(() => {
-    fetch(`${import.meta.env.VITE_SERVER_URL}/graphql`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ query: REVIEWS_QUERY }),
+  const fetchedRef = useRef(false);
+
+useEffect(() => {
+  if (fetchedRef.current) return;
+  fetchedRef.current = true;
+
+  fetch(`${import.meta.env.VITE_SERVER_URL}/graphql`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ query: REVIEWS_QUERY }),
+  })
+    .then((res) => res.json())
+    .then((result) => {
+      const fetchedReviews = result.data.reviews.map((item) => ({
+        name: item.name,
+        title: item.title,
+        review: item.description,
+        stars: "⭐".repeat(Number(item.rating)),
+        image: `${import.meta.env.VITE_SERVER_URL}/assets/${item.image.id}`,
+        role: "Verified Buyer",
+      }));
+      setReviews(fetchedReviews);
     })
-      .then((res) => res.json())
-      .then((result) => {
-        const fetchedReviews = result.data.reviews.map((item) => ({
-          name: item.name,
-          title: item.title,
-          review: item.description,
-          stars: "⭐".repeat(Number(item.rating)),
-          image: `${import.meta.env.VITE_SERVER_URL}/assets/${item.image.id}`,
-          role: "Verified Buyer",
-        }));
-        setReviews(fetchedReviews);
-      })
-      .catch((err) => {
-        console.error("Error fetching reviews:", err);
-      });
-  }, []);
+    .catch((err) => {
+      console.error("Error fetching reviews:", err);
+    });
+}, []);
+
 
   const handleMouseEnter = () => {
     swiperRef.current?.autoplay?.stop();
