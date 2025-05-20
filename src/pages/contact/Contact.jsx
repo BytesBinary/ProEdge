@@ -39,7 +39,7 @@ const Contact = () => {
   });
   const [errors, setErrors] = useState({});
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const { blocks } = useFetchPageBlocks("products");
+  const { blocks } = useFetchPageBlocks("contact-us");
 
   const breadcrumb = blocks?.filter(
     (block) => block?.item?.type?.toLowerCase().trim() === "breadcrumb"

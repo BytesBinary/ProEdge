@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import greaterThanIcon from '../../../../assets/icons/greaterThan.svg'
 
-const PageHeader = ({ title = "Title", bgImage, breadcrumbs = [] }) => {
+const PageHeader = ({ title = "", bgImage, breadcrumbs = [] }) => {
   return (
     <section className="relative w-full h-[20vh] md:h-[30vh] lg:h-[20vw] overflow-hidden">
       {/* Background image */}
