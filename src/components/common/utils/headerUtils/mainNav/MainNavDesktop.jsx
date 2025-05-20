@@ -194,7 +194,8 @@ const DesktopNav = ({ actionIcons }) => {
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    performSearch();
+    navigate(`/products?searchTerm=${searchTerm}`)
+    // performSearch();
   };
 
   const handleProductClick = (productId, variation_name) => {

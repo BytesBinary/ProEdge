@@ -1,4 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
+import levenshtein from 'fast-levenshtein'; // Optional fuzzy matching lib
+
 import Filter from "../../components/category/Filter";
 import Pagination from "../../components/category/Pagination";
 import { IoFilterSharp } from "react-icons/io5";
@@ -11,11 +13,13 @@ import { CartContext } from "../../context/CartContext";
 import { Helmet } from "react-helmet-async";
 import ProductCard from "../../components/common/utils/cards/ProductCard";
 import { useFetchPageBlocks } from "../../context/PageContext";
+import { useLocation, useSearchParams } from "react-router-dom";
 
 const Category = () => {
   const [showFilter, setShowFilter] = useState(false);
   const [sortOption, setSortOption] = useState("Relevance");
   const [totalProducts, setTotalProducts] = useState(0);
+  const [productSearchterms,setProductSearchterms]=useState([])
   const { blocks } = useFetchPageBlocks("products");
 
   const breadcrumb = blocks?.filter(
@@ -27,6 +31,11 @@ const Category = () => {
 
   const { products, loading } = useProductContext();
   const { singleCategory } = useContext(CategoryContext);
+ const location = useLocation();
+  
+  // Properly extract search params
+  const searchParams = new URLSearchParams(location.search);
+
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -143,8 +152,121 @@ const Category = () => {
     setTotalProducts(uniqueProductIds.size);
   }, [productsWithSlugs, singleCategory]);
 
+console.log(productsWithSlugs,"productwithsug");
+  const searchTerm = searchParams.get("searchTerm")?.trim() || "";
+  console.log(searchTerm,"searchTerm")
+
+const performSearch = () => {
+  const searchTerm = searchParams.get("searchTerm");
+
+  // Return all products if no search term is provided
+  if (!searchTerm || searchTerm.trim() === "") {
+    return productsWithSlugs;
+  }
+
+  const lowerCaseSearchTerm = searchTerm.toLowerCase();
+  const tokens = lowerCaseSearchTerm.split(/\s+/).filter(Boolean);
+
+  const results = [];
+
+  const fieldPriority = {
+    title: 8,
+    variation: 7,
+    variation_value: 6,
+    child_category: 5,
+    subcategory: 4,
+    category: 3,
+    feature: 2,
+    sku_code: 1,
+    offer_price: 0,
+  };
+
+  const isFuzzyMatch = (fieldValue, token) => {
+    const threshold = 2;
+    return (
+      fieldValue.includes(token) ||
+      levenshtein.get(fieldValue, token) <= threshold
+    );
+  };
+
+  productsWithSlugs.forEach((product) => {
+    const productTitle = product.title?.toLowerCase() || "";
+    const childCategory = product.product_category?.child_category_name?.toLowerCase() || "";
+    const subCategory = product.product_category?.subcategory_name?.toLowerCase() || "";
+    const category = product.product_category?.category_name?.toLowerCase() || "";
+
+    product.variation?.forEach((variation) => {
+      const variationName = variation.variation_name?.toLowerCase() || "";
+      const variationValue = variation.variation_value?.toLowerCase() || "";
+      const skuCode = variation.sku_code?.toLowerCase() || "";
+      const offerPrice = (variation.offer_price?.toString() || "").toLowerCase();
+
+      const features = variation.features || [];
+      const featureStrings = features.flatMap((f) => [
+        f.feature_name?.toLowerCase() || "",
+        f.feature_value?.toLowerCase() || "",
+      ]);
+
+      const allFields = [
+        { type: "title", value: productTitle },
+        { type: "child_category", value: childCategory },
+        { type: "subcategory", value: subCategory },
+        { type: "category", value: category },
+        { type: "variation", value: variationName },
+        { type: "variation_value", value: variationValue },
+        { type: "sku_code", value: skuCode },
+        { type: "offer_price", value: offerPrice },
+        ...featureStrings.map((val) => ({ type: "feature", value: val })),
+      ];
+
+      let totalScore = 0;
+      let allTokensMatched = true;
+
+      for (const token of tokens) {
+        let matched = false;
+        for (const field of allFields) {
+          if (isFuzzyMatch(field.value, token)) {
+            totalScore += (fieldPriority[field.type] || 0);
+            matched = true;
+            break;
+          }
+        }
+        if (!matched) {
+          allTokensMatched = false;
+          break;
+        }
+      }
+
+      if (allTokensMatched) {
+        results.push({
+          product,
+          variation,
+          matchScore: totalScore,
+        });
+      }
+    });
+  });
+
+  results.sort((a, b) => b.matchScore - a.matchScore);
+
+  const uniqueProductsMap = new Map();
+  results.forEach(({ product }) => {
+    if (!uniqueProductsMap.has(product._id)) {
+      uniqueProductsMap.set(product._id, product);
+    }
+  });
+
+  return [...uniqueProductsMap.values()];
+};
+
+useEffect(()=>{
+const productSearchd=performSearch();
+setProductSearchterms(productSearchd)
+
+
+},[searchTerm])
   // Now filter products based on the selected category using the generated slugs
-  const categoryfilteredProducts = productsWithSlugs.filter((product) => {
+  const categoryfilteredProducts = productSearchterms.filter((product) => {
     // Extract product category details using the generated slugs
     const productChildSlug = product.product_category?.slug;
     const productSubSlug = product.product_category?.sub_category?.slug;
