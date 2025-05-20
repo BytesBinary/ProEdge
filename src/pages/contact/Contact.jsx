@@ -4,12 +4,10 @@ import SocialIcon from "../../components/contactus/SocialIcon";
 import InputField from "../../components/contactus/InputField";
 import SelectField from "../../components/contactus/SelectField";
 import TextareaField from "../../components/contactus/TextArea";
-import SubPageHeader from "../../components/common/utils/banner/SubPageHeader";
-import bgImage from "../../assets/images/cart.png";
-import categoryOptions from "../../data/contactus/CategoryOption";
-import breadcrumbs from "../../data/contactus/Breadcrumbs";
+import call from "../../assets/images/contact/call.png"
+import mail from "../../assets/images/contact/mail.png"
+import location from "../../assets/images/contact/location.png"
 import formFields from "../../data/contactus/FormFields";
-import contactInfoItems from "../../data/contactus/ContactInfoItems";
 import Map from "../../components/contactus/Map";
 import Button from "../../components/contactus/Button";
 import axios from "axios";
@@ -89,7 +87,7 @@ const Contact = () => {
       setLoading(false);
     }
   };
-
+ console.log(footer);
   useEffect(() => {
     fetchFooter();
   }, []);
@@ -223,6 +221,23 @@ const Contact = () => {
     { icon: twit, to: footer.thread },
   ];
 
+const contactInfoItems = [
+  {
+    icon: call,
+    title: "Phone Number",
+    content: footer.contact_number
+  },
+  {
+    icon: mail,
+    title: "Email Address",
+    content: footer.email
+  },
+  {
+    icon: location,
+    title: "Location",
+    content: footer.location_title
+  }
+];  
   return (
     <>
       <PageHeader
