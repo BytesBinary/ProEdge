@@ -11,13 +11,13 @@ const pageContent = {
     title: "Track Your Order",
     description: "Enter your order ID to track its current status and location.",
     accountDescription: "View and track items from your order history.",
-    guestDescription: "Track your items using your order number."
+    guestDescription: "Track your order by entering your order ID number."
   },
   "/return-order": {
     title: "Return Your Order",
     description: "Enter your order ID to initiate a return and follow the return process.",
     accountDescription: "View and return items from your order history.",
-    guestDescription: "Return your items using your order number."
+    guestDescription: "To initiate a return, please enter your order ID Number or contact us at (phone) or by emailing us at (email)"
   },
   "/modify-order": {
     title: "Modify Your Order",

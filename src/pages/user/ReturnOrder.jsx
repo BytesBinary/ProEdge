@@ -22,7 +22,7 @@ const ReturnOrder = ({
       <div className="mb-6">
         <h2 className="text-xl font-semibold">Return Order</h2>
         <p className="text-gray-500 mt-2">
-          Enter your order ID to initiate a return process
+          To initiate a return, please enter your order ID Number or contact us at (phone) or by emailing us at (email)
         </p>
       </div>
 

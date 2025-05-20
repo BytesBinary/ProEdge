@@ -15,7 +15,7 @@ const TrackOrderModal = ({ trackingId, setTrackingId, onTrack, onClose }) => (
           <div className="mt-3 text-center sm:mt-5">
             <h3 className="text-lg leading-6 font-medium text-gray-900">Track Your Order</h3>
             <p className="text-sm text-gray-500 mt-2">
-              Enter your order ID to track its current status and location.
+              Track your order by entering your order ID number.
             </p>
           </div>
         </div>
@@ -25,7 +25,7 @@ const TrackOrderModal = ({ trackingId, setTrackingId, onTrack, onClose }) => (
             value={trackingId}
             onChange={(e) => setTrackingId(e.target.value)}
             className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
-            placeholder="Enter Order ID"
+            placeholder="Please check your order confirmation email to find your order ID number."
           />
           <div className="mt-5 sm:mt-6 grid grid-cols-2 gap-3">
             <button

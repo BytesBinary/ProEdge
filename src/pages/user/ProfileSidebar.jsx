@@ -54,7 +54,7 @@ const ProfileSidebar = ({ activeTab, setActiveTab, user, handleSignOut }) => {
                 : "text-gray-700 hover:bg-gray-100"
             }`}
           >
-            Modify order
+            Return Order
           </button>
           <button
             onClick={() => setActiveTab("security")}

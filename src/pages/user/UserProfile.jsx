@@ -132,7 +132,7 @@ const UserProfile = () => {
             )}
 
             {activeTab === "track-order" && (
-              <TrackOrderUser pageInfo={{ title: "Track Order", description: "Track your order using order ID" }} />
+              <TrackOrderUser pageInfo={{ title: "Track Order", description: "Track your order by entering your order ID number." }} />
             )}
 
             {activeTab === "return-order" && (
