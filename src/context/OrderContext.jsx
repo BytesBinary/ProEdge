@@ -49,7 +49,6 @@ const GET_ORDER_QUERY = `
   }
 `;
 
-
 const GET_SETTINGS_QUERY = `
   query {
     Settings {
@@ -60,8 +59,6 @@ const GET_SETTINGS_QUERY = `
     }
   }
 `;
-
-
 
 const SINGLE_ORDER_QUERY = `
   query GetOrderById($id: ID!) {
@@ -208,50 +205,52 @@ export const OrderProvider = ({ children }) => {
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState(null);
 
+
+  const fetchOrders = async () => {
+    setLoading(true);
+    setError(null);
   const user = JSON.parse(localStorage.getItem("user"));
 
-  useEffect(() => {
-    fetchOrders();
-  }, []);
+    console.log(user, "user");
 
-const fetchOrders = async () => {
-  setLoading(true);
-  setError(null);
+    try {
+      // Prepare filters based on available user data
+      const variables = {
+        customer_id_filter: { _eq: user?.id },
+        email_filter: {
+          _eq: user?.email,
+        },
+      };
 
-  try {
-    // Prepare filters based on available user data
-    const variables = {
-      customer_id_filter: { _eq: user?.id || null },
-      email_filter: { _eq: JSON.parse(localStorage.getItem("currentOrder"))?.email || null }
-    };
+      const response = await axios.post(
+        `${import.meta.env.VITE_SERVER_URL}/graphql`,
+        {
+          query: GET_ORDER_QUERY,
+          variables,
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
 
-    const response = await axios.post(
-      `${import.meta.env.VITE_SERVER_URL}/graphql`,
-      {
-        query: GET_ORDER_QUERY,
-        variables
-      },
-      {
-        headers: { "Content-Type": "application/json" },
+      if (response.data.errors) {
+        throw new Error(response.data.errors[0].message);
       }
-    );
 
-    if (response.data.errors) {
-      throw new Error(response.data.errors[0].message);
+      const ordersList = response.data.data.order || [];
+      setOrders(ordersList);
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+      setError(
+        error.response?.data?.errors?.[0]?.message ||
+          error.message ||
+          "Failed to fetch orders"
+      );
+      setOrders([]);
+    } finally {
+      setLoading(false);
     }
-
-    const ordersList = response.data.data.order || [];
-    setOrders(ordersList);
-
-  } catch (error) {
-    console.error("Error fetching orders:", error);
-    setError(error.response?.data?.errors?.[0]?.message || error.message || "Failed to fetch orders");
-    setOrders([]);
-  } finally {
-    setLoading(false);
-  }
-};
-
+  };
 
   const fetchOrderById = async (orderid) => {
     // console.log(orderid, "orderid");
@@ -259,16 +258,17 @@ const fetchOrders = async () => {
       return null;
     }
 
-const id = orderid.split('-')[1]; 
+    const id = orderid.split("-")[1];
     // console.log(id, "last digit");
 
     // First check local orders
-  const localOrder = orders.find((order) => order.id === orderid || order.order_id === orderid);
-  if (localOrder) {
-    setCurrentOrder(localOrder);
-    return localOrder;
-  }
-
+    const localOrder = orders.find(
+      (order) => order.id === orderid || order.order_id === orderid
+    );
+    if (localOrder) {
+      setCurrentOrder(localOrder);
+      return localOrder;
+    }
 
     setOrderLoading(true);
     setError(null);
@@ -323,7 +323,6 @@ const id = orderid.split('-')[1];
 
       // console.log(response.data, 'response');
 
-     
       const newOrder = response.data.data.create_order_item;
       setOrders((prev) => [...prev, newOrder]);
 
@@ -337,7 +336,7 @@ const id = orderid.split('-')[1];
     }
   };
 
-   const createOrderDetails = async (orderDetailsData) => {
+  const createOrderDetails = async (orderDetailsData) => {
     setCreating(true);
     setError(null);
 
@@ -356,7 +355,6 @@ const id = orderid.split('-')[1];
 
       // console.log(response.data, 'response');
 
-     
       const newOrder = response.data.data.create_order_details_item;
       setOrders((prev) => [...prev, newOrder]);
 
@@ -369,8 +367,6 @@ const id = orderid.split('-')[1];
       setCreating(false);
     }
   };
-
-
 
   //update order
   const updateOrder = async (orderId, updatedFields) => {
@@ -455,28 +451,27 @@ const id = orderid.split('-')[1];
     }
   };
 
- const  fetchSettingsGraphQL=async()=> {
+  const fetchSettingsGraphQL = async () => {
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_SERVER_URL}/graphql`,
         {
-          query: GET_SETTINGS_QUERY
+          query: GET_SETTINGS_QUERY,
         },
         {
           headers: {
-            'Content-Type': 'application/json',
-          }
+            "Content-Type": "application/json",
+          },
         }
       );
 
-      console.log(response.data.data.Settings,"settings")
+      console.log(response.data.data.Settings, "settings");
       return response.data.data.Settings;
     } catch (error) {
-      console.error('Error fetching settings:', error);
+      console.error("Error fetching settings:", error);
       throw error;
     }
-  }
-
+  };
 
   return (
     <OrderContext.Provider
@@ -494,7 +489,7 @@ const id = orderid.split('-')[1];
         deleteOrder,
         createOrderDetails,
         refetchOrders: fetchOrders,
-        fetchSettingsGraphQL
+        fetchSettingsGraphQL,
       }}
     >
       {children}
