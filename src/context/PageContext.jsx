@@ -60,6 +60,7 @@ const GET_PAGE_BLOCKS_QUERY = `
             id
             icon { id }
             title
+            link
             type
           }
         }

@@ -41,7 +41,7 @@ const FeatureHighlights = ({ blocks, loading, error }) => {
       ? `${import.meta.env.VITE_SERVER_URL}/assets/${imageId}`
       : "https://via.placeholder.com/300x200?text=No+Image"; 
     const alt = `Image for ${title}`;
-    const href = `/feature/${block.item?.id}`; // customize your link pattern
+    const href = `${block.item?.link}`; // customize your link pattern
 
     return { title, imageSrc, alt, href };
   });
