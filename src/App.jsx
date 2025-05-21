@@ -33,6 +33,7 @@ import FAQPage from "./pages/FAQ/FAQPage";
 import UserProfile from "./pages/user/UserProfile";
 import NotFoundPage from "./pages/404/NotFoundPage";
 import Policies from "./pages/tech-help/Policies";
+import Jsonit from "./pages/convert/Jsonit";
 
 const router = createBrowserRouter([
   {
@@ -57,7 +58,7 @@ const router = createBrowserRouter([
       { path: "payment-policy", Component: Policies },
       { path: "terms-of-use", Component: Policies },      
       { path: "shipping-policy", Component: Policies },   
-
+      { path: "json-it", Component: Jsonit },   
       {
         Component: PrivateRoute,
         children: [
