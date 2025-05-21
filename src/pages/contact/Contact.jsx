@@ -225,7 +225,7 @@ const contactInfoItems = [
   {
     icon: call,
     title: "Phone Number",
-    content: footer.contact_number
+    content: footer.phone_no
   },
   {
     icon: mail,
