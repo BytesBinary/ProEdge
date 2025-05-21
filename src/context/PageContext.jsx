@@ -56,6 +56,12 @@ const GET_PAGE_BLOCKS_QUERY = `
             subtitle
             type
           }
+          ... on feature_highlights {
+            id
+            icon { id }
+            title
+            type
+          }
         }
       }
     }
