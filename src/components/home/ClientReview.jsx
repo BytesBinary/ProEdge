@@ -89,18 +89,33 @@ const ClientReview = ({
           setGroupTitle(group?.base_title || "Client Reviews");
           setGroupDescription(group?.base_review || "");
 
-          const formatted = fetched.map((item) => ({
-            name: item.name,
-            title: item.title,
-            review: item.description,
-            stars: "⭐".repeat(Number(item.rating)),
-            image: item.image?.id
-              ? `${import.meta.env.VITE_SERVER_URL}/assets/${item.image.id}`
-              : "https://via.placeholder.com/48",
-            gender: item.gender,
-            role: item.designation,
-          }));
-          setReviews(formatted);
+         const formatted = fetched.map((item) => {
+  const hasImage = item.image?.id;
+  const baseUrl = import.meta.env.VITE_SERVER_URL;
+
+  // Gender-based fallback avatar icons (Flaticon or similar)
+  const genderAvatar = {
+    male: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png", // male avatar
+    female: "https://cdn-icons-png.flaticon.com/512/3135/3135789.png", // female avatar
+    other: "https://cdn-icons-png.flaticon.com/512/456/456212.png",    // default/neutral
+  };
+
+  const image = hasImage
+    ? `${baseUrl}/assets/${item.image.id}`
+    : genderAvatar[item.gender?.toLowerCase()] || genderAvatar.other;
+
+  return {
+    name: item.name,
+    title: item.title,
+    review: item.description,
+    stars: "⭐".repeat(Number(item.rating)),
+    image,
+    gender: item.gender,
+    role: item.designation,
+  };
+});
+
+setReviews(formatted);
         }
       })
       .catch((err) => {
