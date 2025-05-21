@@ -8,7 +8,6 @@ const ReviewCard = ({
   name,
   role,
   image,
-  
   title,
   review,
   stars = "⭐⭐⭐⭐⭐",
@@ -37,6 +36,7 @@ const ReviewCard = ({
   </div>
 );
 
+// ✅ Updated GraphQL query
 const REVIEWS_QUERY = `
   query {
     reviews {
@@ -50,75 +50,77 @@ const REVIEWS_QUERY = `
       image {
         id
       }
+      review_group {
+        id
+        base_title
+        base_review
+      }
     }
   }
 `;
 
 const ClientReview = ({
-  heading = "Our Clients Review",
-  description = "Eclectic Accessories has completely transformed the way I accessorize! Their unique, one-of-a-kind pieces are perfect.",
   buttonText = "See All Review",
   buttonLink = "#",
 }) => {
   const [reviews, setReviews] = useState([]);
-  const swiperRef = useRef(null);
+  const [groupTitle, setGroupTitle] = useState("Client Reviews");
+  const [groupDescription, setGroupDescription] = useState("");
 
+  const swiperRef = useRef(null);
   const fetchedRef = useRef(false);
 
-useEffect(() => {
-  if (fetchedRef.current) return;
-  fetchedRef.current = true;
+  useEffect(() => {
+    if (fetchedRef.current) return;
+    fetchedRef.current = true;
 
-  fetch(`${import.meta.env.VITE_SERVER_URL}/graphql`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ query: REVIEWS_QUERY }),
-  })
-    .then((res) => res.json())
-    .then((result) => {
-      const fetchedReviews = result.data.reviews.map((item) => ({
-        name: item.name,
-        title: item.title,
-        review: item.description,
-        stars: "⭐".repeat(Number(item.rating)),
-        image: `${import.meta.env.VITE_SERVER_URL}/assets/${item.image.id}`,
-        gender:item.gender,
-        role: item.designation,
-      }));
-      setReviews(fetchedReviews);
+    fetch(`${import.meta.env.VITE_SERVER_URL}/graphql`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ query: REVIEWS_QUERY }),
     })
-    .catch((err) => {
-      console.error("Error fetching reviews:", err);
-    });
-}, []);
+      .then((res) => res.json())
+      .then((result) => {
+        const fetched = result.data.reviews || [];
+        if (fetched.length > 0) {
+          const group = fetched[0].review_group;
+          setGroupTitle(group?.base_title || "Client Reviews");
+          setGroupDescription(group?.base_review || "");
 
+          const formatted = fetched.map((item) => ({
+            name: item.name,
+            title: item.title,
+            review: item.description,
+            stars: "⭐".repeat(Number(item.rating)),
+            image: item.image?.id
+              ? `${import.meta.env.VITE_SERVER_URL}/assets/${item.image.id}`
+              : "https://via.placeholder.com/48",
+            gender: item.gender,
+            role: item.designation,
+          }));
+          setReviews(formatted);
+        }
+      })
+      .catch((err) => {
+        console.error("Error fetching reviews:", err);
+      });
+  }, []);
 
-  const handleMouseEnter = () => {
-    swiperRef.current?.autoplay?.stop();
-  };
-
-  const handleMouseLeave = () => {
-    swiperRef.current?.autoplay?.start();
-  };
-
-  const handleTouchStart = () => {
-    swiperRef.current?.autoplay?.stop();
-  };
-
-  const handleTouchEnd = () => {
-    swiperRef.current?.autoplay?.start();
-  };
+  const handleMouseEnter = () => swiperRef.current?.autoplay?.stop();
+  const handleMouseLeave = () => swiperRef.current?.autoplay?.start();
+  const handleTouchStart = () => swiperRef.current?.autoplay?.stop();
+  const handleTouchEnd = () => swiperRef.current?.autoplay?.start();
 
   return (
     <section className="w-full max-w-7xl mx-auto px-4 my-10">
       <div className="flex flex-col lg:flex-row justify-between my-12">
-        <div className="w-full lg:w-xs h-[266px] flex flex-col justify-between items-start mb-8 lg:mb-0 lg:mr-[84px]">
+          <div className="w-full lg:w-xs h-[266px] flex flex-col justify-between items-start mb-8 lg:mb-0 lg:mr-[84px]">
           <div>
-            <h1 className="font-semibold text-[32px] leading-10">{heading}</h1>
+            <h1 className="font-semibold text-[32px] leading-10">{groupTitle}</h1>
             <p className="text-[#5D6576] font-normal text-[16px] leading-[26px]">
-              {description}
+              {groupDescription}
             </p>
           </div>
           <a href={buttonLink}>
@@ -138,15 +140,15 @@ useEffect(() => {
           {reviews.length > 0 && (
             <>
               <Swiper
-              slidesPerView={2}
-                           breakpoints={{
-                0:{ slidesPerView: 1 },
-                500: { slidesPerView: 2 },
-                640: { slidesPerView: 2 },
-                768: { slidesPerView:  2},
-                1024: { slidesPerView: 2 },
-                1280: { slidesPerView:  2},
-              }}
+                slidesPerView={2}
+                breakpoints={{
+                  0: { slidesPerView: 1 },
+                  500: { slidesPerView: 2 },
+                  640: { slidesPerView: 2 },
+                  768: { slidesPerView: 2 },
+                  1024: { slidesPerView: 2 },
+                  1280: { slidesPerView: 2 },
+                }}
                 spaceBetween={20}
                 loop={true}
                 speed={700}

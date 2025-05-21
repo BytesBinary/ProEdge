@@ -15,7 +15,7 @@ const Home = () => {
   return (
     <>
       <Hero blocks={blocks} loading={loading} error={error}/>
-      <FeatureHighlits />
+      <FeatureHighlits blocks={blocks} loading={loading} error={error}/>
       <ServiceFeatures blocks={blocks} loading={loading} error={error}/>
       <ShopCategorySection />
       <MostViewedSection title={"Most Viewed Products"}/>
