@@ -8,6 +8,7 @@ const ReviewCard = ({
   name,
   role,
   image,
+  
   title,
   review,
   stars = "⭐⭐⭐⭐⭐",
@@ -44,6 +45,8 @@ const REVIEWS_QUERY = `
       title
       rating
       description
+      designation
+      gender
       image {
         id
       }
@@ -81,7 +84,8 @@ useEffect(() => {
         review: item.description,
         stars: "⭐".repeat(Number(item.rating)),
         image: `${import.meta.env.VITE_SERVER_URL}/assets/${item.image.id}`,
-        role: "Verified Buyer",
+        gender:item.gender,
+        role: item.designation,
       }));
       setReviews(fetchedReviews);
     })
