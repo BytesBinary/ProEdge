@@ -5,6 +5,22 @@ const Jsonit = () => {
   const [jsonUrl, setJsonUrl] = useState('');
   const fileInputRef = useRef(null);
 
+  const sampleCsv = `product_category,title,variation_name,sku_code,made_in,features,regular_price,offer_price,product_details,product_info,variation_value,image_url
+13,Product A,Size Small,SKU001,USA,CFM:50|MANUFACTURER:Arrow Pneumatics|HP:10HP|CSU:90 miron,20,15,Cotton Blend,Care: Washable,Small,http://image1.com
+13,Product A,Size Medium,SKU002,USA,CFM:50|MANUFACTURER:Arrow Pneumatics,22,16,Cotton Blend,Care: Washable,Medium,http://image2.com
+13,Product A,Color Red,SKU003,USA,COLOR:Red|BRAND:Generic,21,15.5,Cotton Blend,Care: Washable,Red,http://image3.com
+14,Product B,Size Large,SKU004,China,WEIGHT:Light,30,25,Polyester,Care: Dry Clean,Large,http://image4.com`;
+
+  const downloadSampleCSV = () => {
+    const blob = new Blob([sampleCsv], { type: 'text/csv' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'sample_structure.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const convertCSVtoJSON = () => {
     const file = fileInputRef.current.files[0];
     if (!file) {
@@ -27,7 +43,6 @@ const Jsonit = () => {
         return obj;
       });
 
-      // Parse features into array of objects
       const parseFeatures = (featuresStr) => {
         if (!featuresStr || typeof featuresStr !== 'string') return [];
         const features = [];
@@ -41,21 +56,19 @@ const Jsonit = () => {
         return features;
       };
 
-      // Apply features parsing and convert prices to numbers
       data.forEach(row => {
         row.features = parseFeatures(row.features);
         row.regular_price = parseFloat(row.regular_price) || 0;
         row.offer_price = parseFloat(row.offer_price) || 0;
       });
 
-      // Group by product_category and title
       const grouped = {};
       data.forEach(row => {
         const key = `${row.product_category}-${row.title}`;
         if (!grouped[key]) {
-          grouped[key] = { product_category: row.product_category, title: row.title, variations: [] };
+          grouped[key] = { product_category: row.product_category, title: row.title, variation: [] };
         }
-        grouped[key].variations.push({
+        grouped[key].variation.push({
           variation_name: row.variation_name,
           sku_code: row.sku_code,
           made_in: row.made_in,
@@ -69,11 +82,9 @@ const Jsonit = () => {
         });
       });
 
-      // Convert grouped data to array
       const result = Object.values(grouped);
       const jsonString = JSON.stringify(result, null, 2);
 
-      // Create downloadable file
       const blob = new Blob([jsonString], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       setJsonUrl(url);
@@ -101,9 +112,9 @@ const Jsonit = () => {
   };
 
   return (
-    <div className="jsonit min-h-screen bg-gray-100 flex items-center justify-center">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-        <h1 className="text-2xl font-bold text-gray-800 mb-4 text-center">CSV to Nested JSON Converter</h1>
+    <div className="jsonit min-h-screen bg-gray-100 flex items-center justify-center p-4">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-6xl">
+        <h1 className="text-3xl font-bold text-gray-800 mb-4 text-center">CSV to Nested JSON Converter</h1>
         <p className="text-gray-600 mb-4 text-center">Upload your CSV file to convert it into a nested JSON format for Directus.</p>
 
         <div className="input-group mb-4">
@@ -121,6 +132,43 @@ const Jsonit = () => {
         >
           Convert to JSON
         </button>
+
+        {/* CSV Table */}
+        <div className="mb-6 border rounded-lg p-4 bg-gray-50">
+          <div className="flex justify-between items-center mb-2">
+            <h2 className="text-lg font-semibold text-gray-700">📄 Sample CSV Format</h2>
+            <button
+              onClick={downloadSampleCSV}
+              className="bg-blue-500 text-white text-sm px-3 py-1 rounded hover:bg-blue-600 transition"
+            >
+              Download CSV Format
+            </button>
+          </div>
+
+          <div className="overflow-auto">
+            <table className="min-w-full text-sm text-left text-gray-700 border border-gray-300 rounded">
+              <thead className="bg-gray-200">
+                <tr>
+                  {[
+                    "product_category", "title", "variation_name", "sku_code", "made_in", "features", 
+                    "regular_price", "offer_price", "product_details", "product_info", "variation_value", "image_url"
+                  ].map(header => (
+                    <th key={header} className="px-2 py-1 border border-gray-300">{header}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {sampleCsv.split('\n').slice(1).map((row, index) => (
+                  <tr key={index} className="bg-white border-t">
+                    {row.split(',').map((cell, idx) => (
+                      <td key={idx} className="px-2 py-1 border border-gray-200">{cell}</td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
 
         {resultMessage && (
           <div className="text-center">
