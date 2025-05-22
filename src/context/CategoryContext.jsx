@@ -34,6 +34,9 @@ export function CategoryProvider({ children }) {
                 image {
                   id
                 }
+                banner_image {
+                  id
+                }
                 sub_category {
                   id
                   subcategory_name

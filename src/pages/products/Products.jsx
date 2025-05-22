@@ -48,11 +48,10 @@ const { data: products = [], } = useQuery({
     (block) => block?.item?.type?.toLowerCase().trim() === "breadcrumb"
   )[0];
 
-console.log(products,"pro")
+console.log(products)
   useEffect(() => {
-    return () => {
+   
       setSearchTerm("");
-    };
   }, [location.pathname]);
 
   
@@ -477,7 +476,7 @@ console.log(products,"pro")
     setTotalProducts(uniqueProductIds.size);
     setCurrentPage(1); // Reset to first page when filters change
   }, [categoryFilteredProducts]);
-
+console.log(singleCategory)
   return (
     <>
       {singleCategory && (
@@ -628,7 +627,7 @@ console.log(products,"pro")
       <PageHeader
         title={singleCategory?singleCategory.category_name:breadcrumb?.item?.title}
         bgImage={singleCategory?`${import.meta.env.VITE_SERVER_URL}/assets/${
-          singleCategory?.image?.id
+          singleCategory?.banner_image?.id
         }`:`${import.meta.env.VITE_SERVER_URL}/assets/${
           breadcrumb?.item?.image?.id
         }`}
