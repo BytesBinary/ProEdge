@@ -6,9 +6,21 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
+import { useQuery } from "@tanstack/react-query";
 
 const MostViewedSection = ({ title }) => {
-  const {products ,fetchProducts } = useProductContext();
+  const { fetchProducts } = useProductContext();
+  const {
+  data: products = [],
+  isLoading,
+  isError,
+  error,
+} = useQuery({
+  queryKey: ["products"],
+  queryFn: fetchProducts,
+  staleTime: 1000 * 60 * 5, // optional: 5 minutes
+  refetchOnWindowFocus: false, // optional
+});
   const swiperRef = useRef(null);
 
   const getRandomProducts = (arr, count) => {
