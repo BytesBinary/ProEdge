@@ -1,5 +1,5 @@
 // src/contexts/ProductContext.js
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 import axios from "axios";
 
 const ProductContext = createContext();
@@ -97,8 +97,6 @@ const SINGLE_PRODUCT_QUERY = `
 
 export const ProductProvider = ({ children }) => {
   let maxRangeLimit = 5000;
-  const [products, setProducts] = useState([]);
-  const [currentProduct, setCurrentProduct] = useState(null);
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(maxRangeLimit);
   const [isMadeUsa, setIsmadeUsa] = useState(false);
@@ -111,84 +109,65 @@ export const ProductProvider = ({ children }) => {
   
 
   const fetchProducts = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_SERVER_URL}/graphql`,
-        {
-          query: ALL_PRODUCTS_QUERY,
-        },
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-  
-      if (response.data.errors) {
-        throw new Error(response.data.errors[0].message);
-      }
-  
-      // Filter out products without variations
-      const filteredProducts = (response.data.data.product || []).filter(
-        (product) => product.variation && product.variation.length > 0
-      );
-  
-      setProducts(filteredProducts);
-    } catch (error) {
-      console.error("GraphQL fetch error:", error);
-      setError(error.message);
-      setProducts([]); // Reset to empty array on error
-    } finally {
-      setLoading(false);
+  const response = await axios.post(
+    `${import.meta.env.VITE_SERVER_URL}/graphql`,
+    {
+      query: ALL_PRODUCTS_QUERY,
+    },
+    {
+      headers: { "Content-Type": "application/json" },
     }
-  };
+  );
 
-  const fetchProductById = async (id) => {
-    // First try to find in local products
-    const localProduct = products.find((product) => product.id === id);
-    if (localProduct) {
-      setCurrentProduct(localProduct);
-      return localProduct;
+  if (response.data.errors) {
+    throw new Error(response.data.errors[0].message);
+  }
+  setLoading(false)
+
+  return (response.data.data.product || []).filter(
+    (product) => product.variation && product.variation.length > 0
+  );
+};
+
+ const fetchProductById = async (id) => {
+  setProductLoading(true);
+  setError(null);
+
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_SERVER_URL}/graphql`,
+      {
+        query: SINGLE_PRODUCT_QUERY,
+        variables: { id },
+      },
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+
+    if (response.data.errors) {
+      throw new Error(response.data.errors[0].message);
     }
 
-    // If not found locally, fetch from API
-    setProductLoading(true);
-    setError(null);
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_SERVER_URL}/graphql`,
-        {
-          query: SINGLE_PRODUCT_QUERY,
-          variables: { id },
-        },
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-
-      if (response.data.errors) {
-        throw new Error(response.data.errors[0].message);
-      }
-
-      const product = response.data.data.product[0];
-      if (product) {
-        setCurrentProduct(product);
-        return product;
-      }
-      throw new Error("Product not found");
-    } catch (error) {
-      console.error("GraphQL fetch error:", error);
-      setError(error.message);
-      return null;
-    } finally {
-      setProductLoading(false);
+    const product = response.data.data.product[0];
+    if (product) {
+      return product; 
     }
-  };
+
+    throw new Error("Product not found"); 
+  } catch (error) {
+    console.error("GraphQL fetch error:", error);
+    setError(error.message);
+    throw error; 
+  } finally {
+    setProductLoading(false);
+  }
+};
+
 
   return (
     <ProductContext.Provider
       value={{
-        products,
         minPrice,
         setMinPrice,
         maxPrice,
@@ -198,7 +177,6 @@ export const ProductProvider = ({ children }) => {
         setIsmadeUsa,
         loading,
         error,
-        currentProduct,
         productLoading,
         fetchProducts,
         fetchProductById,
