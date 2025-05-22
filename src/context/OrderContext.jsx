@@ -208,7 +208,7 @@ export const OrderProvider = ({ children }) => {
   const fetchOrders = async () => {
     setLoading(true);
     setError(null);
-  const user = JSON.parse(localStorage.getItem("user"));
+    const user = JSON.parse(localStorage.getItem("user"));
     try {
       // Prepare filters based on available user data
       const variables = {
@@ -239,8 +239,8 @@ export const OrderProvider = ({ children }) => {
       console.error("Error fetching orders:", error);
       setError(
         error.response?.data?.errors?.[0]?.message ||
-          error.message ||
-          "Failed to fetch orders"
+        error.message ||
+        "Failed to fetch orders"
       );
       setOrders([]);
     } finally {
@@ -288,8 +288,8 @@ export const OrderProvider = ({ children }) => {
       console.error("Error fetching order by email and order_id:", error);
       setError(
         error.response?.data?.errors?.[0]?.message ||
-          error.message ||
-          "Failed to fetch order"
+        error.message ||
+        "Failed to fetch order"
       );
       setCurrentOrder(null);
       return null;
