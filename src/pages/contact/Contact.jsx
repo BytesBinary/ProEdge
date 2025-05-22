@@ -258,7 +258,7 @@ const contactInfoItems = [
   return (
     <>
      <Helmet>
-        <title>Contact - ProEdge</title>
+        <title> ProEdge</title>
         <meta name="description" content="Welcome to ProEdge. Discover our products and services." />
       </Helmet>
       <PageHeader
