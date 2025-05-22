@@ -48,11 +48,11 @@ const { data: products = [], } = useQuery({
     (block) => block?.item?.type?.toLowerCase().trim() === "breadcrumb"
   )[0];
 
-console.log(products)
-  useEffect(() => {
-   
+    useEffect(() => {
+    return () => {
       setSearchTerm("");
-  }, [location.pathname]);
+    };
+  }, []);
 
   
   // Function to generate a slug from a string
