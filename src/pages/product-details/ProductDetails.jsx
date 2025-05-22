@@ -12,11 +12,24 @@ import bgImage from "../../assets/images/productDetails/bg.jpeg";
 import { Helmet } from "react-helmet-async";
 import { ClipLoader } from "react-spinners";
 import { useOrderContext } from "../../context/OrderContext";
+import { useQuery } from "@tanstack/react-query";
+import { fetchPageBlocks } from "../../context/PageContext";
 
 const Product = () => {
   const [singleProduct, setSingleProduct] = useState(null);
   const [singleVariation, setSingleVariation] = useState(null);
   const { fetchSettingsGraphQL } = useOrderContext();
+  const { data: blocks = [] } = useQuery({
+    queryKey: ["pageBlocks", "single-product"],
+    queryFn: () => fetchPageBlocks("single-product"),
+    staleTime: 1000 * 60 * 5, // cache for 5 mins
+  });
+
+  const breadcrumb = blocks?.filter(
+    (block) => block?.item?.type?.toLowerCase().trim() === "breadcrumb"
+  )[0];
+
+  console.log(blocks);
 
   const [activeTab, setActiveTab] = useState("Features");
 
@@ -25,23 +38,23 @@ const Product = () => {
   };
 
   const [selectedVariationId, setSelectedVariationId] = useState(null);
-   const [deliveryData, setDeliveryData] = useState(null);
- 
+  const [deliveryData, setDeliveryData] = useState(null);
 
-  const { fetchProductById ,setSearchTerm} = useProductContext();
+
+  const { fetchProductById, setSearchTerm } = useProductContext();
   const { title } = useParams();
 
-  
-    useEffect(() => {
-          if (location.pathname !== "/products") setSearchTerm("");
-      }, []);
+
+  useEffect(() => {
+    if (location.pathname !== "/products") setSearchTerm("");
+  }, []);
 
   const hasFetched = useRef(false);
-  
+
   useEffect(() => {
     if (hasFetched.current) return;
     hasFetched.current = true;
-  
+
     const fetchDeliveryData = async () => {
       try {
         const data = await fetchSettingsGraphQL();
@@ -50,7 +63,7 @@ const Product = () => {
         console.error("Error fetching delivery location data:", error);
       }
     };
-  
+
     fetchDeliveryData();
   }, []);
 
@@ -84,22 +97,22 @@ const Product = () => {
 
   const hasSingleProductFetched = useRef(false);
 
-useEffect(() => {
-  if (!id || hasSingleProductFetched.current) return;
-  hasSingleProductFetched.current = true;
+  useEffect(() => {
+    if (!id || hasSingleProductFetched.current) return;
+    hasSingleProductFetched.current = true;
 
-  const fetchSingleProduct = async () => {
-    try {
-      const product = await fetchProductById(id);
-      setSingleProduct(product);
-      updateMostViewed(product);
-    } catch (error) {
-      console.error("Error fetching single product:", error);
-    }
-  };
+    const fetchSingleProduct = async () => {
+      try {
+        const product = await fetchProductById(id);
+        setSingleProduct(product);
+        updateMostViewed(product);
+      } catch (error) {
+        console.error("Error fetching single product:", error);
+      }
+    };
 
-  fetchSingleProduct();
-}, [id]);
+    fetchSingleProduct();
+  }, [id]);
 
 
   useEffect(() => {
@@ -178,11 +191,11 @@ useEffect(() => {
   ];
   const thumbnails = Array.isArray(singleProduct.variation)
     ? singleProduct.variation.map((v) => ({
-        id: v.id,
-        image_url: v.image_url || "",
-        image: v.image?.id || "",
-        option: v,
-      }))
+      id: v.id,
+      image_url: v.image_url || "",
+      image: v.image?.id || "",
+      option: v,
+    }))
     : [];
 
   const mainImage = singleVariation.image?.id
@@ -195,19 +208,17 @@ useEffect(() => {
 
   // Create a more compelling meta title and description
   const metaTitle = `${productName} | ${brandName}`;
-  const metaDescription = `Shop high-quality ${productName} - ${
-    singleVariation.product_details?.substring(0, 140) ||
+  const metaDescription = `Shop high-quality ${productName} - ${singleVariation.product_details?.substring(0, 140) ||
     "Industrial brass fitting for various applications"
-  }`;
+    }`;
 
   // Generate canonical URL
   const cleanProductName = productName
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
-  const canonicalUrl = `${
-    import.meta.env.VITE_CLIENT_URL
-  }/products/${cleanProductName}-${id}`;
+  const canonicalUrl = `${import.meta.env.VITE_CLIENT_URL
+    }/products/${cleanProductName}-${id}`;
 
   // Generate rich product schema data
   const productSchema = {
@@ -267,12 +278,12 @@ useEffect(() => {
     },
     aggregateRating: singleVariation.rating
       ? {
-          "@type": "AggregateRating",
-          ratingValue: singleVariation.rating,
-          reviewCount: singleVariation.total_ratings || 0,
-          bestRating: "5",
-          worstRating: "1",
-        }
+        "@type": "AggregateRating",
+        ratingValue: singleVariation.rating,
+        reviewCount: singleVariation.total_ratings || 0,
+        bestRating: "5",
+        worstRating: "1",
+      }
       : undefined,
     additionalProperty: [
       {
@@ -332,8 +343,10 @@ useEffect(() => {
         </script>
       </Helmet>
       <PageHeader
-        title="Product Details"
-        bgImage={bgImage}
+        title={breadcrumb?.item?.title}
+        bgImage={`${import.meta.env.VITE_SERVER_URL}/assets/${
+          breadcrumb?.item?.image?.id
+        }`}
         breadcrumbs={breadcrumbs}
       />
       <div className="max-w-7xl w-full mx-auto mt-16">
