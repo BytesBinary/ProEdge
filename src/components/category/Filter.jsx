@@ -246,8 +246,7 @@ const PriceRange = ({ isOpen, setIsOpen }) => {
     </div>
   );
 };
-
-const Filter = ({ onClose }) => {
+const Filter = ({ onClose, searchTerm, setSearchTerm }) => {
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(true);
   const [isPriceOpen, setIsPriceOpen] = useState(true);
   const [isMadeInUSAOpen, setIsMadeInUSAOpen] = useState(true);
@@ -287,51 +286,68 @@ const Filter = ({ onClose }) => {
     if (!categories) return;
 
     const formatted = formatCategories(categories);
-    const withToggles = setInitialToggleStates(formatted, parentSlug, subSlug, childSlug);
+    const withToggles = setInitialToggleStates(
+      formatted,
+      parentSlug,
+      subSlug,
+      childSlug
+    );
     setFormattedCategories(withToggles);
 
     // Set the single category that matches the current selection
     const matchedParent = withToggles.find(
-      (cat) => cat.slug === parentSlug || cat.sub_category?.some(sub => sub.slug === subSlug)
+      (cat) =>
+        cat.slug === parentSlug ||
+        cat.sub_category?.some((sub) => sub.slug === subSlug)
     );
     setSingleCategory(matchedParent || null);
   }, [categories, parentSlug, subSlug, childSlug, setSingleCategory]);
 
   // Set initial toggle states based on URL params
-  const setInitialToggleStates = (categories, parentSlug, subSlug, childSlug) => {
-    return categories.map(category => {
+  const setInitialToggleStates = (
+    categories,
+    parentSlug,
+    subSlug,
+    childSlug
+  ) => {
+    return categories.map((category) => {
       // Check if this category matches parent slug
       const isParentMatch = category.slug === parentSlug;
-      
+
       // Process sub categories
-      const subCategories = category.sub_category?.map(sub => {
+      const subCategories = category.sub_category?.map((sub) => {
         const isSubMatch = sub.slug === subSlug;
-        
+
         // Process child categories
-        const childCategories = sub.child_category?.map(child => {
+        const childCategories = sub.child_category?.map((child) => {
           return {
             ...child,
-            toggle: child.slug === childSlug
+            toggle: child.slug === childSlug,
           };
         });
-        
+
         return {
           ...sub,
           toggle: isSubMatch,
-          child_category: childCategories
+          child_category: childCategories,
         };
       });
-      
+
       return {
         ...category,
         toggle: isParentMatch,
-        sub_category: subCategories
+        sub_category: subCategories,
       };
     });
   };
 
   // Handle category selection
-  const handleCategorySelect = (level, category, parentCategory = null, subCategory = null) => {
+  const handleCategorySelect = (
+    level,
+    category,
+    parentCategory = null,
+    subCategory = null
+  ) => {
     const newSearchParams = new URLSearchParams(searchParams);
 
     // Clear all relevant params first
@@ -347,10 +363,12 @@ const Filter = ({ onClose }) => {
     }
 
     // Set the new param if not already selected
-    const currentParam = 
-      level === "parent" ? newSearchParams.get("parent_category") :
-      level === "sub" ? newSearchParams.get("sub_category") :
-      newSearchParams.get("child_category");
+    const currentParam =
+      level === "parent"
+        ? newSearchParams.get("parent_category")
+        : level === "sub"
+        ? newSearchParams.get("sub_category")
+        : newSearchParams.get("child_category");
 
     if (currentParam !== category.slug) {
       if (level === "parent") {
@@ -381,7 +399,7 @@ const Filter = ({ onClose }) => {
   // Remove a specific filter
   const removeFilter = (type) => {
     const newSearchParams = new URLSearchParams(searchParams);
-    
+
     if (type === "parent_category") {
       newSearchParams.delete("parent_category");
       newSearchParams.delete("sub_category");
@@ -392,7 +410,7 @@ const Filter = ({ onClose }) => {
     } else if (type === "child_category") {
       newSearchParams.delete("child_category");
     }
-    
+
     setSearchParams(newSearchParams);
   };
 
@@ -406,17 +424,17 @@ const Filter = ({ onClose }) => {
   };
 
   const formatSlugForDisplay = (slug) => {
-  if (!slug) return '';
-  
-  // Split on hyphens and remove the last part (ID)
-  const parts = slug.split('-');
-  parts.pop(); // Remove the last element (ID)
-  
-  // Capitalize first letter of each word and join with spaces
-  return parts.map(word => 
-    word.charAt(0).toUpperCase() + word.slice(1)
-  ).join(' ');
-};
+    if (!slug) return "";
+
+    // Split on hyphens and remove the last part (ID)
+    const parts = slug.split("-");
+    parts.pop(); // Remove the last element (ID)
+
+    // Capitalize first letter of each word and join with spaces
+    return parts
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
 
   return (
     <div className="w-[282px] bg-white space-y-6 h-screen lg:h-auto overflow-y-auto">
@@ -433,12 +451,15 @@ const Filter = ({ onClose }) => {
           </button>
         </div>
       </div>
-      
+
       {/* Active filters display */}
       <div className="flex flex-wrap gap-2 font-medium w-full max-w-md">
         {parentSlug && (
           <span className="flex items-center bg-[#F8F9FB] text-[#182B55] text-[12px] leading-[16px] px-3 py-2 rounded-[40px] max-w-full">
-            <span className="truncate max-w-[100px]"> {formatSlugForDisplay(parentSlug)}</span>
+            <span className="truncate max-w-[100px]">
+              {" "}
+              {formatSlugForDisplay(parentSlug)}
+            </span>
             <button
               onClick={() => removeFilter("parent_category")}
               className="ml-2 text-[#182B55] font-bold"
@@ -450,7 +471,10 @@ const Filter = ({ onClose }) => {
         )}
         {subSlug && (
           <span className="flex items-center bg-[#F8F9FB] text-[#182B55] text-[12px] leading-[16px] px-3 py-2 rounded-[40px] max-w-full">
-            <span className="truncate max-w-[100px]"> {formatSlugForDisplay(subSlug)}</span>
+            <span className="truncate max-w-[100px]">
+              {" "}
+              {formatSlugForDisplay(subSlug)}
+            </span>
             <button
               onClick={() => removeFilter("sub_category")}
               className="ml-2 text-[#182B55] font-bold"
@@ -462,7 +486,10 @@ const Filter = ({ onClose }) => {
         )}
         {childSlug && (
           <span className="flex items-center bg-[#F8F9FB] text-[#182B55] text-[12px] leading-[16px] px-3 py-2 rounded-[40px] max-w-full">
-            <span className="truncate max-w-[100px]"> {formatSlugForDisplay(childSlug)}</span>
+            <span className="truncate max-w-[100px]">
+              {" "}
+              {formatSlugForDisplay(childSlug)}
+            </span>
             <button
               onClick={() => removeFilter("child_category")}
               className="ml-2 text-[#182B55] font-bold"
@@ -505,9 +532,13 @@ const Filter = ({ onClose }) => {
             <div key={category.id} className="cursor-pointer">
               <Checkbox
                 id={`parent-${category.id}`}
-                label={`${category.category_name} (${category.total_stock || 0})`}
+                label={`${category.category_name} (${
+                  category.total_stock || 0
+                })`}
                 checked={isCategorySelected("parent", category.slug)}
-                onChange={() => handleCategorySelect("parent", category)}
+                onChange={() => {
+                  handleCategorySelect("parent", category);
+                }}
               />
             </div>
           ))}
@@ -523,35 +554,45 @@ const Filter = ({ onClose }) => {
         >
           <div className="space-y-4">
             {formattedCategories
-              .find(cat => cat.slug === parentSlug)
-              ?.sub_category?.map(sub => (
+              .find((cat) => cat.slug === parentSlug)
+              ?.sub_category?.map((sub) => (
                 <div key={sub.id} className="ml-4">
                   <Checkbox
                     id={`sub-${sub.id}`}
                     label={`${sub.subcategory_name} (${sub.total_stock || 0})`}
                     checked={isCategorySelected("sub", sub.slug)}
-                    onChange={() => handleCategorySelect(
-                      "sub", 
-                      sub, 
-                      formattedCategories.find(cat => cat.slug === parentSlug)
-                    )}
+                    onChange={() => {
+                      handleCategorySelect(
+                        "sub",
+                        sub,
+                        formattedCategories.find(
+                          (cat) => cat.slug === parentSlug
+                        )
+                      );
+                    }}
                   />
 
                   {/* Child Categories (only shown if this sub is selected) */}
                   {subSlug === sub.slug && sub.child_category?.length > 0 && (
                     <div className="ml-4 mt-2 space-y-2">
-                      {sub.child_category.map(child => (
+                      {sub.child_category.map((child) => (
                         <Checkbox
                           key={child.id}
                           id={`child-${child.id}`}
-                          label={`${child.child_category_name} (${child.total_stock || 0})`}
+                          label={`${child.child_category_name} (${
+                            child.total_stock || 0
+                          })`}
                           checked={isCategorySelected("child", child.slug)}
-                          onChange={() => handleCategorySelect(
-                            "child", 
-                            child,
-                            formattedCategories.find(cat => cat.slug === parentSlug),
-                            sub
-                          )}
+                          onChange={() => {
+                            handleCategorySelect(
+                              "child",
+                              child,
+                              formattedCategories.find(
+                                (cat) => cat.slug === parentSlug
+                              ),
+                              sub
+                            );
+                          }}
                         />
                       ))}
                     </div>

@@ -20,9 +20,6 @@ const Category = () => {
   const itemsPerPage = 9;
 
   const { blocks } = useFetchPageBlocks("products");
-  const breadcrumb = blocks?.filter(
-    (block) => block?.item?.type?.toLowerCase().trim() === "breadcrumb"
-  )[0];
 
   const { wishlistItems } = useContext(CartContext);
   const {
@@ -30,12 +27,24 @@ const Category = () => {
     maxPrice,
     isMadeUsa,
     searchTerm,
+    setSearchTerm,
     products,
     fetchProducts,
     loading,
   } = useProductContext();
   const { singleCategory } = useContext(CategoryContext);
   const hasFetched = useRef(false);
+
+  const breadcrumb = blocks?.filter(
+    (block) => block?.item?.type?.toLowerCase().trim() === "breadcrumb"
+  )[0];
+
+
+  useEffect(() => {
+    return () => {
+      setSearchTerm("");
+    };
+  }, [location.pathname]);
 
   useEffect(() => {
     if (!hasFetched.current) {
@@ -613,8 +622,10 @@ const Category = () => {
         </Helmet>
       )}
       <PageHeader
-        title={breadcrumb?.item?.title}
-        bgImage={`${import.meta.env.VITE_SERVER_URL}/assets/${
+        title={singleCategory?singleCategory.category_name:breadcrumb?.item?.title}
+        bgImage={singleCategory?`${import.meta.env.VITE_SERVER_URL}/assets/${
+          singleCategory?.image?.id
+        }`:`${import.meta.env.VITE_SERVER_URL}/assets/${
           breadcrumb?.item?.image?.id
         }`}
         breadcrumbs={[
@@ -625,7 +636,7 @@ const Category = () => {
       <div className="w-full max-w-[1310px] mx-auto mt-3 md:mt-20 flex flex-col lg:flex-row justify-between items-start gap-10">
         {/* Desktop Filter Section */}
         <div className="hidden lg:block w-64">
-          <Filter />
+          <Filter searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
         </div>
 
         {/* Main Content Section */}

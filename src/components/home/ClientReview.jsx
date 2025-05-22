@@ -4,6 +4,7 @@ import { Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 
+
 const ReviewCard = ({
   name,
   role,
@@ -11,30 +12,60 @@ const ReviewCard = ({
   title,
   review,
   stars = "⭐⭐⭐⭐⭐",
-}) => (
-  <div className="w-full h-auto min-h-[266px] rounded-[20px] border-2 border-[#F8F9FB] hover:border-[#182B55] hover:bg-gray-50 transition-all duration-200 shadow-sm hover:shadow-md flex flex-col justify-between items-start p-6 mb-6">
-    <div className="w-full">
-      <div className="flex mb-3">{stars}</div>
-      <p className="text-md md:text-xl text-[#182B55] font-medium mb-3">
-        {title}
-      </p>
-      <p className="text-xs md:text-base text-[#5D6576] leading-relaxed">
-        "{review}"
-      </p>
-    </div>
-    <div className="flex gap-3 md:gap-4 items-center mt-6 w-full">
-      <img
-        src={image}
-        alt={name}
-        className="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover flex-shrink-0"
-      />
-      <div className="flex flex-col">
-        <h3 className="text-[#182B55] text-sm font-medium">{name}</h3>
-        <h5 className="text-xs text-[#4A5A7E]">{role}</h5>
+}) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  return (
+   <div className="w-full min-h-[300px] max-h-[400px] rounded-[20px] border-2 border-[#F8F9FB] hover:border-[#182B55] hover:bg-gray-50 transition-all duration-200 shadow-sm hover:shadow-md flex flex-col justify-between items-start p-6 mb-6">
+      {/* Top Part */}
+      <div className="w-full flex-1 overflow-hidden">
+        <div className="flex mb-3">{stars}</div>
+
+        {/* Title with single-line ellipsis */}
+       <p
+          className={`text-md md:text-xl text-[#182B55] font-medium mb-3 ${
+            isExpanded ? "" : "truncate"
+          }`}
+          title={title}
+        >
+          {title}
+        </p>
+        {/* Review Text with expandable logic */}
+        <p
+          className={`text-xs md:text-base text-[#5D6576] leading-relaxed transition-all duration-200 ${
+            isExpanded ? "line-clamp-none" : "line-clamp-3"
+          }`}
+        >
+          "{review}"
+        </p>
+
+        {/* Toggle Button */}
+        {review.length > 100 && (
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="mt-2 text-sm text-[#3F66BC] hover:underline"
+          >
+            {isExpanded ? "See less" : "See more"}
+          </button>
+        )}
+      </div>
+
+      {/* User Info */}
+      <div className="flex gap-3 md:gap-4 items-center mt-6 w-full">
+        <img
+          src={image}
+          alt={name}
+          className="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover flex-shrink-0"
+        />
+        <div className="flex flex-col">
+          <h3 className="text-[#182B55] text-sm font-medium">{name}</h3>
+          <h5 className="text-xs text-[#4A5A7E]">{role}</h5>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
+
 
 // ✅ Updated GraphQL query
 const REVIEWS_QUERY = `
