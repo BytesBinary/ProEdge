@@ -405,6 +405,19 @@ const Filter = ({ onClose }) => {
     );
   };
 
+  const formatSlugForDisplay = (slug) => {
+  if (!slug) return '';
+  
+  // Split on hyphens and remove the last part (ID)
+  const parts = slug.split('-');
+  parts.pop(); // Remove the last element (ID)
+  
+  // Capitalize first letter of each word and join with spaces
+  return parts.map(word => 
+    word.charAt(0).toUpperCase() + word.slice(1)
+  ).join(' ');
+};
+
   return (
     <div className="w-[282px] bg-white space-y-6 h-screen lg:h-auto overflow-y-auto">
       <div className="space-y-2">
@@ -425,7 +438,7 @@ const Filter = ({ onClose }) => {
       <div className="flex flex-wrap gap-2 font-medium w-full max-w-md">
         {parentSlug && (
           <span className="flex items-center bg-[#F8F9FB] text-[#182B55] text-[12px] leading-[16px] px-3 py-2 rounded-[40px] max-w-full">
-            <span className="truncate max-w-[100px]">{parentSlug}</span>
+            <span className="truncate max-w-[100px]"> {formatSlugForDisplay(parentSlug)}</span>
             <button
               onClick={() => removeFilter("parent_category")}
               className="ml-2 text-[#182B55] font-bold"
@@ -437,7 +450,7 @@ const Filter = ({ onClose }) => {
         )}
         {subSlug && (
           <span className="flex items-center bg-[#F8F9FB] text-[#182B55] text-[12px] leading-[16px] px-3 py-2 rounded-[40px] max-w-full">
-            <span className="truncate max-w-[100px]">{subSlug}</span>
+            <span className="truncate max-w-[100px]"> {formatSlugForDisplay(subSlug)}</span>
             <button
               onClick={() => removeFilter("sub_category")}
               className="ml-2 text-[#182B55] font-bold"
@@ -449,7 +462,7 @@ const Filter = ({ onClose }) => {
         )}
         {childSlug && (
           <span className="flex items-center bg-[#F8F9FB] text-[#182B55] text-[12px] leading-[16px] px-3 py-2 rounded-[40px] max-w-full">
-            <span className="truncate max-w-[100px]">{childSlug}</span>
+            <span className="truncate max-w-[100px]"> {formatSlugForDisplay(childSlug)}</span>
             <button
               onClick={() => removeFilter("child_category")}
               className="ml-2 text-[#182B55] font-bold"
