@@ -20,6 +20,9 @@ const Videos = () => {
   const breadcrumb = blocks?.filter(
     (block) => block?.item?.type?.toLowerCase().trim() === "breadcrumb"
   )[0];
+  const pageTitle = blocks?.filter(
+    (block) => block?.item?.type?.toLowerCase().trim() === "page_title"
+  )[0];
 
   const ALL_VIDEOS_QUERY = `
   query {
@@ -83,7 +86,7 @@ const Videos = () => {
 
       <section className="my-10">
         <h1 className="text-[#182B55] text-5xl leading-16 font-semibold text-center">
-          Watch Video
+          {pageTitle?.item?.page_title}
         </h1>
 
         <div className="max-w-7xl w-full flex-center flex-wrap gap-8 mt-10 mx-auto px-4">

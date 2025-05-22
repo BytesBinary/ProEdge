@@ -23,7 +23,7 @@ const FeatureCard = ({ title, imageSrc, alt, href = "#" }) => (
 );
 
 const FeatureHighlights = ({ blocks, loading, error }) => {
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p></p>;
   if (error) return <p>Error loading content: {error.message}</p>;
 
   // Filter only feature_highlight type blocks
