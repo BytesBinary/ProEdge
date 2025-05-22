@@ -133,6 +133,22 @@ const Jsonit = () => {
           Convert to JSON
         </button>
 
+        {resultMessage && (
+          <div className="text-center">
+            <p className={`text-sm ${resultMessage.includes('successful') ? 'text-green-600' : 'text-red-600'} mb-2`}>
+              {resultMessage}
+            </p>
+            {jsonUrl && (
+              <button
+                onClick={handleDownload}
+                className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200"
+              >
+                Download JSON
+              </button>
+            )}
+          </div>
+        )}
+
         {/* CSV Table */}
         <div className="mb-6 border rounded-lg p-4 bg-gray-50">
           <div className="flex justify-between items-center mb-2">
@@ -150,7 +166,7 @@ const Jsonit = () => {
               <thead className="bg-gray-200">
                 <tr>
                   {[
-                    "product_category", "title", "variation_name", "sku_code", "made_in", "features", 
+                    "product_category", "title", "variation_name", "sku_code", "made_in", "features",
                     "regular_price", "offer_price", "product_details", "product_info", "variation_value", "image_url"
                   ].map(header => (
                     <th key={header} className="px-2 py-1 border border-gray-300">{header}</th>
@@ -169,22 +185,6 @@ const Jsonit = () => {
             </table>
           </div>
         </div>
-
-        {resultMessage && (
-          <div className="text-center">
-            <p className={`text-sm ${resultMessage.includes('successful') ? 'text-green-600' : 'text-red-600'} mb-2`}>
-              {resultMessage}
-            </p>
-            {jsonUrl && (
-              <button
-                onClick={handleDownload}
-                className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200"
-              >
-                Download JSON
-              </button>
-            )}
-          </div>
-        )}
       </div>
     </div>
   );
