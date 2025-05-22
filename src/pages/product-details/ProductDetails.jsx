@@ -28,8 +28,13 @@ const Product = () => {
    const [deliveryData, setDeliveryData] = useState(null);
  
 
-  const { fetchProductById } = useProductContext();
+  const { fetchProductById ,setSearchTerm} = useProductContext();
   const { title } = useParams();
+
+  
+    useEffect(() => {
+          if (location.pathname !== "/products") setSearchTerm("");
+      }, []);
 
   const hasFetched = useRef(false);
   

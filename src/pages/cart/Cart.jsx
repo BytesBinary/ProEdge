@@ -7,6 +7,7 @@ import MostViewedSection from "../../components/home/MostViewed";
 import { CartContext } from "../../context/CartContext";
 import WishCard from "../../components/wishlist/WishCard";
 import { useProductContext } from "../../context/ProductContext";
+import { Helmet } from "react-helmet-async";
 
 const Cart = () => {
   const { 
@@ -34,6 +35,10 @@ const Cart = () => {
       }, []);
   return (
     <>
+     <Helmet>
+        <title> ProEdge</title>
+        <meta name="description" content="Welcome to ProEdge. Discover our products and services." />
+      </Helmet>
       <SubPageHeader
         title="Cart"
         currentPage="cart"

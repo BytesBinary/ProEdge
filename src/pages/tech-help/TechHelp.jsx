@@ -19,6 +19,7 @@ import PageHeader from "../../components/common/utils/banner/SubPageHeader";
 import { fetchPageBlocks } from "../../context/PageContext";
 import { useQuery } from "@tanstack/react-query";
 import { useProductContext } from "../../context/ProductContext";
+import { Helmet } from "react-helmet-async";
 
 const TechHelp = () => {
    const { data: blocks = [],  } = useQuery({
@@ -66,6 +67,10 @@ const TechHelp = () => {
 
   return (
     <div>
+       <Helmet>
+        <title> ProEdge</title>
+        <meta name="description" content="Welcome to ProEdge. Discover our products and services." />
+      </Helmet>
       <PageHeader
         title={breadcrumb?.item?.title}
         bgImage={

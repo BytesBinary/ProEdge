@@ -10,6 +10,7 @@ import StockBanner from "../../components/home/StockBanner";
 import { fetchPageBlocks } from "../../context/PageContext";
 import { useQuery } from "@tanstack/react-query";
 import { useProductContext } from "../../context/ProductContext";
+import { Helmet } from "react-helmet-async";
 
 const Home = () => {
   const {
@@ -27,6 +28,10 @@ const Home = () => {
   }, []);
   return (
     <>
+     <Helmet>
+        <title> ProEdge</title>
+        <meta name="description" content="Welcome to ProEdge. Discover our products and services." />
+      </Helmet>
       <Hero blocks={blocks} loading={isLoading} error={isError} />
       <FeatureHighlits blocks={blocks} loading={isLoading} error={isError} />
       <ServiceFeatures blocks={blocks} loading={isLoading} error={isError} />

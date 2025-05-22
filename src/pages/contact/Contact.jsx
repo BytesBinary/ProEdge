@@ -21,6 +21,7 @@ import { fetchPageBlocks } from "../../context/PageContext";
 import PageHeader from "../../components/common/utils/banner/SubPageHeader";
 import { useQuery } from "@tanstack/react-query";
 import { useProductContext } from "../../context/ProductContext";
+import { Helmet } from "react-helmet-async";
 
 const Contact = () => {
   const [footer, setFooter] = useState([]);
@@ -256,6 +257,10 @@ const contactInfoItems = [
 ];  
   return (
     <>
+     <Helmet>
+        <title>Contact - ProEdge</title>
+        <meta name="description" content="Welcome to ProEdge. Discover our products and services." />
+      </Helmet>
       <PageHeader
         title={breadcrumb?.item?.title}
         bgImage={`${import.meta.env.VITE_SERVER_URL}/assets/${breadcrumb?.item?.image?.id}`}

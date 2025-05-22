@@ -18,6 +18,7 @@ import { CartContext } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
 import { useOrderContext } from "../../context/OrderContext";
 import { useProductContext } from "../../context/ProductContext";
+import { Helmet } from "react-helmet-async";
 
 const Checkout = () => {
   const { user } = useAuth();
@@ -362,6 +363,11 @@ useEffect(() => {
 
   return (
     <div className="bg-[#F8F9FB]">
+
+       <Helmet>
+        <title>ProEdge</title>
+        <meta name="description" content="Welcome to ProEdge. Discover our products and services." />
+      </Helmet>
       <SubPageHeader
         title="Checkout"
         currentPage="checkout"
