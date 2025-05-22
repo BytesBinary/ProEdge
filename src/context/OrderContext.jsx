@@ -205,7 +205,6 @@ export const OrderProvider = ({ children }) => {
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState(null);
 
-
   const fetchOrders = async () => {
     setLoading(true);
     setError(null);
@@ -246,6 +245,56 @@ export const OrderProvider = ({ children }) => {
       setOrders([]);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchOrderByEmailAndOrderId = async (email, orderId) => {
+    setOrderLoading(true);
+    setError(null);
+    try {
+      const variables = {
+        customer_id_filter: {},
+        email_filter: { _eq: email },
+      };
+
+      const response = await axios.post(
+        `${import.meta.env.VITE_SERVER_URL}/graphql`,
+        {
+          query: GET_ORDER_QUERY,
+          variables,
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      if (response.data.errors) {
+        throw new Error(response.data.errors[0].message);
+      }
+
+      const ordersList = response.data.data.order || [];
+      const foundOrder = ordersList.find(
+        (order) => order.order_id === orderId
+      );
+
+      if (foundOrder) {
+        setCurrentOrder(foundOrder);
+        return foundOrder;
+      } else {
+        setCurrentOrder(null);
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching order by email and order_id:", error);
+      setError(
+        error.response?.data?.errors?.[0]?.message ||
+          error.message ||
+          "Failed to fetch order"
+      );
+      setCurrentOrder(null);
+      return null;
+    } finally {
+      setOrderLoading(false);
     }
   };
 
@@ -481,6 +530,7 @@ export const OrderProvider = ({ children }) => {
         creating,
         fetchOrders,
         fetchOrderById,
+        fetchOrderByEmailAndOrderId,
         createOrder,
         updateOrder,
         deleteOrder,

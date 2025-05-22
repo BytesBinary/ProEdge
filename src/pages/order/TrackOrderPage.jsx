@@ -32,7 +32,7 @@ const pageContent = {
 };
 
 const TrackOrderPage = () => {
-  const { orders } = useOrderContext();
+  const { fetchOrderByEmailAndOrderId } = useOrderContext();
   const [trackingId, setTrackingId] = useState("");
   const [email, setEmail] = useState("");
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -65,33 +65,32 @@ const TrackOrderPage = () => {
     setInfo(content);
   }, [pathname]);
 
-  const handleTrackOrder = () => {
-    // Validate inputs
+  const handleTrackOrder = async () => {
     if (!trackingId.trim() || !email.trim()) {
       setError("Please enter both Order ID and Email Address");
       return;
     }
 
-    // Find the order
-    const order = orders.find((o) => o.order_id === trackingId.trim());
+    try {
+      const order = await fetchOrderByEmailAndOrderId(email.trim(), trackingId.trim());
 
-    if (!order) {
-      setError("Order not found. Please check your order ID and try again.");
-      return;
+      console.log(order, "order");
+
+      if (!order || Object.keys(order).length === 0) {
+        setError("Order not found. Please check your order ID and try again.");
+        return;
+      }
+
+      setSelectedOrder(order);
+      setShowDetails(true);
+      setTrackingId("");
+      setEmail("");
+    } catch (error) {
+      console.error("Error fetching order:", error);
+      setError("An unexpected error occurred. Please try again later.");
     }
-
-    // Verify email (case-insensitive comparison)
-    if (order.billing_email.toLowerCase() !== email.trim().toLowerCase()) {
-      setError("The email address does not match the one used for this order.");
-      return;
-    }
-
-    // If all checks pass, show order details
-    setSelectedOrder(order);
-    setShowDetails(true);
-    setTrackingId("");
-    setEmail("");
   };
+
 
   return (
     <>
