@@ -1,50 +1,126 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
+import {
+  Elements,
+  useStripe,
+  useElements,
+  PaymentElement,
+} from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import SubPageHeader from "../../components/common/utils/banner/SubPageHeader";
 import bgImage from "../../assets/images/cart.png";
 import ShippingAddress from "../../components/checkout/ShippingAddress";
+import BillingAddress from "../../components/checkout/BillingAdress";
 import DeliveryMethod from "../../components/checkout/DeliveryMethod";
 import PaymentOption from "../../components/checkout/PaymentOption";
-import CardIcons from "../../components/checkout/CardIcons";
-import CardInformation from "../../components/checkout/CardInformation";
-import BillingAddress from "../../components/checkout/BillingAdress";
 import OrderSummaryCard from "../../components/common/utils/cards/OrderSummary";
 import ProductCardTiles from "../../components/common/utils/cards/ProductCardTiles";
 import Button from "../../components/common/utils/button/Button";
 import { CartContext } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
 import { useOrderContext } from "../../context/OrderContext";
-import { useProductContext } from "../../context/ProductContext";
 import { Helmet } from "react-helmet-async";
+import { useProductContext } from "../../context/ProductContext";
+
+// PaymentForm component to handle Stripe Elements
+const PaymentForm = ({ clientSecret, onPaymentSuccess, onPaymentError }) => {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [paymentError, setPaymentError] = useState(null);
+  const [processing, setProcessing] = useState(false);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    if (!stripe || !elements) {
+      return;
+    }
+
+    setProcessing(true);
+    setPaymentError(null);
+
+    try {
+      const { error: stripeError, paymentIntent } = await stripe.confirmPayment(
+        {
+          elements,
+          confirmParams: {
+            return_url: `${window.location.origin}/order-confirmation`,
+            receipt_email: "redwantapu1234@gmail.com", // Replace with actual email
+          },
+          redirect: "if_required",
+        }
+      );
+
+      if (stripeError) {
+        throw stripeError;
+      }
+
+      if (paymentIntent.status === "succeeded") {
+        onPaymentSuccess(paymentIntent);
+      } else {
+        throw new Error("Payment not completed");
+      }
+    } catch (err) {
+      setPaymentError(err.message);
+      onPaymentError(err);
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="mt-4">
+      <PaymentElement />
+      <button
+        type="submit"
+        disabled={!stripe || processing}
+        className="w-full mt-4 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 disabled:bg-gray-400"
+      >
+        {processing ? "Processing..." : "Pay Now"}
+      </button>
+      {paymentError && <div className="text-red-500 mt-2">{paymentError}</div>}
+    </form>
+  );
+};
 
 const Checkout = () => {
-  const { user } = useAuth();
+  const { user, register, login } = useAuth();
   const navigate = useNavigate();
   const { cartItems, getCartTotal, removeFromCart, clearCart } =
     useContext(CartContext);
-  const { createOrder, updateOrder ,fetchSettingsGraphQL} = useOrderContext();
-   const {setSearchTerm}=useProductContext();
-
-
-  const [paymentDetails, setPaymentDetails] = useState({
-    cardNumber: "",
-    cardName: "",
-    expiry: "",
-    cvv: "",
-  });
+  const { createOrder, updateOrder } = useOrderContext();
+  const { fetchSettingsGraphQL } = useOrderContext();
 
   const [sameAsShipping, setSameAsShipping] = useState(true);
-  const [shippingCharge, setdShippingCharge] = useState(0);
-
+  const [shippingCharge, setShippingCharge] = useState(0);
+  const [password, setPassword] = useState("");
+  const [registerMessage, setRegisterMessage] = useState(null);
+  const [fieldErrors, setFieldErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const location = useLocation();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [proceedAsGuest, setProceedAsGuest] = useState(false);
+  const [paymentIntentClientSecret, setPaymentIntentClientSecret] =
+    useState(null);
+  const [stripePromise, setStripePromise] = useState(null);
+  const [paymentCompleted, setPaymentCompleted] = useState(false);
+  const { setSearchTerm } = useProductContext();
 
-  // Single order data state
+  // Initialize Stripe
+  useEffect(() => {
+    const initializeStripe = async () => {
+      const stripe = await loadStripe(
+        import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY
+      );
+      setStripePromise(stripe);
+    };
+    initializeStripe();
+  }, []);
+
+  // Order data state
   const [orderData, setOrderData] = useState(() => {
-    // Load from localStorage
     const savedOrder = localStorage.getItem("currentOrder");
     const savedUser = JSON.parse(localStorage.getItem("user"));
     const currentUser = user || savedUser;
@@ -68,7 +144,7 @@ const Checkout = () => {
       subtotal: getCartTotal(),
       tax: 0,
       order_status: "pending",
-      payment_method: "credit-card",
+      payment_method: "card",
       payment_status: "unpaid",
       currency: "usd",
       billing_name: currentUser
@@ -91,29 +167,39 @@ const Checkout = () => {
       : defaultData;
   });
 
-  const hasFetched = useRef(false);
-
-useEffect(() => {
-  if (hasFetched.current) return;
-  hasFetched.current = true;
-
-  const fetchDeliveryData = async () => {
-    try {
-      const data = await fetchSettingsGraphQL();
-      setdShippingCharge(data);
-    } catch (error) {
-      console.error("Error fetching delivery location data:", error);
-    }
-  };
-
-  fetchDeliveryData();
-}, []);
-
-
-  // Update user data when auth state changes
-  // Separate useEffect hooks for different concerns
   useEffect(() => {
-    // Handle user data synchronization
+    if (location.pathname !== "/products") setSearchTerm("");
+  }, []);
+  // Check authentication
+  useEffect(() => {
+    const token = localStorage.getItem("access_token");
+    setIsAuthenticated(!!token);
+
+    if (location.state?.proceedAsGuest) {
+      setProceedAsGuest(true);
+    }
+  }, [location.state]);
+
+  // Fetch shipping data
+  const hasFetched = useRef(false);
+  useEffect(() => {
+    if (hasFetched.current) return;
+    hasFetched.current = true;
+
+    const fetchDeliveryData = async () => {
+      try {
+        const data = await fetchSettingsGraphQL();
+        setShippingCharge(data);
+      } catch (error) {
+        console.error("Error fetching delivery location data:", error);
+      }
+    };
+
+    fetchDeliveryData();
+  }, []);
+
+  // Update user data when user changes
+  useEffect(() => {
     const currentUser = user || JSON.parse(localStorage.getItem("user"));
     if (currentUser) {
       setOrderData((prev) => ({
@@ -128,10 +214,10 @@ useEffect(() => {
         billing_email: currentUser.email || prev.billing_email,
       }));
     }
-  }, [user]); // Only depend on user changes
+  }, [user]);
 
+  // Redirect if cart is empty
   useEffect(() => {
-    // Only redirect if not loading (not in the middle of placing an order)
     if (
       cartItems.length === 0 &&
       location.pathname !== "/products" &&
@@ -140,11 +226,8 @@ useEffect(() => {
       navigate("/products");
     }
   }, [cartItems, navigate, location.pathname, loading]);
-  
-    useEffect(() => {
-          if (location.pathname !== "/products") setSearchTerm("");
-      }, []);
-  // Handle shipping/billing address changes
+
+  // Form handlers
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setOrderData((prev) => ({
@@ -152,7 +235,10 @@ useEffect(() => {
       [name]: value,
     }));
 
-    // If same as shipping is checked, update billing too
+    if (fieldErrors[name]) {
+      setFieldErrors((prev) => ({ ...prev, [name]: "" }));
+    }
+
     if (sameAsShipping) {
       const billingField = `billing_${name.split("_").slice(1).join("_")}`;
       if (billingField in orderData) {
@@ -164,37 +250,34 @@ useEffect(() => {
     }
   };
 
-  // Handle payment method changes
-  const handlePaymentChange = (paymentMethod, requiresCardDetails) => {
-    // Update payment method in order data
-    setOrderData((prev) => ({
-      ...prev,
-      payment_method: paymentMethod,
-      currency: prev.currency || "usd", // Ensure currency is set
-    }));
+  const handlePaymentChange = (paymentMethod) => {
+    setOrderData((prev) => {
+      let selectedCurrency = prev.currency || "usd";
 
-    // Reset card details if switching to a method that doesn't require them
-    if (!requiresCardDetails) {
-      setPaymentDetails({
-        cardNumber: "",
-        expiryDate: "",
-        cvv: "",
-      });
-    }
+      switch (paymentMethod) {
+        case "afterpay_clearpay":
+          selectedCurrency = "aud"; // Ensure it's supported
+          break;
+        case "klarna":
+          selectedCurrency = "aud"; // Set to a Klarna-supported currency
+          break;
+        default:
+          selectedCurrency = "usd";
+      }
 
-    // Optional: Log the change for debugging
-    // console.log(
-    //   `Payment method changed to ${paymentMethod} for currency ${orderData.currency}`
-    // );
+      return {
+        ...prev,
+        payment_method: paymentMethod,
+        currency: selectedCurrency,
+      };
+    });
   };
 
-  // Toggle same as shipping
   const handleSameAsShippingChange = (e) => {
     const isChecked = e.target.checked;
     setSameAsShipping(isChecked);
 
-    if (!isChecked) {
-      // Copy shipping data to billing
+    if (isChecked) {
       setOrderData((prev) => ({
         ...prev,
         billing_name: prev.name,
@@ -210,7 +293,6 @@ useEffect(() => {
     }
   };
 
-  // Clear billing address
   const handleClearAddress = () => {
     setOrderData((prev) => ({
       ...prev,
@@ -226,32 +308,70 @@ useEffect(() => {
     }));
   };
 
-  // Validate form
   const validateForm = () => {
-    const requiredFields = [
-      ["name", orderData.name],
-      ["phone_number", orderData.phone_number],
-      ["email", orderData.email],
-      ["street_address", orderData.street_address],
-      ["city", orderData.city],
-      ["state", orderData.state],
-      ["zip_code", orderData.zip_code],
-      ["billing_name", orderData.billing_name],
-      ["billing_street_address", orderData.billing_street_address],
-      ["billing_city", orderData.billing_city],
-      ["billing_state", orderData.billing_state],
-      ["billing_zip_code", orderData.billing_zip_code],
-      ["payment_method", orderData.payment_method],
-      ["delivery_method", orderData.delivery_method],
-    ];
+    const requiredFields = {
+      name: orderData.name,
+      phone_number: orderData.phone_number,
+      email: orderData.email,
+      street_address: orderData.street_address,
+      city: orderData.city,
+      state: orderData.state,
+      zip_code: orderData.zip_code,
+      billing_name: orderData.billing_name,
+      billing_street_address: orderData.billing_street_address,
+      billing_city: orderData.billing_city,
+      billing_state: orderData.billing_state,
+      billing_zip_code: orderData.billing_zip_code,
+    };
 
-    const missingFields = requiredFields.filter(([_, value]) => !value);
-    return missingFields.length === 0;
+    const errors = {};
+    let isValid = true;
+
+    Object.entries(requiredFields).forEach(([field, value]) => {
+      if (!value) {
+        errors[field] = "This field is required";
+        isValid = false;
+      }
+    });
+
+    if (
+      orderData.email &&
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(orderData.email)
+    ) {
+      errors.email = "Please enter a valid email address";
+      isValid = false;
+    }
+
+    setFieldErrors(errors);
+    return isValid;
   };
 
-  // Handle order submission
+  const handleRegister = async (e) => {
+    e.preventDefault();
 
-  const handlePlaceOrder = async () => {
+    if (!password || !orderData.email) {
+      setRegisterMessage("Email and Password are required");
+      return;
+    }
+
+    try {
+      await register({
+        email: orderData.email,
+        password,
+      });
+      await login(orderData.email, password);
+      setRegisterMessage("Registered successfully!");
+    } catch (err) {
+      console.error("Registration error:", err);
+      setRegisterMessage(
+        err?.response?.data?.message || err?.message || "Registration failed"
+      );
+    }
+  };
+
+  const handlePlaceOrder = async (e) => {
+    e.preventDefault();
+
     if (!validateForm()) {
       setError("Please fill in all required fields");
       return;
@@ -263,25 +383,12 @@ useEffect(() => {
     try {
       const finalOrderData = {
         ...orderData,
-        // user_id: user?.id || null,
         subtotal: getCartTotal() + orderData.shipping_charge + orderData.tax,
-        // items: cartItems.map((item) => ({
-        //   product_id: item.id,
-        //   quantity: item.quantity,
-        //   price: item.price,
-        //   name: item.name,
-        // })),
-        // payment_details:
-        //   orderData.payment_method === "credit-card"
-        //     ? {
-        //         last4: paymentDetails.cardNumber.slice(-4),
-        //         brand: "visa",
-        //       }
-        //     : null,
       };
+
       const generateGuestId = () => {
         const chars =
-          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|:,.<>?";
+          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         const array = new Uint8Array(7);
         window.crypto.getRandomValues(array);
         return Array.from(array, (byte) => chars[byte % chars.length]).join("");
@@ -289,49 +396,38 @@ useEffect(() => {
 
       const guestId = user?.id || generateGuestId();
 
+      // First create the order in your system
       const response = await createOrder(finalOrderData);
       const resUpdateOrder = await updateOrder(response.id, {
         order_id: `${guestId?.toString().substring(0, 6)}-${response.id}`,
         customer_id: user ? user.id : null,
       });
-      // console.log("update Order response:", resUpdateOrder);
 
-      const total = getCartTotal();
+      const total =
+        getCartTotal() +
+        (getCartTotal() > 500 ? 0 : parseInt(shippingCharge.shipping_charge));
 
-      // 2. Create Stripe session
+      const currency = orderData.currency.toLowerCase();
+      const method = orderData.payment_method;
+      console.log(method, "method");
+
       const stripeResponse = await axios.post(
-        `${import.meta.env.VITE_SERVER_URL}/stripe-payments/create-session`,
+        `${
+          import.meta.env.VITE_SERVER_URL
+        }/stripe-payments/create-payment-intent`,
         {
-          amount: Math.round(
-            (total +
-              (total > 500 ? 0 : parseInt(shippingCharge.shipping_charge))) *
-              100
-          ),
-
-          // in cents
+          amount: Math.round(total * 100),
           order_id: resUpdateOrder.order_id,
-          payment_method: orderData.payment_method,
-          currency: orderData.currency,
+          payment_method_types: Array.isArray(method) ? method : [method],
+          currency: currency,
           metadata: {
-            order_id: resUpdateOrder.id,
-            user_id: guestId,
-            amount: getCartTotal(),
-          },
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${user?.token || ""}`,
-            "Content-Type": "application/json",
+            order_id: resUpdateOrder.order_id,
+            user_id: user?.id || "guest",
           },
         }
       );
-      // console.log(stripeResponse.data, "stripe");
 
-      if (stripeResponse.data.url) {
-        window.location.href = stripeResponse.data.url;
-      }
-
-      // Save to localStorage before navigation
+      setPaymentIntentClientSecret(stripeResponse.data.clientSecret);
       localStorage.setItem("currentOrder", JSON.stringify(finalOrderData));
     } catch (err) {
       console.error("Order submission error:", err);
@@ -344,7 +440,21 @@ useEffect(() => {
     }
   };
 
-  // Delivery method handler
+  const handlePaymentSuccess = (paymentIntent) => {
+    setPaymentCompleted(true);
+    clearCart();
+    navigate("/order-confirmation", {
+      state: {
+        paymentIntentId: paymentIntent.id,
+        amount: paymentIntent.amount / 100,
+      },
+    });
+  };
+
+  const handlePaymentError = (error) => {
+    setError(error.message);
+  };
+
   const handleDeliveryMethodChange = (method, shippingCharge) => {
     setOrderData((prev) => ({
       ...prev,
@@ -352,21 +462,59 @@ useEffect(() => {
       shipping_charge: shippingCharge,
     }));
   };
-  // Calculate order summary
+
   const orderSummary = {
     subtotal: getCartTotal(),
     shipping: orderData.shipping_charge,
     tax: orderData.tax,
-    total: getCartTotal(),
+    total: getCartTotal() + orderData.shipping_charge + orderData.tax,
     discount: 0,
   };
 
+  if (paymentCompleted) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen p-4">
+        <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full text-center">
+          <svg
+            className="mx-auto h-12 w-12 text-green-500"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M5 13l4 4L19 7"
+            />
+          </svg>
+          <h2 className="mt-4 text-2xl font-bold text-gray-900">
+            Payment Successful!
+          </h2>
+          <p className="mt-2 text-gray-600">
+            Your order has been placed successfully.
+          </p>
+          <button
+            onClick={() => navigate("/")}
+            className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md transition duration-150 ease-in-out"
+          >
+            Continue Shopping
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  console.log(orderData, "order");
+
   return (
     <div className="bg-[#F8F9FB]">
-
-       <Helmet>
+      <Helmet>
         <title>ProEdge</title>
-        <meta name="description" content="Welcome to ProEdge. Discover our products and services." />
+        <meta
+          name="description"
+          content="Welcome to ProEdge. Discover our products and services."
+        />
       </Helmet>
       <SubPageHeader
         title="Checkout"
@@ -380,12 +528,13 @@ useEffect(() => {
       />
 
       <section className="mt-10 max-w-7xl w-full mx-auto p-5 grid grid-cols-1 md:grid-cols-3 gap-0 md:gap-10">
-        <form className="col-span-2 space-y-8">
+        <form className="col-span-2 space-y-8" onSubmit={handlePlaceOrder}>
           <div className="flex items-center justify-between mb-4">
             <h1 className="text-xl md:text-3xl font-semibold text-[#182B55]">
               1. Cart ({cartItems.length} Items)
             </h1>
             <button
+              type="button"
               className="ml-auto px-4 py-2 rounded-full bg-white border-2 border-[#ECF0F9] text-sm text-[#3F66BC] hover:cursor-pointer"
               onClick={() => navigate("/cart")}
             >
@@ -430,6 +579,15 @@ useEffect(() => {
               }[name];
               handleInputChange({ target: { name: orderField, value } });
             }}
+            errors={{
+              name: fieldErrors.name,
+              phone_number: fieldErrors.phone_number,
+              email: fieldErrors.email,
+              street_address: fieldErrors.street_address,
+              city: fieldErrors.city,
+              state: fieldErrors.state,
+              zip_code: fieldErrors.zip_code,
+            }}
           />
 
           <DeliveryMethod
@@ -437,80 +595,153 @@ useEffect(() => {
             onChange={handleDeliveryMethodChange}
           />
 
+          {!isAuthenticated && !proceedAsGuest && (
+            <div className="my-6 px-4">
+              <div className="bg-white/10 shadow rounded-xl p-6 w-full max-w-2xl">
+                <h2 className="text-xl font-semibold text-[#182B55] mb-4">
+                  Register to Complete Order
+                </h2>
+                <div className="flex flex-col md:flex-row items-start gap-4">
+                  <div className="flex-1 w-full md:w-2/3">
+                    <label
+                      htmlFor="password"
+                      className="block text-[#182B55] text-sm font-medium mb-1"
+                    >
+                      Password
+                    </label>
+                    <input
+                      type="password"
+                      id="password"
+                      name="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Enter your password"
+                      required
+                      className="w-full p-3 rounded-lg border border-gray-300 bg-[#F8F9FB] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                    />
+                    {registerMessage && (
+                      <p className="text-red-600 text-sm mt-1">
+                        {registerMessage}
+                      </p>
+                    )}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={handleRegister}
+                    className="w-full md:w-44 h-12 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-200 shadow-md mt-2 md:mt-7"
+                  >
+                    Register
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Payment Section */}
           <div>
             <h1 className="text-[#182B55] text-xl md:text-3xl font-semibold mb-4">
               4. Payment
             </h1>
 
-            {/* <div className="mb-6">
-              <label
-                htmlFor="payment-method"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                Select Payment Method
-              </label>
-              <select
-                id="payment-method"
-                name="payment_method"
-                value={orderData.payment_method}
-                onChange={handlePaymentChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              >
-                <option value="card">Credit/Debit Card</option>
-                <option value="ideal">iDEAL</option>
-                <option value="alipay">Alipay</option>
-                <option value="afterpay_clearpay">Afterpay/Clearpay</option>
-                <option value="klarna">Klarna</option>
-              </select>
-            </div> */}
-
             <PaymentOption
               method={orderData.payment_method}
               onChange={handlePaymentChange}
+              currency={orderData.currency || "usd"} // Pass selected currency
             />
-            {/* 
-            {orderData.payment_method === "credit-card" && (
-              <>
-                <CardIcons />
-                <CardInformation
-                  values={paymentDetails}
-                  onChange={handlePaymentChange}
-                />
-              </>
-            )} */}
 
-            <BillingAddress
-              values={{
-                billingFullname: orderData.billing_name,
-                billingCompany: orderData.billing_company_name,
-                billingPhone: orderData.billing_phone_number,
-                billingEmail: orderData.billing_email,
-                billingStreet: orderData.billing_street_address,
-                billingAddress2: orderData.billing_address_two,
-                billingCity: orderData.billing_city,
-                billingState: orderData.billing_state,
-                billingZip: orderData.billing_zip_code,
-              }}
-              onChange={(e) => {
-                const { name, value } = e.target;
-                const orderField = {
-                  billingFullname: "billing_name",
-                  billingCompany: "billing_company_name",
-                  billingPhone: "billing_phone_number",
-                  billingEmail: "billing_email",
-                  billingStreet: "billing_street_address",
-                  billingAddress2: "billing_address_two",
-                  billingCity: "billing_city",
-                  billingState: "billing_state",
-                  billingZip: "billing_zip_code",
-                }[name];
-                handleInputChange({ target: { name: orderField, value } });
-              }}
-              onClear={handleClearAddress}
-              sameAsShipping={sameAsShipping}
-              onSameAsShippingChange={handleSameAsShippingChange}
-            />
+            {orderData.payment_method === "card" &&
+              paymentIntentClientSecret && (
+                <div className="mt-6 bg-white p-6 rounded-lg shadow-sm">
+                  <div className="mb-4">
+                    <h3 className="text-lg font-semibold">Payment Summary</h3>
+                    <p className="mt-2">
+                      Total Amount: ${orderSummary.total.toFixed(2)}
+                    </p>
+                  </div>
+                  <Elements
+                    stripe={stripePromise}
+                    options={{
+                      clientSecret: paymentIntentClientSecret,
+                      appearance: {
+                        theme: "stripe",
+                        variables: {
+                          colorPrimary: "#3F66BC",
+                        },
+                      },
+                    }}
+                  >
+                    <PaymentForm
+                      clientSecret={paymentIntentClientSecret}
+                      onPaymentSuccess={handlePaymentSuccess}
+                      onPaymentError={handlePaymentError}
+                      email={orderData.email}
+                      amount={orderSummary.total * 100} // Pass amount in cents
+                    />
+                  </Elements>
+                </div>
+              )}
           </div>
+          <BillingAddress
+            values={{
+              billingFullname: orderData.billing_name,
+              billingCompany: orderData.billing_company_name,
+              billingPhone: orderData.billing_phone_number,
+              billingEmail: orderData.billing_email,
+              billingStreet: orderData.billing_street_address,
+              billingAddress2: orderData.billing_address_two,
+              billingCity: orderData.billing_city,
+              billingState: orderData.billing_state,
+              billingZip: orderData.billing_zip_code,
+            }}
+            onChange={(e) => {
+              const { name, value } = e.target;
+              const orderField = {
+                billingFullname: "billing_name",
+                billingCompany: "billing_company_name",
+                billingPhone: "billing_phone_number",
+                billingEmail: "billing_email",
+                billingStreet: "billing_street_address",
+                billingAddress2: "billing_address_two",
+                billingCity: "billing_city",
+                billingState: "billing_state",
+                billingZip: "billing_zip_code",
+              }[name];
+              handleInputChange({ target: { name: orderField, value } });
+            }}
+            onClear={handleClearAddress}
+            sameAsShipping={sameAsShipping}
+            onSameAsShippingChange={handleSameAsShippingChange}
+          />
+
+          <section className="my-10">
+            <Button
+              label={loading ? "Processing..." : "Place Order"}
+              disabled={
+                loading ||
+                (orderData.payment_method === "credit-card" &&
+                  !paymentIntentClientSecret)
+              }
+              onClick={handlePlaceOrder}
+            />
+
+            {error && (
+              <div className="text-red-600 text-center mt-3">{error}</div>
+            )}
+
+            <p className="text-sm max-w-md w-full mx-auto text-[#182B55] text-center mt-3">
+              By clicking Place Order you agree to Pro Edge's
+              <Link to="/terms-of-use" className="text-[#3F66BC] underline">
+                {" "}
+                Terms & Conditions
+              </Link>
+              and{" "}
+              <Link to="/payment-policy" className="text-[#3F66BC] underline">
+                Privacy Policy
+              </Link>
+              .
+            </p>
+          </section>
         </form>
 
         <div className="p-6 rounded-lg h-fit">
@@ -519,31 +750,6 @@ useEffect(() => {
           </h2>
           <OrderSummaryCard cart={orderSummary} />
         </div>
-
-        <section className="my-10 col-span-2">
-          <Button
-            label={loading ? "Processing..." : "Place Order"}
-            onClick={handlePlaceOrder}
-            disabled={loading}
-          />
-
-          {error && (
-            <div className="text-red-600 text-center mt-3">{error}</div>
-          )}
-
-          <p className="text-sm max-w-md w-full mx-auto text-[#182B55] text-center mt-3">
-            By clicking Place Order you agree to Pro Edge's
-            <Link to="/terms-of-use" className="text-[#3F66BC] underline">
-              {" "}
-              Terms & Conditions
-            </Link>
-            and{" "}
-            <Link to="/payment-policy" className="text-[#3F66BC] underline">
-              Privacy Policy
-            </Link>
-            .
-          </p>
-        </section>
       </section>
     </div>
   );

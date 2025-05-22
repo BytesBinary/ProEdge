@@ -1,66 +1,35 @@
-import { FaCreditCard, FaLink } from 'react-icons/fa';
-import { SiAlipay, SiKlarna } from 'react-icons/si';
+const PaymentOption = ({ method, onChange, currency }) => {
+  const methods = [
+    { id: 'card', name: 'Credit/Debit Card', supportedCurrencies: ['usd', 'aud', 'eur', 'gbp'] },
+    { id: 'afterpay_clearpay', name: 'Pay Later with Afterpay', supportedCurrencies: ['aud', 'nzd', 'gbp'] },
+    { id: 'klarna', name: 'Pay with Klarna', supportedCurrencies: ['eur', 'gbp', 'usd', 'sek', 'nok', 'dkk'] },
+  ];
 
-
-const PaymentOption = ({ method, onChange, currency = 'usd' }) => {
-  const paymentMethods = [
-    {
-      id: 'card',
-      label: 'Credit/Debit Card',
-      icon: <FaCreditCard className="text-lg mr-2" />,
-      supported: ['usd', 'eur', 'gbp'].includes(currency)
-    },
-    // {
-    //   id: 'alipay',
-    //   label: 'Alipay',
-    //   icon: <SiAlipay className="text-lg mr-2" />,
-    //   supported: currency === 'usd'
-    // },
-    // {
-    //   id: 'klarna',
-    //   label: 'Klarna',
-    //   icon: <SiKlarna className="text-lg mr-2" />,
-    //   supported: ['usd', 'eur', 'gbp'].includes(currency)
-    // },
-    // {
-    //   id: 'afterpay_clearpay',
-    //   label: 'Afterpay/Clearpay',
-    //   icon: <span className="text-lg mr-2">💳</span>,
-    //   supported: ['usd', 'gbp'].includes(currency)
-    // },
-    // {
-    //   id: 'link',
-    //   label: 'Link by Stripe',
-    //   icon: <FaLink className="text-lg mr-2" />,
-    //   supported: currency === 'usd'
-    // },
-    // {
-    //   id: 'ideal',
-    //   label: 'iDEAL',
-    //   icon: <span className="text-lg mr-2">🏦</span>,
-    //   supported: currency === 'eur'
-    // }
-  ].filter(m => m.supported);
+  const lowerCurrency = currency.toLowerCase();
 
   return (
-    <div className="flex flex-wrap gap-3 mt-4">
-      {paymentMethods.map((payment) => (
-        <button
-          key={payment.id}
-          type="button"
-          className={`flex items-center cursor-pointer text-sm sm:text-md font-semibold px-5 py-2.5 rounded-full transition-all border ${
-            method === payment.id
-              ? 'bg-[#3F66BC] text-white border-[#3F66BC] shadow-md'
-              : 'bg-white text-[#3F66BC] border-[#ECF0F9] hover:shadow-md'
-          }`}
-          onClick={() => onChange(payment.id)}
-        >
-          {payment.icon}
-          <span>{payment.label}</span>
-        </button>
-      ))}
+    <div className="space-y-2">
+      {methods.map((pm) => {
+        const disabled = !pm.supportedCurrencies.includes(lowerCurrency);
+
+        return (
+          <div key={pm.id} className="flex items-center opacity-100">
+            <input
+              id={pm.id}
+              name="payment-method"
+              type="radio"
+              disabled={disabled}
+              checked={method === pm.id}
+              onChange={() => onChange(pm.id)}
+              className="h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-500 disabled:cursor-not-allowed"
+            />
+            <label htmlFor={pm.id} className={`ml-3 block text-sm font-medium ${disabled ? 'text-gray-400' : 'text-gray-700'}`}>
+              {pm.name} {disabled && <span className="text-xs text-red-500 ml-1">(Not available in {currency.toUpperCase()})</span>}
+            </label>
+          </div>
+        );
+      })}
     </div>
   );
 };
-
 export default PaymentOption;
