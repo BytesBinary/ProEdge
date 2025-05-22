@@ -1,5 +1,6 @@
 import React from "react";
-import { href, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
+
 const FeatureCard = ({ title, imageSrc, alt, href = "#" }) => (
   <Link
     to={href}
@@ -21,34 +22,36 @@ const FeatureCard = ({ title, imageSrc, alt, href = "#" }) => (
   </Link>
 );
 
-const FeatureHighlights = () => {
-  const cards = [
-    {
-      title: "Get Technical Support",
-      imageSrc: "../../src/assets/images/Card1.png",
-      alt: "Technician assisting customer through video call",
-      href: "/tech-help",
-    },
-    {
-      title: "Best Sellers",
-      imageSrc: "../../src/assets/images/Card2.png",
-      alt: "Bestselling products displayed on a modern shelf",
-      href: "/products?parent_category=fittings-9",
-    },
-    {
-      title: "Top Products",
-      imageSrc: "../../src/assets/images/Card3.png",
-      alt: "Top-rated electronics and gadgets collection",
-      href: "/products?parent_category=electric-motors-motor-controls-10",
-    },
-  ];
+const FeatureHighlights = ({ blocks, loading, error }) => {
+  if (loading) return <p></p>;
+  if (error) return <p>Error loading content: {error.message}</p>;
+
+  // Filter only feature_highlight type blocks
+  const features = blocks?.filter(
+    (block) =>
+      block?.collection === "feature_highlights" &&
+      block?.item?.type?.toLowerCase() === "feature_highlight"
+  );
+
+  // Build cards dynamically
+  const cards = features?.map((block) => {
+    const title = block.item?.title || "Untitled";
+    const imageId = block.item?.icon?.id;
+    const imageSrc = imageId
+      ? `${import.meta.env.VITE_SERVER_URL}/assets/${imageId}`
+      : "https://via.placeholder.com/300x200?text=No+Image"; 
+    const alt = `Image for ${title}`;
+    const href = `${block.item?.link}`; // customize your link pattern
+
+    return { title, imageSrc, alt, href };
+  });
 
   return (
     <section
       className="max-w-7xl w-full mx-auto py-12 grid grid-cols-1 lg:grid-cols-3 gap-6"
       aria-label="Feature Highlights"
     >
-      {cards.map((card, index) => (
+      {cards?.map((card, index) => (
         <FeatureCard key={index} {...card} />
       ))}
     </section>

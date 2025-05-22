@@ -10,7 +10,8 @@ import bgImage from "../../assets/images/cart.png";
 import { CartContext } from "../../context/CartContext";
 import { Helmet } from "react-helmet-async";
 import ProductCard from "../../components/common/utils/cards/ProductCard";
-import { useFetchPageBlocks } from "../../context/PageContext";
+import { fetchPageBlocks } from "../../context/PageContext";
+import { useQuery } from "@tanstack/react-query";
 
 const Category = () => {
   const [showFilter, setShowFilter] = useState(false);
@@ -19,23 +20,38 @@ const Category = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9;
 
-  const { blocks } = useFetchPageBlocks("products");
-  const breadcrumb = blocks?.filter(
-    (block) => block?.item?.type?.toLowerCase().trim() === "breadcrumb"
-  )[0];
-
+  
   const { wishlistItems } = useContext(CartContext);
   const {
     minPrice,
     maxPrice,
     isMadeUsa,
     searchTerm,
+    setSearchTerm,
     products,
     fetchProducts,
     loading,
   } = useProductContext();
   const { singleCategory } = useContext(CategoryContext);
   const hasFetched = useRef(false);
+
+
+   const { data: blocks = [] } = useQuery({
+    queryKey: ['pageBlocks', 'products'],
+    queryFn: () => fetchPageBlocks('products'),
+    staleTime: 1000 * 60 * 5, // cache for 5 mins
+  });
+
+  const breadcrumb = blocks?.filter(
+    (block) => block?.item?.type?.toLowerCase().trim() === "breadcrumb"
+  )[0];
+
+
+  useEffect(() => {
+    return () => {
+      setSearchTerm("");
+    };
+  }, [location.pathname]);
 
   useEffect(() => {
     if (!hasFetched.current) {
@@ -613,8 +629,10 @@ const Category = () => {
         </Helmet>
       )}
       <PageHeader
-        title={breadcrumb?.item?.title}
-        bgImage={`${import.meta.env.VITE_SERVER_URL}/assets/${
+        title={singleCategory?singleCategory.category_name:breadcrumb?.item?.title}
+        bgImage={singleCategory?`${import.meta.env.VITE_SERVER_URL}/assets/${
+          singleCategory?.image?.id
+        }`:`${import.meta.env.VITE_SERVER_URL}/assets/${
           breadcrumb?.item?.image?.id
         }`}
         breadcrumbs={[
@@ -625,7 +643,7 @@ const Category = () => {
       <div className="w-full max-w-[1310px] mx-auto mt-3 md:mt-20 flex flex-col lg:flex-row justify-between items-start gap-10">
         {/* Desktop Filter Section */}
         <div className="hidden lg:block w-64">
-          <Filter />
+          <Filter searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
         </div>
 
         {/* Main Content Section */}

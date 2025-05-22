@@ -145,7 +145,6 @@ export function CategoryProvider({ children }) {
       return categories.map(processCategory);
     };
   }, []); // Memoize the formatter function
-  console.log("Fetching categories..."); // Should log ONCE after mount
   useEffect(() => {
     if (!categories?.length) return;
 

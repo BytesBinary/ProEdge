@@ -16,14 +16,36 @@ import Icon from "../../components/TechHelp/Icon";
 import FAQ from "../../components/TechHelp/FAQ";
 import PolicyIcon from "../../components/TechHelp/PolicyIcon";
 import PageHeader from "../../components/common/utils/banner/SubPageHeader";
-import { useFetchPageBlocks } from "../../context/PageContext";
+import { fetchPageBlocks } from "../../context/PageContext";
+import { useQuery } from "@tanstack/react-query";
 
 const TechHelp = () => {
-  const { blocks } = useFetchPageBlocks("tech-help");
+   const { data: blocks = [],  } = useQuery({
+    queryKey: ['pageBlocks', 'tech-help'],
+    queryFn: () => fetchPageBlocks('tech-help'),
+    staleTime: 1000 * 60 * 5, // cache for 5 mins
+  });
 
   const breadcrumb = blocks?.filter(
     (block) => block?.item?.type?.toLowerCase().trim() === "breadcrumb"
   )[0];
+  const pageTitle = blocks?.filter(
+    (block) => block?.item?.type?.toLowerCase().trim() === "page_title"
+  )[0];
+  const helpTitle = blocks?.filter(
+    (block) => block?.item?.type?.toLowerCase().trim() === "page_title"
+  )[1]; 
+  const shippingTitle = blocks?.filter(
+    (block) => block?.item?.type?.toLowerCase().trim() === "page_title"
+  )[2]; 
+  const allpolicy = blocks?.filter(
+    (block) => block?.item?.type?.toLowerCase().trim() === "feature_highlight"
+  );
+  const features = blocks?.filter(
+    (block) => block?.item?.type?.toLowerCase().trim() === "tech_help_features"
+  );
+  // console.log("features", features);
+  
   const whatToDo = [
     { image: pick, title: "Track an order", link: "/track-order" },
     { image: returning, title: "Start a return", link: "/return-order" },
@@ -36,33 +58,36 @@ const TechHelp = () => {
     },
   ];
 
-  const policies = [
-    { image: returni, title: "Return Policy", link: "/return-policy" },
-    { image: payment, title: "Payment Policy", link: "/payment-policy" },
-    { image: term, title: "Terms of Use", link: "/terms-of-use" },
-    { image: shopping, title: "Shipping Policy", link: "/shipping-policy" },
-  ];
-
   return (
     <div>
-
       <PageHeader
         title={breadcrumb?.item?.title}
-        bgImage={`${import.meta.env.VITE_SERVER_URL}/assets/${breadcrumb?.item?.image?.id}`}
-        breadcrumbs={[{ link: "/", label: "Home" }, { label: breadcrumb?.item?.title }]}
+        bgImage={
+          breadcrumb?.item?.image?.id
+            ? `${import.meta.env.VITE_SERVER_URL}/assets/${breadcrumb.item.image.id}`
+            : undefined
+        }
+        breadcrumbs={[
+          { link: "/", label: "Home" },
+          { label: breadcrumb?.item?.title },
+        ]}
       />
 
       <section className="my-10 max-w-7xl mx-auto">
         <h1 className="text-[#182B55] text-3xl md:text-5xl leading-tight font-semibold text-center">
-          What would you like to do?
+          {pageTitle?.item?.page_title}
         </h1>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 ">
-          {whatToDo.map((item, index) => (
+          {features?.map((feature, index) => (
             <Icon
-              key={index}
-              imageSrc={item.image}
-              title={item.title}
-              link={item.link}
+              key={feature.item.id}
+              imageSrc={
+                feature.item.icon?.id
+                  ? `${import.meta.env.VITE_SERVER_URL}/assets/${feature.item.icon.id}`
+                  : undefined
+              }
+              title={feature.item.title}
+              link={`/${feature.item.link}`}
             />
           ))}
         </div>
@@ -70,22 +95,26 @@ const TechHelp = () => {
 
       <section className="my-20 md:my-10 max-w-7xl mx-auto">
         <h1 className="text-[#182B55] text-3xl md:text-5xl leading-tight font-semibold text-center">
-          Help Topics
+          {helpTitle?.item?.page_title}
         </h1>
         <FAQ seeAllLink="see all" leftArrow={leftArrow} />
       </section>
 
       <section className="my-10 max-w-7xl mx-auto">
         <h1 className="text-[#182B55] text-3xl md:text-5xl leading-tight font-semibold text-center">
-          Pro Edge Policies
+          {shippingTitle?.item?.page_title}
         </h1>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-8">
-          {policies.map((policy, index) => (
+          {allpolicy?.map((policy) => (
             <PolicyIcon
-              key={index}
-              imageSrc={policy.image}
-              title={policy.title}
-              link={policy.link}
+              key={policy.item.id}
+              imageSrc={
+                policy.item.icon?.id
+                  ? `${import.meta.env.VITE_SERVER_URL}/assets/${policy.item.icon.id}`
+                  : undefined
+              }
+              title={policy.item.title}
+              link={`/${policy.item.link}`}
             />
           ))}
         </div>

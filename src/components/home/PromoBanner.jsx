@@ -2,7 +2,7 @@ import {Link} from "react-router-dom"
 const PromoBanner = ({ blocks, loading, error }) => {
 
   
-    if (loading) return <p>Loading...</p>;
+    if (loading) return <p></p>;
     if (error) return <p>Error loading content: {error.message}</p>;
   
     const banners=blocks?.filter(block => block?.item?.type?.toLowerCase().trim()==="banner");

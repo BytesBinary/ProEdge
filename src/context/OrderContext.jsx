@@ -210,9 +210,6 @@ export const OrderProvider = ({ children }) => {
     setLoading(true);
     setError(null);
   const user = JSON.parse(localStorage.getItem("user"));
-
-    console.log(user, "user");
-
     try {
       // Prepare filters based on available user data
       const variables = {

@@ -65,7 +65,7 @@ const Footer = () => {
   const infoLinks = ["Products", "Videos", "Tech help", "Contact Us"];
 
   const contactInfo = [
-    { label: "Text", value: footer?.phone_no, href: `sms:${footer?.phone_no}` },
+    { label: "Text", value: footer?.contact_number, href: `sms:${footer?.phone_no}` },
     { label: "Phone", value: footer?.phone_no, href: `tel:${footer?.phone_no}` }, 
     { label: "Fax", value: footer?.fax, href: `fax:${footer?.fax}` },
     { label: "Email", value: footer?.email, href: `mailto:${footer?.email}` },
