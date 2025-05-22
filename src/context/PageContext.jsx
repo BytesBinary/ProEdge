@@ -62,6 +62,11 @@ const GET_PAGE_BLOCKS_QUERY = `
             link
             type
           }
+          ... on page_title {
+            id
+            page_title
+            type
+          }
         }
       }
     }

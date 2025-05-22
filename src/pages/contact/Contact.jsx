@@ -47,6 +47,13 @@ const Contact = () => {
   const breadcrumb = blocks?.filter(
     (block) => block?.item?.type?.toLowerCase().trim() === "breadcrumb"
   )[0];
+  const pageTitle = blocks?.filter(
+    (block) => block?.item?.type?.toLowerCase().trim() === "page_title"
+  )[0];
+  const feature = blocks?.filter(
+    (block) => block?.item?.type?.toLowerCase().trim() === "feature"
+  )[0];
+  // console.log("feature", feature);
 
   const ALL_FOOTER_QUERY = `
     query {
@@ -255,10 +262,10 @@ const contactInfoItems = [
         <div className="w-full max-w-md h-[549px] bg-[#3F66BC] py-8 px-6 rounded-[16px] mx-auto flex flex-col justify-between text-white">
           <div className="flex flex-col gap-[16px]">
             <h1 className="font-semibold text-[32px] leading-10">
-              Contact Information
+              {feature?.item?.title} 
             </h1>
             <p className="font-medium text-[16px] leading-[26px]">
-              Have questions or need assistance? Reach out to our friendly team!
+              {feature?.item?.subtitle}
             </p>
           </div>
 
@@ -285,7 +292,7 @@ const contactInfoItems = [
         {/* Contact Form Section */}
         <div className="w-full max-w-3xl h-[630px] relative mx-auto">
           <h1 className="font-semibold text-4xl leading-12 text-center md:text-left">
-            Get In Touch
+            {pageTitle?.item?.page_title}
           </h1>
           {isSubmitted ? (
             <div className="mt-8 p-4 bg-green-100 text-green-700 rounded">

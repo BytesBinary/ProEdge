@@ -14,12 +14,7 @@ const TrackOrderUser = ({ pageInfo }) => {
     
     // Validate order number format
     if (!orderNumber.trim()) {
-      setError("Please enter an order number");
-      return;
-    }
-
-    if (!orderNumber.trim().match(/^(WB|SO)/i)) {
-      setError("Order number must start with 'WB' or 'SO'");
+      setError("Please enter an order ID number.");
       return;
     }
 

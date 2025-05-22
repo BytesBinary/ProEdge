@@ -6,18 +6,21 @@ import { useOrderContext } from "../../context/OrderContext";
 import { CartContext } from "../../context/CartContext";
 
 const OrderTablePage = () => {
-  const { orders } = useOrderContext();
+  const { orders, fetchOrders } = useOrderContext();
   const { clearCart } = useContext(CartContext);
   const [showDetails, setShowDetails] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
 
+  const user = JSON.parse(localStorage.getItem("user"));
 
   const [showTrackModal, setShowTrackModal] = useState(false);
   const [trackingId, setTrackingId] = useState("");
 
   useEffect(() => {
     clearCart();
+    fetchOrders();
   }, []);
+
   const handleViewDetails = (order) => {
     setSelectedOrder(order);
     setShowDetails(true);
@@ -42,7 +45,7 @@ const OrderTablePage = () => {
       alert("Order ID not found");
     }
   };
-// console.log(orders, "orders");  
+  // console.log(orders, "orders");
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <div className="mb-8 flex justify-between items-center">

@@ -60,13 +60,12 @@ const Navfooter = () => {
     <nav aria-label="Secondary navigation">
       <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 py-2 md:py-4">
         <div className="flex flex-col md:flex-row items-center justify-between gap-2 md:gap-4">
-          {/* Mobile Top Row - Browse + Call */}
           <div className="flex w-full md:w-auto items-center justify-between gap-2 md:hidden">
             <BrowseProduct />
             <Link
-              to="tel:2364612622"
+              to={`tel:${footer?.phone_no}`}
               className="flex items-center justify-center gap-2 px-3 py-2 rounded-full bg-[#3F66BC] text-white hover:bg-[#182B55] transition-colors text-sm whitespace-nowrap"
-              aria-label="Call us at 236-461-2622"
+              aria-label={`Call us at ${footer?.phone_no}`}
             >
               <CallIcon className="w-4 h-4" />
               <span className="sr-only md:not-sr-only">Call</span>
