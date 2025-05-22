@@ -1,14 +1,19 @@
 import { useLocation } from 'react-router-dom';
 import React, { useEffect, useRef, useState } from 'react';
-import { useFetchPageBlocks } from '../../context/PageContext';
+import { fetchPageBlocks } from '../../context/PageContext';
 import PageHeader from '../../components/common/utils/banner/SubPageHeader';
+import { useQuery } from '@tanstack/react-query';
 
 const Policies = () => {
     const { pathname } = useLocation();
 
     const cleanPathname = pathname.replace(/\//g, '');
 
-    const { blocks } = useFetchPageBlocks(cleanPathname);
+    const { data: blocks = [],  } = useQuery({
+    queryKey: ['pageBlocks', `${cleanPathname}`],
+    queryFn: () => fetchPageBlocks(`${cleanPathname}`),
+    staleTime: 1000 * 60 * 5, // cache for 5 mins
+  });
 
     const breadcrumb = blocks?.filter(
         (block) => block?.item?.type?.toLowerCase().trim() === "breadcrumb"

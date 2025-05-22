@@ -16,10 +16,15 @@ import Icon from "../../components/TechHelp/Icon";
 import FAQ from "../../components/TechHelp/FAQ";
 import PolicyIcon from "../../components/TechHelp/PolicyIcon";
 import PageHeader from "../../components/common/utils/banner/SubPageHeader";
-import { useFetchPageBlocks } from "../../context/PageContext";
+import { fetchPageBlocks } from "../../context/PageContext";
+import { useQuery } from "@tanstack/react-query";
 
 const TechHelp = () => {
-  const { blocks } = useFetchPageBlocks("tech-help");
+   const { data: blocks = [],  } = useQuery({
+    queryKey: ['pageBlocks', 'tech-help'],
+    queryFn: () => fetchPageBlocks('tech-help'),
+    staleTime: 1000 * 60 * 5, // cache for 5 mins
+  });
 
   const breadcrumb = blocks?.filter(
     (block) => block?.item?.type?.toLowerCase().trim() === "breadcrumb"

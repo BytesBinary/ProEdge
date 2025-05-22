@@ -1,4 +1,3 @@
-import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 
 const GRAPHQL_URL = `${import.meta.env.VITE_SERVER_URL}/graphql`;
@@ -68,45 +67,18 @@ const GET_PAGE_BLOCKS_QUERY = `
     }
   }
 `;
+export const fetchPageBlocks = async (permalink) => {
+  const response = await axios.post(
+    GRAPHQL_URL,
+    {
+      query: GET_PAGE_BLOCKS_QUERY,
+      variables: { permalink },
+    },
+    {
+      headers: { "Content-Type": "application/json" },
+    }
+  );
 
-export const useFetchPageBlocks = (permalink) => {
-  const [blocks, setBlocks] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  const lastPermalinkRef = useRef(null);
-
-  useEffect(() => {
-    if (!permalink || lastPermalinkRef.current === permalink) return;
-
-    lastPermalinkRef.current = permalink; 
-
-    const fetchBlocks = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.post(
-          GRAPHQL_URL,
-          {
-            query: GET_PAGE_BLOCKS_QUERY,
-            variables: { permalink },
-          },
-          {
-            headers: { "Content-Type": "application/json" },
-          }
-        );
-
-        const pages = response.data?.data?.page || [];
-        setBlocks(pages[0]?.blocks || []);
-      } catch (err) {
-        console.error("Error fetching page blocks:", err);
-        setError(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBlocks();
-  }, [permalink]);
-
-  return { blocks, loading, error };
+  const pages = response.data?.data?.page || [];
+  return pages[0]?.blocks || [];
 };

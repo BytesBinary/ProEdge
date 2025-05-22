@@ -10,7 +10,8 @@ import bgImage from "../../assets/images/cart.png";
 import { CartContext } from "../../context/CartContext";
 import { Helmet } from "react-helmet-async";
 import ProductCard from "../../components/common/utils/cards/ProductCard";
-import { useFetchPageBlocks } from "../../context/PageContext";
+import { fetchPageBlocks } from "../../context/PageContext";
+import { useQuery } from "@tanstack/react-query";
 
 const Category = () => {
   const [showFilter, setShowFilter] = useState(false);
@@ -19,8 +20,7 @@ const Category = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9;
 
-  const { blocks } = useFetchPageBlocks("products");
-
+  
   const { wishlistItems } = useContext(CartContext);
   const {
     minPrice,
@@ -34,6 +34,13 @@ const Category = () => {
   } = useProductContext();
   const { singleCategory } = useContext(CategoryContext);
   const hasFetched = useRef(false);
+
+
+   const { data: blocks = [] } = useQuery({
+    queryKey: ['pageBlocks', 'products'],
+    queryFn: () => fetchPageBlocks('products'),
+    staleTime: 1000 * 60 * 5, // cache for 5 mins
+  });
 
   const breadcrumb = blocks?.filter(
     (block) => block?.item?.type?.toLowerCase().trim() === "breadcrumb"

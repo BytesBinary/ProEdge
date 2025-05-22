@@ -17,8 +17,9 @@ import ln from "../../assets/images/contact/in.png";
 import twit from "../../assets/images/contact/twit.png";
 import { useEffect, useState } from "react";
 import { CategoryContext } from "../../context/CategoryContext";
-import { useFetchPageBlocks } from "../../context/PageContext";
+import { fetchPageBlocks } from "../../context/PageContext";
 import PageHeader from "../../components/common/utils/banner/SubPageHeader";
+import { useQuery } from "@tanstack/react-query";
 
 const Contact = () => {
   const [footer, setFooter] = useState([]);
@@ -37,7 +38,11 @@ const Contact = () => {
   });
   const [errors, setErrors] = useState({});
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const { blocks } = useFetchPageBlocks("contact-us");
+   const { data: blocks = [],  } = useQuery({
+    queryKey: ['pageBlocks', 'contact-us'],
+    queryFn: () => fetchPageBlocks('contact-us'),
+    staleTime: 1000 * 60 * 5, // cache for 5 mins
+  });
 
   const breadcrumb = blocks?.filter(
     (block) => block?.item?.type?.toLowerCase().trim() === "breadcrumb"

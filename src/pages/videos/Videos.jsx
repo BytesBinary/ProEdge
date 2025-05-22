@@ -1,30 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import SubPageHeader from '../../components/common/utils/banner/SubPageHeader';
-import VideoCard from '../../components/Video/VideoCard';
-// import videos from '../../data/videos/Video';
-// import pageData from '../../data/videos/PageData';
+import React, { useState, useEffect } from "react";
+import SubPageHeader from "../../components/common/utils/banner/SubPageHeader";
+import VideoCard from "../../components/Video/VideoCard";
 
-// data/videos/Video.js
-const videos = [
-  {
-    title: "Get the Most from Your Tools",
-    link: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-  },
-  {
-    title: "Behind the Scenes: Manufacturing Excellence",
-    link: "https://www.youtube.com/watch?v=Zi_XLOBDo_Y"
-  }
-];
-import pageData from '../../data/videos/PageData';
-import axios from 'axios';
-import { useFetchPageBlocks } from '../../context/PageContext';
-import PageHeader from '../../components/common/utils/banner/SubPageHeader';
+import axios from "axios";
+import { fetchPageBlocks } from "../../context/PageContext";
+import PageHeader from "../../components/common/utils/banner/SubPageHeader";
+import { useQuery } from "@tanstack/react-query";
 
 const Videos = () => {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { blocks } = useFetchPageBlocks("videos");
+  const { data: blocks = [] } = useQuery({
+    queryKey: ["pageBlocks", "videos"],
+    queryFn: () => fetchPageBlocks("videos"),
+    staleTime: 1000 * 60 * 5, // cache for 5 mins
+  });
 
   const breadcrumb = blocks?.filter(
     (block) => block?.item?.type?.toLowerCase().trim() === "breadcrumb"
@@ -81,8 +72,13 @@ const Videos = () => {
     <div>
       <PageHeader
         title={breadcrumb?.item?.title}
-        bgImage={`${import.meta.env.VITE_SERVER_URL}/assets/${breadcrumb?.item?.image?.id}`}
-        breadcrumbs={[{ link: "/", label: "Home" }, { label: breadcrumb?.item?.title }]}
+        bgImage={`${import.meta.env.VITE_SERVER_URL}/assets/${
+          breadcrumb?.item?.image?.id
+        }`}
+        breadcrumbs={[
+          { link: "/", label: "Home" },
+          { label: breadcrumb?.item?.title },
+        ]}
       />
 
       <section className="my-10">
@@ -92,11 +88,7 @@ const Videos = () => {
 
         <div className="max-w-7xl w-full flex-center flex-wrap gap-8 mt-10 mx-auto px-4">
           {videos.map((video, index) => (
-            <VideoCard
-              key={index}
-              title={video.title}
-              link={video.url}
-            />
+            <VideoCard key={index} title={video.title} link={video.url} />
           ))}
         </div>
       </section>
