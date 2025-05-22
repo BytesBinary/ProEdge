@@ -1,15 +1,20 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import SubPageHeader from "../../components/common/utils/banner/SubPageHeader.jsx";
 import bgImage from "../../assets/images/cart.png";
 import WishCard from "../../components/wishlist/WishCard.jsx";
 import MostViewedSection from "../../components/home/MostViewed.jsx";
 import { CartContext } from "../../context/CartContext.jsx";
+import { useProductContext } from "../../context/ProductContext.jsx";
 
 const WishList = () => {
   const { wishlistItems, removeFromWishlist, addToCart } =
     useContext(CartContext);
     // console.table(wishlistItems, 'wishlistItems');
+ const {setSearchTerm}=useProductContext();
 
+  useEffect(() => {
+        if (location.pathname !== "/products") setSearchTerm("");
+    }, []);
   return (
     <>
       <SubPageHeader

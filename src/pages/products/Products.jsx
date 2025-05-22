@@ -20,7 +20,6 @@ const Category = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9;
 
-  
   const { wishlistItems } = useContext(CartContext);
   const {
     minPrice,
@@ -33,14 +32,14 @@ const Category = () => {
   } = useProductContext();
   const { singleCategory } = useContext(CategoryContext);
 
-const { data: products = [], } = useQuery({
-  queryKey: ["products"],
-  queryFn: fetchProducts,
-  staleTime: 1000 * 60 * 5,
-});
-   const { data: blocks = [] } = useQuery({
-    queryKey: ['pageBlocks', 'products'],
-    queryFn: () => fetchPageBlocks('products'),
+  const { data: products = [] } = useQuery({
+    queryKey: ["products"],
+    queryFn: fetchProducts,
+    staleTime: 1000 * 60 * 5,
+  });
+  const { data: blocks = [] } = useQuery({
+    queryKey: ["pageBlocks", "products"],
+    queryFn: () => fetchPageBlocks("products"),
     staleTime: 1000 * 60 * 5, // cache for 5 mins
   });
 
@@ -48,13 +47,8 @@ const { data: products = [], } = useQuery({
     (block) => block?.item?.type?.toLowerCase().trim() === "breadcrumb"
   )[0];
 
-    useEffect(() => {
-    return () => {
-      setSearchTerm("");
-    };
-  }, []);
+ 
 
-  
   // Function to generate a slug from a string
   const generateSlug = (str) => {
     if (!str) return "";
@@ -476,7 +470,7 @@ const { data: products = [], } = useQuery({
     setTotalProducts(uniqueProductIds.size);
     setCurrentPage(1); // Reset to first page when filters change
   }, [categoryFilteredProducts]);
-console.log(singleCategory)
+  console.log(singleCategory);
   return (
     <>
       {singleCategory && (
@@ -625,12 +619,20 @@ console.log(singleCategory)
         </Helmet>
       )}
       <PageHeader
-        title={singleCategory?singleCategory.category_name:breadcrumb?.item?.title}
-        bgImage={singleCategory?`${import.meta.env.VITE_SERVER_URL}/assets/${
-          singleCategory?.banner_image?.id
-        }`:`${import.meta.env.VITE_SERVER_URL}/assets/${
-          breadcrumb?.item?.image?.id
-        }`}
+        title={
+          singleCategory
+            ? singleCategory.category_name
+            : breadcrumb?.item?.title
+        }
+        bgImage={
+          singleCategory
+            ? `${import.meta.env.VITE_SERVER_URL}/assets/${
+                singleCategory?.banner_image?.id
+              }`
+            : `${import.meta.env.VITE_SERVER_URL}/assets/${
+                breadcrumb?.item?.image?.id
+              }`
+        }
         breadcrumbs={[
           { link: "/", label: "Home" },
           { label: breadcrumb?.item?.title },
@@ -639,7 +641,7 @@ console.log(singleCategory)
       <div className="w-full max-w-[1310px] mx-auto mt-3 md:mt-20 flex flex-col lg:flex-row justify-between items-start gap-10">
         {/* Desktop Filter Section */}
         <div className="hidden lg:block w-64">
-          <Filter searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
+          <Filter searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         </div>
 
         {/* Main Content Section */}

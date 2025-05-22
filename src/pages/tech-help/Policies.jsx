@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { fetchPageBlocks } from '../../context/PageContext';
 import PageHeader from '../../components/common/utils/banner/SubPageHeader';
 import { useQuery } from '@tanstack/react-query';
+import { useProductContext } from '../../context/ProductContext';
 
 const Policies = () => {
     const { pathname } = useLocation();
@@ -14,6 +15,8 @@ const Policies = () => {
     queryFn: () => fetchPageBlocks(`${cleanPathname}`),
     staleTime: 1000 * 60 * 5, // cache for 5 mins
   });
+  const {setSearchTerm}=useProductContext();
+
 
     const breadcrumb = blocks?.filter(
         (block) => block?.item?.type?.toLowerCase().trim() === "breadcrumb"
@@ -36,7 +39,11 @@ const Policies = () => {
 
         return <div ref={hostRef}></div>;
     }
-
+useEffect(() => {
+    return () => {
+      if (location.pathname !== "/products") setSearchTerm("");
+    };
+  }, []);
     return (
         <>
             <PageHeader

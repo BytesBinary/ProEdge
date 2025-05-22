@@ -17,14 +17,16 @@ import Button from "../../components/common/utils/button/Button";
 import { CartContext } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
 import { useOrderContext } from "../../context/OrderContext";
+import { useProductContext } from "../../context/ProductContext";
 
 const Checkout = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { cartItems, getCartTotal, removeFromCart, clearCart } =
     useContext(CartContext);
-  const { createOrder, updateOrder } = useOrderContext();
-  const { fetchSettingsGraphQL } = useOrderContext();
+  const { createOrder, updateOrder ,fetchSettingsGraphQL} = useOrderContext();
+   const {setSearchTerm}=useProductContext();
+
 
   const [paymentDetails, setPaymentDetails] = useState({
     cardNumber: "",
@@ -137,6 +139,10 @@ useEffect(() => {
       navigate("/products");
     }
   }, [cartItems, navigate, location.pathname, loading]);
+  
+    useEffect(() => {
+          if (location.pathname !== "/products") setSearchTerm("");
+      }, []);
   // Handle shipping/billing address changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;

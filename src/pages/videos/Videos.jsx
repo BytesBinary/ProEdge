@@ -6,11 +6,13 @@ import axios from "axios";
 import { fetchPageBlocks } from "../../context/PageContext";
 import PageHeader from "../../components/common/utils/banner/SubPageHeader";
 import { useQuery } from "@tanstack/react-query";
+import { useProductContext } from "../../context/ProductContext";
 
 const Videos = () => {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const {setSearchTerm}=useProductContext();
   const { data: blocks = [] } = useQuery({
     queryKey: ["pageBlocks", "videos"],
     queryFn: () => fetchPageBlocks("videos"),
@@ -69,7 +71,9 @@ const Videos = () => {
     fetchVideos();
   }, []);
 
-  // console.log(videos, "videos"); // Check videos in console
+   useEffect(() => {
+      if (location.pathname !== "/products") setSearchTerm("");
+  }, []);
 
   return (
     <div>

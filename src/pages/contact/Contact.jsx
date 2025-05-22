@@ -20,6 +20,7 @@ import { CategoryContext } from "../../context/CategoryContext";
 import { fetchPageBlocks } from "../../context/PageContext";
 import PageHeader from "../../components/common/utils/banner/SubPageHeader";
 import { useQuery } from "@tanstack/react-query";
+import { useProductContext } from "../../context/ProductContext";
 
 const Contact = () => {
   const [footer, setFooter] = useState([]);
@@ -43,6 +44,7 @@ const Contact = () => {
     queryFn: () => fetchPageBlocks('contact-us'),
     staleTime: 1000 * 60 * 5, // cache for 5 mins
   });
+  const {setSearchTerm}=useProductContext();
 
   const breadcrumb = blocks?.filter(
     (block) => block?.item?.type?.toLowerCase().trim() === "breadcrumb"
@@ -54,7 +56,9 @@ const Contact = () => {
     (block) => block?.item?.type?.toLowerCase().trim() === "feature"
   )[0];
   // console.log("feature", feature);
-
+useEffect(() => {
+      if (location.pathname !== "/products") setSearchTerm("");
+  }, []);
   const ALL_FOOTER_QUERY = `
     query {
       Footer {

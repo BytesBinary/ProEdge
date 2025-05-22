@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import bg from "../../assets/images/productDetails/bg.jpeg";
 import greater from "../../assets/images/productDetails/greater.png";
 import pick from "../../assets/images/techHelp/pick.png";
@@ -18,6 +18,7 @@ import PolicyIcon from "../../components/TechHelp/PolicyIcon";
 import PageHeader from "../../components/common/utils/banner/SubPageHeader";
 import { fetchPageBlocks } from "../../context/PageContext";
 import { useQuery } from "@tanstack/react-query";
+import { useProductContext } from "../../context/ProductContext";
 
 const TechHelp = () => {
    const { data: blocks = [],  } = useQuery({
@@ -25,6 +26,7 @@ const TechHelp = () => {
     queryFn: () => fetchPageBlocks('tech-help'),
     staleTime: 1000 * 60 * 5, // cache for 5 mins
   });
+  const {setSearchTerm}=useProductContext();
 
   const breadcrumb = blocks?.filter(
     (block) => block?.item?.type?.toLowerCase().trim() === "breadcrumb"
@@ -57,6 +59,10 @@ const TechHelp = () => {
       link: "/modify-order",
     },
   ];
+  
+  useEffect(() => {
+        if (location.pathname !== "/products") setSearchTerm("");
+    }, []);
 
   return (
     <div>

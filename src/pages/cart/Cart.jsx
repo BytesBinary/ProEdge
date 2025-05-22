@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import SubPageHeader from '../../components/common/utils/banner/SubPageHeader';
 import bgImage from "../../assets/images/cart.png";
 import ProductCardTiles from '../../components/common/utils/cards/ProductCardTiles';
@@ -6,6 +6,7 @@ import OrderSummaryCard from "../../components/common/utils/cards/OrderSummary";
 import MostViewedSection from "../../components/home/MostViewed";
 import { CartContext } from "../../context/CartContext";
 import WishCard from "../../components/wishlist/WishCard";
+import { useProductContext } from "../../context/ProductContext";
 
 const Cart = () => {
   const { 
@@ -26,6 +27,11 @@ const Cart = () => {
     discount: 0  // You can add discount logic here
   };
   // console.table(cartItems);
+   const {setSearchTerm}=useProductContext();
+  
+    useEffect(() => {
+          if (location.pathname !== "/products") setSearchTerm("");
+      }, []);
   return (
     <>
       <SubPageHeader

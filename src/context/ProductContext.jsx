@@ -102,7 +102,7 @@ export const ProductProvider = ({ children }) => {
   const [isMadeUsa, setIsmadeUsa] = useState(false);
   const [loading, setLoading] = useState(true);
   const [productLoading, setProductLoading] = useState(false);
-  const [searchTerm,setSearchTerm]=useState(null);
+  const [searchTerm,setSearchTerm]=useState("");
 
   const [error, setError] = useState(null);
 
