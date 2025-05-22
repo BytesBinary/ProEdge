@@ -28,14 +28,16 @@ const Category = () => {
     isMadeUsa,
     searchTerm,
     setSearchTerm,
-    products,
     fetchProducts,
     loading,
   } = useProductContext();
   const { singleCategory } = useContext(CategoryContext);
-  const hasFetched = useRef(false);
 
-
+const { data: products = [], } = useQuery({
+  queryKey: ["products"],
+  queryFn: fetchProducts,
+  staleTime: 1000 * 60 * 5,
+});
    const { data: blocks = [] } = useQuery({
     queryKey: ['pageBlocks', 'products'],
     queryFn: () => fetchPageBlocks('products'),
@@ -46,19 +48,14 @@ const Category = () => {
     (block) => block?.item?.type?.toLowerCase().trim() === "breadcrumb"
   )[0];
 
-
+console.log(products,"pro")
   useEffect(() => {
     return () => {
       setSearchTerm("");
     };
   }, [location.pathname]);
 
-  useEffect(() => {
-    if (!hasFetched.current) {
-      hasFetched.current = true;
-      fetchProducts();
-    }
-  }, []);
+  
   // Function to generate a slug from a string
   const generateSlug = (str) => {
     if (!str) return "";
