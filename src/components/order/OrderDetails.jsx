@@ -91,44 +91,54 @@ const OrderDetailsModal = ({ isOrderDetailsPage, order, onClose }) => {
 
   const handleJob = async () => {
     if (!order) {
-      alert("Order not found");
+      alert("Order not found.");
       return;
     }
 
-    if (currentPath === "/return-order") {
-      if (order.order_status === "on-hold") {
-        alert("Order is already Returned");
-        return;
-      }
+    try {
+      switch (currentPath) {
+        case "/return-order":
+          if (order.order_status === "on-hold") {
+            alert("This order has already been marked as returned.");
+            return;
+          }
 
-      if (order.order_status === "completed") {
-        alert("Order is already Completed. You cannot return it.");
-        return;
-      }
+          if (order.order_status === "completed") {
+            alert("Completed orders cannot be returned.");
+            return;
+          }
 
-      try {
-        await updateOrder(order.id, { order_status: "on-hold" });
-        alert("Order is now on hold.");
-      } catch (error) {
-        console.error("Error updating order:", error);
-        alert("Failed to update order. Please try again.");
-      }
-    } else if (currentPath === "/modify-order") {
-      const confirmCancel = confirm(
-        "Are you sure you want to cancel this order?"
-      );
-      if (!confirmCancel) return;
+          if (order.order_status === "cancelled") {
+            alert("Order is already cancelled. Can't Return");
+            return;
+          }
 
-      try {
-        await updateOrder(order.id, { order_status: "cancelled" });
-        alert("Order has been successfully cancelled.");
-      } catch (error) {
-        console.error("Error cancelling order:", error);
-        alert("Failed to cancel the order. Please try again.");
+          await updateOrder(order.id, { order_status: "on-hold" });
+          alert("Order marked as returned and is now on hold.");
+          break;
+
+        case "/modify-order":
+          const userConfirmed = confirm(
+            "Are you sure you want to cancel this order?"
+          );
+          if (!userConfirmed) return;
+
+          if (order.order_status === "cancelled") {
+            alert("Order is already cancelled.");
+            return;
+          }
+
+          await updateOrder(order.id, { order_status: "cancelled" });
+          alert("Order has been successfully cancelled.");
+          break;
+
+        default:
+          console.warn("Unhandled path:", currentPath);
+          alert("This operation is not supported.");
       }
-    } else {
-      console.warn("Unknown path:", currentPath);
-      alert("Unsupported operation.");
+    } catch (error) {
+      console.error("Order update error:", error);
+      alert("Something went wrong while updating the order. Please try again.");
     }
   };
 
@@ -176,7 +186,7 @@ const OrderDetailsModal = ({ isOrderDetailsPage, order, onClose }) => {
     doc.setTextColor(textColor);
     doc.setFont("helvetica", "bold");
     doc.text(`Order Details - ${order.order_id}`, margin, yPos);
-    doc.text(` ${order.payment_status}`, margin, yPos+10);
+    doc.text(` ${order.payment_status}`, margin, yPos + 10);
 
     // Add divider line
     doc.setDrawColor(borderColor);
@@ -354,8 +364,15 @@ const OrderDetailsModal = ({ isOrderDetailsPage, order, onClose }) => {
                         }}
                       />
                     </span>
-                  <h3 className="w-20 h-8 rounded-md  text-center bg-green-300 text-amber-50">{order.payment_status==="paid"?"paid":""}</h3>
-
+                    <p
+                      className={`px-5 py-1 mt-2 rounded-md  text-center font-bold  ${
+                        order.payment_status === "paid"
+                          ? "bg-green-500 text-blue-950"
+                          : "bg-red-500 text-white"
+                      }`}
+                    >
+                      {order.payment_status === "paid" ? "Paid" : "Unpaid"}
+                    </p>
                   </h3>
                   <div className="flex justify-between items-center gap-2">
                     {(currentPath == "/return-order" ||

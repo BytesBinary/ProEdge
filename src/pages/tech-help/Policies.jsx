@@ -50,7 +50,7 @@ const Policies = () => {
                         {page_text?.item?.text ? (
                             <ShadowedRichText html={page_text.item.text} />
                         ) : (
-                            <div>Loading...</div>
+                            <div></div>
                         )}
                     </div>
                 </div>
