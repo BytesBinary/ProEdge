@@ -12,8 +12,7 @@ const OrderDetailsPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
    const [searchParams] = useSearchParams();
-  const sessionId = searchParams.get('session_id');
-  const [sessionDetails, setSessionDetails] = useState(null);
+  const order_id = searchParams.get('order_id');
    const [deliveryData, setDeliveryData] = useState(null);
 const {  updateOrder,createOrderDetails,fetchSettingsGraphQL} = useOrderContext();
 
@@ -30,14 +29,7 @@ const {  updateOrder,createOrderDetails,fetchSettingsGraphQL} = useOrderContext(
       fetchData();
     }, [fetchSettingsGraphQL]);
 
-  useEffect(() => {
-    const fetchSession = async () => {
-      const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/stripe-payments/session-details/${sessionId}`);
-      setSessionDetails(res.data);
-    };
-
-    if (sessionId) fetchSession();
-  }, [sessionId]);
+ 
 
   const { cartItems,clearCart,getCartTotal } = useContext(CartContext);
 
@@ -47,37 +39,32 @@ const {  updateOrder,createOrderDetails,fetchSettingsGraphQL} = useOrderContext(
   //   clearCart();
   // }, []);
 
-  useEffect(() => {
-  setIsOrderDetailsPage(true);
+ useEffect(() => {
+  if (!order_id) return;
 
   const fetchOrderDetails = async () => {
     try {
       setLoading(true);
+      clearCart();
 
-      const orderId = sessionDetails?.metadata?.order_id;
+      const orderId = order_id;
       const id = orderId?.split('-')[1];
 
-      if (orderId && sessionDetails.payment_status === "paid") {
-        const updatedOrder = await updateOrder(id, { payment_status: "paid" });
-        // console.log(updatedOrder, "updated order");
+      const updatedOrder = await updateOrder(id, { payment_status: "paid" });
+      setSingleOrderData(updatedOrder);
 
-        setSingleOrderData(updatedOrder);
-
-        if (updatedOrder.payment_status === "paid" && cartItems?.length > 0) {
-          for (const item of cartItems) {
-            // console.log("creating")
-            const orderDetailsData = {
-              order_id: {id:updatedOrder.id},
-              variation_id:{id: parseInt(item.variationId)},
-              product_title: item.title,
-              user_id: {id:updatedOrder.user_id?updatedOrder.user_id : "guest"},
-              user_email: updatedOrder.email,
-              total_price:String((item.price * item.quantity)),
-              quantity:parseInt( item.quantity),
-            };
-
-            await createOrderDetails(orderDetailsData);
-          }
+      if (updatedOrder.payment_status === "paid") {
+        for (const item of cartItems) {
+          const orderDetailsData = {
+            order_id: { id: updatedOrder.id },
+            variation_id: { id: parseInt(item.variationId) },
+            product_title: item.title,
+            user_id: { id: updatedOrder.user_id || "guest" },
+            user_email: updatedOrder.email,
+            total_price: String(item.price * item.quantity),
+            quantity: parseInt(item.quantity),
+          };
+          await createOrderDetails(orderDetailsData);
         }
       }
     } catch (err) {
@@ -88,10 +75,9 @@ const {  updateOrder,createOrderDetails,fetchSettingsGraphQL} = useOrderContext(
     }
   };
 
-  if (sessionDetails?.metadata?.order_id) {
-    fetchOrderDetails();
-  }
-}, [sessionDetails, cartItems]); // include cartItems in dependencies
+  fetchOrderDetails();
+}, [order_id]); // ✅ removed cartItems
+
 
   // console.log(singleOrderData, "singleOrderData");
 

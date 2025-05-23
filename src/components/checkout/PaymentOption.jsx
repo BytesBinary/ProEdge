@@ -2,7 +2,7 @@ const PaymentOption = ({ method, onChange, currency }) => {
   const methods = [
     { id: 'card', name: 'Credit/Debit Card', supportedCurrencies: ['usd', 'aud', 'eur', 'gbp'] },
     { id: 'afterpay_clearpay', name: 'Pay Later with Afterpay', supportedCurrencies: ['aud', 'nzd', 'gbp'] },
-    { id: 'klarna', name: 'Pay with Klarna', supportedCurrencies: ['eur', 'gbp', 'usd', 'sek', 'nok', 'dkk'] },
+    { id: 'klarna', name: 'Pay with Klarna', supportedCurrencies: ['eur','aud', 'gbp', 'usd', 'sek', 'nok', 'dkk'] },
   ];
 
   const lowerCurrency = currency.toLowerCase();
