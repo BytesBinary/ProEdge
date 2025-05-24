@@ -56,6 +56,7 @@ const GET_SETTINGS_QUERY = `
       Shipping_days
       delivery_address 
       shipping_charge
+      same_day_shipping_charge
     }
   }
 `;
@@ -101,6 +102,8 @@ const UPDATE_ORDER_MUTATION = `
     update_order_item(id: $id, data: $data) {
       id
       order_id  
+      customer_id
+
       name
       company_name
       phone_number
@@ -171,24 +174,24 @@ const CREATE_ORDER_DETAILS_MUTATION = `
   mutation CreateOrderDetails($data: create_order_details_input!) {
     create_order_details_item(data: $data) {
       id
-    order_id {
-      id
-    }
-    variation_id {
-      id
-    }
-    product_title
-    user_id {
-      id
-      email
-    }
-    user_email
-    total_price
-    quantity
-      
+      order_id {
+        id
+      }
+      variation_id {
+        id
+      }
+      product_title
+      user_id {
+        id
+        email
+      }
+      user_email
+      total_price
+      quantity
     }
   }
 `;
+
 const DELETE_ORDER_MUTATION = `
   mutation DeleteOrder($id: ID!) {
     delete_order_item(id: $id) {
@@ -367,7 +370,6 @@ export const OrderProvider = ({ children }) => {
         }
       );
 
-      // console.log(response.data, 'response');
 
       const newOrder = response.data.data.create_order_item;
       setOrders((prev) => [...prev, newOrder]);

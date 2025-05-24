@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import SubPageHeader from '../../components/common/utils/banner/SubPageHeader';
 import bgImage from "../../assets/images/cart.png";
 import ProductCardTiles from '../../components/common/utils/cards/ProductCardTiles';
@@ -8,6 +8,7 @@ import { CartContext } from "../../context/CartContext";
 import WishCard from "../../components/wishlist/WishCard";
 import { useProductContext } from "../../context/ProductContext";
 import { Helmet } from "react-helmet-async";
+import { useOrderContext } from "../../context/OrderContext";
 
 const Cart = () => {
   const { 
@@ -18,14 +19,37 @@ const Cart = () => {
     getCartTotal,
     addToCart,
   } = useContext(CartContext);
+  const { fetchSettingsGraphQL } = useOrderContext();
+  const [shippingData, setShippingData] = useState(null);
 
+
+
+  const hasFetched = useRef(false);
+  
+  useEffect(() => {
+    if (hasFetched.current) return;
+    hasFetched.current = true;
+  
+    const fetchDeliveryData = async () => {
+      try {
+        const data = await fetchSettingsGraphQL();
+        setShippingData(data);
+      } catch (error) {
+        console.error("Error fetching delivery location data:", error);
+      }
+    };
+  
+    fetchDeliveryData();
+  }, []);
+  
   // Calculate order summary data dynamically
   const orderSummary = {
     subtotal: getCartTotal(),
-    shipping: 0, // You can add shipping calculation logic here
-    tax: 0,     // You can add tax calculation logic here
-    total: getCartTotal(), // You might want to add shipping and tax to this
-    discount: 0  // You can add discount logic here
+    shipping: getCartTotal()>500?0:parseInt(shippingData?.shipping_charge), 
+    tax: 0,   
+    total: getCartTotal()+(getCartTotal()>500?0:parseInt(shippingData?.shipping_charge)), 
+    discount: 0  ,
+    type:"cart"
   };
   // console.table(cartItems);
    const {setSearchTerm}=useProductContext();

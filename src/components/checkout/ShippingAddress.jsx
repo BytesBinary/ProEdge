@@ -1,7 +1,7 @@
 import React from "react";
 import LabelInput from "../common/form/LabelInput";
 
-const ShippingAddress = ({ values, onChange }) => {
+const ShippingAddress = ({ values, onChange, errors = {} }) => {
   return (
     <div>
       <h1 className="text-[#182B55] text-xl md:text-3xl font-semibold mb-4">
@@ -16,6 +16,7 @@ const ShippingAddress = ({ values, onChange }) => {
           value={values.fullname}
           onChange={onChange}
           required
+          error={errors.fullname}
         />
         <LabelInput
           label="Company Name (optional)"
@@ -23,6 +24,7 @@ const ShippingAddress = ({ values, onChange }) => {
           name="companyname"
           value={values.companyname}
           onChange={onChange}
+          error={errors.companyname}
         />
         <LabelInput
           label="Phone Number"
@@ -32,6 +34,7 @@ const ShippingAddress = ({ values, onChange }) => {
           value={values.phone}
           onChange={onChange}
           required
+          error={errors.phone}
         />
         <LabelInput
           label="Email Address (For order confirmation)"
@@ -41,6 +44,7 @@ const ShippingAddress = ({ values, onChange }) => {
           value={values.email}
           onChange={onChange}
           required
+          error={errors.email}
         />
       </div>
 
@@ -52,6 +56,7 @@ const ShippingAddress = ({ values, onChange }) => {
           value={values.streetaddress}
           onChange={onChange}
           required
+          error={errors.streetaddress}
         />
       </div>
 
@@ -62,6 +67,7 @@ const ShippingAddress = ({ values, onChange }) => {
           name="address2"
           value={values.address2}
           onChange={onChange}
+          error={errors.address2}
         />
       </div>
 
@@ -74,6 +80,7 @@ const ShippingAddress = ({ values, onChange }) => {
           onChange={onChange}
           required
           className="col-span-3"
+          error={errors.city}
         />
         <LabelInput
           label="State"
@@ -83,6 +90,7 @@ const ShippingAddress = ({ values, onChange }) => {
           onChange={onChange}
           required
           className="col-span-2"
+          error={errors.state}
         />
         <LabelInput
           label="ZIP Code"
@@ -92,6 +100,7 @@ const ShippingAddress = ({ values, onChange }) => {
           onChange={onChange}
           required
           className="col-span-2"
+          error={errors.zip}
         />
       </div>
     </div>

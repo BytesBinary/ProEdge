@@ -1,9 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import OrderDetailsModal from "../../components/order/OrderDetails";
 import { useOrderContext } from "../../context/OrderContext";
-import {  useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { CartContext } from "../../context/CartContext";
-import axios from "axios";
 import { ClipLoader } from "react-spinners";
 
 const OrderDetailsPage = () => {
@@ -11,81 +10,41 @@ const OrderDetailsPage = () => {
   const [isOrderDetailsPage, setIsOrderDetailsPage] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-   const [searchParams] = useSearchParams();
-  const order_id = searchParams.get('order_id');
-   const [deliveryData, setDeliveryData] = useState(null);
-const {  updateOrder,createOrderDetails,fetchSettingsGraphQL} = useOrderContext();
+  const [searchParams] = useSearchParams();
+  const order_id = searchParams.get("order_id");
+  const { fetchOrderById } = useOrderContext();
 
-  
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const data = await fetchSettingsGraphQL();
-          setDeliveryData(data);
-        } catch (error) {
-          console.error("Error fetching delivery data:", error);
-        }
-      };
-      fetchData();
-    }, [fetchSettingsGraphQL]);
+  const { clearCart } = useContext(CartContext);
 
- 
+  useEffect(() => {
+    if (!order_id) return;
+    setIsOrderDetailsPage(true);
 
-  const { cartItems,clearCart,getCartTotal } = useContext(CartContext);
+    const fetchOrderDetails = async () => {
+      try {
+        setLoading(true);
+        clearCart();
 
-  // console.log(sessionDetails?.metadata?.order_id,"set")
+        const orderId = order_id;
 
-  // useEffect(() => {
-  //   clearCart();
-  // }, []);
-
- useEffect(() => {
-  if (!order_id) return;
-
-  const fetchOrderDetails = async () => {
-    try {
-      setLoading(true);
-      clearCart();
-
-      const orderId = order_id;
-      const id = orderId?.split('-')[1];
-
-      const updatedOrder = await updateOrder(id, { payment_status: "paid" });
-      setSingleOrderData(updatedOrder);
-
-      if (updatedOrder.payment_status === "paid") {
-        for (const item of cartItems) {
-          const orderDetailsData = {
-            order_id: { id: updatedOrder.id },
-            variation_id: { id: parseInt(item.variationId) },
-            product_title: item.title,
-            user_id: { id: updatedOrder.user_id || "guest" },
-            user_email: updatedOrder.email,
-            total_price: String(item.price * item.quantity),
-            quantity: parseInt(item.quantity),
-          };
-          await createOrderDetails(orderDetailsData);
-        }
+        const order = await fetchOrderById(orderId);
+        setSingleOrderData(order);
+      } catch (err) {
+        console.error("Failed to fetch order:", err);
+        setError("Failed to load order details. Please try again.");
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      console.error("Failed to fetch order:", err);
-      setError("Failed to load order details. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
 
-  fetchOrderDetails();
-}, [order_id]); // ✅ removed cartItems
-
-
-  // console.log(singleOrderData, "singleOrderData");
+    fetchOrderDetails();
+  }, [order_id]);
 
   if (loading) {
     <div className="fixed inset-0 flex items-center justify-center bg-white z-40">
       <ClipLoader color="#30079f" size={10} />
       <span className="text-blue-600 ml-2">Loading ...</span>
-    </div>
+    </div>;
   }
 
   if (error) {
@@ -101,7 +60,6 @@ const {  updateOrder,createOrderDetails,fetchSettingsGraphQL} = useOrderContext(
       <OrderDetailsModal
         isOrderDetailsPage={isOrderDetailsPage}
         order={singleOrderData}
-
       />
     </div>
   );
