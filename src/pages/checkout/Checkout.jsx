@@ -31,7 +31,8 @@ const Checkout = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { cartItems, getCartTotal, removeFromCart } = useContext(CartContext);
-  const { createOrder, updateOrder, fetchSettingsGraphQL } = useOrderContext();
+  const { createOrder, updateOrder, createOrderDetails, fetchSettingsGraphQL } =
+    useOrderContext();
   const { setSearchTerm } = useProductContext();
   const { register, login } = useAuth();
   const location = useLocation();
@@ -39,7 +40,7 @@ const Checkout = () => {
   // State
   const [orderID, setOrderID] = useState("");
   const [sameAsShipping, setSameAsShipping] = useState(true);
-  const [shippingCharge, setShippingCharge] = useState(0);
+  const [shippingData, setShippingData] = useState(null);
   const [password, setPassword] = useState("");
   const [registerMessage, setRegisterMessage] = useState(null);
   const [fieldErrors, setFieldErrors] = useState({});
@@ -53,6 +54,8 @@ const Checkout = () => {
     loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY)
   );
   const [paymentCompleted, setPaymentCompleted] = useState(false);
+  const [hideProceedToPaymentButton, setHideProceedToPaymentButton] =
+    useState(false);
 
   // Order data state
   const [orderData, setOrderData] = useState(() =>
@@ -109,7 +112,6 @@ const Checkout = () => {
       ? { ...defaultData, ...JSON.parse(savedOrder) }
       : defaultData;
   }
-
   // Effects
   useEffect(() => {
     if (location.pathname !== "/products") setSearchTerm("");
@@ -127,6 +129,28 @@ const Checkout = () => {
       fetchDeliveryData();
     }
   }, []);
+  useEffect(() => {
+    if (!shippingData || !orderData?.delivery_method) return;
+
+    let shippingCharge = 0;
+
+    if (getCartTotal() > 500) {
+      shippingCharge = 0;
+    } else {
+      if (orderData.delivery_method === "standard") {
+        shippingCharge = parseInt(shippingData.shipping_charge || "0");
+      } else if (orderData.delivery_method === "Same Day Shipping") {
+        shippingCharge = parseInt(shippingData.same_day_shipping_charge || "0");
+      } else {
+        shippingCharge = parseInt(shippingData.shipping_charge || "0");
+      }
+    }
+
+    setOrderData((prev) => ({
+      ...prev,
+      shipping_charge: shippingCharge,
+    }));
+  }, [cartItems, orderData?.delivery_method, shippingData]);
 
   useEffect(() => {
     updateUserData();
@@ -146,7 +170,7 @@ const Checkout = () => {
   const fetchDeliveryData = async () => {
     try {
       const data = await fetchSettingsGraphQL();
-      setShippingCharge(data);
+      setShippingData(data);
     } catch (error) {
       console.error("Error fetching delivery location data:", error);
     }
@@ -173,23 +197,38 @@ const Checkout = () => {
   // Form handlers
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setOrderData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+
+    setOrderData((prev) => {
+      const updated = {
+        ...prev,
+        [name]: value,
+      };
+
+      // Sync billing if sameAsShipping is enabled
+      if (sameAsShipping) {
+        const shippingToBillingMap = {
+          name: "billing_name",
+          company_name: "billing_company_name",
+          phone_number: "billing_phone_number",
+          email: "billing_email",
+          street_address: "billing_street_address",
+          address_two: "billing_address_two",
+          city: "billing_city",
+          state: "billing_state",
+          zip_code: "billing_zip_code",
+        };
+
+        const billingField = shippingToBillingMap[name];
+        if (billingField) {
+          updated[billingField] = value;
+        }
+      }
+
+      return updated;
+    });
 
     if (fieldErrors[name]) {
       setFieldErrors((prev) => ({ ...prev, [name]: "" }));
-    }
-
-    if (sameAsShipping) {
-      const billingField = `billing_${name.split("_").slice(1).join("_")}`;
-      if (billingField in orderData) {
-        setOrderData((prev) => ({
-          ...prev,
-          [billingField]: value,
-        }));
-      }
     }
   };
 
@@ -210,6 +249,19 @@ const Checkout = () => {
         billing_state: prev.state,
         billing_zip_code: prev.zip_code,
       }));
+
+      // Clear billing errors when same as shipping is checked
+      setFieldErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors.billing_name;
+        delete newErrors.billing_phone_number;
+        delete newErrors.billing_email;
+        delete newErrors.billing_street_address;
+        delete newErrors.billing_city;
+        delete newErrors.billing_state;
+        delete newErrors.billing_zip_code;
+        return newErrors;
+      });
     }
   };
 
@@ -228,12 +280,27 @@ const Checkout = () => {
     }));
   };
 
-  const handleDeliveryMethodChange = (method, shippingCharge) => {
-    setOrderData((prev) => ({
-      ...prev,
+  const handleDeliveryMethodChange = (method) => {
+    let shippingCharge = 0;
+
+    if (getCartTotal() > 500) {
+      shippingCharge = 0;
+    } else {
+      if (method === "standard") {
+        shippingCharge = parseInt(shippingData?.shipping_charge || 0);
+      } else if (method === "Same Day Shipping") {
+        shippingCharge = parseInt(shippingData?.same_day_shipping_charge || 0);
+      }
+    }
+
+    const updatedOrderData = {
+      ...orderData,
       delivery_method: method,
       shipping_charge: shippingCharge,
-    }));
+    };
+
+    setOrderData(updatedOrderData);
+    localStorage.setItem("currentOrder", JSON.stringify(updatedOrderData));
   };
 
   // Validation
@@ -247,6 +314,8 @@ const Checkout = () => {
       state: orderData.state,
       zip_code: orderData.zip_code,
       billing_name: orderData.billing_name,
+      billing_phone_number: orderData.billing_phone_number,
+      billing_email: orderData.billing_email,
       billing_street_address: orderData.billing_street_address,
       billing_city: orderData.billing_city,
       billing_state: orderData.billing_state,
@@ -271,14 +340,20 @@ const Checkout = () => {
       isValid = false;
     }
 
+    if (
+      orderData.billing_email &&
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(orderData.billing_email)
+    ) {
+      errors.billing_email = "Please enter a valid billing email address";
+      isValid = false;
+    }
+
     setFieldErrors(errors);
     return isValid;
   };
 
   // Registration
-  const handleRegister = async (e) => {
-    e.preventDefault();
-
+  const handleRegister = async () => {
     if (!password || !orderData.email) {
       setRegisterMessage("Email and Password are required");
       return;
@@ -314,7 +389,10 @@ const Checkout = () => {
     try {
       const finalOrderData = {
         ...orderData,
-        subtotal: getCartTotal() + orderData.shipping_charge + orderData.tax,
+        subtotal:
+          getCartTotal() +
+          (getCartTotal() > 500 ? 0 : parseInt(orderData.shipping_charge)) +
+          orderData.tax,
       };
 
       if (!proceedAsGuest && !isAuthenticated) {
@@ -326,7 +404,7 @@ const Checkout = () => {
         order_id: generateOrderId(user, response.id),
         customer_id: user ? user.id : null,
       });
-
+      const shippingCharge = orderData.shipping_charge;
       const total = calculateTotal(getCartTotal(), shippingCharge);
       const currency = orderData.currency.toLowerCase();
       if (resUpdateOrder) {
@@ -340,7 +418,11 @@ const Checkout = () => {
       );
 
       setPaymentIntentClientSecret(stripeResponse.data.clientSecret);
+
       localStorage.setItem("currentOrder", JSON.stringify(finalOrderData));
+      if (stripeResponse.data.clientSecret) {
+        setHideProceedToPaymentButton(true);
+      }
     } catch (err) {
       console.error("Order submission error:", err);
       setError(
@@ -351,7 +433,6 @@ const Checkout = () => {
       setLoading(false);
     }
   };
-
   const generateOrderId = (user, orderId) => {
     const guestId = user?.id || generateGuestId();
     return `${guestId?.toString().substring(0, 6)}-${orderId}`;
@@ -365,10 +446,8 @@ const Checkout = () => {
     return Array.from(array, (byte) => chars[byte % chars.length]).join("");
   };
 
-  const calculateTotal = (cartTotal, shippingData) => {
-    return (
-      cartTotal + (cartTotal > 500 ? 0 : parseInt(shippingData.shipping_charge))
-    );
+  const calculateTotal = (cartTotal, shippingCharge) => {
+    return cartTotal + (cartTotal > 500 ? 0 : parseInt(shippingCharge));
   };
 
   const createPaymentIntent = async (total, orderId, currency, userId) => {
@@ -390,6 +469,26 @@ const Checkout = () => {
   // Payment handlers
   const handlePaymentSuccess = async (paymentIntent) => {
     setPaymentCompleted(true);
+    const id = orderID?.split("-")[1];
+    const updatedOrder = await updateOrder(id, { payment_status: "paid" });
+    console.log(updateOrder, "updateorder");
+
+    if (updatedOrder.payment_status === "paid") {
+      for (const item of cartItems) {
+        const orderDetailsData = {
+          order_id: { id: parseInt(updatedOrder.id) },
+          variation_id: parseInt(item.variationId),
+          product_title: item.title,
+          user_email: updatedOrder.email,
+          total_price: String(item.price * item.quantity),
+          quantity: parseInt(item.quantity),
+        };
+
+        await createOrderDetails(orderDetailsData);
+
+        await createOrderDetails(orderDetailsData);
+      }
+    }
     navigate(`/order-details?order_id=${orderID}`, {
       state: {
         paymentIntentId: paymentIntent.id,
@@ -407,8 +506,9 @@ const Checkout = () => {
     subtotal: getCartTotal(),
     shipping: orderData.shipping_charge,
     tax: orderData.tax,
-    total: getCartTotal() + orderData.shipping_charge + orderData.tax,
+    total: getCartTotal() + orderData.shipping_charge,
     discount: 0,
+    type: "checkout",
   };
 
   if (paymentCompleted) {
@@ -450,6 +550,8 @@ const Checkout = () => {
           />
           <DeliveryMethod
             selectedMethod={orderData.delivery_method}
+            getCartTotal={getCartTotal()}
+            shippingData={shippingData}
             onChange={handleDeliveryMethodChange}
           />
           {!isAuthenticated && !proceedAsGuest && (
@@ -459,6 +561,15 @@ const Checkout = () => {
               registerMessage={registerMessage}
             />
           )}
+
+          <BillingAddress
+            values={mapOrderDataToBilling(orderData)}
+            onChange={handleBillingChange(handleInputChange)}
+            errors={mapBillingFieldErrors(fieldErrors)}
+            onClear={handleClearAddress}
+            sameAsShipping={sameAsShipping}
+            onSameAsShippingChange={handleSameAsShippingChange}
+          />
           {paymentIntentClientSecret && (
             <Elements
               stripe={stripePromise}
@@ -482,15 +593,8 @@ const Checkout = () => {
               />
             </Elements>
           )}
-          <BillingAddress
-            values={mapOrderDataToBilling(orderData)}
-            onChange={handleBillingChange(handleInputChange)}
-            errors={mapFieldErrors(fieldErrors)}
-            onClear={handleClearAddress}
-            sameAsShipping={sameAsShipping}
-            onSameAsShippingChange={handleSameAsShippingChange}
-          />
           <OrderSubmissionSection
+            hideProceedToPaymentButton={hideProceedToPaymentButton}
             loading={loading}
             error={error}
             handlePlaceOrder={handlePlaceOrder}
@@ -529,13 +633,31 @@ const mapOrderDataToBilling = (orderData) => ({
 });
 
 const mapFieldErrors = (fieldErrors) => ({
-  name: fieldErrors.name,
-  phone_number: fieldErrors.phone_number,
+  fullname: fieldErrors.name || fieldErrors.fullname,
+  phone: fieldErrors.phone_number || fieldErrors.phone,
   email: fieldErrors.email,
-  street_address: fieldErrors.street_address,
+  streetaddress: fieldErrors.street_address || fieldErrors.streetaddress,
   city: fieldErrors.city,
   state: fieldErrors.state,
-  zip_code: fieldErrors.zip_code,
+  zip: fieldErrors.zip_code || fieldErrors.zip,
+});
+const mapBillingFieldErrors = (fieldErrors) => ({
+  billingFullname: fieldErrors.billing_name,
+  billingPhone: fieldErrors.billing_phone_number,
+  billingEmail: fieldErrors.billing_email,
+  billingStreet: fieldErrors.billing_street_address,
+  billingCity: fieldErrors.billing_city,
+  billingState: fieldErrors.billing_state,
+  billingZip: fieldErrors.billing_zip_code,
+
+  // Add these to ensure all possible error keys are mapped
+  billing_name: fieldErrors.billing_name,
+  billing_phone_number: fieldErrors.billing_phone_number,
+  billing_email: fieldErrors.billing_email,
+  billing_street_address: fieldErrors.billing_street_address,
+  billing_city: fieldErrors.billing_city,
+  billing_state: fieldErrors.billing_state,
+  billing_zip_code: fieldErrors.billing_zip_code,
 });
 
 const handleShippingChange = (handleInputChange) => (e) => {
@@ -624,18 +746,25 @@ const RegistrationSection = ({ password, setPassword, registerMessage }) => {
   );
 };
 
-const OrderSubmissionSection = ({ loading, error, handlePlaceOrder }) => (
+const OrderSubmissionSection = ({
+  hideProceedToPaymentButton,
+  loading,
+  error,
+  handlePlaceOrder,
+}) => (
   <section className="my-10">
-    <Button
-      label={loading ? "Processing..." : "Place Order"}
-      disabled={loading}
-      onClick={handlePlaceOrder}
-    />
+    {!hideProceedToPaymentButton && (
+      <Button
+        label={loading ? "Processing..." : "Proceed To Payment"}
+        disabled={loading}
+        onClick={handlePlaceOrder}
+      />
+    )}
 
     {error && <div className="text-red-600 text-center mt-3">{error}</div>}
 
     <p className="text-sm max-w-md w-full mx-auto text-[#182B55] text-center mt-3">
-      By clicking Place Order you agree to Pro Edge's
+      By clicking Proceed To Payment you agree to Pro Edge's
       <Link to="/terms-of-use" className="text-[#3F66BC] underline">
         {" "}
         Terms & Conditions

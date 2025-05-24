@@ -2,13 +2,20 @@ import React from 'react';
 import RadioOption from '../common/form/RadioOption';
 
 const DeliveryMethod = ({ selectedMethod, onChange }) => {
+  
+
   const deliveryOptions = [
     {
       id: 'standard',
       name: 'delivery_method',
       label: 'Standard Ground',
       value: 'standard',
-      shippingCharge: 0
+    },
+     {
+      id: 'Same Day Shipping ',
+      name: 'delivery_method',
+      label: 'Same Day Shipping',
+      value: 'Same Day Shipping',
     }
   ];
 
@@ -25,7 +32,7 @@ const DeliveryMethod = ({ selectedMethod, onChange }) => {
             name={option.name}
             label={option.label}
             checked={selectedMethod === option.value}
-            onChange={() => onChange(option.value, option.shippingCharge)}
+            onChange={() => onChange(option.value)}
           />
         ))}
       </div>
