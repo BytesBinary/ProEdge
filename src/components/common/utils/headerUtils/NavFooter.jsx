@@ -13,7 +13,7 @@ const Navfooter = () => {
 
   const ALL_FOOTER_QUERY = `
   query{
-    Footer{
+    footer{
   
       phone_no
   
@@ -36,7 +36,7 @@ const Navfooter = () => {
       if (response.data.errors) {
         throw new Error(response.data.errors[0].message);
       }
-      setFooter(response.data.data.Footer || []);
+      setFooter(response.data.data.footer || []);
     } catch (error) {
       console.error("GraphQL fetch error:", error);
       setError(error.message);

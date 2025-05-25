@@ -62,7 +62,7 @@ useEffect(() => {
   }, []);
   const ALL_FOOTER_QUERY = `
     query {
-      Footer {
+      footer {
         id
         footer_title
         contact_number
@@ -74,7 +74,7 @@ useEffect(() => {
         facebook
         instagram
         linkedin
-        thread
+        x
       }
     }
   `;
@@ -95,7 +95,7 @@ useEffect(() => {
       if (response.data.errors) {
         throw new Error(response.data.errors[0].message);
       }
-      setFooter(response.data.data.Footer || []);
+      setFooter(response.data.data.footer || []);
     } catch (error) {
       console.error("GraphQL fetch error:", error);
       setError(error.message);
@@ -235,7 +235,7 @@ useEffect(() => {
     { icon: insta, to: footer.instagram },
     { icon: fb, to: footer.facebook },
     { icon: ln, to: footer.linkedin },
-    { icon: twit, to: footer.thread },
+    { icon: twit, to: footer.x },
   ];
 
 const contactInfoItems = [

@@ -11,7 +11,7 @@ const Footer = () => {
 
   const ALL_FOOTER_QUERY = `
   query{
-    Footer{
+    footer{
       id
       footer_title
       contact_number
@@ -39,7 +39,7 @@ const Footer = () => {
       if (response.data.errors) {
         throw new Error(response.data.errors[0].message);
       }
-      setFooter(response.data.data.Footer || []);
+      setFooter(response.data.data.footer || []);
     } catch (error) {
       console.error("GraphQL fetch error:", error);
       setError(error.message);
@@ -70,7 +70,7 @@ const Footer = () => {
     { label: "Fax", value: footer?.fax, href: `fax:${footer?.fax}` },
     { label: "Email", value: footer?.email, href: `mailto:${footer?.email}` },
   ];
-
+  
   return (
     <footer className="w-full h-auto bg-[#182B55] flex flex-col items-center justify-evenly py-8 px-4">
       <div className="flex flex-col lg:flex-row flex-wrap gap-4 md:gap-8 items-start justify-between w-full max-w-[1200px]">
