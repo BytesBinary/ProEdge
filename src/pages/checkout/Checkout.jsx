@@ -54,8 +54,7 @@ const Checkout = () => {
     loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY)
   );
   const [paymentCompleted, setPaymentCompleted] = useState(false);
-  const [hideProceedToPaymentButton, setHideProceedToPaymentButton] =
-    useState(false);
+  const [hideSameAsShippingText, setHideSameAsShippingText] = useState("");
 
   // Order data state
   const [orderData, setOrderData] = useState(() =>
@@ -64,6 +63,7 @@ const Checkout = () => {
 
   // Refs
   const hasFetched = useRef(false);
+  const paymentRef = useRef();
 
   // Initialize order data
   function initializeOrderData(user, getCartTotal) {
@@ -139,8 +139,12 @@ const Checkout = () => {
     } else {
       if (orderData.delivery_method === "standard") {
         shippingCharge = parseInt(shippingData.shipping_charge || "0");
+        setHideSameAsShippingText("");  
       } else if (orderData.delivery_method === "Same Day Shipping") {
         shippingCharge = parseInt(shippingData.same_day_shipping_charge || "0");
+         setHideSameAsShippingText(
+          "Same-day shipping on orders placed by 3 PM (Eastern Time) for FedEx Ground, Next Day Air, and 2nd Day Air shipments.   "
+        );
       } else {
         shippingCharge = parseInt(shippingData.shipping_charge || "0");
       }
@@ -155,6 +159,22 @@ const Checkout = () => {
   useEffect(() => {
     updateUserData();
   }, [user]);
+
+  useEffect(() => {
+    const fetchPaymentIntent = async () => {
+      const shippingCharge = orderData.shipping_charge;
+      const total = calculateTotal(getCartTotal(), shippingCharge);
+      const currency = orderData.currency.toLowerCase();
+      try {
+        const stripeResponse = await createPaymentIntent(total, currency);
+        setPaymentIntentClientSecret(stripeResponse.data.clientSecret);
+      } catch (error) {
+        console.error("Error creating payment intent:", error);
+      }
+    };
+
+    fetchPaymentIntent();
+  }, [cartItems]);
 
   useEffect(() => {
     if (
@@ -288,8 +308,12 @@ const Checkout = () => {
     } else {
       if (method === "standard") {
         shippingCharge = parseInt(shippingData?.shipping_charge || 0);
+        setHideSameAsShippingText("");
       } else if (method === "Same Day Shipping") {
         shippingCharge = parseInt(shippingData?.same_day_shipping_charge || 0);
+        setHideSameAsShippingText(
+          "Same-day shipping on orders placed by 3 PM (Eastern Time) for FedEx Ground, Next Day Air, and 2nd Day Air shipments.   "
+        );
       }
     }
 
@@ -373,7 +397,12 @@ const Checkout = () => {
       );
     }
   };
-
+  // make payment
+  const handleMakePayment = async () => {
+    const result = await paymentRef.current?.submitPayment();
+    console.log(result, "stripe result");
+    return result;
+  };
   // Order placement
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
@@ -387,52 +416,74 @@ const Checkout = () => {
     setError(null);
 
     try {
+      // 1. First handle user registration if needed
+      if (!proceedAsGuest && !isAuthenticated) {
+        await handleRegister();
+      }
+
+      // 2. Process payment FIRST
+      const paymentResult = await handleMakePayment();
+      console.log(paymentResult, "res");
+      if (!paymentResult?.success) {
+        throw new Error(paymentResult?.message || "Payment failed");
+      }
+
+      // 3. Only create order AFTER successful payment
       const finalOrderData = {
         ...orderData,
         subtotal:
           getCartTotal() +
           (getCartTotal() > 500 ? 0 : parseInt(orderData.shipping_charge)) +
           orderData.tax,
+        payment_status: "paid",
+        // payment_intent_id: paymentResult.paymentIntent.id,
       };
 
-      if (!proceedAsGuest && !isAuthenticated) {
-        handleRegister();
-      }
-
       const response = await createOrder(finalOrderData);
+      const orderId = generateOrderId(user, response.id);
+
+      // 4. Update order with generated ID
       const resUpdateOrder = await updateOrder(response.id, {
-        order_id: generateOrderId(user, response.id),
-        customer_id: user ? user.id : null,
+        order_id: orderId,
+        customer_id: user?.id || null,
+        payment_status: "paid",
       });
-      const shippingCharge = orderData.shipping_charge;
-      const total = calculateTotal(getCartTotal(), shippingCharge);
-      const currency = orderData.currency.toLowerCase();
       if (resUpdateOrder) {
         setOrderID(resUpdateOrder.order_id);
       }
-      const stripeResponse = await createPaymentIntent(
-        total,
-        resUpdateOrder.order_id,
-        currency,
-        user?.id
-      );
-
-      setPaymentIntentClientSecret(stripeResponse.data.clientSecret);
-
       localStorage.setItem("currentOrder", JSON.stringify(finalOrderData));
-      if (stripeResponse.data.clientSecret) {
-        setHideProceedToPaymentButton(true);
+
+      // 5. Create order details
+      for (const item of cartItems) {
+        await createOrderDetails({
+          order_id: { id: response.id },
+          variation_id: parseInt(item.variationId),
+          product_title: item.title,
+          user_email: orderData.email,
+          total_price: String(item.price * item.quantity),
+          quantity: parseInt(item.quantity),
+        });
       }
+
+      navigate(`/order-details?order_id=${orderId}`, {
+        state: {
+          paymentIntentId: paymentResult.paymentIntent.id,
+          amount: paymentResult.paymentIntent.amount / 100,
+        },
+      });
     } catch (err) {
       console.error("Order submission error:", err);
       setError(
         err.response?.data?.message ||
+          err.message ||
           "Failed to place order. Please try again."
       );
+      // Consider adding order cleanup here if payment succeeded but order creation failed
     } finally {
       setLoading(false);
     }
   };
+
   const generateOrderId = (user, orderId) => {
     const guestId = user?.id || generateGuestId();
     return `${guestId?.toString().substring(0, 6)}-${orderId}`;
@@ -450,7 +501,7 @@ const Checkout = () => {
     return cartTotal + (cartTotal > 500 ? 0 : parseInt(shippingCharge));
   };
 
-  const createPaymentIntent = async (total, orderId, currency, userId) => {
+  const createPaymentIntent = async (total, currency) => {
     return await axios.post(
       `${
         import.meta.env.VITE_SERVER_URL
@@ -458,43 +509,15 @@ const Checkout = () => {
       {
         amount: Math.round(total * 100),
         currency: currency,
-        metadata: {
-          order_id: orderId,
-          user_id: userId || "guest",
-        },
       }
     );
   };
 
-  // Payment handlers
-  const handlePaymentSuccess = async (paymentIntent) => {
+  //  payment success handler
+  const handlePaymentSuccess = (paymentIntent) => {
+    console.log("Payment succeeded:", paymentIntent);
     setPaymentCompleted(true);
-    const id = orderID?.split("-")[1];
-    const updatedOrder = await updateOrder(id, { payment_status: "paid" });
-    console.log(updateOrder, "updateorder");
-
-    if (updatedOrder.payment_status === "paid") {
-      for (const item of cartItems) {
-        const orderDetailsData = {
-          order_id: { id: parseInt(updatedOrder.id) },
-          variation_id: parseInt(item.variationId),
-          product_title: item.title,
-          user_email: updatedOrder.email,
-          total_price: String(item.price * item.quantity),
-          quantity: parseInt(item.quantity),
-        };
-
-        await createOrderDetails(orderDetailsData);
-
-        await createOrderDetails(orderDetailsData);
-      }
-    }
-    navigate(`/order-details?order_id=${orderID}`, {
-      state: {
-        paymentIntentId: paymentIntent.id,
-        amount: paymentIntent.amount / 100,
-      },
-    });
+    // No additional logic needed here since we handle everything in handlePlaceOrder
   };
 
   const handlePaymentError = (error) => {
@@ -548,18 +571,23 @@ const Checkout = () => {
             onChange={handleShippingChange(handleInputChange)}
             errors={mapFieldErrors(fieldErrors)}
           />
-          <DeliveryMethod
-            selectedMethod={orderData.delivery_method}
-            getCartTotal={getCartTotal()}
-            shippingData={shippingData}
-            onChange={handleDeliveryMethodChange}
-          />
           {!isAuthenticated && !proceedAsGuest && (
             <RegistrationSection
               password={password}
               setPassword={setPassword}
               registerMessage={registerMessage}
             />
+          )}
+          <DeliveryMethod
+            selectedMethod={orderData.delivery_method}
+            getCartTotal={getCartTotal()}
+            shippingData={shippingData}
+            onChange={handleDeliveryMethodChange}
+          />
+          {hideSameAsShippingText && (
+            <p className="text-indigo-400 text-xm sm:text-base md:text-lg lg:text-xl">
+              {hideSameAsShippingText}
+            </p>
           )}
 
           <BillingAddress
@@ -575,26 +603,34 @@ const Checkout = () => {
               stripe={stripePromise}
               options={{
                 clientSecret: paymentIntentClientSecret,
+                wallets: {
+                  applePay: "auto",
+                  googlePay: "auto",
+                },
                 appearance: {
                   theme: "stripe",
                   variables: {
                     colorPrimary: "#3F66BC",
                   },
                 },
+                loader: "auto",
+                fonts: [
+                  {
+                    cssSrc: "https://fonts.googleapis.com/css?family=Inter",
+                  },
+                ],
               }}
             >
               <PaymentSection
-                paymentIntentClientSecret={paymentIntentClientSecret}
-                stripePromise={stripePromise}
                 orderSummary={orderSummary}
                 onPaymentSuccess={handlePaymentSuccess}
                 onPaymentError={handlePaymentError}
                 email={orderData.email}
+                ref={paymentRef}
               />
             </Elements>
           )}
           <OrderSubmissionSection
-            hideProceedToPaymentButton={hideProceedToPaymentButton}
             loading={loading}
             error={error}
             handlePlaceOrder={handlePlaceOrder}
@@ -746,25 +782,18 @@ const RegistrationSection = ({ password, setPassword, registerMessage }) => {
   );
 };
 
-const OrderSubmissionSection = ({
-  hideProceedToPaymentButton,
-  loading,
-  error,
-  handlePlaceOrder,
-}) => (
+const OrderSubmissionSection = ({ loading, error, handlePlaceOrder }) => (
   <section className="my-10">
-    {!hideProceedToPaymentButton && (
-      <Button
-        label={loading ? "Processing..." : "Proceed To Payment"}
-        disabled={loading}
-        onClick={handlePlaceOrder}
-      />
-    )}
+    <Button
+      label={loading ? "Processing..." : "Place Order"}
+      disabled={loading}
+      onClick={handlePlaceOrder}
+    />
 
     {error && <div className="text-red-600 text-center mt-3">{error}</div>}
 
     <p className="text-sm max-w-md w-full mx-auto text-[#182B55] text-center mt-3">
-      By clicking Proceed To Payment you agree to Pro Edge's
+      By clicking Place Order you agree to Pro Edge's
       <Link to="/terms-of-use" className="text-[#3F66BC] underline">
         {" "}
         Terms & Conditions
