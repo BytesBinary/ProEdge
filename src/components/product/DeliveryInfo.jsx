@@ -89,24 +89,30 @@ const DeliveryInfo = ({
   };
 
   // Button Component
-  const Button = ({
-    text,
-    bgColor,
-    hoverColor,
-    textColor,
-    onClick,
-    disabled,
-  }) => {
-    return (
-      <button
-        className={`${bgColor} ${hoverColor} ${textColor} py-2 rounded-full w-full transition-colors cursor-pointer`}
-        onClick={onClick}
-        disabled={disabled}
-      >
-        {text}
-      </button>
-    );
-  };
+ const Button = ({
+  text,
+  bgColor,
+  hoverColor,
+  textColor,
+  onClick,
+  disabled,
+}) => {
+  return (
+    <button
+      className={`
+        ${bgColor} 
+        ${textColor} 
+        ${disabled ? "opacity-50 cursor-not-allowed blur-[0.3px]" : hoverColor}
+        py-2 rounded-full w-full transition-colors
+      `}
+      onClick={disabled ? undefined : onClick}
+      disabled={disabled}
+    >
+      {text}
+    </button>
+  );
+};
+
 
   const StockQuantity = ({ stockData }) => {
     const [inputValue, setInputValue] = useState(stockData.selectedQuantity.toString());

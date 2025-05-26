@@ -25,6 +25,7 @@ import CheckoutSuccess from "./CheckoutSuccess";
 // Assets
 import bgImage from "../../assets/images/cart.png";
 import PaymentSection from "./PayementSection";
+import ProductCartCheckout from "../../components/common/utils/cards/ProductCartCheckout";
 
 const Checkout = () => {
   // Context hooks
@@ -130,31 +131,35 @@ const Checkout = () => {
     }
   }, []);
   useEffect(() => {
-    if (!shippingData || !orderData?.delivery_method) return;
+  if (!shippingData || !orderData?.delivery_method) return;
 
-    let shippingCharge = 0;
+  let shippingCharge = 0;
 
-    if (getCartTotal() > 500) {
-      shippingCharge = 0;
-    } else {
-      if (orderData.delivery_method === "standard") {
-        shippingCharge = parseInt(shippingData.shipping_charge || "0");
-        setHideSameAsShippingText("");  
-      } else if (orderData.delivery_method === "Same Day Shipping") {
-        shippingCharge = parseInt(shippingData.same_day_shipping_charge || "0");
-         setHideSameAsShippingText(
-          "Same-day shipping on orders placed by 3 PM (Eastern Time) for FedEx Ground, Next Day Air, and 2nd Day Air shipments.   "
-        );
-      } else {
-        shippingCharge = parseInt(shippingData.shipping_charge || "0");
-      }
-    }
+  if (orderData.delivery_method === "standard") {
+    setHideSameAsShippingText("");
+    shippingCharge =
+      getCartTotal() > 500 ? 0 : parseInt(shippingData.shipping_charge || "0");
+  } else if (orderData.delivery_method === "Same Day Shipping") {
+    setHideSameAsShippingText(
+      "Same-day shipping on orders placed by 3 PM (Eastern Time) for FedEx Ground, Next Day Air, and 2nd Day Air shipments."
+    );
+    shippingCharge =
+      getCartTotal() > 500
+        ? 0
+        : parseInt(shippingData.same_day_shipping_charge || "0");
+  } else {
+    // default fallback if method is unknown
+    setHideSameAsShippingText("");
+    shippingCharge =
+      getCartTotal() > 500 ? 0 : parseInt(shippingData.shipping_charge || "0");
+  }
 
-    setOrderData((prev) => ({
-      ...prev,
-      shipping_charge: shippingCharge,
-    }));
-  }, [cartItems, orderData?.delivery_method, shippingData]);
+  setOrderData((prev) => ({
+    ...prev,
+    shipping_charge: shippingCharge,
+  }));
+}, [cartItems, orderData?.delivery_method, shippingData]);
+
 
   useEffect(() => {
     updateUserData();
@@ -300,32 +305,33 @@ const Checkout = () => {
     }));
   };
 
-  const handleDeliveryMethodChange = (method) => {
-    let shippingCharge = 0;
+ const handleDeliveryMethodChange = (method) => {
+  let shippingCharge = 0;
 
-    if (getCartTotal() > 500) {
-      shippingCharge = 0;
-    } else {
-      if (method === "standard") {
-        shippingCharge = parseInt(shippingData?.shipping_charge || 0);
-        setHideSameAsShippingText("");
-      } else if (method === "Same Day Shipping") {
-        shippingCharge = parseInt(shippingData?.same_day_shipping_charge || 0);
-        setHideSameAsShippingText(
-          "Same-day shipping on orders placed by 3 PM (Eastern Time) for FedEx Ground, Next Day Air, and 2nd Day Air shipments.   "
-        );
-      }
-    }
+  if (method === "standard") {
+    shippingCharge = getCartTotal() > 500
+      ? 0
+      : parseInt(shippingData?.shipping_charge || 0);
+    setHideSameAsShippingText(""); 
+  } else if (method === "Same Day Shipping") {
+    shippingCharge = getCartTotal() > 500
+      ? 0
+      : parseInt(shippingData?.same_day_shipping_charge || 0);
+    setHideSameAsShippingText(
+      "Same-day shipping on orders placed by 3 PM (Eastern Time) for FedEx Ground, Next Day Air, and 2nd Day Air shipments."
+    ); // Always show message if same-day selected
+  }
 
-    const updatedOrderData = {
-      ...orderData,
-      delivery_method: method,
-      shipping_charge: shippingCharge,
-    };
-
-    setOrderData(updatedOrderData);
-    localStorage.setItem("currentOrder", JSON.stringify(updatedOrderData));
+  const updatedOrderData = {
+    ...orderData,
+    delivery_method: method,
+    shipping_charge: shippingCharge,
   };
+
+  setOrderData(updatedOrderData);
+  localStorage.setItem("currentOrder", JSON.stringify(updatedOrderData));
+};
+
 
   // Validation
   const validateForm = () => {
@@ -548,7 +554,7 @@ const Checkout = () => {
         />
       </Helmet>
 
-      <SubPageHeader
+      {/* <SubPageHeader
         title="Checkout"
         currentPage="checkout"
         bgImage={bgImage}
@@ -557,15 +563,11 @@ const Checkout = () => {
           { label: "Cart", link: "/cart" },
           { label: "Checkout" },
         ]}
-      />
+      /> */}
 
       <section className="mt-10 max-w-7xl w-full mx-auto p-5 grid grid-cols-1 md:grid-cols-3 gap-0 md:gap-10">
         <form className="col-span-2 space-y-8" onSubmit={handlePlaceOrder}>
-          <CartSection
-            cartItems={cartItems}
-            removeFromCart={removeFromCart}
-            navigate={navigate}
-          />
+          
           <ShippingAddress
             values={mapOrderDataToShipping(orderData)}
             onChange={handleShippingChange(handleInputChange)}
@@ -630,14 +632,23 @@ const Checkout = () => {
               />
             </Elements>
           )}
+          
           <OrderSubmissionSection
             loading={loading}
             error={error}
             handlePlaceOrder={handlePlaceOrder}
           />
-        </form>
 
+        </form>
+        <div className="flex flex-col gap-y-6"> 
+<CartSection
+            cartItems={cartItems}
+            removeFromCart={removeFromCart}
+            navigate={navigate}
+          />
         <OrderSummarySection orderSummary={orderSummary} />
+        </div>
+
       </section>
     </div>
   );
@@ -733,7 +744,7 @@ const CartSection = ({ cartItems, removeFromCart, navigate }) => (
   <>
     <div className="flex items-center justify-between mb-4">
       <h1 className="text-xl md:text-3xl font-semibold text-[#182B55]">
-        1. Cart ({cartItems.length} Items)
+         Cart ({cartItems.length} Items)
       </h1>
       <button
         type="button"
@@ -746,7 +757,7 @@ const CartSection = ({ cartItems, removeFromCart, navigate }) => (
 
     <div className="flex flex-col gap-4 my-8">
       {cartItems.map((product) => (
-        <ProductCardTiles
+        <ProductCartCheckout
           key={product.variationId}
           product={product}
           onRemove={() => removeFromCart(product)}
@@ -763,7 +774,7 @@ const RegistrationSection = ({ password, setPassword, registerMessage }) => {
         htmlFor="password"
         className="block text-[#182B55] text-sm font-medium mb-1"
       >
-        Password
+       Create Your Account Password
       </label>
       <input
         type="password"
@@ -771,7 +782,7 @@ const RegistrationSection = ({ password, setPassword, registerMessage }) => {
         name="password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        placeholder="Enter your password"
+        placeholder="New Password"
         className="w-full p-3 rounded-lg border border-gray-300 bg-[#F8F9FB] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
         required
       />
@@ -809,9 +820,7 @@ const OrderSubmissionSection = ({ loading, error, handlePlaceOrder }) => (
 
 const OrderSummarySection = ({ orderSummary }) => (
   <div className="p-6 rounded-lg h-fit">
-    <h2 className="text-xl text-[#182B55] md:text-2xl font-semibold mb-6">
-      Order Summary
-    </h2>
+    
     <OrderSummaryCard cart={orderSummary} />
   </div>
 );

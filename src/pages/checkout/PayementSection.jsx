@@ -11,6 +11,7 @@ import {
   forwardRef,
   useEffect,
 } from "react";
+import { BsCurrencyDollar } from "react-icons/bs";
 
 const PaymentSection = forwardRef(({ onPaymentSuccess, onPaymentError, email, orderSummary }, ref) => {
   const stripe = useStripe();
@@ -116,7 +117,7 @@ const PaymentSection = forwardRef(({ onPaymentSuccess, onPaymentError, email, or
   return (
     <div className="payment-section">
       <h1 className="text-[#182B55] text-xl md:text-3xl font-semibold mb-4">
-        4. Payment
+         Payment
       </h1>
 
       {orderSummary && (
@@ -124,15 +125,15 @@ const PaymentSection = forwardRef(({ onPaymentSuccess, onPaymentError, email, or
           <h3 className="text-lg font-semibold mb-2">Order Total</h3>
           <div className="flex justify-between mb-1">
             <span>Subtotal:</span>
-            <span>${orderSummary.subtotal.toFixed(2)}</span>
+            <span className="flex gap-x-2 items-center"><BsCurrencyDollar/>{orderSummary.subtotal.toFixed(2)}</span>
           </div>
           <div className="flex justify-between mb-1">
             <span>Shipping:</span>
-            <span>${orderSummary.shipping.toFixed(2)}</span>
+            <span className="flex gap-x-2 items-center"><BsCurrencyDollar/>{orderSummary.shipping.toFixed(2)}</span>
           </div>
           <div className="flex justify-between font-bold border-t pt-2 mt-2">
             <span>Total:</span>
-            <span>${orderSummary.total.toFixed(2)}</span>
+            <span className="flex gap-x-2 items-center"><BsCurrencyDollar/>{orderSummary.total.toFixed(2)}</span>
           </div>
         </div>
       )}
@@ -163,24 +164,11 @@ const PaymentSection = forwardRef(({ onPaymentSuccess, onPaymentError, email, or
             applePay: 'auto',
             googlePay: 'auto'
           },
-          fields: {
-            billingDetails: {
-              email: 'never' // We'll collect email separately
-            }
-          }
+         
         }}
       />
 
-      {/* Email Collection */}
-      <div className="mt-4">
-        <LinkAuthenticationElement
-          options={{
-            defaultValues: {
-              email: email || '',
-            }
-          }}
-        />
-      </div>
+    
 
       {error && (
         <div className="text-red-600 text-sm p-3 bg-red-50 rounded-md mt-4">
