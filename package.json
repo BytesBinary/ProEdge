@@ -16,6 +16,7 @@
     "@stripe/stripe-js": "^7.3.0",
     "@tailwindcss/vite": "^4.1.4",
     "@tanstack/react-query": "^5.76.1",
+    "anchor-pki": "^0.3.2",
     "axios": "^1.9.0",
     "fast-levenshtein": "^3.0.0",
     "helmet": "^8.1.0",

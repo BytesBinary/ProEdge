@@ -14,36 +14,31 @@ export default {
     });
 
     // In your create-payment-intent endpoint
-    router.post("/create-payment-intent", async (req, res) => {
-      console.log(req.body, "currency");
-      try {
-        const {
-          amount,
-          order_id,
-          metadata,
-        } = req.body;
+   router.post("/create-payment-intent", async (req, res) => {
+  try {
+    const { amount, currency = "usd" } = req.body;
 
-        const paymentIntent = await stripe.paymentIntents.create({
-          amount: Math.round(amount),
-          currency: "eur",
-          
-          automatic_payment_methods: { enabled: true }, 
-
-          metadata: {
-            order_id: order_id,
-            user_id: metadata?.user_id || "guest",
-          },
-        });
-
-        res.json({
-          clientSecret: paymentIntent.client_secret,
-          paymentIntentId: paymentIntent.id,
-        });
-      } catch (err) {
-        logger.error(`Stripe error: ${err}`);
-        res.status(500).json({ error: err.message });
-      }
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: Math.round(amount), // in cents
+      currency,
+      automatic_payment_methods: {
+        enabled: true,
+      },
+      metadata: {
+        integration_check: "payment_element",
+      },
     });
+
+    res.json({
+      clientSecret: paymentIntent.client_secret,
+      paymentIntentId: paymentIntent.id,
+    });
+  } catch (err) {
+    console.error("Stripe error:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
    
     // Verify Payment Status
     router.get("/payment-status/:paymentIntentId", async (req, res) => {
