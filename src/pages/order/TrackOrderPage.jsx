@@ -119,7 +119,7 @@ const TrackOrderPage = () => {
                     <TruckIcon className="h-6 w-6 text-blue-600" />
                   </div>
                   <h2 className="text-2xl font-semibold text-gray-800">
-                    Proedge account holders
+                    Pro Edge account holders
                   </h2>
                 </div>
                 <p className="text-gray-600">{info.accountDescription}</p>

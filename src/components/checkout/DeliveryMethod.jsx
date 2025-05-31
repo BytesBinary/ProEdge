@@ -2,13 +2,13 @@ import React from 'react';
 import RadioOption from '../common/form/RadioOption';
 
 const DeliveryMethod = ({ selectedMethod, onChange }) => {
-  
+
 
   const deliveryOptions = [
     {
       id: 'standard',
       name: 'delivery_method',
-      label: 'Standard Ground',
+      label: 'Standard Ground Shipping',
       value: 'standard',
     },
      {
