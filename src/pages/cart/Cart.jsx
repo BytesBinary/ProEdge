@@ -45,9 +45,9 @@ const Cart = () => {
   // Calculate order summary data dynamically
   const orderSummary = {
     subtotal: getCartTotal(),
-    shipping: getCartTotal()>500?0:parseInt(shippingData?.shipping_charge), 
+    shipping: getCartTotal()>500?0:parseInt(shippingData?.standard_ground_shipping_charge), 
     tax: 0,   
-    total: getCartTotal()+(getCartTotal()>500?0:parseInt(shippingData?.shipping_charge)), 
+    total: getCartTotal()+(getCartTotal()>500?0:parseInt(shippingData?.standard_ground_shipping_charge)), 
     discount: 0  ,
     type:"cart"
   };

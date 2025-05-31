@@ -138,7 +138,7 @@ const Checkout = () => {
   if (orderData.delivery_method === "standard") {
     setHideSameAsShippingText("");
     shippingCharge =
-      getCartTotal() > 500 ? 0 : parseInt(shippingData.shipping_charge || "0");
+      getCartTotal() > 500 ? 0 : parseInt(shippingData.standard_ground_shipping_charge || "0");
   } else if (orderData.delivery_method === "Same Day Shipping") {
     setHideSameAsShippingText(
       "Same-day shipping on orders placed by 3 PM (Eastern Time) for FedEx Ground, Next Day Air, and 2nd Day Air shipments."
@@ -151,7 +151,7 @@ const Checkout = () => {
     // default fallback if method is unknown
     setHideSameAsShippingText("");
     shippingCharge =
-      getCartTotal() > 500 ? 0 : parseInt(shippingData.shipping_charge || "0");
+      getCartTotal() > 500 ? 0 : parseInt(shippingData.standard_ground_shipping_charge || "0");
   }
 
   setOrderData((prev) => ({
@@ -311,7 +311,7 @@ const Checkout = () => {
   if (method === "standard") {
     shippingCharge = getCartTotal() > 500
       ? 0
-      : parseInt(shippingData?.shipping_charge || 0);
+      : parseInt(shippingData?.standard_ground_shipping_charge || 0);
     setHideSameAsShippingText(""); 
   } else if (method === "Same Day Shipping") {
     shippingCharge = getCartTotal() > 500

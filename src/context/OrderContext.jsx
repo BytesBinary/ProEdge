@@ -55,7 +55,7 @@ const GET_SETTINGS_QUERY = `
       id
       Shipping_days
       delivery_address 
-      shipping_charge
+      standard_ground_shipping_charge
       same_day_shipping_charge
     }
   }
