@@ -8,7 +8,7 @@ const ProductCard = ({
   productId,
   variationId,
   variation_name,
-  variation_value,
+  dropdownRef,
   variation,
   stock,
   made_in,
@@ -20,8 +20,8 @@ const ProductCard = ({
   price,
   length,
   allVariations = [],
-  isOpen,          // New prop - controls if this dropdown is open
-  onToggle         // New prop - function to toggle this dropdown
+  isOpen, // New prop - controls if this dropdown is open
+  onToggle, // New prop - function to toggle this dropdown
 }) => {
   const getImage = () => {
     if (image_url && image_url !== "NULL") return image_url;
@@ -43,17 +43,19 @@ const ProductCard = ({
   const isWishlisted = isInWishlist(variationId);
 
   // Filter out the current variation from the list
-  const otherVariations = allVariations.filter(v => v.variationId !== variationId);
+  const otherVariations = allVariations.filter(
+    (v) => v.variationId !== variationId
+  );
   const hasOtherVariations = otherVariations.length > 0;
 
   const handleClick = () => {
     const slug = variation_name
       .toLowerCase()
-      .replace(/[^\w\s-]/g, "") 
-      .trim() 
-      .slice(0, 20) 
-      .replace(/\s+/g, "-") 
-      .replace(/-+/g, "-"); 
+      .replace(/[^\w\s-]/g, "")
+      .trim()
+      .slice(0, 20)
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-");
     navigate(`/single-product/${slug}-${variationId}-${productId}`);
   };
 
@@ -101,7 +103,7 @@ const ProductCard = ({
 
   const toggleVariations = (e) => {
     e.stopPropagation();
-    onToggle();  // Call the parent's toggle function
+    onToggle(); // Call the parent's toggle function
   };
 
   const handleVariationClick = (e, variation) => {
@@ -165,10 +167,10 @@ const ProductCard = ({
               {variation_name}
             </h1>
           </div>
-          
+
           {hasOtherVariations && (
             <div className="relative">
-              <button 
+              <button
                 onClick={toggleVariations}
                 className="text-[#3F66BC] text-sm font-medium mb-2 hover:underline flex items-center gap-1"
               >
@@ -179,32 +181,37 @@ const ProductCard = ({
                   <BsChevronDown className="text-xs" />
                 )}
               </button>
-              
+
               {/* Variations dropdown */}
               {isOpen && (
-                <div 
-                  className="absolute -top-60 z-20 mt-1 w-48 max-h-60 overflow-y-auto bg-white rounded-md shadow-lg border border-[#3F66BC]"
+                <div
+                 ref={dropdownRef}
+                  className={`absolute  z-20 mt-1 w-48 max-h-60 ${
+                    otherVariations.length > 3 ? "-top-60" : `-top-40`
+                  } overflow-y-auto bg-white rounded-md shadow-lg border border-[#3F66BC]`}
                   onClick={(e) => e.stopPropagation()}
                 >
                   <div className="py-1">
                     {/* Current variation */}
-                    <div 
+                    <div
                       className="flex items-center justify-between px-4 py-2 text-sm cursor-pointer bg-[#F8F9FB]"
                       onClick={handleClick}
                     >
-                      <span className="font-medium">{variation.variation_value}</span>
-                     
+                      <span className="font-medium">
+                        {variation.variation_value}
+                      </span>
                     </div>
-                    
+
                     {/* Other variations */}
                     {otherVariations.map((v) => (
-                      <div 
+                      <div
                         key={v.variationId}
                         className="flex items-center justify-between px-4 py-2 text-sm cursor-pointer hover:bg-[#F8F9FB]"
                         onClick={(e) => handleVariationClick(e, v)}
                       >
-                        <span className="font-medium">{v.variation.variation_value}</span>
-                       
+                        <span className="font-medium">
+                          {v.variation.variation_value}
+                        </span>
                       </div>
                     ))}
                   </div>
@@ -212,10 +219,10 @@ const ProductCard = ({
               )}
             </div>
           )}
-          
+
           <div className="mb-[10px]">
             <p className="text-[#3F66BC] text-xl font-semibold leading-8 gap-y-2.5 flex items-center justify-start">
-              <BsCurrencyDollar/> {formatNumberWithCommas(price)}
+              <BsCurrencyDollar /> {formatNumberWithCommas(price)}
             </p>
           </div>
           <div

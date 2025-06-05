@@ -14,9 +14,8 @@ import { fetchPageBlocks } from "../../context/PageContext";
 import { useQuery } from "@tanstack/react-query";
 
 const Category = () => {
-   const [openVariationId, setOpenVariationId] = useState(null);
+  const [openVariationId, setOpenVariationId] = useState(null);
 
-  
   const [showFilter, setShowFilter] = useState(false);
   const [sortOption, setSortOption] = useState("Relevance");
   const [totalProducts, setTotalProducts] = useState(0);
@@ -60,9 +59,29 @@ const Category = () => {
       .replace(/\s+/g, "-")
       .replace(/-+/g, "-");
   };
-const handleToggleVariations = (variationId) => {
+  const dropdownRef = useRef(null);
+
+  const handleToggleVariations = (variationId) => {
     setOpenVariationId(openVariationId === variationId ? null : variationId);
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setOpenVariationId(null);
+      }
+    };
+
+    // Only add listener if a dropdown is open
+    if (openVariationId) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [openVariationId]);
+
   // Add slug to each product based on its category hierarchy
   const productsWithSlugs = useMemo(() => {
     return products.map((product) => {
@@ -452,16 +471,19 @@ const handleToggleVariations = (variationId) => {
     }
   }, [priceFilteredProducts, sortOption]);
 
-  // Get unique base product IDs for pagination
-  const uniqueProductIds = useMemo(() => {
-    return [...new Set(sortedProducts.map((p) => p.id))];
-  }, [sortedProducts]);
+  // Get unique base product IDs for pagination and count all variations
+const [uniqueProductIds, totalVariations] = useMemo(() => {
+  const ids = [...new Set(sortedProducts.map((p) => p.id))];
+  return [ids, sortedProducts.length];
+}, [sortedProducts]);
 
-  // Pagination logic based on base products
-  const totalItems = uniqueProductIds.length;
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
+// Pagination logic based on base products
+const totalItems = uniqueProductIds.length;
+const totalPages = Math.ceil(totalItems / itemsPerPage);
+const startIndex = (currentPage - 1) * itemsPerPage;
+const endIndex = startIndex + itemsPerPage;
+
+
 
   // Get IDs of products to show on current page
   const currentPageProductIds = uniqueProductIds.slice(startIndex, endIndex);
@@ -661,7 +683,7 @@ const handleToggleVariations = (variationId) => {
           <div className="hidden lg:flex items-center justify-between mb-6">
             {/* Showing Items */}
             <h1 className="text-[#182B55] font-medium text-lg">
-              Showing {totalItems}  product ({currentItems.length} options)
+              Showing {totalItems} product ({totalVariations} options)
             </h1>
 
             <div className="flex items-center gap-4">
@@ -799,76 +821,86 @@ const handleToggleVariations = (variationId) => {
           </div>
 
           {/* Products Grid */}
-      <div className="flex  flex-wrap gap-6">
-  {loading ? (
-    <div className="w-full flex justify-center items-center py-20">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-    </div>
-  ) : currentItems.length > 0 ? (
-    // First group variations by their base product ID
-    Object.values(
-      currentItems.reduce((acc, product) => {
-        const baseProductId = product.id; // Assuming this is the base product ID
+          <div className="flex  flex-wrap gap-6">
+            {loading ? (
+              <div className="w-full flex justify-center items-center py-20">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+              </div>
+            ) : currentItems.length > 0 ? (
+              // First group variations by their base product ID
+              Object.values(
+                currentItems.reduce((acc, product) => {
+                  const baseProductId = product.id; // Assuming this is the base product ID
 
-        if (!acc[baseProductId]) {
-          acc[baseProductId] = {
-            baseProduct: product,
-            variations: [],
-          };
-        }
+                  if (!acc[baseProductId]) {
+                    acc[baseProductId] = {
+                      baseProduct: product,
+                      variations: [],
+                    };
+                  }
 
-        // Only add if it's a variation (has variationId)
-        if (product.variationId) {
-          acc[baseProductId].variations.push(product);
-        } else {
-          // This is the base product
-          acc[baseProductId].baseProduct = product;
-        }
+                  // Only add if it's a variation (has variationId)
+                  if (product.variationId) {
+                    acc[baseProductId].variations.push(product);
+                  } else {
+                    // This is the base product
+                    acc[baseProductId].baseProduct = product;
+                  }
 
-        return acc;
-      }, {})
-    ).map(({ baseProduct, variations }) => {
-      // Combine base product with its variations
-      const allVariations = [baseProduct, ...variations];
-      
-      // Select the first variation (or base product if no variations exist)
-      const displayProduct = variations.length > 0 ? variations[0] : baseProduct;
+                  return acc;
+                }, {})
+              ).map(({ baseProduct, variations }) => {
+                // Combine base product with its variations
+                const allVariations = [baseProduct, ...variations];
 
-      return (
-        <ProductCard
-          key={`${displayProduct.id}-${displayProduct.variationId || "base"}`}
-          productId={displayProduct.id}
-          variationId={displayProduct.variationId}
-          variation_name={displayProduct.variation_name}
-          variation_value={displayProduct.variation_value}
-          sku_code={displayProduct.sku}
-          category={displayProduct.category_name}
-          title={displayProduct.title}
-          image={displayProduct.image?.id}
-          image_url={displayProduct.image_url}
-          price={displayProduct.price}
-          stock={displayProduct.stock}
-          made_in={displayProduct.made_in}
-          sku={displayProduct.sku}
-          variation={displayProduct.variation}
-          length={allVariations.length}
-          allVariations={allVariations} // Still pass all variations for the dropdown
-          isOpen={openVariationId === displayProduct.variationId}
-          onToggle={() => handleToggleVariations(displayProduct.variationId)}
-        />
-      );
-    })
-  ) : (
-    <div className="w-full text-center py-20">
-      <h3 className="text-xl font-medium text-gray-600">
-        No products found matching your criteria
-      </h3>
-      <p className="text-gray-500 mt-2">
-        Try adjusting your filters or search term
-      </p>
-    </div>
-  )}
-</div>
+                // Select the first variation (or base product if no variations exist)
+                const displayProduct =
+                  variations.length > 0 ? variations[0] : baseProduct;
+
+                return (
+                  <ProductCard
+                    dropdownRef={
+                      openVariationId === displayProduct.variationId
+                        ? dropdownRef
+                        : null
+                    }
+                    key={`${displayProduct.id}-${
+                      displayProduct.variationId || "base"
+                    }`}
+                    productId={displayProduct.id}
+                    variationId={displayProduct.variationId}
+                    variation_name={displayProduct.variation_name}
+                    variation_value={displayProduct.variation_value}
+                    sku_code={displayProduct.sku}
+                    category={displayProduct.category_name}
+                    title={displayProduct.title}
+                    image={displayProduct.image?.id}
+                    image_url={displayProduct.image_url}
+                    price={displayProduct.price}
+                    stock={displayProduct.stock}
+                    made_in={displayProduct.made_in}
+                    sku={displayProduct.sku}
+                    variation={displayProduct.variation}
+                    length={allVariations.length}
+                    allVariations={allVariations} // Still pass all variations for the dropdown
+                    isOpen={openVariationId === displayProduct.variationId}
+                    onToggle={() =>
+                      handleToggleVariations(displayProduct.variationId)
+                    }
+                  />
+                );
+              })
+            ) : (
+              <div className="w-full text-center py-20">
+                <h3 className="text-xl font-medium text-gray-600">
+                  No products found matching your criteria
+                </h3>
+                <p className="text-gray-500 mt-2">
+                  Try adjusting your filters or search term
+                </p>
+              </div>
+            )}
+          </div>
 
           {/* Pagination */}
           {totalPages > 1 && (
