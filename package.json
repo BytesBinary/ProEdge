@@ -19,6 +19,7 @@
     "anchor-pki": "^0.3.2",
     "axios": "^1.9.0",
     "fast-levenshtein": "^3.0.0",
+    "framer-motion": "^12.16.0",
     "helmet": "^8.1.0",
     "html2canvas": "^1.4.1",
     "jspdf": "^3.0.1",

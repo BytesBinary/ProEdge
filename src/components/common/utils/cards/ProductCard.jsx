@@ -1,6 +1,6 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BsCurrencyDollar } from "react-icons/bs";
+import { BsCurrencyDollar, BsChevronDown, BsChevronUp } from "react-icons/bs";
 import { CartContext } from "../../../../context/CartContext";
 import { formatNumberWithCommas } from "../../../../helper/localPrice/localeprice";
 
@@ -8,6 +8,7 @@ const ProductCard = ({
   productId,
   variationId,
   variation_name,
+  variation,
   stock,
   made_in,
   sku,
@@ -17,7 +18,9 @@ const ProductCard = ({
   title,
   price,
   length,
+  allVariations = []
 }) => {
+  const [showVariations, setShowVariations] = useState(false);
   const getImage = () => {
     if (image_url && image_url !== "NULL") return image_url;
     if (image && image !== "NULL")
@@ -37,14 +40,18 @@ const ProductCard = ({
   const isInCart = cartItems.some((item) => item.variationId === variationId);
   const isWishlisted = isInWishlist(variationId);
 
+  // Filter out the current variation from the list
+  const otherVariations = allVariations.filter(v => v.variationId !== variationId);
+  const hasOtherVariations = otherVariations.length > 0;
+
   const handleClick = () => {
     const slug = variation_name
       .toLowerCase()
-      .replace(/[^\w\s-]/g, "") // Remove special characters
-      .trim() // Trim leading/trailing spaces
-      .slice(0, 20) // Take first 10 characters only
-      .replace(/\s+/g, "-") // Replace spaces with dashes
-      .replace(/-+/g, "-"); // Replace multiple dashes with single dash
+      .replace(/[^\w\s-]/g, "") 
+      .trim() 
+      .slice(0, 20) 
+      .replace(/\s+/g, "-") 
+      .replace(/-+/g, "-"); 
     navigate(`/single-product/${slug}-${variationId}-${productId}`);
   };
 
@@ -90,10 +97,28 @@ const ProductCard = ({
     }
   };
 
+  const toggleVariations = (e) => {
+    e.stopPropagation();
+    setShowVariations(!showVariations);
+  };
+
+  const handleVariationClick = (e, variation) => {
+    e.stopPropagation();
+    const slug = variation.variation_name
+      .toLowerCase()
+      .replace(/[^\w\s-]/g, "")
+      .trim()
+      .slice(0, 20)
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-");
+    navigate(`/single-product/${slug}-${variation.variationId}-${productId}`);
+    setShowVariations(false);
+  };
+
   return (
     <div
       onClick={handleClick}
-      className="max-w-xs w-full my-1 md:my-4 rounded-xl border-2 border-[#F8F9FB] md:hover:border-[#3F66BC] px-4 pt-4 pb-6 bg-[#FFFFFF] drop-shadow-[#E1E1E140] drop-shadow-md hover:drop-shadow-md hover:scale-105 transition duration-300 cursor-pointer"
+      className="max-w-xs w-full my-1 md:my-4 rounded-xl border-2 border-[#F8F9FB] md:hover:border-[#3F66BC] px-4 pt-4 pb-6 bg-[#FFFFFF] drop-shadow-[#E1E1E140] drop-shadow-md hover:drop-shadow-md hover:scale-105 transition duration-300 cursor-pointer relative"
     >
       <div className="rounded-xl w-full h-[417px] mb-5 bg-[#FFFFFF]">
         <div className="bg-[#F8F9FB] flex justify-center items-center relative rounded-xl w-full overflow-hidden">
@@ -138,6 +163,58 @@ const ProductCard = ({
               {variation_name}
             </h1>
           </div>
+          
+          {hasOtherVariations && (
+            <div className="relative">
+              <button 
+                onClick={toggleVariations}
+                className="text-[#3F66BC] text-sm font-medium mb-2 hover:underline flex items-center gap-1"
+              >
+                +{otherVariations.length} more options
+                {showVariations ? (
+                  <BsChevronUp className="text-xs" />
+                ) : (
+                  <BsChevronDown className="text-xs" />
+                )}
+              </button>
+              
+              {/* Variations dropdown */}
+              {showVariations && (
+                <div 
+                  className="absolute -top-60 z-20 mt-1 w-64 max-h-60 overflow-y-auto bg-white rounded-md shadow-lg border border-[#3F66BC]"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="py-1">
+                    {/* Current variation */}
+                    <div 
+                      className="flex items-center justify-between px-4 py-2 text-sm cursor-pointer bg-[#F8F9FB]"
+                      onClick={handleClick}
+                    >
+                      <span className="font-medium">{variation_name}</span>
+                      <span className="text-[#3F66BC] font-semibold">
+                        ${formatNumberWithCommas(price)}
+                      </span>
+                    </div>
+                    
+                    {/* Other variations */}
+                    {otherVariations.map((v) => (
+                      <div 
+                        key={v.variationId}
+                        className="flex items-center justify-between px-4 py-2 text-sm cursor-pointer hover:bg-[#F8F9FB]"
+                        onClick={(e) => handleVariationClick(e, v)}
+                      >
+                        <span className="font-medium">{v.variation_name}</span>
+                        <span className="text-[#3F66BC] font-semibold">
+                          ${formatNumberWithCommas(v.price)}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+          
           <div className="mb-[10px]">
             <p className="text-[#3F66BC] text-xl font-semibold leading-8 gap-y-2.5 flex items-center justify-start">
               <BsCurrencyDollar/> {formatNumberWithCommas(price)}

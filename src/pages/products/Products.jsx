@@ -47,8 +47,6 @@ const Category = () => {
     (block) => block?.item?.type?.toLowerCase().trim() === "breadcrumb"
   )[0];
 
- 
-
   // Function to generate a slug from a string
   const generateSlug = (str) => {
     if (!str) return "";
@@ -449,12 +447,24 @@ const Category = () => {
     }
   }, [priceFilteredProducts, sortOption]);
 
-  // Pagination logic
-  const totalItems = sortedProducts.length;
+  // Get unique base product IDs for pagination
+  const uniqueProductIds = useMemo(() => {
+    return [...new Set(sortedProducts.map((p) => p.id))];
+  }, [sortedProducts]);
+
+  // Pagination logic based on base products
+  const totalItems = uniqueProductIds.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentItems = sortedProducts.slice(startIndex, endIndex);
+
+  // Get IDs of products to show on current page
+  const currentPageProductIds = uniqueProductIds.slice(startIndex, endIndex);
+
+  // Filter products to show only those with matching IDs
+  const currentItems = sortedProducts.filter((p) =>
+    currentPageProductIds.includes(p.id)
+  );
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -463,14 +473,10 @@ const Category = () => {
 
   // Update total products count when category changes
   useEffect(() => {
-    const uniqueProductIds = new Set();
-    categoryFilteredProducts.forEach((product) => {
-      uniqueProductIds.add(product.id);
-    });
-    setTotalProducts(uniqueProductIds.size);
+    setTotalProducts(uniqueProductIds.length);
     setCurrentPage(1); // Reset to first page when filters change
-  }, [categoryFilteredProducts]);
-  console.log(singleCategory);
+  }, [uniqueProductIds]);
+
   return (
     <>
       {singleCategory && (
@@ -650,7 +656,7 @@ const Category = () => {
           <div className="hidden lg:flex items-center justify-between mb-6">
             {/* Showing Items */}
             <h1 className="text-[#182B55] font-medium text-lg">
-              Showing {totalItems} items
+              Showing {totalItems}  items ({currentItems.length} products)
             </h1>
 
             <div className="flex items-center gap-4">
@@ -758,9 +764,6 @@ const Category = () => {
             {/* Info Row */}
             <div className="w-full flex items-center justify-around">
               {/* Showing Items */}
-              <h1 className="text-[#182B55] font-medium text-md">
-                Showing {totalItems} items
-              </h1>
 
               {/* Heart Icon with Count */}
               <div className="bg-[#F8F9FB] border-2 border-[#ECF0F9] rounded-[42px] w-20 h-9 py-2 px-4 flex items-center justify-around">
@@ -790,42 +793,73 @@ const Category = () => {
             </div>
           </div>
 
-          {/* Cards */}
-          <div className="flex justify-center items-center flex-wrap gap-6">
-            {loading ? (
-              <div className="w-full flex justify-center items-center py-20">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-              </div>
-            ) : currentItems.length > 0 ? (
-              currentItems.map((product) => (
-                <ProductCard
-                  key={`${product.id}-${product.variationId || "base"}`}
-                  productId={product.id}
-                  variationId={product.variationId}
-                  variation_name={product.variation_name}
-                  category={product.category_name}
-                  title={product.title}
-                  image={product.image?.id}
-                  image_url={product.image_url}
-                  price={product.price}
-                  stock={product.stock}
-                  made_in={product.made_in}
-                  sku={product.sku}
-                  variation={product.variation}
-                  length={currentItems.length}
-                />
-              ))
-            ) : (
-              <div className="w-full text-center py-20">
-                <h3 className="text-xl font-medium text-gray-600">
-                  No products found matching your criteria
-                </h3>
-                <p className="text-gray-500 mt-2">
-                  Try adjusting your filters or search term
-                </p>
-              </div>
-            )}
-          </div>
+          {/* Products Grid */}
+      <div className="flex  flex-wrap gap-6">
+  {loading ? (
+    <div className="w-full flex justify-center items-center py-20">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+    </div>
+  ) : currentItems.length > 0 ? (
+    // First group variations by their base product ID
+    Object.values(
+      currentItems.reduce((acc, product) => {
+        const baseProductId = product.id; // Assuming this is the base product ID
+
+        if (!acc[baseProductId]) {
+          acc[baseProductId] = {
+            baseProduct: product,
+            variations: [],
+          };
+        }
+
+        // Only add if it's a variation (has variationId)
+        if (product.variationId) {
+          acc[baseProductId].variations.push(product);
+        } else {
+          // This is the base product
+          acc[baseProductId].baseProduct = product;
+        }
+
+        return acc;
+      }, {})
+    ).map(({ baseProduct, variations }) => {
+      // Combine base product with its variations
+      const allVariations = [baseProduct, ...variations];
+      
+      // Select the first variation (or base product if no variations exist)
+      const displayProduct = variations.length > 0 ? variations[0] : baseProduct;
+
+      return (
+        <ProductCard
+          key={`${displayProduct.id}-${displayProduct.variationId || "base"}`}
+          productId={displayProduct.id}
+          variationId={displayProduct.variationId}
+          variation_name={displayProduct.variation_name}
+          category={displayProduct.category_name}
+          title={displayProduct.title}
+          image={displayProduct.image?.id}
+          image_url={displayProduct.image_url}
+          price={displayProduct.price}
+          stock={displayProduct.stock}
+          made_in={displayProduct.made_in}
+          sku={displayProduct.sku}
+          variation={displayProduct.variation}
+          length={allVariations.length}
+          allVariations={allVariations} // Still pass all variations for the dropdown
+        />
+      );
+    })
+  ) : (
+    <div className="w-full text-center py-20">
+      <h3 className="text-xl font-medium text-gray-600">
+        No products found matching your criteria
+      </h3>
+      <p className="text-gray-500 mt-2">
+        Try adjusting your filters or search term
+      </p>
+    </div>
+  )}
+</div>
 
           {/* Pagination */}
           {totalPages > 1 && (
