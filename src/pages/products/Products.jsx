@@ -14,6 +14,9 @@ import { fetchPageBlocks } from "../../context/PageContext";
 import { useQuery } from "@tanstack/react-query";
 
 const Category = () => {
+   const [openVariationId, setOpenVariationId] = useState(null);
+
+  
   const [showFilter, setShowFilter] = useState(false);
   const [sortOption, setSortOption] = useState("Relevance");
   const [totalProducts, setTotalProducts] = useState(0);
@@ -57,7 +60,9 @@ const Category = () => {
       .replace(/\s+/g, "-")
       .replace(/-+/g, "-");
   };
-
+const handleToggleVariations = (variationId) => {
+    setOpenVariationId(openVariationId === variationId ? null : variationId);
+  };
   // Add slug to each product based on its category hierarchy
   const productsWithSlugs = useMemo(() => {
     return products.map((product) => {
@@ -656,7 +661,7 @@ const Category = () => {
           <div className="hidden lg:flex items-center justify-between mb-6">
             {/* Showing Items */}
             <h1 className="text-[#182B55] font-medium text-lg">
-              Showing {totalItems}  items ({currentItems.length} products)
+              Showing {totalItems}  product ({currentItems.length} options)
             </h1>
 
             <div className="flex items-center gap-4">
@@ -835,6 +840,8 @@ const Category = () => {
           productId={displayProduct.id}
           variationId={displayProduct.variationId}
           variation_name={displayProduct.variation_name}
+          variation_value={displayProduct.variation_value}
+          sku_code={displayProduct.sku}
           category={displayProduct.category_name}
           title={displayProduct.title}
           image={displayProduct.image?.id}
@@ -846,6 +853,8 @@ const Category = () => {
           variation={displayProduct.variation}
           length={allVariations.length}
           allVariations={allVariations} // Still pass all variations for the dropdown
+          isOpen={openVariationId === displayProduct.variationId}
+          onToggle={() => handleToggleVariations(displayProduct.variationId)}
         />
       );
     })

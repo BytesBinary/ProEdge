@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { BsCurrencyDollar, BsChevronDown, BsChevronUp } from "react-icons/bs";
 import { CartContext } from "../../../../context/CartContext";
@@ -8,6 +8,7 @@ const ProductCard = ({
   productId,
   variationId,
   variation_name,
+  variation_value,
   variation,
   stock,
   made_in,
@@ -18,9 +19,10 @@ const ProductCard = ({
   title,
   price,
   length,
-  allVariations = []
+  allVariations = [],
+  isOpen,          // New prop - controls if this dropdown is open
+  onToggle         // New prop - function to toggle this dropdown
 }) => {
-  const [showVariations, setShowVariations] = useState(false);
   const getImage = () => {
     if (image_url && image_url !== "NULL") return image_url;
     if (image && image !== "NULL")
@@ -99,7 +101,7 @@ const ProductCard = ({
 
   const toggleVariations = (e) => {
     e.stopPropagation();
-    setShowVariations(!showVariations);
+    onToggle();  // Call the parent's toggle function
   };
 
   const handleVariationClick = (e, variation) => {
@@ -112,7 +114,7 @@ const ProductCard = ({
       .replace(/\s+/g, "-")
       .replace(/-+/g, "-");
     navigate(`/single-product/${slug}-${variation.variationId}-${productId}`);
-    setShowVariations(false);
+    onToggle(); // Close the dropdown after selection
   };
 
   return (
@@ -171,7 +173,7 @@ const ProductCard = ({
                 className="text-[#3F66BC] text-sm font-medium mb-2 hover:underline flex items-center gap-1"
               >
                 +{otherVariations.length} more options
-                {showVariations ? (
+                {isOpen ? (
                   <BsChevronUp className="text-xs" />
                 ) : (
                   <BsChevronDown className="text-xs" />
@@ -179,9 +181,9 @@ const ProductCard = ({
               </button>
               
               {/* Variations dropdown */}
-              {showVariations && (
+              {isOpen && (
                 <div 
-                  className="absolute -top-60 z-20 mt-1 w-64 max-h-60 overflow-y-auto bg-white rounded-md shadow-lg border border-[#3F66BC]"
+                  className="absolute -top-60 z-20 mt-1 w-48 max-h-60 overflow-y-auto bg-white rounded-md shadow-lg border border-[#3F66BC]"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <div className="py-1">
@@ -190,10 +192,8 @@ const ProductCard = ({
                       className="flex items-center justify-between px-4 py-2 text-sm cursor-pointer bg-[#F8F9FB]"
                       onClick={handleClick}
                     >
-                      <span className="font-medium">{variation_name}</span>
-                      <span className="text-[#3F66BC] font-semibold">
-                        ${formatNumberWithCommas(price)}
-                      </span>
+                      <span className="font-medium">{variation.variation_value}</span>
+                     
                     </div>
                     
                     {/* Other variations */}
@@ -203,10 +203,8 @@ const ProductCard = ({
                         className="flex items-center justify-between px-4 py-2 text-sm cursor-pointer hover:bg-[#F8F9FB]"
                         onClick={(e) => handleVariationClick(e, v)}
                       >
-                        <span className="font-medium">{v.variation_name}</span>
-                        <span className="text-[#3F66BC] font-semibold">
-                          ${formatNumberWithCommas(v.price)}
-                        </span>
+                        <span className="font-medium">{v.variation.variation_value}</span>
+                       
                       </div>
                     ))}
                   </div>
