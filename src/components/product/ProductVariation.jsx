@@ -82,7 +82,7 @@ const ProductVariation = ({
       {/* Size Options */}
       <div className="w-full flex flex-col justify-between gap-4 lg:gap-0 pr-3 lg:pr-0">
         <div className="text-md lg:text-lg mb-3 py-2 md:py-6">
-          <span className="text-[#5D6576]">Other Options:</span>
+          <span className="text-[#5D6576]">Available Options:</span>
           <span className="text-[#3F66BC] font-semibold">
             {" "}
             {variationValue}

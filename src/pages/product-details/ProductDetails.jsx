@@ -40,10 +40,8 @@ const Product = () => {
   const [selectedVariationId, setSelectedVariationId] = useState(null);
   const [deliveryData, setDeliveryData] = useState(null);
 
-
   const { fetchProductById, setSearchTerm } = useProductContext();
   const { title } = useParams();
-
 
   useEffect(() => {
     if (location.pathname !== "/products") setSearchTerm("");
@@ -113,7 +111,6 @@ const Product = () => {
 
     fetchSingleProduct();
   }, [id]);
-
 
   useEffect(() => {
     if (singleProduct?.variation?.length > 0) {
@@ -191,11 +188,11 @@ const Product = () => {
   ];
   const thumbnails = Array.isArray(singleProduct.variation)
     ? singleProduct.variation.map((v) => ({
-      id: v.id,
-      image_url: v.image_url || "",
-      image: v.image?.id || "",
-      option: v,
-    }))
+        id: v.id,
+        image_url: v.image_url || "",
+        image: v.image?.id || "",
+        option: v,
+      }))
     : [];
 
   const mainImage = singleVariation.image?.id
@@ -208,17 +205,19 @@ const Product = () => {
 
   // Create a more compelling meta title and description
   const metaTitle = `${productName} | ${brandName}`;
-  const metaDescription = `Shop high-quality ${productName} - ${singleVariation.product_details?.substring(0, 140) ||
+  const metaDescription = `Shop high-quality ${productName} - ${
+    singleVariation.product_details?.substring(0, 140) ||
     "Industrial brass fitting for various applications"
-    }`;
+  }`;
 
   // Generate canonical URL
   const cleanProductName = productName
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
-  const canonicalUrl = `${import.meta.env.VITE_CLIENT_URL
-    }/products/${cleanProductName}-${id}`;
+  const canonicalUrl = `${
+    import.meta.env.VITE_CLIENT_URL
+  }/products/${cleanProductName}-${id}`;
 
   // Generate rich product schema data
   const productSchema = {
@@ -278,12 +277,12 @@ const Product = () => {
     },
     aggregateRating: singleVariation.rating
       ? {
-        "@type": "AggregateRating",
-        ratingValue: singleVariation.rating,
-        reviewCount: singleVariation.total_ratings || 0,
-        bestRating: "5",
-        worstRating: "1",
-      }
+          "@type": "AggregateRating",
+          ratingValue: singleVariation.rating,
+          reviewCount: singleVariation.total_ratings || 0,
+          bestRating: "5",
+          worstRating: "1",
+        }
       : undefined,
     additionalProperty: [
       {
@@ -386,7 +385,6 @@ const Product = () => {
             stock={singleVariation.stock}
             sku={singleVariation.sku_code}
             deliveryData={deliveryData}
-
           />
         </section>
 
@@ -396,19 +394,19 @@ const Product = () => {
           <div className="border-b border-gray-200 px-2 md:px-6 py-4 rounded-t-2xl">
             <nav className="flex space-x-0 md:space-x-8 gap-1 md:gap-4">
               <PDS
-                title="Key Features"
+                title="Product Details"
+                callBack={() => handleTabChange("Info")}
+                active={activeTab === "Info"}
+              />
+              <PDS
+                title="Specifications"
                 callBack={() => handleTabChange("Features")}
                 active={activeTab === "Features"}
               />
               <PDS
-                title="Product Details"
+                title="General Product Info"
                 callBack={() => handleTabChange("Details")}
                 active={activeTab === "Details"}
-              />
-              <PDS
-                title="Product Info"
-                callBack={() => handleTabChange("Info")}
-                active={activeTab === "Info"}
               />
             </nav>
           </div>

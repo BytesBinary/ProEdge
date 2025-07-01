@@ -33,9 +33,9 @@ const Home = () => {
         <meta name="description" content="Welcome to ProEdge. Discover our products and services." />
       </Helmet>
       <Hero blocks={blocks} loading={isLoading} error={isError} />
+      <ShopCategorySection />
       <FeatureHighlits blocks={blocks} loading={isLoading} error={isError} />
       <ServiceFeatures blocks={blocks} loading={isLoading} error={isError} />
-      <ShopCategorySection />
       <MostViewedSection title={"Most Viewed Products"} />
       <PromoBanner blocks={blocks} loading={isLoading} error={isError} />
       <ClientReviews />

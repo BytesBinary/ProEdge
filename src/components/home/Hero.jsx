@@ -35,7 +35,7 @@ const Hero = ({ blocks, loading, error }) => {
 
   return (
     <section
-      className="relative max-w-7xl h-[30rem] w-full mx-auto overflow-hidden rounded-2xl"
+      className="relative max-w-7xl h-[30rem] w-full mx-auto overflow-hidden rounded-2xl mb-10"
       aria-labelledby="hero-heading"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
