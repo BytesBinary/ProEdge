@@ -31,7 +31,7 @@ const Product = () => {
 
   console.log(blocks);
 
-  const [activeTab, setActiveTab] = useState("Features");
+  const [activeTab, setActiveTab] = useState("Info");
 
   const handleTabChange = (tabName) => {
     setActiveTab(tabName);
