@@ -13,27 +13,6 @@ export default defineConfig({
     allowedHosts: ['localhost', 'proedge.bytesbinary.top'],
   },
   build: {
-    chunkSizeWarningLimit: 1200, // 1MB
-
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          // Group specific libraries into named chunks
-          if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom')) {
-              return 'react-vendor';
-            }
-            if (id.includes('@apollo') || id.includes('graphql')) {
-              return 'graphql-vendor';
-            }
-            if (id.includes('tailwindcss') || id.includes('postcss')) {
-              return 'style-vendor';
-            }
-            // fallback for all other node_modules
-            return 'vendor';
-          }
-        },
-      },
-    },
+    chunkSizeWarningLimit: 1500, // 1MB
   },
 });
