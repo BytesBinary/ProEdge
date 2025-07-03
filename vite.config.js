@@ -8,20 +8,28 @@ export default defineConfig({
     tailwindcss(),
   ],
   server: {
-    host: '0.0.0.0',  // Allows access from any host (i.e., external IPs can access)
+    host: '0.0.0.0',
     port: 3000,
     allowedHosts: ['localhost', 'proedge.bytesbinary.top'],
   },
   build: {
-    // Increase the chunk size warning limit to suppress the warning if you prefer
-    chunkSizeWarningLimit: 1000, // Set the limit to 1MB (1000KB)
+    chunkSizeWarningLimit: 1200, // 1MB
 
     rollupOptions: {
       output: {
-        // Manual chunking for vendor libraries (node_modules)
         manualChunks(id) {
+          // Group specific libraries into named chunks
           if (id.includes('node_modules')) {
-            // Group all node_modules into a single chunk called "vendor"
+            if (id.includes('react') || id.includes('react-dom')) {
+              return 'react-vendor';
+            }
+            if (id.includes('@apollo') || id.includes('graphql')) {
+              return 'graphql-vendor';
+            }
+            if (id.includes('tailwindcss') || id.includes('postcss')) {
+              return 'style-vendor';
+            }
+            // fallback for all other node_modules
             return 'vendor';
           }
         },
@@ -29,4 +37,3 @@ export default defineConfig({
     },
   },
 });
-
